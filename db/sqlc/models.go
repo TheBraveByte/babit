@@ -55,3 +55,17 @@ type Session struct {
 	EventCount  int64
 	Uuid        pgtype.UUID
 }
+
+type User struct {
+	ID           pgtype.UUID
+	Email        string
+	PasswordHash string
+	AccountType  int32
+	OrgName      string
+	OrgDomain    string
+	Industry     string
+	BrandCompany string
+	BrandLogoUrl string
+	BrandColor   string
+	CreatedAt    pgtype.Timestamptz
+}
