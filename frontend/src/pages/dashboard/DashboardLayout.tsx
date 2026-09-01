@@ -62,12 +62,12 @@ export function DashboardLayout({
   const logoUrl = branding?.logo_url;
 
   return (
-    <div className="min-h-screen bg-[#FCFCFB] text-[#111111] grid grid-cols-1 md:grid-cols-[15rem_1fr] relative font-sans">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-[15rem_1fr] relative font-sans" style={{ backgroundColor: "var(--bg)", color: "var(--fg)" }}>
       {/* Command Palette */}
       <CommandPalette open={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col justify-between border-r border-[#E8E8E5] bg-[#FFFFFF] min-h-screen sticky top-0 h-screen overflow-y-auto">
+      <aside className="hidden md:flex flex-col justify-between min-h-screen sticky top-0 h-screen overflow-y-auto" style={{ backgroundColor: "var(--surface)", borderRight: "1px solid var(--border)" }}>
         <div>
           {/* Brand Header */}
           <div className="p-4 border-b border-[#E8E8E5] flex items-center justify-between">
@@ -127,13 +127,16 @@ export function DashboardLayout({
                         onTabChange(n.key);
                         navigate(`/dashboard/${n.key}`);
                       }}
-                      className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-babit text-[14px] font-medium transition-all cursor-pointer ${
-                        isActive
-                          ? "bg-[#111111] text-white font-semibold shadow-2xs"
-                          : "text-[#6B6B6B] hover:bg-[#F7F7F5] hover:text-[#111111]"
-                      }`}
+                      className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-babit text-[14px] font-medium transition-all cursor-pointer"
+                      style={isActive ? {
+                        backgroundColor: "var(--brand-accent)",
+                        color: "white",
+                        fontWeight: 600,
+                      } : {
+                        color: "var(--muted)",
+                      }}
                     >
-                      <span className={isActive ? "text-white" : "text-[#6B6B6B]"}>{n.icon}</span>
+                      <span>{n.icon}</span>
                       <span>{n.label}</span>
                     </button>
                   );
@@ -155,13 +158,16 @@ export function DashboardLayout({
                         onTabChange(n.key);
                         navigate(`/dashboard/${n.key}`);
                       }}
-                      className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-babit text-[14px] font-medium transition-all cursor-pointer ${
-                        isActive
-                          ? "bg-[#111111] text-white font-semibold shadow-2xs"
-                          : "text-[#6B6B6B] hover:bg-[#F7F7F5] hover:text-[#111111]"
-                      }`}
+                      className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-babit text-[14px] font-medium transition-all cursor-pointer"
+                      style={isActive ? {
+                        backgroundColor: "var(--brand-accent)",
+                        color: "white",
+                        fontWeight: 600,
+                      } : {
+                        color: "var(--muted)",
+                      }}
                     >
-                      <span className={isActive ? "text-white" : "text-[#6B6B6B]"}>{n.icon}</span>
+                      <span>{n.icon}</span>
                       <span>{n.label}</span>
                     </button>
                   );
