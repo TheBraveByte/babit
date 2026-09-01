@@ -3,9 +3,11 @@ module github.com/babit/nal
 go 1.26
 
 require (
+	github.com/caarlos0/env/v11 v11.4.1
 	github.com/chromedp/chromedp v0.11.2
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.30.0
 	github.com/jackc/pgx/v5 v5.10.0
+	github.com/joho/godotenv v1.5.1
 	github.com/pressly/goose/v3 v3.27.3
 	github.com/solari-sdk/solari-browser-go v0.1.2
 	github.com/solari-sdk/solari-sandbox-go v0.1.2
