@@ -43,25 +43,34 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
       {/* Top Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-[32px] font-semibold text-[#111111] tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-[32px] font-semibold tracking-tight leading-tight" style={{ color: "var(--fg)" }}>
             Overview
           </h1>
-          <p className="text-sm sm:text-[15px] text-[#6B6B6B] mt-1">
-            Understand what is happening across your agent activity.
+          <p className="text-sm sm:text-[15px] mt-1" style={{ color: "var(--muted)" }}>
+            Understand what is happening across your agent activity and cryptographic seals.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => onNavigate("verify")}
-            className="px-3.5 py-2 rounded-babit bg-[#FFFFFF] border border-[#E8E8E5] hover:bg-[#F7F7F5] text-[#111111] text-xs font-medium shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-babit text-xs font-medium shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer hover:bg-[var(--secondary)]"
+            style={{
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--border)",
+              color: "var(--fg)",
+            }}
           >
             <IconShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
             <span>Verify Evidence</span>
           </button>
           <button
             onClick={() => onNavigate("delegations")}
-            className="px-3.5 py-2 rounded-babit bg-[#111111] hover:bg-[#222222] text-white text-xs font-medium shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-babit text-xs font-medium shadow-xs transition-all flex items-center gap-1.5 cursor-pointer hover:opacity-90"
+            style={{
+              backgroundColor: "var(--fg)",
+              color: "var(--surface)",
+            }}
           >
             <IconGitBranch className="w-3.5 h-3.5" />
             <span>Issue Grant</span>
@@ -100,19 +109,29 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
       </div>
 
       {/* Recent Action Activity Table */}
-      <div className="bg-[#FFFFFF] border border-[#E8E8E5] rounded-babit-lg shadow-xs overflow-hidden">
-        <div className="p-4 sm:p-5 border-b border-[#E8E8E5] flex items-center justify-between">
+      <div
+        className="rounded-babit-lg shadow-xs overflow-hidden"
+        style={{
+          backgroundColor: "var(--surface)",
+          border: "1px solid var(--border)",
+        }}
+      >
+        <div
+          className="p-4 sm:p-5 flex items-center justify-between"
+          style={{ borderBottom: "1px solid var(--border-subtle)" }}
+        >
           <div>
-            <h2 className="text-sm font-semibold text-[#111111]">
+            <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
               Recent Activity
             </h2>
-            <p className="text-xs text-[#6B6B6B] mt-0.5">
+            <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
               Latest captured agent actions and cryptographic notary seals
             </p>
           </div>
           <button
             onClick={() => onNavigate("activity")}
-            className="text-xs text-[#111111] font-medium flex items-center gap-1 cursor-pointer hover:underline"
+            className="text-xs font-medium flex items-center gap-1 cursor-pointer hover:underline"
+            style={{ color: "var(--fg)" }}
           >
             <span>View all activity</span>
             <IconArrowRight className="w-3 h-3" />
@@ -121,7 +140,14 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
 
         <div className="overflow-x-auto">
           <table className="w-full text-left font-mono text-xs">
-            <thead className="bg-[#F7F7F5] text-[#6B6B6B] border-b border-[#E8E8E5] text-[11px]">
+            <thead
+              className="text-[11px]"
+              style={{
+                backgroundColor: "var(--secondary)",
+                color: "var(--muted)",
+                borderBottom: "1px solid var(--border)",
+              }}
+            >
               <tr>
                 <th className="px-5 py-3 font-medium">Time</th>
                 <th className="px-5 py-3 font-medium font-sans">Action</th>
@@ -131,17 +157,18 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
                 <th className="px-5 py-3 font-medium text-right">Receipt</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F0F0ED] text-[#111111]">
+            <tbody className="divide-y text-xs" style={{ borderColor: "var(--border-subtle)" }}>
               {recentActions.map((row) => (
                 <tr
                   key={row.receipt}
                   onClick={() => onNavigate("receipts")}
-                  className="hover:bg-[#F7F7F5] transition-colors cursor-pointer"
+                  className="transition-colors cursor-pointer hover:bg-[var(--secondary)]"
+                  style={{ color: "var(--fg)" }}
                 >
-                  <td className="px-5 py-3.5 text-[#6B6B6B] tnum">{row.time}</td>
-                  <td className="px-5 py-3.5 font-semibold text-[#111111] font-sans">{row.action}</td>
-                  <td className="px-5 py-3.5 text-[#6B6B6B]">{row.agent}</td>
-                  <td className="px-5 py-3.5 text-[#6B6B6B]">{row.principal}</td>
+                  <td className="px-5 py-3.5 tnum" style={{ color: "var(--muted)" }}>{row.time}</td>
+                  <td className="px-5 py-3.5 font-semibold font-sans">{row.action}</td>
+                  <td className="px-5 py-3.5" style={{ color: "var(--muted)" }}>{row.agent}</td>
+                  <td className="px-5 py-3.5" style={{ color: "var(--muted)" }}>{row.principal}</td>
                   <td className="px-5 py-3.5">
                     <StatusPill status={row.status} />
                   </td>

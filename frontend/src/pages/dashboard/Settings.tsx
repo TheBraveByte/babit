@@ -9,12 +9,12 @@ export function Settings() {
 
   const [workspaceName, setWorkspaceName] = useState(user?.org_name || "Enterprise Workspace");
   const [domain, setDomain] = useState(user?.org_domain || "enterprise.corp");
-  const [saved, setSaved] = useState(false);
+  const [savedSection, setSavedSection] = useState<string | null>(null);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = (section: string) => (e: React.FormEvent) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setSavedSection(section);
+    setTimeout(() => setSavedSection(null), 2200);
   };
 
   const sections = [
@@ -28,26 +28,33 @@ export function Settings() {
   return (
     <div className="space-y-8 font-sans">
       <div>
-        <h1 className="text-2xl sm:text-[32px] font-semibold text-[#111111] tracking-tight leading-tight">
+        <h1 className="text-2xl sm:text-[32px] font-semibold tracking-tight leading-tight" style={{ color: "var(--fg)" }}>
           Settings
         </h1>
-        <p className="text-sm sm:text-[15px] text-[#6B6B6B] mt-1">
+        <p className="text-sm sm:text-[15px] mt-1" style={{ color: "var(--muted)" }}>
           Manage workspace parameters, organization domain, security policies, and API keys.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         {/* Settings Navigation */}
-        <div className="md:col-span-4 bg-[#FFFFFF] border border-[#E8E8E5] rounded-babit-lg p-2 shadow-xs space-y-0.5 font-mono text-xs">
+        <div
+          className="md:col-span-4 rounded-babit-lg p-2 shadow-xs space-y-0.5 font-mono text-xs"
+          style={{
+            backgroundColor: "var(--surface)",
+            border: "1px solid var(--border)",
+          }}
+        >
           {sections.map((s) => (
             <button
               key={s.key}
               onClick={() => setActiveSection(s.key as typeof activeSection)}
-              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-babit font-medium text-left transition-colors cursor-pointer ${
-                activeSection === s.key
-                  ? "bg-[#111111] text-white font-semibold"
-                  : "text-[#6B6B6B] hover:bg-[#F7F7F5] hover:text-[#111111]"
-              }`}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-babit font-medium text-left transition-colors cursor-pointer"
+              style={{
+                backgroundColor: activeSection === s.key ? "var(--fg)" : "transparent",
+                color: activeSection === s.key ? "var(--surface)" : "var(--muted)",
+                fontWeight: activeSection === s.key ? 600 : 400,
+              }}
             >
               {s.icon}
               <span>{s.label}</span>
@@ -56,12 +63,18 @@ export function Settings() {
         </div>
 
         {/* Settings Content Area */}
-        <div className="md:col-span-8 bg-[#FFFFFF] border border-[#E8E8E5] rounded-babit-lg p-6 sm:p-8 shadow-xs space-y-6">
+        <div
+          className="md:col-span-8 rounded-babit-lg p-6 sm:p-8 shadow-xs space-y-6"
+          style={{
+            backgroundColor: "var(--surface)",
+            border: "1px solid var(--border)",
+          }}
+        >
           {activeSection === "general" && (
-            <form onSubmit={handleSave} className="space-y-4 font-sans text-xs">
-              <div className="pb-3 border-b border-[#F0F0ED]">
-                <h2 className="text-base font-semibold text-[#111111]">General Configuration</h2>
-                <p className="text-xs text-[#6B6B6B] mt-0.5">Core workspace identifier and environment metadata.</p>
+            <form onSubmit={handleSave("general")} className="space-y-4 font-sans text-xs">
+              <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                <h2 className="text-base font-semibold" style={{ color: "var(--fg)" }}>General Configuration</h2>
+                <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>Core workspace identifier and environment metadata.</p>
               </div>
 
               <Field label="Workspace Name">
@@ -80,7 +93,7 @@ export function Settings() {
                 <Button type="submit" variant="primary" size="md">
                   Save Changes
                 </Button>
-                {saved && (
+                {savedSection === "general" && (
                   <span className="text-xs text-emerald-700 font-mono flex items-center gap-1">
                     <IconCheck className="w-3.5 h-3.5" /> Saved
                   </span>
@@ -90,10 +103,10 @@ export function Settings() {
           )}
 
           {activeSection === "workspace" && (
-            <div className="space-y-4 font-sans text-xs">
-              <div className="pb-3 border-b border-[#F0F0ED]">
-                <h2 className="text-base font-semibold text-[#111111]">Workspace Domain & Theme</h2>
-                <p className="text-xs text-[#6B6B6B] mt-0.5">
+            <form onSubmit={handleSave("workspace")} className="space-y-4 font-sans text-xs">
+              <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                <h2 className="text-base font-semibold" style={{ color: "var(--fg)" }}>Workspace Domain & Theme</h2>
+                <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
                   Verified company domain used for automatic brand asset and accent injection.
                 </p>
               </div>
@@ -103,14 +116,29 @@ export function Settings() {
               </Field>
 
               {branding && (
-                <div className="p-4 rounded-babit bg-[#F7F7F5] border border-[#E8E8E5] flex items-center justify-between">
+                <div
+                  className="p-4 rounded-babit flex items-center justify-between"
+                  style={{
+                    backgroundColor: "var(--secondary)",
+                    border: "1px solid var(--border)",
+                  }}
+                >
                   <div className="flex items-center gap-3">
                     {branding.logo_url && (
-                      <img src={branding.logo_url} alt="Logo" className="w-8 h-8 rounded border border-[#E8E8E5] p-0.5 bg-white object-contain" />
+                      <img
+                        src={branding.logo_url}
+                        alt="Logo"
+                        className="w-8 h-8 rounded border p-0.5 bg-white object-contain"
+                        style={{ borderColor: "var(--border)" }}
+                      />
                     )}
                     <div>
-                      <span className="text-xs font-semibold text-[#111111]">{branding.company_name || domain}</span>
-                      <span className="text-[11px] text-[#6B6B6B] font-mono block">Accent: {branding.brand_color || "#0D9488"}</span>
+                      <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>
+                        {branding.company_name || domain}
+                      </span>
+                      <span className="text-[11px] font-mono block" style={{ color: "var(--muted)" }}>
+                        Accent: {branding.brand_color || "#0D9488"}
+                      </span>
                     </div>
                   </div>
                   <span className="text-[11px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
@@ -118,64 +146,121 @@ export function Settings() {
                   </span>
                 </div>
               )}
-            </div>
+
+              <div className="pt-2 flex items-center gap-3">
+                <Button type="submit" variant="primary" size="md">
+                  Update Domain
+                </Button>
+                {savedSection === "workspace" && (
+                  <span className="text-xs text-emerald-700 font-mono flex items-center gap-1">
+                    <IconCheck className="w-3.5 h-3.5" /> Domain Updated
+                  </span>
+                )}
+              </div>
+            </form>
           )}
 
           {activeSection === "security" && (
-            <div className="space-y-4 font-sans text-xs">
-              <div className="pb-3 border-b border-[#F0F0ED]">
-                <h2 className="text-base font-semibold text-[#111111]">Cryptographic Notary Keys</h2>
-                <p className="text-xs text-[#6B6B6B] mt-0.5">
+            <form onSubmit={handleSave("security")} className="space-y-4 font-sans text-xs">
+              <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                <h2 className="text-base font-semibold" style={{ color: "var(--fg)" }}>Cryptographic Notary Keys</h2>
+                <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
                   Public keys used to verify Ed25519 notary signatures on action events.
                 </p>
               </div>
 
               <div>
-                <span className="text-xs font-medium text-[#111111] block mb-1">Primary Ed25519 Public Key</span>
+                <span className="text-xs font-medium block mb-1" style={{ color: "var(--fg)" }}>Primary Ed25519 Public Key</span>
                 <Copyable value="ed25519:9f81a82910bc491028a01928471029c" />
               </div>
 
-              <div className="p-3 rounded-babit bg-[#F7F7F5] border border-[#E8E8E5] text-[11px] text-[#6B6B6B] font-mono">
+              <div
+                className="p-3 rounded-babit text-[11px] font-mono"
+                style={{
+                  backgroundColor: "var(--secondary)",
+                  border: "1px solid var(--border)",
+                  color: "var(--muted)",
+                }}
+              >
                 Notary key rotation policies enforce 90-day forward-secure signing windows.
               </div>
-            </div>
+
+              <div className="pt-2 flex items-center gap-3">
+                <Button type="submit" variant="primary" size="md">
+                  Rotate Notary Key
+                </Button>
+                {savedSection === "security" && (
+                  <span className="text-xs text-emerald-700 font-mono flex items-center gap-1">
+                    <IconCheck className="w-3.5 h-3.5" /> Policy Updated
+                  </span>
+                )}
+              </div>
+            </form>
           )}
 
           {activeSection === "api" && (
-            <div className="space-y-4 font-sans text-xs">
-              <div className="pb-3 border-b border-[#F0F0ED]">
-                <h2 className="text-base font-semibold text-[#111111]">API Keys & Ingestion Tokens</h2>
-                <p className="text-xs text-[#6B6B6B] mt-0.5">
+            <form onSubmit={handleSave("api")} className="space-y-4 font-sans text-xs">
+              <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                <h2 className="text-base font-semibold" style={{ color: "var(--fg)" }}>API Keys & Ingestion Tokens</h2>
+                <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
                   Use bearer tokens to record autonomous actions via the Babit REST or gRPC endpoints.
                 </p>
               </div>
 
               <div>
-                <span className="text-xs font-medium text-[#111111] block mb-1">Active API Ingestion Key</span>
+                <span className="text-xs font-medium block mb-1" style={{ color: "var(--fg)" }}>Active API Ingestion Key</span>
                 <Copyable value="babit_live_98a012c481028ab3918fbc0192a" />
               </div>
-            </div>
+
+              <div className="pt-2 flex items-center gap-3">
+                <Button type="submit" variant="secondary" size="md">
+                  Roll Token
+                </Button>
+                {savedSection === "api" && (
+                  <span className="text-xs text-emerald-700 font-mono flex items-center gap-1">
+                    <IconCheck className="w-3.5 h-3.5" /> Token Rolled
+                  </span>
+                )}
+              </div>
+            </form>
           )}
 
           {activeSection === "members" && (
-            <div className="space-y-4 font-sans text-xs">
-              <div className="pb-3 border-b border-[#F0F0ED]">
-                <h2 className="text-base font-semibold text-[#111111]">Team Members & Supervisors</h2>
-                <p className="text-xs text-[#6B6B6B] mt-0.5">
+            <form onSubmit={handleSave("members")} className="space-y-4 font-sans text-xs">
+              <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                <h2 className="text-base font-semibold" style={{ color: "var(--fg)" }}>Team Members & Supervisors</h2>
+                <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
                   Human supervisors permitted to issue and revoke root delegation grants.
                 </p>
               </div>
 
-              <div className="p-3 rounded-babit bg-[#F7F7F5] border border-[#E8E8E5] flex items-center justify-between font-mono text-xs">
+              <div
+                className="p-3 rounded-babit flex items-center justify-between font-mono text-xs"
+                style={{
+                  backgroundColor: "var(--secondary)",
+                  border: "1px solid var(--border)",
+                }}
+              >
                 <div>
-                  <span className="font-semibold text-[#111111]">{user?.email || "admin@babit.dev"}</span>
-                  <span className="text-[11px] text-[#6B6B6B] block font-sans">Workspace Owner & Root Notary Signer</span>
+                  <span className="font-semibold" style={{ color: "var(--fg)" }}>{user?.email || "admin@babit.dev"}</span>
+                  <span className="text-[11px] block font-sans" style={{ color: "var(--muted)" }}>Workspace Owner & Root Notary Signer</span>
                 </div>
                 <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                   OWNER
                 </span>
               </div>
-            </div>
+
+              <div className="pt-2 flex items-center gap-3">
+                <Button type="submit" variant="secondary" size="md">
+                  Invite Supervisor
+                </Button>
+                {savedSection === "members" && (
+                  <span className="text-xs text-emerald-700 font-mono flex items-center gap-1">
+                    <IconCheck className="w-3.5 h-3.5" /> Invitation Sent
+                  </span>
+                )}
+              </div>
+            </form>
           )}
         </div>
       </div>

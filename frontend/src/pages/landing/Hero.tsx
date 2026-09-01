@@ -1,168 +1,293 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "@/lib/router";
-import { IconCheck } from "@/lib/icons";
+import { IconCheck, IconRefresh, IconCopy } from "@/lib/icons";
+import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
+
+const PRESETS = [
+  {
+    name: "Financial Payout",
+    action: "approve_payout",
+    agent: "claims-agent",
+    principal: "usr_alice (Risk Supervisor)",
+    grantId: "BAL-DEL-8921",
+    resource: "https://internal.bank.io/claims/48102",
+    amount: 4200.0,
+  },
+  {
+    name: "Infrastructure Deploy",
+    action: "deploy_service",
+    agent: "infra-orchestrator",
+    principal: "usr_marcus (SecOps Lead)",
+    grantId: "BAL-ROOT-5501",
+    resource: "k8s://prod-cluster.us-east/payment-svc:v2.4",
+    amount: 0,
+  },
+  {
+    name: "Database Export",
+    action: "export_audit_records",
+    agent: "compliance-bot",
+    principal: "usr_elena (DPO)",
+    grantId: "BAL-DEL-1029",
+    resource: "postgres://vault.internal/audit_log?limit=5000",
+    amount: 0,
+  },
+];
 
 export function Hero() {
   const { navigate } = useRouter();
-  const [pipelineStep, setPipelineStep] = useState<1 | 2 | 3 | 4>(4);
+  const [activePresetIndex, setActivePresetIndex] = useState(0);
+  const [liveEvent, setLiveEvent] = useState<LiveSimulatedEvent | null>(null);
+  const [computing, setComputing] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  // Subtle cyclic transition demonstrating the 4 stages
+  const preset = PRESETS[activePresetIndex];
+
+  const generateReceipt = async (p = preset) => {
+    setComputing(true);
+    const result = await computeLiveReceipt({
+      actionName: p.action,
+      agent: p.agent,
+      principal: p.principal,
+      grantId: p.grantId,
+      resource: p.resource,
+      amountUsd: p.amount > 0 ? p.amount : undefined,
+    });
+    setLiveEvent(result);
+    setComputing(false);
+  };
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPipelineStep((prev) => (prev % 4 + 1) as 1 | 2 | 3 | 4);
-    }, 3800);
-    return () => clearInterval(interval);
+    generateReceipt(PRESETS[0]);
   }, []);
 
-  return (
-    <section className="pt-32 pb-24 sm:pt-40 sm:pb-32 bg-[#FCFCFB] relative overflow-hidden">
-      {/* Background Variant B: Technical Grid with Dots */}
-      <div className="absolute inset-0 bg-dot-subtle opacity-70 pointer-events-none" />
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#FCFCFB] via-transparent to-transparent pointer-events-none" />
+  const handleSelectPreset = (idx: number) => {
+    setActivePresetIndex(idx);
+    generateReceipt(PRESETS[idx]);
+  };
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
+  const handleCopyReceipt = () => {
+    if (!liveEvent) return;
+    navigator.clipboard?.writeText(JSON.stringify(liveEvent, null, 2));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <section className="pt-28 pb-24 sm:pt-36 sm:pb-32 relative overflow-hidden" style={{ backgroundColor: "var(--bg)" }}>
+      {/* Background Variant B: Technical Dot Grid */}
+      <div className="absolute inset-0 bg-dot-subtle opacity-50 pointer-events-none" />
+      <div
+        className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, var(--bg), transparent)" }}
+      />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-14">
         {/* Header Block */}
         <div className="text-center max-w-3xl mx-auto space-y-6">
-          {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-babit-sm bg-[#F7F7F5] border border-[#E8E8E5] text-xs font-mono font-medium text-[#111111] uppercase tracking-wider">
-            <span>AGENT ACCOUNTABILITY</span>
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-babit-sm text-xs font-mono font-medium uppercase tracking-wider"
+            style={{
+              backgroundColor: "var(--secondary)",
+              border: "1px solid var(--border)",
+              color: "var(--fg)",
+            }}
+          >
+            <span>EVIDENCE LAYER FOR AUTONOMOUS AGENTS</span>
           </div>
 
-          {/* Headline (64–76px desktop) */}
-          <h1 className="text-5xl sm:text-6xl lg:text-[72px] font-semibold tracking-tight text-[#111111] leading-[1.05]">
+          <h1
+            className="text-5xl sm:text-6xl lg:text-[72px] font-semibold tracking-tight leading-[1.04]"
+            style={{ color: "var(--fg)" }}
+          >
             Proof for autonomous actions.
           </h1>
 
-          {/* Subheadline (18–20px) */}
-          <p className="text-lg sm:text-[20px] text-[#6B6B6B] leading-relaxed max-w-2xl mx-auto font-normal">
-            Babit connects autonomous actions to the authority behind them and preserves verifiable evidence of what happened.
+          <p
+            className="text-lg sm:text-[19px] leading-relaxed max-w-2xl mx-auto font-normal"
+            style={{ color: "var(--muted)" }}
+          >
+            Babit connects autonomous agent actions to the human authority behind them and seals
+            cryptographically verifiable receipts into an immutable hash-chained ledger.
           </p>
 
-          {/* Buttons */}
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={() => navigate("/signup")}
-              className="px-6 py-3 text-[15px] font-medium bg-[#111111] text-white rounded-babit hover:bg-[#222222] transition-all cursor-pointer shadow-2xs"
+              className="px-6 py-3 text-[15px] font-medium rounded-babit transition-all cursor-pointer shadow-xs hover:opacity-90 active:scale-[0.99]"
+              style={{ backgroundColor: "var(--fg)", color: "var(--surface)" }}
             >
               Get started
             </button>
 
             <a
-              href="/docs"
-              target="_blank"
-              rel="noreferrer"
-              className="px-6 py-3 text-[15px] font-medium bg-[#FFFFFF] text-[#111111] border border-[#E8E8E5] rounded-babit hover:bg-[#F7F7F5] transition-all cursor-pointer shadow-2xs inline-flex items-center gap-1.5"
+              href="#developers"
+              className="px-6 py-3 text-[15px] font-medium rounded-babit transition-all cursor-pointer shadow-xs inline-flex items-center gap-1.5 hover:bg-[var(--secondary)]"
+              style={{
+                backgroundColor: "var(--surface)",
+                color: "var(--fg)",
+                border: "1px solid var(--border)",
+              }}
             >
-              <span>Read the docs</span>
-              <span className="text-[#6B6B6B]">↗</span>
+              <span>Explore API</span>
+              <span style={{ color: "var(--muted)" }}>↓</span>
             </a>
           </div>
         </div>
 
-        {/* Hero Evidence Interface Visual */}
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-[#FFFFFF] rounded-babit-lg border border-[#E8E8E5] shadow-xs p-6 sm:p-8 space-y-6 font-sans">
-            {/* Top Bar with Real Sequence Progression */}
-            <div className="flex items-center justify-between pb-4 border-b border-[#F0F0ED]">
-              <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-[#6B6B6B]">
-                <span>EVIDENCE PIPELINE</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs font-mono">
+        {/* Live Interactive Attestation Sandbox */}
+        <div className="max-w-3xl mx-auto">
+          <div
+            className="rounded-babit-lg shadow-sm overflow-hidden"
+            style={{
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--border)",
+            }}
+          >
+            {/* Sandbox Header with Presets */}
+            <div
+              className="px-5 py-3.5 flex flex-wrap items-center justify-between gap-3"
+              style={{
+                borderBottom: "1px solid var(--border-subtle)",
+                backgroundColor: "var(--secondary)",
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider" style={{ color: "var(--muted)" }}>
+                  LIVE ATTESTATION SANDBOX
+                </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-subtle" />
-                <span className="text-emerald-700 font-medium">LIVE ATTESTATION</span>
+              </div>
+
+              {/* Preset selectors */}
+              <div className="flex items-center gap-1.5 text-xs font-mono">
+                {PRESETS.map((p, idx) => (
+                  <button
+                    key={p.name}
+                    onClick={() => handleSelectPreset(idx)}
+                    className="px-2.5 py-1 rounded-babit-sm transition-all cursor-pointer text-[11px]"
+                    style={{
+                      backgroundColor: activePresetIndex === idx ? "var(--fg)" : "transparent",
+                      color: activePresetIndex === idx ? "var(--surface)" : "var(--muted)",
+                      fontWeight: activePresetIndex === idx ? 600 : 400,
+                      border: `1px solid ${activePresetIndex === idx ? "var(--fg)" : "var(--border)"}`,
+                    }}
+                  >
+                    {p.name}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Sequence Stage Pills */}
-            <div className="grid grid-cols-4 gap-2 text-center text-xs font-mono">
-              <button
-                onClick={() => setPipelineStep(1)}
-                className={`py-1.5 px-2 rounded-babit-sm border transition-all cursor-pointer ${
-                  pipelineStep >= 1
-                    ? "bg-[#F7F7F5] border-[#111111] text-[#111111] font-semibold"
-                    : "bg-[#FFFFFF] border-[#E8E8E5] text-[#6B6B6B]"
-                }`}
+            {/* Sandbox Execution Body */}
+            <div className="p-6 space-y-5 font-mono text-xs">
+              {/* Action summary bar */}
+              <div
+                className="p-4 rounded-babit grid grid-cols-2 sm:grid-cols-4 gap-4"
+                style={{
+                  backgroundColor: "var(--secondary)",
+                  border: "1px solid var(--border)",
+                }}
               >
-                1. Authority
-              </button>
-              <button
-                onClick={() => setPipelineStep(2)}
-                className={`py-1.5 px-2 rounded-babit-sm border transition-all cursor-pointer ${
-                  pipelineStep >= 2
-                    ? "bg-[#F7F7F5] border-[#111111] text-[#111111] font-semibold"
-                    : "bg-[#FFFFFF] border-[#E8E8E5] text-[#6B6B6B]"
-                }`}
-              >
-                2. Action
-              </button>
-              <button
-                onClick={() => setPipelineStep(3)}
-                className={`py-1.5 px-2 rounded-babit-sm border transition-all cursor-pointer ${
-                  pipelineStep >= 3
-                    ? "bg-[#F7F7F5] border-[#111111] text-[#111111] font-semibold"
-                    : "bg-[#FFFFFF] border-[#E8E8E5] text-[#6B6B6B]"
-                }`}
-              >
-                3. Record
-              </button>
-              <button
-                onClick={() => setPipelineStep(4)}
-                className={`py-1.5 px-2 rounded-babit-sm border transition-all cursor-pointer ${
-                  pipelineStep >= 4
-                    ? "bg-emerald-50 border-emerald-300 text-emerald-800 font-semibold"
-                    : "bg-[#FFFFFF] border-[#E8E8E5] text-[#6B6B6B]"
-                }`}
-              >
-                4. Verified
-              </button>
-            </div>
-
-            {/* Core Action Record Details */}
-            <div className="p-5 rounded-babit bg-[#F7F7F5] border border-[#E8E8E5] space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-xs font-mono">
                 <div>
-                  <span className="text-[11px] text-[#6B6B6B] uppercase block mb-0.5">Action</span>
-                  <span className="font-semibold text-[#111111] text-sm">approve_claim</span>
+                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Action Type</span>
+                  <span className="font-semibold text-sm" style={{ color: "var(--fg)" }}>{preset.action}</span>
                 </div>
                 <div>
-                  <span className="text-[11px] text-[#6B6B6B] uppercase block mb-0.5">Agent</span>
-                  <span className="text-[#111111] text-sm font-semibold">claims-agent</span>
+                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Executing Agent</span>
+                  <span className="font-semibold text-sm" style={{ color: "var(--fg)" }}>{preset.agent}</span>
                 </div>
                 <div>
-                  <span className="text-[11px] text-[#6B6B6B] uppercase block mb-0.5">Authorized</span>
-                  <span className="text-emerald-700 font-semibold inline-flex items-center gap-1">
-                    <IconCheck className="w-3.5 h-3.5" />
-                    Verified (usr_alice)
-                  </span>
+                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Authorizer</span>
+                  <span className="font-semibold text-xs truncate block" style={{ color: "var(--fg)" }}>{preset.principal}</span>
                 </div>
                 <div>
-                  <span className="text-[11px] text-[#6B6B6B] uppercase block mb-0.5">Timestamp</span>
-                  <span className="text-[#111111] tnum">14:32:08 UTC</span>
+                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Grant Reference</span>
+                  <span className="font-semibold text-xs block truncate" style={{ color: "var(--fg)" }}>{preset.grantId}</span>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[#E8E8E5] grid grid-cols-2 gap-4 text-xs font-mono">
-                <div>
-                  <span className="text-[11px] text-[#6B6B6B] uppercase block mb-0.5">Signature</span>
-                  <span className="text-emerald-700 font-semibold inline-flex items-center gap-1">
-                    <IconCheck className="w-3.5 h-3.5" />
-                    Verified (Ed25519)
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[11px] text-[#6B6B6B] uppercase block mb-0.5">Integrity</span>
-                  <span className="text-emerald-700 font-semibold inline-flex items-center gap-1">
-                    <IconCheck className="w-3.5 h-3.5" />
-                    Verified (Hash-chain)
-                  </span>
-                </div>
-              </div>
-            </div>
+              {/* Live Notarized Output */}
+              {liveEvent && (
+                <div className="space-y-3 pt-1 animate-fade-in">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div
+                      className="p-3 rounded-babit space-y-1"
+                      style={{
+                        backgroundColor: "var(--surface)",
+                        border: "1px solid var(--border)",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase" style={{ color: "var(--muted)" }}>SHA-256 Digest (Payload)</span>
+                        <span className="text-[10px] text-emerald-700 font-bold">COMPUTED</span>
+                      </div>
+                      <div className="text-[11px] truncate font-semibold" style={{ color: "var(--fg)" }}>
+                        {liveEvent.eventHash}
+                      </div>
+                    </div>
 
-            {/* Final Verdict Banner */}
-            <div className="p-3 rounded-babit bg-emerald-50 border border-emerald-200 text-center font-mono text-xs font-bold text-emerald-800 flex items-center justify-center gap-2">
-              <IconCheck className="w-4 h-4 text-emerald-700" />
-              <span>STATUS: VERIFIED RECEIPT</span>
+                    <div
+                      className="p-3 rounded-babit space-y-1"
+                      style={{
+                        backgroundColor: "var(--surface)",
+                        border: "1px solid var(--border)",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase" style={{ color: "var(--muted)" }}>Ed25519 Notary Seal</span>
+                        <span className="text-[10px] text-emerald-700 font-bold">SEALED</span>
+                      </div>
+                      <div className="text-[11px] truncate font-semibold" style={{ color: "var(--fg)" }}>
+                        {liveEvent.notarySignature}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="p-3 rounded-babit flex items-center justify-between text-xs"
+                    style={{
+                      backgroundColor: "#ECFDF5",
+                      border: "1px solid #A7F3D0",
+                      color: "#065F46",
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <IconCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>
+                        Receipt <strong>{liveEvent.receiptId}</strong> sealed into immutable ledger at {liveEvent.timestamp.split("T")[1]?.replace("Z", "")} UTC
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={handleCopyReceipt}
+                      className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded bg-white border border-emerald-300 text-emerald-800 hover:bg-emerald-50 transition-colors cursor-pointer"
+                    >
+                      <IconCopy className="w-3 h-3" />
+                      <span>{copied ? "Copied JSON" : "Copy Receipt"}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Action button */}
+              <div className="flex items-center justify-between pt-2">
+                <span className="text-[11px]" style={{ color: "var(--muted)" }}>
+                  Zero round-trip latency demo. Uses native Web Crypto SHA-256 in your browser.
+                </span>
+
+                <button
+                  onClick={() => generateReceipt()}
+                  disabled={computing}
+                  className="px-4 py-2 rounded-babit text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer hover:opacity-90"
+                  style={{
+                    backgroundColor: "var(--fg)",
+                    color: "var(--surface)",
+                  }}
+                >
+                  <IconRefresh className={`w-3.5 h-3.5 ${computing ? "animate-spin" : ""}`} />
+                  <span>{computing ? "Computing Hash..." : "Re-Calculate Digest"}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
