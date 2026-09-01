@@ -8,10 +8,10 @@ interface Node {
 }
 
 const NODES: Node[] = [
-  { id: "human",     label: "usr_alice",        sublabel: "Risk Supervisor (Human Principal)", type: "human" },
-  { id: "orchestr",  label: "claims-orchestrator", sublabel: "Claims pipeline agent",         type: "agent" },
-  { id: "executor",  label: "payout-executor",  sublabel: "Downstream sub-agent",             type: "agent" },
-  { id: "action",    label: "approve_payout",   sublabel: "Consequential action captured",    type: "action" },
+  { id: "human",    label: "Alice, Risk Supervisor", sublabel: "A person, the authority",           type: "human" },
+  { id: "orchestr", label: "claims-agent",           sublabel: "The agent she gave permission to",   type: "agent" },
+  { id: "executor", label: "payout-agent",           sublabel: "A second agent it handed part of the job to", type: "agent" },
+  { id: "action",   label: "Approved a $4,200 payout", sublabel: "What actually happened",           type: "action" },
 ];
 
 const GRANT_IDS = [
@@ -22,32 +22,32 @@ const GRANT_IDS = [
 
 const DETAIL_MAP: Record<string, { from: string; to: string; grantId: string; scope: string; cap: string }> = {
   human: {
-    from: "—",
-    to: "claims-orchestrator",
+    from: "Nobody above her",
+    to: "claims-agent",
     grantId: "BAL-ROOT-100200",
-    scope: "claims.*",
-    cap: "$50,000 ceiling",
+    scope: "Handle claims",
+    cap: "Up to $50,000",
   },
   orchestr: {
-    from: "usr_alice",
-    to: "payout-executor",
+    from: "Alice",
+    to: "payout-agent",
     grantId: "BAL-DEL-417849",
-    scope: "claims.approve_payout",
-    cap: "$5,000 ceiling (attenuated)",
+    scope: "Approve payouts only",
+    cap: "Up to $5,000",
   },
   executor: {
-    from: "claims-orchestrator",
-    to: "approve_payout action",
+    from: "claims-agent",
+    to: "This payout",
     grantId: "BAL-DEL-8921",
-    scope: "claims.approve_payout (CLM-48102)",
-    cap: "$4,200 (within cap)",
+    scope: "Approve payout on claim CLM-48102",
+    cap: "$4,200 (within the limit)",
   },
   action: {
-    from: "payout-executor",
-    to: "underwriting.internal.corp",
+    from: "payout-agent",
+    to: "The claims system",
     grantId: "BAL-DEL-8921",
-    scope: "CAPTURED AT EXECUTION SURFACE",
-    cap: "Sealed receipt: rcpt_BAL_778812",
+    scope: "Recorded the moment it happened",
+    cap: "Sealed as receipt rcpt_BAL_778812",
   },
 };
 
@@ -57,60 +57,61 @@ export function SectionAuthorityChain() {
   const detail = DETAIL_MAP[activeNode];
 
   return (
-    <section id="product" className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+    <section className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Left — Heading + description */}
           <div className="space-y-5">
             <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-              DELEGATION & AUTHORITY
+              Chain of authority
             </div>
             <h2
               className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
               style={{ color: "var(--fg)" }}
             >
-              Follow the authority.
+              Every action traces back to a person.
             </h2>
             <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-              Every authorized action in Babit traces back to a human principal. Click any node to inspect the grant that permitted that delegation.
+              A person authorized an agent, which handed part of the job to another agent. babit keeps the
+              whole chain, so you can always see who allowed what. Select any step to see the exact permission.
             </p>
 
             {/* Detail inspector panel */}
             <div
-              className="rounded-babit-lg p-5 space-y-3 font-mono text-xs transition-all"
+              className="rounded-babit-lg p-5 space-y-3 text-xs transition-all"
               style={{
                 backgroundColor: "var(--surface)",
                 border: "1px solid var(--border)",
               }}
             >
               <div className="flex items-center justify-between pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-                <span className="text-[10px] uppercase tracking-wider font-bold" style={{ color: "var(--muted)" }}>
-                  GRANT TICKET
+                <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: "var(--muted)" }}>
+                  Permission
                 </span>
-                <span className="font-semibold" style={{ color: "var(--fg)" }}>
+                <span className="font-mono font-semibold" style={{ color: "var(--fg)" }}>
                   {detail.grantId}
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>FROM</span>
+                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Who allowed it</span>
                   <span style={{ color: "var(--fg)" }}>{detail.from}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>TO</span>
+                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Allowed to act on</span>
                   <span style={{ color: "var(--fg)" }}>{detail.to}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>SCOPE</span>
+                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>What they can do</span>
                   <span style={{ color: "var(--fg)" }}>{detail.scope}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>CAPABILITY</span>
+                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Limit</span>
                   <span style={{ color: "var(--fg)" }}>{detail.cap}</span>
                 </div>
               </div>
               <div className="pt-1.5 text-[10px]" style={{ color: "var(--muted)" }}>
-                Monotonic attenuation enforced — sub-agents can never exceed parent scope.
+                Each hand-off can only narrow what's allowed, never widen it.
               </div>
             </div>
           </div>
@@ -136,18 +137,18 @@ export function SectionAuthorityChain() {
                     }}
                   >
                     <div className="flex items-center gap-3">
-                      {/* Node type icon */}
+                      {/* Node type label */}
                       <div
-                        className="w-8 h-8 rounded-babit-sm flex items-center justify-center font-mono text-[11px] font-bold shrink-0"
+                        className="w-9 h-9 rounded-babit-sm flex items-center justify-center text-[10px] font-semibold uppercase shrink-0"
                         style={{
                           backgroundColor: isActive ? "rgba(255,255,255,0.12)" : "var(--secondary)",
                           color: isActive ? "var(--surface)" : "var(--muted)",
                         }}
                       >
-                        {node.type === "human" ? "USR" : node.type === "action" ? "ACT" : "AGT"}
+                        {node.type === "human" ? "Person" : node.type === "action" ? "Act" : "Agent"}
                       </div>
                       <div>
-                        <div className="font-mono text-sm font-semibold">{node.label}</div>
+                        <div className="text-sm font-semibold">{node.label}</div>
                         <div
                           className="text-[11px] mt-0.5"
                           style={{ color: isActive ? "rgba(255,255,255,0.6)" : "var(--muted)" }}
@@ -180,7 +181,7 @@ export function SectionAuthorityChain() {
                         )}
                       </svg>
 
-                      {/* Grant ID label on connector */}
+                      {/* "authorized" label on connector */}
                       {idx < GRANT_IDS.length && (
                         <span
                           className="absolute right-0 text-[10px] font-mono px-1.5 py-0.5 rounded-babit-sm top-2"
@@ -190,7 +191,7 @@ export function SectionAuthorityChain() {
                             border: "1px solid var(--border)",
                           }}
                         >
-                          {GRANT_IDS[idx]}
+                          authorized
                         </span>
                       )}
                     </div>
