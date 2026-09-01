@@ -1,0 +1,926 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Notarized Action Ledger",
+    "description": "Tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari.",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "DelegationService"
+    },
+    {
+      "name": "CaptureService"
+    },
+    {
+      "name": "NotaryService"
+    },
+    {
+      "name": "LedgerService"
+    },
+    {
+      "name": "ReplayService"
+    },
+    {
+      "name": "VerifyService"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/anchors/{sequence}": {
+      "get": {
+        "summary": "Fetch the external anchor covering a sequence",
+        "operationId": "NotaryService_GetAnchor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAnchorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "sequence",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "notary"
+        ]
+      }
+    },
+    "/v1/events/{eventId}": {
+      "get": {
+        "summary": "Read a sealed action event",
+        "operationId": "LedgerService_GetEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetEventResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/v1/events/{eventId}:proof": {
+      "get": {
+        "summary": "Build an offline-verifiable inclusion proof",
+        "operationId": "LedgerService_GetInclusionProof",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetInclusionProofResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ledger"
+        ]
+      }
+    },
+    "/v1/grants": {
+      "post": {
+        "summary": "Delegate scoped authority to an agent or sub-agent",
+        "operationId": "DelegationService_Delegate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DelegateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DelegateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "delegation"
+        ]
+      }
+    },
+    "/v1/grants/{grantId}:revoke": {
+      "post": {
+        "summary": "Revoke a grant and its descendants",
+        "operationId": "DelegationService_Revoke",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RevokeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "grantId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DelegationServiceRevokeBody"
+            }
+          }
+        ],
+        "tags": [
+          "delegation"
+        ]
+      }
+    },
+    "/v1/grants/{grantId}:verify": {
+      "get": {
+        "summary": "Verify a delegation chain back to its root",
+        "operationId": "DelegationService_VerifyChain",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VerifyChainResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "grantId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "delegation"
+        ]
+      }
+    },
+    "/v1/grants:root": {
+      "post": {
+        "summary": "Issue a root grant for a human principal",
+        "operationId": "DelegationService_IssueRootGrant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1IssueRootGrantResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1IssueRootGrantRequest"
+            }
+          }
+        ],
+        "tags": [
+          "delegation"
+        ]
+      }
+    },
+    "/v1/proofs:verify": {
+      "post": {
+        "summary": "Verify chain, signature, anchor and authority of a proof",
+        "operationId": "VerifyService_VerifyProof",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VerifyProofResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1VerifyProofRequest"
+            }
+          }
+        ],
+        "tags": [
+          "verify"
+        ]
+      }
+    },
+    "/v1/sessions": {
+      "post": {
+        "summary": "Open a capture session bound to a root grant",
+        "operationId": "CaptureService_BeginSession",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BeginSessionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1BeginSessionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "capture"
+        ]
+      }
+    },
+    "/v1/sessions/{sessionId}/actions": {
+      "post": {
+        "summary": "Record and notarize one executed action",
+        "operationId": "CaptureService_RecordAction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RecordActionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CaptureServiceRecordActionBody"
+            }
+          }
+        ],
+        "tags": [
+          "capture"
+        ]
+      }
+    },
+    "/v1/sessions/{sessionId}:end": {
+      "post": {
+        "summary": "Close a capture session",
+        "operationId": "CaptureService_EndSession",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1EndSessionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CaptureServiceEndSessionBody"
+            }
+          }
+        ],
+        "tags": [
+          "capture"
+        ]
+      }
+    },
+    "/v1/sessions/{sessionId}:replay": {
+      "get": {
+        "summary": "Stream a deterministic session replay",
+        "operationId": "ReplayService_GetReplay",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1GetReplayResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of v1GetReplayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "replay"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AnchorKind": {
+      "type": "string",
+      "enum": [
+        "KIND_UNSPECIFIED",
+        "KIND_RFC3161_TSA",
+        "KIND_TRANSPARENCY_LOG",
+        "KIND_PUBLIC_CHAIN"
+      ],
+      "default": "KIND_UNSPECIFIED"
+    },
+    "CaptureServiceEndSessionBody": {
+      "type": "object"
+    },
+    "CaptureServiceRecordActionBody": {
+      "type": "object",
+      "properties": {
+        "grantId": {
+          "type": "string"
+        },
+        "actionType": {
+          "type": "string"
+        },
+        "actionPayload": {
+          "type": "string",
+          "format": "byte"
+        },
+        "preStateHash": {
+          "type": "string",
+          "format": "byte"
+        },
+        "postStateHash": {
+          "type": "string",
+          "format": "byte"
+        },
+        "recordingRef": {
+          "type": "string"
+        }
+      }
+    },
+    "DelegationServiceRevokeBody": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1ActionEvent": {
+      "type": "object",
+      "example": {
+        "event_id": "evt_7c31",
+        "session_id": "ses_4a10",
+        "sequence": 7,
+        "surface": "SURFACE_BROWSER",
+        "action_type": "click",
+        "grant_id": "grn_2f9a",
+        "recording_ref": "slr://rec/ses_4a10/frame/7",
+        "occurred_at": "2026-09-01T12:03:11Z"
+      },
+      "properties": {
+        "eventId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "sequence": {
+          "type": "string",
+          "format": "int64"
+        },
+        "surface": {
+          "$ref": "#/definitions/v1Surface"
+        },
+        "actionType": {
+          "type": "string"
+        },
+        "actionPayload": {
+          "type": "string",
+          "format": "byte"
+        },
+        "grantId": {
+          "type": "string"
+        },
+        "preStateHash": {
+          "type": "string",
+          "format": "byte"
+        },
+        "postStateHash": {
+          "type": "string",
+          "format": "byte"
+        },
+        "recordingRef": {
+          "type": "string"
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contentHash": {
+          "type": "string",
+          "format": "byte"
+        },
+        "prevHash": {
+          "type": "string",
+          "format": "byte"
+        },
+        "notarySignature": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1Anchor": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/AnchorKind"
+        },
+        "root": {
+          "type": "string",
+          "format": "byte"
+        },
+        "anchorReceipt": {
+          "type": "string",
+          "format": "byte"
+        },
+        "anchoredAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1BeginSessionRequest": {
+      "type": "object",
+      "properties": {
+        "rootGrantId": {
+          "type": "string"
+        },
+        "surface": {
+          "$ref": "#/definitions/v1Surface"
+        }
+      }
+    },
+    "v1BeginSessionResponse": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "$ref": "#/definitions/v1Session"
+        }
+      }
+    },
+    "v1DelegateRequest": {
+      "type": "object",
+      "properties": {
+        "parentGrantId": {
+          "type": "string"
+        },
+        "subjectId": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope": {
+          "$ref": "#/definitions/v1Scope"
+        }
+      }
+    },
+    "v1DelegateResponse": {
+      "type": "object",
+      "properties": {
+        "grant": {
+          "$ref": "#/definitions/v1Grant"
+        }
+      }
+    },
+    "v1EndSessionResponse": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "$ref": "#/definitions/v1Session"
+        }
+      }
+    },
+    "v1GetAnchorResponse": {
+      "type": "object",
+      "properties": {
+        "anchor": {
+          "$ref": "#/definitions/v1Anchor"
+        }
+      }
+    },
+    "v1GetEventResponse": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/v1ActionEvent"
+        }
+      }
+    },
+    "v1GetInclusionProofResponse": {
+      "type": "object",
+      "properties": {
+        "proof": {
+          "$ref": "#/definitions/v1Proof"
+        }
+      }
+    },
+    "v1GetReplayResponse": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/v1ActionEvent"
+        },
+        "frame": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1Grant": {
+      "type": "object",
+      "example": {
+        "grant_id": "grn_2f9a",
+        "parent_grant_id": "grn_root_88",
+        "principal_id": "usr_alice",
+        "subject_id": "agt_shopper",
+        "capabilities": [
+          "browser.click",
+          "browser.type"
+        ],
+        "scope": {
+          "resource_globs": [
+            "https://shop.example.com/*"
+          ],
+          "max_value_cents": 50000,
+          "max_depth": 2
+        },
+        "expires_at": "2026-09-01T18:00:00Z"
+      },
+      "properties": {
+        "grantId": {
+          "type": "string"
+        },
+        "parentGrantId": {
+          "type": "string"
+        },
+        "principalId": {
+          "type": "string"
+        },
+        "subjectId": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope": {
+          "$ref": "#/definitions/v1Scope"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "parentSignature": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1IssueRootGrantRequest": {
+      "type": "object",
+      "properties": {
+        "principalId": {
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/definitions/v1Scope"
+        }
+      }
+    },
+    "v1IssueRootGrantResponse": {
+      "type": "object",
+      "properties": {
+        "grant": {
+          "$ref": "#/definitions/v1Grant"
+        }
+      }
+    },
+    "v1Proof": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/v1ActionEvent"
+        },
+        "merklePath": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          }
+        },
+        "merkleRoot": {
+          "type": "string",
+          "format": "byte"
+        },
+        "anchor": {
+          "$ref": "#/definitions/v1Anchor"
+        },
+        "delegationChain": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Grant"
+          }
+        }
+      }
+    },
+    "v1RecordActionResponse": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/v1ActionEvent"
+        }
+      }
+    },
+    "v1RevokeResponse": {
+      "type": "object",
+      "properties": {
+        "revoked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1Scope": {
+      "type": "object",
+      "properties": {
+        "resourceGlobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "maxValueCents": {
+          "type": "string",
+          "format": "int64"
+        },
+        "maxDepth": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1Session": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "rootGrantId": {
+          "type": "string"
+        },
+        "surface": {
+          "$ref": "#/definitions/v1Surface"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "eventCount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1Surface": {
+      "type": "string",
+      "enum": [
+        "SURFACE_UNSPECIFIED",
+        "SURFACE_BROWSER",
+        "SURFACE_SANDBOX",
+        "SURFACE_DESKTOP"
+      ],
+      "default": "SURFACE_UNSPECIFIED"
+    },
+    "v1VerifyChainResponse": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "chain": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Grant"
+          }
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "v1VerifyProofRequest": {
+      "type": "object",
+      "properties": {
+        "proof": {
+          "$ref": "#/definitions/v1Proof"
+        }
+      }
+    },
+    "v1VerifyProofResponse": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "chainIntact": {
+          "type": "boolean"
+        },
+        "signatureValid": {
+          "type": "boolean"
+        },
+        "anchored": {
+          "type": "boolean"
+        },
+        "authorityValid": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
