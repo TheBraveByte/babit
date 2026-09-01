@@ -19,9 +19,9 @@ export function Nav() {
   }, []);
 
   const navLinks = [
-    { label: "Product", href: "#product" },
+    { label: "How it works", href: "#how" },
     { label: "Developers", href: "#developers" },
-    { label: "Security", href: "#security" },
+    { label: "Verify", href: "#security" },
   ];
 
   const scrollTo = (hash: string) => {
