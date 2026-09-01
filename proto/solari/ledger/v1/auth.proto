@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+enum AccountType {
+  ACCOUNT_TYPE_UNSPECIFIED = 0;
+  ACCOUNT_TYPE_PERSONAL = 1;
+  ACCOUNT_TYPE_ORGANIZATION = 2;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  AccountType account_type = 3;
+  string org_name = 4;
+  string org_domain = 5;
+  string industry = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message Branding {
+  string company_name = 1;
+  string logo_url = 2;
+  string brand_color = 3;
+}
+
+service AuthService {
+  rpc Signup(SignupRequest) returns (SignupResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/signup"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create an account and return a session token"
+    };
+  }
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/login"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Authenticate and return a session token"
+    };
+  }
+  rpc Me(MeRequest) returns (MeResponse) {
+    option (google.api.http) = {get: "/v1/auth/me"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Return the current user and organization branding"
+    };
+  }
+}
+
+message SignupRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"email\":\"alice@acme.com\",\"password\":\"correct-horse\",\"account_type\":\"ACCOUNT_TYPE_ORGANIZATION\",\"org_name\":\"Acme\",\"org_domain\":\"acme.com\",\"industry\":\"software\"}"
+  };
+  string email = 1;
+  string password = 2;
+  AccountType account_type = 3;
+  string org_name = 4;
+  string org_domain = 5;
+  string industry = 6;
+}
+
+message LoginRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"email\":\"alice@acme.com\",\"password\":\"correct-horse\"}"
+  };
+  string email = 1;
+  string password = 2;
+}
+
+message SignupResponse {
+  string token = 1;
+  User user = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  User user = 2;
+}
+
+message MeRequest {}
+
+message MeResponse {
+  User user = 1;
+  Branding branding = 2;
+}
