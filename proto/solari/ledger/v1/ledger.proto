@@ -1,0 +1,345 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Notarized Action Ledger"
+    version: "1.0.0"
+    description: "Tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari."
+  }
+  schemes: HTTPS
+  consumes: "application/json"
+  produces: "application/json"
+};
+
+message Grant {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"grant_id\":\"grn_2f9a\",\"parent_grant_id\":\"grn_root_88\",\"principal_id\":\"usr_alice\",\"subject_id\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resource_globs\":[\"https://shop.example.com/*\"],\"max_value_cents\":50000,\"max_depth\":2},\"expires_at\":\"2026-09-01T18:00:00Z\"}"
+  };
+  string grant_id = 1;
+  string parent_grant_id = 2;
+  string principal_id = 3;
+  string subject_id = 4;
+  repeated string capabilities = 5;
+  Scope scope = 6;
+  google.protobuf.Timestamp expires_at = 7;
+  bytes parent_signature = 8;
+}
+
+message Scope {
+  repeated string resource_globs = 1;
+  int64 max_value_cents = 2;
+  int32 max_depth = 3;
+}
+
+enum Surface {
+  SURFACE_UNSPECIFIED = 0;
+  SURFACE_BROWSER = 1;
+  SURFACE_SANDBOX = 2;
+  SURFACE_DESKTOP = 3;
+}
+
+message ActionEvent {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"event_id\":\"evt_7c31\",\"session_id\":\"ses_4a10\",\"sequence\":7,\"surface\":\"SURFACE_BROWSER\",\"action_type\":\"click\",\"grant_id\":\"grn_2f9a\",\"recording_ref\":\"slr://rec/ses_4a10/frame/7\",\"occurred_at\":\"2026-09-01T12:03:11Z\"}"
+  };
+  string event_id = 1;
+  string session_id = 2;
+  int64 sequence = 3;
+  Surface surface = 4;
+  string action_type = 5;
+  bytes action_payload = 6;
+  string grant_id = 7;
+  bytes pre_state_hash = 8;
+  bytes post_state_hash = 9;
+  string recording_ref = 10;
+  google.protobuf.Timestamp occurred_at = 11;
+  bytes content_hash = 12;
+  bytes prev_hash = 13;
+  bytes notary_signature = 14;
+}
+
+message Proof {
+  ActionEvent event = 1;
+  repeated bytes merkle_path = 2;
+  bytes merkle_root = 3;
+  Anchor anchor = 4;
+  repeated Grant delegation_chain = 5;
+}
+
+message Anchor {
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_RFC3161_TSA = 1;
+    KIND_TRANSPARENCY_LOG = 2;
+    KIND_PUBLIC_CHAIN = 3;
+  }
+  Kind kind = 1;
+  bytes root = 2;
+  bytes anchor_receipt = 3;
+  google.protobuf.Timestamp anchored_at = 4;
+}
+
+message Session {
+  string session_id = 1;
+  string root_grant_id = 2;
+  Surface surface = 3;
+  google.protobuf.Timestamp started_at = 4;
+  google.protobuf.Timestamp ended_at = 5;
+  int64 event_count = 6;
+}
+
+service DelegationService {
+  rpc IssueRootGrant(IssueRootGrantRequest) returns (IssueRootGrantResponse) {
+    option (google.api.http) = {
+      post: "/v1/grants:root"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Issue a root grant for a human principal"
+      tags: "delegation"
+    };
+  }
+  rpc Delegate(DelegateRequest) returns (DelegateResponse) {
+    option (google.api.http) = {
+      post: "/v1/grants"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delegate scoped authority to an agent or sub-agent"
+      tags: "delegation"
+    };
+  }
+  rpc VerifyChain(VerifyChainRequest) returns (VerifyChainResponse) {
+    option (google.api.http) = {get: "/v1/grants/{grant_id}:verify"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Verify a delegation chain back to its root"
+      tags: "delegation"
+    };
+  }
+  rpc Revoke(RevokeRequest) returns (RevokeResponse) {
+    option (google.api.http) = {
+      post: "/v1/grants/{grant_id}:revoke"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Revoke a grant and its descendants"
+      tags: "delegation"
+    };
+  }
+}
+
+service CaptureService {
+  rpc BeginSession(BeginSessionRequest) returns (BeginSessionResponse) {
+    option (google.api.http) = {
+      post: "/v1/sessions"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Open a capture session bound to a root grant"
+      tags: "capture"
+    };
+  }
+  rpc RecordAction(RecordActionRequest) returns (RecordActionResponse) {
+    option (google.api.http) = {
+      post: "/v1/sessions/{session_id}/actions"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Record and notarize one executed action"
+      tags: "capture"
+    };
+  }
+  rpc EndSession(EndSessionRequest) returns (EndSessionResponse) {
+    option (google.api.http) = {
+      post: "/v1/sessions/{session_id}:end"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Close a capture session"
+      tags: "capture"
+    };
+  }
+}
+
+service NotaryService {
+  rpc Notarize(NotarizeRequest) returns (NotarizeResponse);
+  rpc GetAnchor(GetAnchorRequest) returns (GetAnchorResponse) {
+    option (google.api.http) = {get: "/v1/anchors/{sequence}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Fetch the external anchor covering a sequence"
+      tags: "notary"
+    };
+  }
+}
+
+service LedgerService {
+  rpc GetEvent(GetEventRequest) returns (GetEventResponse) {
+    option (google.api.http) = {get: "/v1/events/{event_id}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Read a sealed action event"
+      tags: "ledger"
+    };
+  }
+  rpc GetInclusionProof(GetInclusionProofRequest) returns (GetInclusionProofResponse) {
+    option (google.api.http) = {get: "/v1/events/{event_id}:proof"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Build an offline-verifiable inclusion proof"
+      tags: "ledger"
+    };
+  }
+}
+
+service ReplayService {
+  rpc GetReplay(GetReplayRequest) returns (stream GetReplayResponse) {
+    option (google.api.http) = {get: "/v1/sessions/{session_id}:replay"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Stream a deterministic session replay"
+      tags: "replay"
+    };
+  }
+}
+
+service VerifyService {
+  rpc VerifyProof(VerifyProofRequest) returns (VerifyProofResponse) {
+    option (google.api.http) = {
+      post: "/v1/proofs:verify"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Verify chain, signature, anchor and authority of a proof"
+      tags: "verify"
+    };
+  }
+}
+
+message IssueRootGrantRequest {
+  string principal_id = 1;
+  Scope scope = 2;
+}
+
+message IssueRootGrantResponse {
+  Grant grant = 1;
+}
+
+message DelegateRequest {
+  string parent_grant_id = 1;
+  string subject_id = 2;
+  repeated string capabilities = 3;
+  Scope scope = 4;
+}
+
+message DelegateResponse {
+  Grant grant = 1;
+}
+
+message VerifyChainRequest {
+  string grant_id = 1;
+}
+
+message VerifyChainResponse {
+  bool valid = 1;
+  repeated Grant chain = 2;
+  string reason = 3;
+}
+
+message RevokeRequest {
+  string grant_id = 1;
+  string reason = 2;
+}
+
+message RevokeResponse {
+  bool revoked = 1;
+}
+
+message BeginSessionRequest {
+  string root_grant_id = 1;
+  Surface surface = 2;
+}
+
+message BeginSessionResponse {
+  Session session = 1;
+}
+
+message RecordActionRequest {
+  string session_id = 1;
+  string grant_id = 2;
+  string action_type = 3;
+  bytes action_payload = 4;
+  bytes pre_state_hash = 5;
+  bytes post_state_hash = 6;
+  string recording_ref = 7;
+}
+
+message RecordActionResponse {
+  ActionEvent event = 1;
+}
+
+message EndSessionRequest {
+  string session_id = 1;
+}
+
+message EndSessionResponse {
+  Session session = 1;
+}
+
+message NotarizeRequest {
+  ActionEvent event = 1;
+}
+
+message NotarizeResponse {
+  ActionEvent event = 1;
+}
+
+message GetAnchorRequest {
+  int64 sequence = 1;
+}
+
+message GetAnchorResponse {
+  Anchor anchor = 1;
+}
+
+message GetEventRequest {
+  string event_id = 1;
+}
+
+message GetEventResponse {
+  ActionEvent event = 1;
+}
+
+message GetInclusionProofRequest {
+  string event_id = 1;
+}
+
+message GetInclusionProofResponse {
+  Proof proof = 1;
+}
+
+message GetReplayRequest {
+  string session_id = 1;
+}
+
+message GetReplayResponse {
+  ActionEvent event = 1;
+  bytes frame = 2;
+}
+
+message VerifyProofRequest {
+  Proof proof = 1;
+}
+
+message VerifyProofResponse {
+  bool valid = 1;
+  bool chain_intact = 2;
+  bool signature_valid = 3;
+  bool anchored = 4;
+  bool authority_valid = 5;
+  string reason = 6;
+}
