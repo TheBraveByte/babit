@@ -1,7 +1,7 @@
 GOBIN := $(shell go env GOPATH)/bin
 DATABASE_URL ?= postgres://postgres:pass@localhost:55432/nal?sslmode=disable
 
-.PHONY: generate proto sqlc build test vet lint db-up db-down migrate sqlc-gen run compose-up compose-down
+.PHONY: generate proto sqlc build test vet lint db-up db-down migrate sqlc-gen run gateway compose-up compose-down
 
 generate: proto sqlc-gen
 
@@ -42,3 +42,6 @@ compose-down:
 
 run:
 	go run ./cmd/nald
+
+gateway:
+	go run ./cmd/gateway

@@ -1,0 +1,120 @@
+### Notarized Action Ledger — manual API walkthrough
+### Run: make db-up && make run (gRPC :9090) and make gateway (REST :8080).
+### Select the "dev" environment, then send requests top to bottom.
+
+### Issue a root grant for a human principal
+POST {{host}}/v1/grants:root
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "principal_id": "usr_alice",
+  "scope": { "max_depth": 3 }
+}
+
+> {%
+    client.global.set("rootGrant", response.body.grant.grantId);
+    client.test("root issued", () => client.assert(response.status === 200));
+%}
+
+### Delegate a scoped sub-grant to an agent
+POST {{host}}/v1/grants
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "parentGrantId": "{{rootGrant}}",
+  "subjectId": "agt_shopper",
+  "capabilities": ["browser.click"],
+  "scope": { "resourceGlobs": ["https://shop.example.com/*"], "maxValueCents": 50000 }
+}
+
+> {%
+    client.global.set("childGrant", response.body.grant.grantId);
+%}
+
+### Verify the delegation chain back to its root
+GET {{host}}/v1/grants/{{childGrant}}:verify
+X-Api-Key: {{apiKey}}
+
+### Begin a capture session
+POST {{host}}/v1/sessions
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "rootGrantId": "{{rootGrant}}",
+  "surface": "SURFACE_BROWSER"
+}
+
+> {%
+    client.global.set("sessionId", response.body.session.sessionId);
+%}
+
+### Record and notarize an action
+POST {{host}}/v1/sessions/{{sessionId}}/actions
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "grantId": "{{childGrant}}",
+  "actionType": "browser.click",
+  "resource": "https://shop.example.com/cart",
+  "recordingRef": "slr://session/demo"
+}
+
+> {%
+    client.global.set("eventId", response.body.event.eventId);
+%}
+
+### End the session (checkpoints the Merkle root)
+POST {{host}}/v1/sessions/{{sessionId}}/end
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{}
+
+### Read the sealed event
+GET {{host}}/v1/events/{{eventId}}
+X-Api-Key: {{apiKey}}
+
+### Build an inclusion proof and keep it for verification
+GET {{host}}/v1/events/{{eventId}}:proof
+X-Api-Key: {{apiKey}}
+
+> {%
+    client.global.set("proof", JSON.stringify(response.body.proof));
+%}
+
+### Fetch the notary public key (for offline verification)
+GET {{host}}/v1/notary/public-key
+X-Api-Key: {{apiKey}}
+
+### Verify the proof server-side (expect valid: true)
+POST {{host}}/v1/proofs:verify
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{ "proof": {{proof}} }
+
+### Fetch the session anchor
+GET {{host}}/v1/sessions/{{sessionId}}/anchor
+X-Api-Key: {{apiKey}}
+
+### Revoke the agent's grant
+POST {{host}}/v1/grants/{{childGrant}}/revoke
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{ "reason": "manual test" }
+
+### Recording after revocation is denied (expect 403 PERMISSION_DENIED)
+POST {{host}}/v1/sessions/{{sessionId}}/actions
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "grantId": "{{childGrant}}",
+  "actionType": "browser.click",
+  "recordingRef": "slr://session/demo"
+}
