@@ -39,5 +39,6 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 	root.HandleFunc("/openapi.json", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, cfg.OpenAPIPath)
 	})
+	root.Handle("/docs", scalarHandler())
 	return root, nil
 }
