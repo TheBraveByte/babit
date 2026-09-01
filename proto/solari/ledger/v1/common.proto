@@ -9,9 +9,9 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    title: "Notarized Action Ledger"
+    title: "Babit"
     version: "1.0.0"
-    description: "Tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari."
+    description: "Babit Notarized Action Ledger. A tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari."
   }
   schemes: HTTPS
   consumes: "application/json"

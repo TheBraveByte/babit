@@ -4,7 +4,7 @@ Drives a real Solari cloud browser and notarizes every action through NAL.
 
 Each `interceptor.Browser` call creates a recorded Solari session, runs the
 `chromedp` action against it, screenshots before/after, and emits a signed
-`RecordAction` to the running `nald` — so the delegation-anchored ledger and the
+`RecordAction` to the running `nald`, so the delegation-anchored ledger and the
 Solari rrweb replay describe the same run.
 
 ## Run
