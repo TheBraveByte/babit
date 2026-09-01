@@ -1,5 +1,5 @@
-import { StatusPill, Copyable, MonospaceHash, Button } from "@/lib/ui";
-import { IconTerminal } from "@/lib/icons";
+import { StatusPill, MonospaceHash, Button, Json } from "@/lib/ui";
+import { IconCheck, IconTerminal } from "@/lib/icons";
 
 export interface ReceiptData {
   receiptId: string;
@@ -36,19 +36,19 @@ export function ReceiptDetail({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 font-sans">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E8E8E5]">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="px-2.5 py-1 text-xs font-medium rounded-md border border-neutral-200 bg-white hover:bg-neutral-50 transition-colors cursor-pointer"
+            className="px-3 py-1.5 text-xs font-medium rounded-babit-sm border border-[#E8E8E5] bg-white hover:bg-[#F7F7F5] text-[#111111] transition-colors cursor-pointer"
           >
-            ← Back to receipts
+            ← Back
           </button>
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-semibold font-mono text-neutral-900 tracking-tight">
-              Receipt #{receipt.receiptId}
+            <h1 className="text-xl font-bold font-mono text-[#111111] tracking-tight">
+              {receipt.receiptId}
             </h1>
             <StatusPill status={receipt.status} />
           </div>
@@ -58,126 +58,117 @@ export function ReceiptDetail({
           <Button variant="secondary" size="sm" onClick={downloadJSON}>
             Download JSON
           </Button>
-          <Button variant="primary" size="sm" onClick={() => alert(`Offline verify command:\nbabit verify ${receipt.receiptId}.json`)}>
+          <Button variant="primary" size="sm" onClick={() => alert(`Command to verify:\nbabit verify ${receipt.receiptId}.json`)}>
             <IconTerminal className="w-3.5 h-3.5" />
             <span>Verify Offline</span>
           </Button>
         </div>
       </div>
 
-      {/* Grid: 2-column evidence breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Action & Cryptographic Proof */}
+      {/* Flagship 2-Column Evidence Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Human-First Execution & Authority */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Action Execution Box */}
-          <div className="bg-white rounded-lg border border-neutral-200 p-5 shadow-xs space-y-4 font-mono text-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-neutral-100 text-[11px] font-semibold text-neutral-900 uppercase">
-              <span>01. Action Execution</span>
-              <span className="text-emerald-700">CAPTURED</span>
+          {/* Action & Execution Surface */}
+          <div className="bg-[#FFFFFF] rounded-babit-lg border border-[#E8E8E5] p-6 shadow-xs space-y-5 font-mono text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0F0ED]">
+              <span className="text-xs font-semibold text-[#111111] uppercase">ACTION & EXECUTION</span>
+              <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-1">
+                <IconCheck className="w-3.5 h-3.5" />
+                CAPTURED AT EFFECT
+              </span>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="text-[10px] text-neutral-400 uppercase block">Action ID</span>
-                <span className="text-neutral-900 font-bold">{receipt.actionId}</span>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Action Type</span>
+                <span className="text-sm font-semibold text-[#111111]">{receipt.actionType}</span>
               </div>
               <div>
-                <span className="text-[10px] text-neutral-400 uppercase block">Action Type</span>
-                <span className="text-neutral-900">{receipt.actionType}</span>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Executing Agent</span>
+                <span className="text-sm font-semibold text-[#111111]">{receipt.agent}</span>
               </div>
             </div>
 
             <div>
-              <span className="text-[10px] text-neutral-400 uppercase block">Target Resource</span>
-              <span className="text-neutral-800 break-all">{receipt.resource}</span>
+              <span className="text-[10px] text-[#6B6B6B] uppercase block">Target Resource</span>
+              <span className="text-[#111111] bg-[#F7F7F5] px-2 py-1.5 rounded border border-[#E8E8E5] block break-all mt-1">
+                {receipt.resource}
+              </span>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="text-[10px] text-neutral-400 uppercase block">Agent Target</span>
-                <span className="text-neutral-900 font-semibold">{receipt.agent}</span>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Session Recording</span>
+                <span className="text-[#6B6B6B]">{receipt.sessionRef}</span>
               </div>
               <div>
-                <span className="text-[10px] text-neutral-400 uppercase block">Timestamp</span>
-                <span className="text-neutral-600 tnum">{receipt.timestamp}</span>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Occurred At</span>
+                <span className="text-[#111111] tnum">{receipt.timestamp}</span>
               </div>
             </div>
           </div>
 
-          {/* Cryptographic Proof Box */}
-          <div className="bg-neutral-950 text-white rounded-lg border border-neutral-800 p-5 shadow-xs space-y-4 font-mono text-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-neutral-800 text-[11px] font-semibold text-neutral-200 uppercase">
-              <span>02. Cryptographic Attestation</span>
-              <span className="text-emerald-400">SEALED IN LEDGER</span>
+          {/* Authority & Delegation Chain */}
+          <div className="bg-[#FFFFFF] rounded-babit-lg border border-[#E8E8E5] p-6 shadow-xs space-y-4 font-mono text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0F0ED]">
+              <span className="text-xs font-semibold text-[#111111] uppercase">AUTHORITY LINEAGE</span>
+              <span className="text-emerald-700 font-bold text-[11px]">DELEGATION CHAIN INTACT</span>
             </div>
 
-            <div>
-              <span className="text-[10px] text-neutral-500 uppercase block">Action SHA-256 Hash</span>
-              <MonospaceHash hash={receipt.eventHash} />
-            </div>
-
-            <div>
-              <span className="text-[10px] text-neutral-500 uppercase block">Previous Hash Link</span>
-              <MonospaceHash hash={receipt.prevHash} />
-            </div>
-
-            <div>
-              <span className="text-[10px] text-neutral-500 uppercase block">Merkle Tree Root</span>
-              <MonospaceHash hash={receipt.merkleRoot} />
-            </div>
-
-            <div>
-              <span className="text-[10px] text-neutral-500 uppercase block">Notary Ed25519 Seal</span>
-              <span className="text-neutral-300 text-[11px] break-all">{receipt.notarySignature}</span>
-            </div>
-
-            <div>
-              <span className="text-[10px] text-neutral-500 uppercase block">External Timestamp Anchor</span>
-              <span className="text-emerald-400 text-[11px]">{receipt.anchor}</span>
+            <div className="space-y-3">
+              {receipt.delegationChain.map((link, idx) => (
+                <div key={link.grantId} className="p-3 rounded-babit bg-[#F7F7F5] border border-[#E8E8E5] flex items-center justify-between">
+                  <div>
+                    <div className="text-[11px] text-[#111111]">
+                      <span className="font-semibold">{link.principal}</span> → <span>{link.subject}</span>
+                    </div>
+                    <span className="text-[10px] text-[#6B6B6B]">Grant: {link.grantId}</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#6B6B6B] bg-[#FFFFFF] px-2 py-0.5 rounded border border-[#E8E8E5]">
+                    Depth #{idx + 1}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Right Column: Delegation Chain & Session Evidence */}
+        {/* Right Column: Cryptographic Proof & Ledger Status */}
         <div className="lg:col-span-5 space-y-6">
-          {/* Delegation Chain Box */}
-          <div className="bg-white rounded-lg border border-neutral-200 p-5 shadow-xs space-y-4 font-mono text-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-neutral-100 text-[11px] font-semibold text-neutral-900 uppercase">
-              <span>03. Delegation Authority Chain</span>
-              <span className="text-emerald-700">UNBROKEN</span>
+          <div className="bg-[#FFFFFF] rounded-babit-lg border border-[#111111] p-6 shadow-xs space-y-5 font-mono text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0F0ED]">
+              <span className="text-xs font-semibold text-[#111111] uppercase">CRYPTOGRAPHIC SEAL</span>
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                VERIFIED
+              </span>
             </div>
 
-            <ol className="space-y-3 border-l-2 border-neutral-200 pl-3">
-              {receipt.delegationChain.map((step, idx) => (
-                <li key={step.grantId} className="space-y-0.5">
-                  <div className="text-[10px] text-neutral-400 uppercase">
-                    Level {idx === 0 ? "0 (Root Principal)" : `${idx} (Delegation)`}
-                  </div>
-                  <div className="text-neutral-900 font-semibold text-xs">
-                    {step.principal} → {step.subject}
-                  </div>
-                  <div className="text-[10px] text-neutral-500">
-                    Grant: <Copyable value={step.grantId} />
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+            <div className="space-y-3">
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Event SHA-256 Hash</span>
+                <MonospaceHash hash={receipt.eventHash} />
+              </div>
 
-          {/* Session Replay Evidence */}
-          <div className="bg-white rounded-lg border border-neutral-200 p-5 shadow-xs space-y-3 font-mono text-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-neutral-100 text-[11px] font-semibold text-neutral-900 uppercase">
-              <span>04. Deterministic Session Replay</span>
-              <span className="text-neutral-500">SOLARI RECORDING</span>
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Previous Link Hash</span>
+                <MonospaceHash hash={receipt.prevHash} />
+              </div>
+
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Binary Merkle Root</span>
+                <MonospaceHash hash={receipt.merkleRoot} />
+              </div>
+
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Notary Ed25519 Signature</span>
+                <span className="text-[11px] text-[#6B6B6B] break-all block">{receipt.notarySignature}</span>
+              </div>
             </div>
 
-            <div>
-              <span className="text-[10px] text-neutral-400 uppercase block">Recording URI</span>
-              <span className="text-neutral-800 text-[11px]">{receipt.sessionRef}</span>
-            </div>
-
-            <div className="p-2 rounded bg-neutral-50 border border-neutral-200 text-[11px] text-neutral-600">
-              The DOM execution frames and network calls are cryptographically linked to this receipt's hash.
+            <div className="pt-3 border-t border-[#F0F0ED] space-y-2">
+              <span className="text-[10px] text-[#6B6B6B] uppercase block">Complete Receipt JSON</span>
+              <Json data={receipt} />
             </div>
           </div>
         </div>

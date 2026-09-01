@@ -10,24 +10,22 @@ import { ForgotPassword } from "@/pages/auth/ForgotPassword";
 // Dashboard
 import { DashboardLayout } from "@/pages/dashboard/DashboardLayout";
 import { Overview } from "@/pages/dashboard/Overview";
-import { Receipts as ActionsScreen } from "@/pages/dashboard/Receipts";
-import { Delegations as DelegationsScreen } from "@/pages/dashboard/Delegations";
-import { Settings as SettingsScreen } from "@/pages/dashboard/Settings";
-
-// Core screens
-import { Sessions as SessionsScreen } from "@/screens/Sessions";
-import { Verify as VerifyScreen } from "@/screens/Verify";
-import { Events as EventsScreen } from "@/screens/Events";
+import { Activity } from "@/pages/dashboard/Activity";
+import { Agents } from "@/pages/dashboard/Agents";
+import { Delegations } from "@/pages/dashboard/Delegations";
+import { Receipts } from "@/pages/dashboard/Receipts";
+import { Verify } from "@/screens/Verify";
+import { Settings } from "@/pages/dashboard/Settings";
 
 export function App() {
   const { path, navigate } = useRouter();
 
-  // Root route is Landing Page
+  // Root route is Marketing Landing Page
   if (path === "/" || path === "") {
     return <Landing />;
   }
 
-  // Auth routes
+  // Authentication routes
   if (path === "/login") {
     return <Login />;
   }
@@ -40,7 +38,7 @@ export function App() {
     return <ForgotPassword />;
   }
 
-  // Dashboard routes: /dashboard, /dashboard/actions, /dashboard/delegations, /dashboard/sessions, /dashboard/verify, /dashboard/events, /dashboard/settings
+  // Dashboard routes: /dashboard, /dashboard/overview, /dashboard/activity, /dashboard/agents, /dashboard/delegations, /dashboard/receipts, /dashboard/verify, /dashboard/settings
   if (path.startsWith("/dashboard")) {
     const parts = path.split("/");
     const activeTab = (parts[2] as DashboardTab) || "overview";
@@ -52,12 +50,12 @@ export function App() {
     return (
       <DashboardLayout activeTab={activeTab} onTabChange={handleTabChange}>
         {activeTab === "overview" && <Overview onNavigate={handleTabChange} />}
-        {activeTab === "actions" && <ActionsScreen />}
-        {activeTab === "delegations" && <DelegationsScreen />}
-        {activeTab === "sessions" && <SessionsScreen />}
-        {activeTab === "verify" && <VerifyScreen />}
-        {activeTab === "events" && <EventsScreen />}
-        {activeTab === "settings" && <SettingsScreen />}
+        {activeTab === "activity" && <Activity />}
+        {activeTab === "agents" && <Agents />}
+        {activeTab === "delegations" && <Delegations />}
+        {activeTab === "receipts" && <Receipts />}
+        {activeTab === "verify" && <Verify />}
+        {activeTab === "settings" && <Settings />}
       </DashboardLayout>
     );
   }

@@ -1,35 +1,41 @@
 import { useState } from "react";
-import { StatusPill, Copyable, Json, MonospaceHash } from "@/lib/ui";
-import { IconSearch } from "@/lib/icons";
+import { StatusPill, Copyable, MonospaceHash, Json } from "@/lib/ui";
+import { IconSearch, IconCheck } from "@/lib/icons";
 
 interface ActivityItem {
   id: string;
-  time: string;
-  timestamp: string;
+  actionName: string;
   agent: string;
-  action: string;
   principal: string;
   grantId: string;
+  time: string;
+  timestamp: string;
   status: "VERIFIED" | "FAILED" | "PENDING";
   receipt: string;
-  sessionRef: string;
+  surface: string;
+  resource: string;
   eventHash: string;
+  prevHash: string;
+  notarySig: string;
   payload: Record<string, unknown>;
 }
 
 const mockActivity: ActivityItem[] = [
   {
     id: "act_48102",
-    time: "10:42:19",
-    timestamp: "2026-09-01T10:42:19.492Z",
+    actionName: "approve_payout",
     agent: "claims-agent",
-    action: "approve_claim",
-    principal: "Yusuf (Risk Lead)",
+    principal: "usr_alice",
     grantId: "BAL-DEL-8921",
+    time: "14:32:08 UTC",
+    timestamp: "2026-09-01T14:32:08.492Z",
     status: "VERIFIED",
-    receipt: "rcpt_9821a084",
-    sessionRef: "slr://session/rec_49102",
-    eventHash: "0xd8291a849102c9184a8b7c120934812a",
+    receipt: "rcpt_BAL_778812",
+    surface: "SURFACE_BROWSER",
+    resource: "https://internal.bank.io/claims/48102",
+    eventHash: "0xd8291a849102c9184a8b7c120934812a849102c9184a8b7c120934812a849102",
+    prevHash: "0x44d019ac77102948192ba4810294810244d019ac77102948192ba48102948102",
+    notarySig: "ed25519:5c82a10934812a849102c9184a8b7c120934812a849102c9184a8b7c12982f1b",
     payload: {
       claim_id: "CLM-48102",
       amount_usd: 4200.0,
@@ -39,72 +45,64 @@ const mockActivity: ActivityItem[] = [
   },
   {
     id: "act_48101",
-    time: "10:39:12",
-    timestamp: "2026-09-01T10:39:12.104Z",
-    agent: "browser-agent",
-    action: "upload_document",
+    actionName: "upload_document",
+    agent: "browser-worker",
     principal: "claims-agent",
     grantId: "BAL-DEL-4910",
+    time: "14:28:44 UTC",
+    timestamp: "2026-09-01T14:28:44.104Z",
     status: "VERIFIED",
-    receipt: "rcpt_44b19ca2",
-    sessionRef: "slr://session/rec_49101",
-    eventHash: "0x12c4e81048b1092a9b71029c481028ab",
+    receipt: "rcpt_BAL_778811",
+    surface: "SURFACE_BROWSER",
+    resource: "https://internal.bank.io/docs",
+    eventHash: "0x12c4e81048b1092a9b71029c481028ab12c4e81048b1092a9b71029c481028ab",
+    prevHash: "0x98b155da102847192bc491028471029398b155da102847192bc4910284710293",
+    notarySig: "ed25519:77ca49120934812a849102c9184a8b7c120934812a849102c9184a8b7c1299aa",
     payload: {
       document_type: "repair_estimate_pdf",
-      target_url: "https://underwriting.internal.corp/docs",
-      content_sha256: "0x4a18fbc0192a8b",
+      target_url: "https://internal.bank.io/docs",
+      sha256: "0x4a18fbc0192a8b",
     },
   },
   {
     id: "act_48100",
-    time: "10:35:01",
-    timestamp: "2026-09-01T10:35:01.821Z",
+    actionName: "extract_metadata",
     agent: "triage-agent",
-    action: "extract_metadata",
-    principal: "Yusuf (Risk Lead)",
-    grantId: "BAL-ROOT-0091",
+    principal: "usr_alice",
+    grantId: "BAL-ROOT-100200",
+    time: "14:19:02 UTC",
+    timestamp: "2026-09-01T14:19:02.821Z",
     status: "VERIFIED",
-    receipt: "rcpt_1190ca49",
-    sessionRef: "slr://session/rec_49100",
-    eventHash: "0x98b155da102847192bc4910284710293",
+    receipt: "rcpt_BAL_778810",
+    surface: "SURFACE_SANDBOX",
+    resource: "https://internal.bank.io/claims/48102",
+    eventHash: "0x98b155da102847192bc491028471029398b155da102847192bc4910284710293",
+    prevHash: "0x3918fbc0192a8b71029c481028ab3918fbc0192a8b71029c481028ab3918fbc0",
+    notarySig: "ed25519:39f1001a0934812a849102c9184a8b7c120934812a849102c9184a8b7c120011",
     payload: {
       source_claim: "CLM-48102",
-      extracted_entities: ["vehicle_vin", "damage_severity_high", "bodily_injury_none"],
+      extracted_entities: ["vehicle_vin", "damage_severity_high"],
     },
   },
   {
     id: "act_48099",
-    time: "10:28:44",
-    timestamp: "2026-09-01T10:28:44.912Z",
+    actionName: "flag_anomaly",
     agent: "fraud-scanner",
-    action: "flag_anomaly",
-    principal: "Yusuf (Risk Lead)",
-    grantId: "BAL-ROOT-0091",
-    status: "PENDING",
-    receipt: "rcpt_77ab3102",
-    sessionRef: "slr://session/rec_48099",
-    eventHash: "0x44d019ac77102948192ba48102948102",
+    principal: "usr_alice",
+    grantId: "BAL-ROOT-100200",
+    time: "13:55:18 UTC",
+    timestamp: "2026-09-01T13:55:18.912Z",
+    status: "VERIFIED",
+    receipt: "rcpt_BAL_778809",
+    surface: "SURFACE_SANDBOX",
+    resource: "https://internal.bank.io/risk",
+    eventHash: "0x44d019ac77102948192ba4810294810244d019ac77102948192ba48102948102",
+    prevHash: "0x12c4e81048b1092a9b71029c481028ab12c4e81048b1092a9b71029c481028ab",
+    notarySig: "ed25519:9f83dc710934812a849102c9184a8b7c120934812a849102c9184a8b7c124810",
     payload: {
-      anomaly_score: 0.14,
-      threshold: 0.65,
-      verdict: "clear_for_fast_track",
-    },
-  },
-  {
-    id: "act_48098",
-    time: "10:14:20",
-    timestamp: "2026-09-01T10:14:20.301Z",
-    agent: "unauthorized-worker",
-    action: "execute_payout",
-    principal: "Alex (Ops)",
-    grantId: "BAL-DEL-1092",
-    status: "FAILED",
-    receipt: "rcpt_90812e11",
-    sessionRef: "slr://session/rec_48098",
-    eventHash: "0x55aa27710ea49102847192ba48102938",
-    payload: {
-      error: "Scope violation: amount $75,000 exceeds maximum allowable grant of $10,000",
-      revocation_reason: "UNAUTHORIZED_CAPABILITY",
+      anomaly_score: 0.12,
+      risk_threshold: 0.65,
+      verdict: "passed",
     },
   },
 ];
@@ -113,11 +111,12 @@ export function Activity() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [selectedItem, setSelectedItem] = useState<ActivityItem | null>(null);
+  const [detailTab, setDetailTab] = useState<"overview" | "authority" | "evidence" | "technical">("overview");
 
   const filtered = mockActivity.filter((item) => {
     const matchesSearch =
+      item.actionName.toLowerCase().includes(search.toLowerCase()) ||
       item.agent.toLowerCase().includes(search.toLowerCase()) ||
-      item.action.toLowerCase().includes(search.toLowerCase()) ||
       item.principal.toLowerCase().includes(search.toLowerCase()) ||
       item.grantId.toLowerCase().includes(search.toLowerCase());
 
@@ -126,24 +125,26 @@ export function Activity() {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 font-sans">
       <div>
-        <h1 className="text-xl font-semibold text-neutral-900 tracking-tight">Activity Log</h1>
-        <p className="text-xs text-neutral-500 mt-0.5">
-          Dense audit trail of all captured agent actions, delegation references, and sealed receipts.
+        <h1 className="text-2xl sm:text-[32px] font-semibold text-[#111111] tracking-tight leading-tight">
+          Activity
+        </h1>
+        <p className="text-sm sm:text-[15px] text-[#6B6B6B] mt-1">
+          Complete audit trail of all captured agent actions, delegation references, and sealed receipts.
         </p>
       </div>
 
-      {/* Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 rounded-lg border border-neutral-200 shadow-xs">
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#FFFFFF] p-3 rounded-babit border border-[#E8E8E5] shadow-xs">
         <div className="w-full sm:w-80 relative">
-          <IconSearch className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <IconSearch className="w-4 h-4 text-[#6B6B6B] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by agent, action, or grant ID…"
-            className="w-full pl-9 pr-3 py-1.5 text-xs font-mono rounded-md border border-neutral-200 bg-neutral-50/50 outline-none focus:border-neutral-900 focus:bg-white transition-colors"
+            placeholder="Search by action, agent, or authorizer..."
+            className="w-full pl-9 pr-3 py-1.5 text-xs font-mono rounded-babit-sm border border-[#E8E8E5] bg-[#F7F7F5] outline-none focus:border-[#111111] focus:bg-white transition-colors"
           />
         </div>
 
@@ -152,10 +153,10 @@ export function Activity() {
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors cursor-pointer ${
+              className={`px-3 py-1 rounded-babit-sm text-xs font-mono font-medium transition-colors cursor-pointer ${
                 statusFilter === s
-                  ? "bg-neutral-900 text-white"
-                  : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200/80"
+                  ? "bg-[#111111] text-white"
+                  : "bg-[#F7F7F5] text-[#6B6B6B] hover:bg-[#E8E8E5]"
               }`}
             >
               {s}
@@ -164,39 +165,37 @@ export function Activity() {
         </div>
       </div>
 
-      {/* Activity Table */}
-      <div className="bg-white border border-neutral-200 rounded-lg shadow-xs overflow-hidden">
+      {/* Activity Data Table */}
+      <div className="bg-[#FFFFFF] border border-[#E8E8E5] rounded-babit-lg shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left font-mono text-xs">
-            <thead className="bg-neutral-50 text-neutral-500 border-b border-neutral-200 text-[11px]">
+            <thead className="bg-[#F7F7F5] text-[#6B6B6B] border-b border-[#E8E8E5] text-[11px]">
               <tr>
-                <th className="px-4 py-2.5 font-medium">Time</th>
-                <th className="px-4 py-2.5 font-medium">Agent</th>
-                <th className="px-4 py-2.5 font-medium">Action</th>
-                <th className="px-4 py-2.5 font-medium">Principal</th>
-                <th className="px-4 py-2.5 font-medium">Grant ID</th>
-                <th className="px-4 py-2.5 font-medium">Status</th>
-                <th className="px-4 py-2.5 font-medium text-right">Receipt</th>
+                <th className="px-5 py-3 font-medium font-sans">Action</th>
+                <th className="px-5 py-3 font-medium">Agent</th>
+                <th className="px-5 py-3 font-medium">Authorizer</th>
+                <th className="px-5 py-3 font-medium">Time</th>
+                <th className="px-5 py-3 font-medium">Status</th>
+                <th className="px-5 py-3 font-medium text-right">Receipt</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100 text-neutral-800">
+            <tbody className="divide-y divide-[#F0F0ED] text-[#111111]">
               {filtered.map((row) => (
                 <tr
                   key={row.id}
                   onClick={() => setSelectedItem(row)}
-                  className={`hover:bg-neutral-50 transition-colors cursor-pointer ${
-                    selectedItem?.id === row.id ? "bg-neutral-100/70" : ""
+                  className={`hover:bg-[#F7F7F5] transition-colors cursor-pointer ${
+                    selectedItem?.id === row.id ? "bg-[#F7F7F5]" : ""
                   }`}
                 >
-                  <td className="px-4 py-3 text-neutral-500 tnum">{row.time}</td>
-                  <td className="px-4 py-3 font-semibold text-neutral-900">{row.agent}</td>
-                  <td className="px-4 py-3 text-neutral-700">{row.action}</td>
-                  <td className="px-4 py-3 text-neutral-500">{row.principal}</td>
-                  <td className="px-4 py-3 text-neutral-600">{row.grantId}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-3.5 font-semibold text-[#111111] font-sans">{row.actionName}</td>
+                  <td className="px-5 py-3.5 text-[#6B6B6B]">{row.agent}</td>
+                  <td className="px-5 py-3.5 text-[#6B6B6B]">{row.principal}</td>
+                  <td className="px-5 py-3.5 text-[#6B6B6B] tnum">{row.time}</td>
+                  <td className="px-5 py-3.5">
                     <StatusPill status={row.status} />
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-5 py-3.5 text-right">
                     <Copyable value={row.receipt} />
                   </td>
                 </tr>
@@ -206,62 +205,104 @@ export function Activity() {
         </div>
       </div>
 
-      {/* Slide-over Detail Modal / Peek Panel */}
+      {/* Slide-over Action Detail Sheet */}
       {selectedItem && (
-        <div className="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-white border-l border-neutral-200 shadow-2xl z-50 p-6 overflow-y-auto space-y-6 animate-slide-in">
-          <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
+        <div className="fixed inset-y-0 right-0 w-full sm:w-[500px] bg-[#FFFFFF] border-l border-[#E8E8E5] shadow-2xl z-50 p-6 overflow-y-auto space-y-6 animate-fade-in">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#E8E8E5]">
             <div>
-              <span className="text-[10px] font-mono text-neutral-400 uppercase">Action Evidence Detail</span>
-              <h2 className="text-base font-semibold font-mono text-neutral-900">{selectedItem.id}</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-semibold font-mono text-[#111111]">{selectedItem.actionName}</h2>
+                <StatusPill status={selectedItem.status} />
+              </div>
+              <span className="text-[11px] font-mono text-[#6B6B6B] block mt-0.5">{selectedItem.timestamp}</span>
             </div>
             <button
               onClick={() => setSelectedItem(null)}
-              className="p-1 rounded-md text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 cursor-pointer"
+              className="p-1 rounded-babit-sm text-[#6B6B6B] hover:text-[#111111] hover:bg-[#F7F7F5] cursor-pointer"
             >
               ✕
             </button>
           </div>
 
-          <div className="space-y-4 text-xs font-mono">
-            <div>
-              <span className="text-[10px] text-neutral-400 uppercase block">Verification Verdict</span>
-              <div className="mt-1">
-                <StatusPill status={selectedItem.status} />
+          {/* Tabs */}
+          <div className="flex items-center gap-1 border-b border-[#E8E8E5] pb-2 font-mono text-xs">
+            {(["overview", "authority", "evidence", "technical"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setDetailTab(t)}
+                className={`px-3 py-1 rounded-babit-sm capitalize transition-colors cursor-pointer ${
+                  detailTab === t ? "bg-[#111111] text-white font-semibold" : "text-[#6B6B6B] hover:text-[#111111]"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div className="space-y-4 font-mono text-xs">
+            {detailTab === "overview" && (
+              <div className="space-y-4">
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Action ID</span>
+                  <span className="text-sm font-semibold text-[#111111]">{selectedItem.id}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Subject Agent</span>
+                  <span className="text-[#111111]">{selectedItem.agent}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Target Resource</span>
+                  <span className="text-[#111111] break-all">{selectedItem.resource}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Execution Surface</span>
+                  <span className="text-[#111111]">{selectedItem.surface}</span>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <span className="text-[10px] text-neutral-400 uppercase block">Occurred At</span>
-                <span className="text-neutral-900 text-[11px]">{selectedItem.timestamp}</span>
+            {detailTab === "authority" && (
+              <div className="space-y-4">
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Human Supervisor Principal</span>
+                  <span className="text-[#111111] font-semibold">{selectedItem.principal}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Grant Ticket Reference</span>
+                  <Copyable value={selectedItem.grantId} />
+                </div>
+                <div className="p-3 rounded-babit bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] flex items-center gap-1.5">
+                  <IconCheck className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Authority validated. Action within resource pattern and budget cap.</span>
+                </div>
               </div>
-              <div>
-                <span className="text-[10px] text-neutral-400 uppercase block">Agent Target</span>
-                <span className="text-neutral-900 font-semibold">{selectedItem.agent}</span>
+            )}
+
+            {detailTab === "evidence" && (
+              <div className="space-y-4">
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Event SHA-256 Hash</span>
+                  <MonospaceHash hash={selectedItem.eventHash} />
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Sequential Prev Hash</span>
+                  <MonospaceHash hash={selectedItem.prevHash} />
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#6B6B6B] uppercase block">Notary Ed25519 Signature</span>
+                  <span className="text-[11px] text-[#6B6B6B] break-all block">{selectedItem.notarySig}</span>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <span className="text-[10px] text-neutral-400 uppercase block">Authorization Scope Reference</span>
-              <span className="text-neutral-900">{selectedItem.grantId}</span>
-            </div>
-
-            <div>
-              <span className="text-[10px] text-neutral-400 uppercase block">Event SHA-256 Hash</span>
-              <MonospaceHash hash={selectedItem.eventHash} />
-            </div>
-
-            <div>
-              <span className="text-[10px] text-neutral-400 uppercase block">Session Replay Ref</span>
-              <span className="text-neutral-700 text-[11px]">{selectedItem.sessionRef}</span>
-            </div>
-
-            <div>
-              <span className="text-[10px] text-neutral-400 uppercase block">Action Payload JSON</span>
-              <div className="mt-1">
+            {detailTab === "technical" && (
+              <div className="space-y-2">
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Raw Action Payload JSON</span>
                 <Json data={selectedItem.payload} />
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}

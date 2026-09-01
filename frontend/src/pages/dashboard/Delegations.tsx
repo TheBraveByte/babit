@@ -1,121 +1,217 @@
 import { useState } from "react";
-import { Grants as LiveGrantsScreen } from "@/screens/Grants";
-import { IconGitBranch, IconKey } from "@/lib/icons";
+import { StatusPill, Copyable } from "@/lib/ui";
+import { IconUser, IconCpu, IconCheck } from "@/lib/icons";
+
+interface DelegationLink {
+  id: string;
+  from: string;
+  to: string;
+  grantId: string;
+  parentGrantId: string;
+  capabilities: string[];
+  scope: string;
+  maxAmount: string;
+  depth: number;
+  created: string;
+  expiry: string;
+  status: "ACTIVE" | "REVOKED";
+  signature: string;
+}
+
+const initialDelegations: DelegationLink[] = [
+  {
+    id: "del_1",
+    from: "usr_alice (Risk Supervisor)",
+    to: "claims-orchestrator",
+    grantId: "BAL-417849",
+    parentGrantId: "BAL-ROOT-100200",
+    capabilities: ["claims.review", "claims.approve", "payout.delegate"],
+    scope: "https://internal.bank.io/claims/*",
+    maxAmount: "$50,000.00",
+    depth: 2,
+    created: "2026-09-01T08:00:00Z",
+    expiry: "2026-09-02T08:00:00Z",
+    status: "ACTIVE",
+    signature: "ed25519:12c4e81048b1092a9b71029c481028ab",
+  },
+  {
+    id: "del_2",
+    from: "claims-orchestrator",
+    to: "payout-executor",
+    grantId: "BAL-DEL-8921",
+    parentGrantId: "BAL-417849",
+    capabilities: ["claims.approve_payout"],
+    scope: "https://internal.bank.io/claims/48102",
+    maxAmount: "$5,000.00",
+    depth: 1,
+    created: "2026-09-01T10:00:00Z",
+    expiry: "2026-09-01T18:00:00Z",
+    status: "ACTIVE",
+    signature: "ed25519:5c82a10934812a849102c9184a8b7c12",
+  },
+  {
+    id: "del_3",
+    from: "claims-orchestrator",
+    to: "browser-worker",
+    grantId: "BAL-DEL-4910",
+    parentGrantId: "BAL-417849",
+    capabilities: ["browser.click", "browser.upload"],
+    scope: "https://internal.bank.io/docs/*",
+    maxAmount: "$0.00",
+    depth: 1,
+    created: "2026-09-01T10:05:00Z",
+    expiry: "2026-09-01T18:00:00Z",
+    status: "ACTIVE",
+    signature: "ed25519:77ca49120934812a849102c9184a8b7c",
+  },
+];
 
 export function Delegations() {
-  const [activeSubTab, setActiveSubTab] = useState<"tree" | "actions">("tree");
+  const [delegations] = useState<DelegationLink[]>(initialDelegations);
+  const [selectedLink, setSelectedLink] = useState<DelegationLink | null>(null);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-semibold text-neutral-900 tracking-tight">Delegations & Grants</h1>
-          <p className="text-xs text-neutral-500 mt-0.5">
-            Trace the mathematical authority flow from human supervisors down to autonomous agents.
-          </p>
+    <div className="space-y-6 font-sans">
+      <div>
+        <h1 className="text-2xl sm:text-[32px] font-semibold text-[#111111] tracking-tight leading-tight">
+          Delegations
+        </h1>
+        <p className="text-sm sm:text-[15px] text-[#6B6B6B] mt-1">
+          Understand how authority moves between principals and agents.
+        </p>
+      </div>
+
+      {/* Main Relationship Tree */}
+      <div className="bg-[#FFFFFF] border border-[#E8E8E5] rounded-babit-lg p-6 sm:p-8 space-y-6 shadow-xs font-mono text-xs">
+        <div className="flex items-center justify-between pb-3 border-b border-[#F0F0ED]">
+          <span className="text-xs uppercase text-[#6B6B6B] font-semibold">
+            ACTIVE DELEGATION TREE
+          </span>
+          <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-1">
+            <IconCheck className="w-3.5 h-3.5" />
+            ATTENUATION ENFORCED
+          </span>
         </div>
 
-        <div className="flex items-center gap-1.5 bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
-          <button
-            onClick={() => setActiveSubTab("tree")}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${
-              activeSubTab === "tree"
-                ? "bg-white text-neutral-900 shadow-2xs font-semibold"
-                : "text-neutral-600 hover:text-neutral-900"
-            }`}
-          >
-            Visual Delegation Tree
-          </button>
-          <button
-            onClick={() => setActiveSubTab("actions")}
-            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${
-              activeSubTab === "actions"
-                ? "bg-white text-neutral-900 shadow-2xs font-semibold"
-                : "text-neutral-600 hover:text-neutral-900"
-            }`}
-          >
-            Issue / Verify Grants
-          </button>
+        {/* Tree Visual Flow */}
+        <div className="space-y-4">
+          {/* Root node */}
+          <div className="p-4 rounded-babit bg-[#F7F7F5] border border-[#E8E8E5] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-babit-sm bg-[#111111] text-white">
+                <IconUser className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">ROOT HUMAN PRINCIPAL</span>
+                <span className="text-sm font-semibold text-[#111111]">usr_alice (Risk Supervisor)</span>
+              </div>
+            </div>
+            <span className="text-xs text-[#6B6B6B]">Max Ceiling: $500,000</span>
+          </div>
+
+          {/* Children nodes */}
+          <div className="pl-6 border-l-2 border-[#E8E8E5] space-y-3">
+            {delegations.map((del) => (
+              <div
+                key={del.id}
+                onClick={() => setSelectedLink(del)}
+                className={`p-4 rounded-babit border transition-all cursor-pointer ${
+                  selectedLink?.id === del.id
+                    ? "bg-[#FFFFFF] border-[#111111] shadow-xs"
+                    : "bg-[#FFFFFF] border-[#E8E8E5] hover:border-[#CCCCCC]"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-babit-sm bg-[#F7F7F5] text-[#111111]">
+                      <IconCpu className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-[#111111]">{del.to}</span>
+                        <span className="text-[10px] text-[#6B6B6B]">(from {del.from})</span>
+                      </div>
+                      <span className="text-[11px] text-[#6B6B6B] block mt-0.5">Scope: {del.scope}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <StatusPill status={del.status} />
+                    <span className="text-[11px] text-[#111111] font-semibold block mt-1">{del.maxAmount}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {activeSubTab === "tree" ? (
-        <div className="space-y-6">
-          {/* Visual Delegation Tree View */}
-          <div className="bg-white border border-neutral-200 rounded-lg p-6 shadow-xs space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-100 text-xs font-mono">
-              <span className="font-semibold text-neutral-900 uppercase">Active Enterprise Authority Tree</span>
-              <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">
-                ROOT: usr_yusuf [Depth Max 3]
+      {/* Delegation Sheet */}
+      {selectedLink && (
+        <div className="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-[#FFFFFF] border-l border-[#E8E8E5] shadow-2xl z-50 p-6 overflow-y-auto space-y-6 animate-fade-in">
+          <div className="flex items-center justify-between pb-4 border-b border-[#E8E8E5]">
+            <div>
+              <span className="text-[10px] font-mono uppercase text-[#6B6B6B]">GRANT TICKET</span>
+              <h2 className="text-base font-semibold font-mono text-[#111111]">{selectedLink.grantId}</h2>
+            </div>
+            <button
+              onClick={() => setSelectedLink(null)}
+              className="p-1 rounded-babit-sm text-[#6B6B6B] hover:text-[#111111] hover:bg-[#F7F7F5] cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="space-y-4 font-mono text-xs">
+            <div>
+              <span className="text-[10px] text-[#6B6B6B] uppercase block">From (Authorizer)</span>
+              <span className="text-sm font-semibold text-[#111111]">{selectedLink.from}</span>
+            </div>
+
+            <div>
+              <span className="text-[10px] text-[#6B6B6B] uppercase block">To (Subject)</span>
+              <span className="text-sm font-semibold text-[#111111]">{selectedLink.to}</span>
+            </div>
+
+            <div>
+              <span className="text-[10px] text-[#6B6B6B] uppercase block">Parent Grant Ticket</span>
+              <Copyable value={selectedLink.parentGrantId} />
+            </div>
+
+            <div>
+              <span className="text-[10px] text-[#6B6B6B] uppercase block">Permitted Scope Glob</span>
+              <span className="text-[#111111] bg-[#F7F7F5] px-2 py-1 rounded border border-[#E8E8E5] block mt-1">
+                {selectedLink.scope}
               </span>
             </div>
 
-            {/* Tree Nodes List */}
-            <div className="space-y-4 font-mono text-xs">
-              {/* Level 0: Root */}
-              <div className="p-4 rounded-lg bg-neutral-900 text-white border border-neutral-800 space-y-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="p-1 rounded bg-neutral-800 text-emerald-400"><IconKey className="w-3.5 h-3.5" /></span>
-                    <span className="font-bold text-white">ROOT GRANT — BAL-ROOT-0091</span>
-                  </div>
-                  <span className="text-[10px] text-emerald-400">UNRESTRICTED PRINCIPAL</span>
-                </div>
-                <div className="text-[11px] text-neutral-300">
-                  Principal: <strong className="text-white">usr_yusuf (Risk Lead)</strong> → Target: <span className="text-neutral-400">agt_claims_orchestrator</span>
-                </div>
-                <div className="text-[10px] text-neutral-500">
-                  Scope: https://underwriting.internal.corp/* | Max Value: $100,000 | Depth: 3
-                </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Financial Cap</span>
+                <span className="text-[#111111] font-semibold">{selectedLink.maxAmount}</span>
               </div>
-
-              {/* Level 1: Delegation */}
-              <div className="ml-6 sm:ml-10 border-l-2 border-neutral-200 pl-4 space-y-3">
-                <div className="p-3.5 rounded-lg bg-neutral-50 border border-neutral-200 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="p-1 rounded bg-neutral-200 text-neutral-700"><IconGitBranch className="w-3.5 h-3.5" /></span>
-                      <span className="font-bold text-neutral-900">DELEGATED SUB-GRANT — BAL-DEL-4910</span>
-                    </div>
-                    <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                      ATTENUATED
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-neutral-700">
-                    Granted by: <span className="text-neutral-900 font-semibold">agt_claims_orchestrator</span> → Subject: <strong className="text-neutral-900">agt_worker_browser_09</strong>
-                  </div>
-                  <div className="text-[10px] text-neutral-500">
-                    Capabilities: ["browser.click", "dom.type"] | Scope: https://underwriting.internal.corp/claims/* | Max Value: $10,000
-                  </div>
-                </div>
-
-                {/* Level 2: Sub-delegation */}
-                <div className="ml-6 sm:ml-10 border-l-2 border-neutral-200 pl-4">
-                  <div className="p-3.5 rounded-lg bg-neutral-50 border border-neutral-200 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="p-1 rounded bg-neutral-200 text-neutral-700"><IconGitBranch className="w-3.5 h-3.5" /></span>
-                        <span className="font-bold text-neutral-900">POINT EXECUTION GRANT — BAL-DEL-8921</span>
-                      </div>
-                      <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                        LEAF DEPTH: 1
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-neutral-700">
-                      Granted by: <span className="text-neutral-900 font-semibold">agt_worker_browser_09</span> → Subject: <strong className="text-neutral-900">action_payout_executor</strong>
-                    </div>
-                    <div className="text-[10px] text-neutral-500">
-                      Capabilities: ["browser.click on #approve-claim"] | Bound to Session #89231
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Max Depth</span>
+                <span className="text-[#111111]">{selectedLink.depth} level</span>
               </div>
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Created At</span>
+                <span className="text-[#6B6B6B] tnum">{selectedLink.created}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-[#6B6B6B] uppercase block">Expires At</span>
+                <span className="text-[#6B6B6B] tnum">{selectedLink.expiry}</span>
+              </div>
+            </div>
+
+            <div>
+              <span className="text-[10px] text-[#6B6B6B] uppercase block">Parent Signature</span>
+              <span className="text-[#6B6B6B] text-[11px] break-all block">{selectedLink.signature}</span>
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="bg-white border border-neutral-200 rounded-lg p-6 shadow-xs">
-          <LiveGrantsScreen />
         </div>
       )}
     </div>
