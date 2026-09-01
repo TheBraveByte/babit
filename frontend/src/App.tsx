@@ -51,7 +51,7 @@ export function App() {
       <DashboardLayout activeTab={activeTab} onTabChange={handleTabChange}>
         {activeTab === "overview" && <Overview onNavigate={handleTabChange} />}
         {activeTab === "activity" && <Activity />}
-        {activeTab === "agents" && <Agents />}
+        {activeTab === "agents" && <Agents onNavigate={handleTabChange} />}
         {activeTab === "delegations" && <Delegations />}
         {activeTab === "receipts" && <Receipts />}
         {activeTab === "verify" && <Verify />}
