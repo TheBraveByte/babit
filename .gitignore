@@ -9,3 +9,8 @@
 *.log
 coverage.out
 tmp/
+
+# private: not published to the public repository
+/skills/
+/.claude/
+/docs/
