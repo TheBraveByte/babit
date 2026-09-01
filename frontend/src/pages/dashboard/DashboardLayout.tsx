@@ -1,8 +1,10 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { BabitLogo, IconActivity, IconShieldCheck, IconGitBranch, IconCpu, IconSettings, IconLogOut, IconFileText, IconSearch } from "@/lib/icons";
+import { BabitLogo, IconActivity, IconShieldCheck, IconGitBranch, IconCpu, IconSettings, IconLogOut, IconFileText, IconSearch, IconLayers } from "@/lib/icons";
 import { useAuth } from "@/lib/auth";
 import { useRouter, Link } from "@/lib/router";
 import { CommandPalette } from "@/lib/CommandPalette";
+import { ThemeToggle } from "@/lib/ThemeToggle";
+import { docsUrl } from "@/lib/links";
 import { api } from "@/api/client";
 
 export type DashboardTab =
@@ -10,6 +12,7 @@ export type DashboardTab =
   | "activity"
   | "agents"
   | "delegations"
+  | "sessions"
   | "receipts"
   | "verify"
   | "settings";
@@ -25,6 +28,7 @@ const mainNav: NavItem[] = [
   { key: "activity", label: "Activity", icon: <IconFileText className="w-4 h-4" /> },
   { key: "agents", label: "Agents", icon: <IconCpu className="w-4 h-4" /> },
   { key: "delegations", label: "Delegations", icon: <IconGitBranch className="w-4 h-4" /> },
+  { key: "sessions", label: "Sessions", icon: <IconLayers className="w-4 h-4" /> },
   { key: "receipts", label: "Receipts", icon: <IconFileText className="w-4 h-4" /> },
   { key: "verify", label: "Verification", icon: <IconShieldCheck className="w-4 h-4" /> },
 ];
@@ -86,25 +90,25 @@ export function DashboardLayout({
       <aside className="hidden md:flex flex-col justify-between min-h-screen sticky top-0 h-screen overflow-y-auto" style={{ backgroundColor: "var(--surface)", borderRight: "1px solid var(--border)" }}>
         <div>
           {/* Brand Header */}
-          <div className="p-4 border-b border-[#E8E8E5] flex items-center justify-between">
+          <div className="p-4 border-b border-[color:var(--border)] flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2.5">
               {logoUrl ? (
                 <img
                   src={logoUrl}
                   alt={orgName}
-                  className="w-6 h-6 object-contain rounded border border-[#E8E8E5] p-0.5 bg-white shrink-0"
+                  className="w-6 h-6 object-contain rounded border border-[color:var(--border)] p-0.5 bg-[var(--surface)] shrink-0"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = "none";
                   }}
                 />
               ) : (
-                <BabitLogo className="w-5 h-5 text-[#111111]" />
+                <BabitLogo className="w-5 h-5 text-[color:var(--fg)]" />
               )}
               <div className="truncate">
-                <span className="font-mono text-sm font-semibold tracking-tight text-[#111111] block truncate">
+                <span className="font-mono text-sm font-semibold tracking-tight text-[color:var(--fg)] block truncate">
                   {orgName}
                 </span>
-                <span className="text-[11px] font-mono text-[#6B6B6B] block -mt-0.5">
+                <span className="text-[11px] font-mono text-[color:var(--muted)] block -mt-0.5">
                   babit console
                 </span>
               </div>
@@ -115,13 +119,13 @@ export function DashboardLayout({
           <div className="px-3 pt-3">
             <button
               onClick={() => setCommandPaletteOpen(true)}
-              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-babit-sm bg-[#F7F7F5] border border-[#E8E8E5] text-xs text-[#6B6B6B] hover:text-[#111111] hover:border-[#CCCCCC] transition-colors cursor-pointer"
+              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-babit-sm bg-[var(--secondary)] border border-[color:var(--border)] text-xs text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:border-[color:var(--muted)] transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-2">
                 <IconSearch className="w-3.5 h-3.5" />
                 <span>Search...</span>
               </div>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-white rounded border border-[#E8E8E5]">
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-[var(--surface)] rounded border border-[color:var(--border)]">
                 ⌘K
               </kbd>
             </button>
@@ -130,7 +134,7 @@ export function DashboardLayout({
           {/* Navigation Items */}
           <div className="p-3 space-y-6">
             <div>
-              <span className="px-2.5 text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B] font-semibold block mb-1.5">
+              <span className="px-2.5 text-[10px] font-mono uppercase tracking-wider text-[color:var(--muted)] font-semibold block mb-1.5">
                 OPERATIONAL EVIDENCE
               </span>
               <nav className="space-y-0.5">
@@ -161,7 +165,7 @@ export function DashboardLayout({
             </div>
 
             <div>
-              <span className="px-2.5 text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B] font-semibold block mb-1.5">
+              <span className="px-2.5 text-[10px] font-mono uppercase tracking-wider text-[color:var(--muted)] font-semibold block mb-1.5">
                 WORKSPACE
               </span>
               <nav className="space-y-0.5">
@@ -194,25 +198,25 @@ export function DashboardLayout({
         </div>
 
         {/* User Account Footer */}
-        <div className="p-3 border-t border-[#E8E8E5] bg-[#F7F7F5]">
-          <div className="p-2.5 rounded-babit bg-[#FFFFFF] border border-[#E8E8E5] space-y-2">
+        <div className="p-3 border-t border-[color:var(--border)] bg-[var(--secondary)]">
+          <div className="p-2.5 rounded-babit bg-[var(--surface)] border border-[color:var(--border)] space-y-2">
             <div className="flex items-center gap-2.5 truncate">
-              <div className="w-6 h-6 rounded bg-[#111111] text-white flex items-center justify-center font-mono text-xs font-bold shrink-0">
+              <div className="w-6 h-6 rounded bg-[var(--fg)] text-[var(--surface)] flex items-center justify-center font-mono text-xs font-bold shrink-0">
                 {user?.email?.charAt(0).toUpperCase() || "U"}
               </div>
               <div className="truncate">
-                <span className="text-xs font-medium text-[#111111] block truncate">
+                <span className="text-xs font-medium text-[color:var(--fg)] block truncate">
                   {user?.email || "admin@babit.dev"}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-[#F0F0ED] text-[11px]">
+            <div className="flex items-center justify-between pt-2 border-t border-[color:var(--border-subtle)] text-[11px]">
               <a
-                href="/docs"
+                href={docsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#6B6B6B] hover:text-[#111111] font-mono"
+                className="text-[color:var(--muted)] hover:text-[color:var(--fg)] font-mono"
               >
                 Docs ↗
               </a>
@@ -234,11 +238,11 @@ export function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex flex-col min-w-0">
         {/* Header Bar */}
-        <header className="h-14 px-6 border-b border-[#E8E8E5] bg-[#FFFFFF]/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between gap-4">
+        <header className="h-14 px-6 border-b border-[color:var(--border)] bg-[var(--surface)]/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-              className="md:hidden p-1 text-[#111111]"
+              className="md:hidden p-1 text-[color:var(--fg)]"
               aria-label="Open menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,11 +251,11 @@ export function DashboardLayout({
             </button>
 
             <div className="flex items-center gap-2 font-mono text-xs">
-              <span className="font-semibold text-[#111111] capitalize">
+              <span className="font-semibold text-[color:var(--fg)] capitalize">
                 {activeTab}
               </span>
-              <span className="text-[#E8E8E5]">/</span>
-              <span className="text-[#6B6B6B]">
+              <span className="text-[color:var(--border)]">/</span>
+              <span className="text-[color:var(--muted)]">
                 {orgName}
               </span>
             </div>
@@ -265,16 +269,18 @@ export function DashboardLayout({
                   <span>NOTARY ONLINE</span>
                 </div>
               ) : (
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-[#6B6B6B] bg-[#F7F7F5] px-2.5 py-0.5 rounded border border-[#E8E8E5] font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#B0B0AC]" />
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-[color:var(--muted)] bg-[var(--secondary)] px-2.5 py-0.5 rounded border border-[color:var(--border)] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--muted)]" />
                   <span>NOTARY OFFLINE</span>
                 </div>
               )
             )}
 
+            <ThemeToggle className="hover:bg-[var(--secondary)]" />
+
             <Link
               to="/"
-              className="text-xs font-medium text-[#6B6B6B] hover:text-[#111111] px-2.5 py-1 rounded hover:bg-[#F7F7F5] transition-colors"
+              className="text-xs font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] px-2.5 py-1 rounded hover:bg-[var(--secondary)] transition-colors"
             >
               Website ↗
             </Link>
@@ -283,7 +289,7 @@ export function DashboardLayout({
 
         {/* Mobile Navigation Drawer */}
         {mobileDrawerOpen && (
-          <div className="md:hidden bg-[#FFFFFF] border-b border-[#E8E8E5] p-4 space-y-2 animate-fade-in shadow-lg">
+          <div className="md:hidden bg-[var(--surface)] border-b border-[color:var(--border)] p-4 space-y-2 animate-fade-in shadow-lg">
             <div className="grid grid-cols-2 gap-2">
               {mainNav.concat(secondaryNav).map((n) => (
                 <button
@@ -294,7 +300,7 @@ export function DashboardLayout({
                     setMobileDrawerOpen(false);
                   }}
                   className={`p-2.5 rounded text-xs text-left font-medium flex items-center gap-2 ${
-                    activeTab === n.key ? "bg-[#111111] text-white" : "bg-[#F7F7F5] text-[#111111]"
+                    activeTab === n.key ? "bg-[var(--fg)] text-[var(--surface)]" : "bg-[var(--secondary)] text-[color:var(--fg)]"
                   }`}
                 >
                   {n.icon}

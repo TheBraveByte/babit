@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "./router";
-import { IconSearch, IconActivity, IconCpu, IconGitBranch, IconFileText, IconShieldCheck, IconSettings } from "./icons";
+import { IconSearch, IconActivity, IconCpu, IconGitBranch, IconFileText, IconShieldCheck, IconSettings, IconLayers } from "./icons";
 
 interface CommandItem {
   id: string;
@@ -79,6 +79,14 @@ export function CommandPalette({
       action: () => { navigate("/dashboard/delegations"); onClose(); },
     },
     {
+      id: "nav-sessions",
+      category: "Navigation",
+      title: "Sessions",
+      subtitle: "Inspect a capture session's external anchor",
+      icon: <IconLayers className="w-4 h-4 text-neutral-500" />,
+      action: () => { navigate("/dashboard/sessions"); onClose(); },
+    },
+    {
       id: "nav-receipts",
       category: "Navigation",
       title: "Receipts",
@@ -134,13 +142,13 @@ export function CommandPalette({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl bg-white border border-[#E8E8E5] rounded-babit-md shadow-2xl overflow-hidden font-sans"
+        className="w-full max-w-xl bg-[var(--surface)] border border-[color:var(--border)] rounded-babit-md shadow-2xl overflow-hidden font-sans"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDownList}
       >
         {/* Search Header */}
-        <div className="flex items-center px-4 py-3.5 border-b border-[#E8E8E5] gap-3">
-          <IconSearch className="w-4 h-4 text-[#6B6B6B]" />
+        <div className="flex items-center px-4 py-3.5 border-b border-[color:var(--border)] gap-3">
+          <IconSearch className="w-4 h-4 text-[color:var(--muted)]" />
           <input
             ref={inputRef}
             type="text"
@@ -150,9 +158,9 @@ export function CommandPalette({
               setSelectedIndex(0);
             }}
             placeholder="Search actions, agents, receipts, or navigate (⌘K)..."
-            className="w-full text-sm outline-none text-[#111111] placeholder-[#6B6B6B] bg-transparent"
+            className="w-full text-sm outline-none text-[color:var(--fg)] placeholder:text-[color:var(--muted)] bg-transparent"
           />
-          <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[11px] font-mono text-[#6B6B6B] bg-[#F7F7F5] border border-[#E8E8E5] rounded">
+          <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[11px] font-mono text-[color:var(--muted)] bg-[var(--secondary)] border border-[color:var(--border)] rounded">
             ESC
           </kbd>
         </div>
@@ -160,7 +168,7 @@ export function CommandPalette({
         {/* Results list */}
         <div className="max-h-80 overflow-y-auto p-2 space-y-1">
           {filtered.length === 0 ? (
-            <div className="py-8 text-center text-xs text-[#6B6B6B] font-mono">
+            <div className="py-8 text-center text-xs text-[color:var(--muted)] font-mono">
               No matching records or commands found.
             </div>
           ) : (
@@ -172,21 +180,21 @@ export function CommandPalette({
                   onClick={item.action}
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`w-full text-left px-3 py-2.5 rounded-babit flex items-center justify-between transition-colors cursor-pointer ${
-                    isSelected ? "bg-[#F7F7F5] text-[#111111]" : "text-[#111111] hover:bg-[#F7F7F5]"
+                    isSelected ? "bg-[var(--secondary)] text-[color:var(--fg)]" : "text-[color:var(--fg)] hover:bg-[var(--secondary)]"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-1 rounded bg-[#FCFCFB] border border-[#E8E8E5]">
+                    <div className="p-1 rounded bg-[var(--bg)] border border-[color:var(--border)]">
                       {item.icon}
                     </div>
                     <div>
                       <div className="text-[13px] font-medium leading-snug">{item.title}</div>
                       {item.subtitle && (
-                        <div className="text-[11px] text-[#6B6B6B] leading-tight">{item.subtitle}</div>
+                        <div className="text-[11px] text-[color:var(--muted)] leading-tight">{item.subtitle}</div>
                       )}
                     </div>
                   </div>
-                  <span className="text-[10px] font-mono uppercase text-[#6B6B6B] bg-[#FCFCFB] px-1.5 py-0.5 rounded border border-[#E8E8E5]">
+                  <span className="text-[10px] font-mono uppercase text-[color:var(--muted)] bg-[var(--bg)] px-1.5 py-0.5 rounded border border-[color:var(--border)]">
                     {item.category}
                   </span>
                 </button>
@@ -196,7 +204,7 @@ export function CommandPalette({
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-[#E8E8E5] bg-[#F7F7F5] flex items-center justify-between text-[11px] text-[#6B6B6B] font-mono">
+        <div className="px-4 py-2 border-t border-[color:var(--border)] bg-[var(--secondary)] flex items-center justify-between text-[11px] text-[color:var(--muted)] font-mono">
           <div className="flex items-center gap-2">
             <span>↑↓ to navigate</span>
             <span>•</span>
