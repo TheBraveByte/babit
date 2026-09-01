@@ -396,7 +396,7 @@ const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\acapture\x12'Record and notarize one executed action\x82\xd3\xe4\x93\x02&:\x01*\"!/v1/sessions/{session_id}/actions\x12\xa6\x01\n" +
 	"\n" +
 	"EndSession\x12#.solari.ledger.v1.EndSessionRequest\x1a$.solari.ledger.v1.EndSessionResponse\"M\x92A\"\n" +
-	"\acapture\x12\x17Close a capture session\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/sessions/{session_id}:endB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\acapture\x12\x17Close a capture session\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/sessions/{session_id}/endB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_capture_proto_rawDescOnce sync.Once

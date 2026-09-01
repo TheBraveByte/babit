@@ -31,7 +31,7 @@ service CaptureService {
   }
   rpc EndSession(EndSessionRequest) returns (EndSessionResponse) {
     option (google.api.http) = {
-      post: "/v1/sessions/{session_id}:end"
+      post: "/v1/sessions/{session_id}/end"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {

@@ -38,7 +38,7 @@ service DelegationService {
   }
   rpc Revoke(RevokeRequest) returns (RevokeResponse) {
     option (google.api.http) = {
-      post: "/v1/grants/{grant_id}:revoke"
+      post: "/v1/grants/{grant_id}/revoke"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {

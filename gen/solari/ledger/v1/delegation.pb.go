@@ -473,7 +473,7 @@ const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
 	"delegation\x12*Verify a delegation chain back to its root\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/grants/{grant_id}:verify\x12\xa7\x01\n" +
 	"\x06Revoke\x12\x1f.solari.ledger.v1.RevokeRequest\x1a .solari.ledger.v1.RevokeResponse\"Z\x92A0\n" +
 	"\n" +
-	"delegation\x12\"Revoke a grant and its descendants\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/grants/{grant_id}:revokeB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"delegation\x12\"Revoke a grant and its descendants\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/grants/{grant_id}/revokeB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_delegation_proto_rawDescOnce sync.Once

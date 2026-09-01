@@ -204,7 +204,7 @@ func RegisterCaptureServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/solari.ledger.v1.CaptureService/EndSession", runtime.WithHTTPPathPattern("/v1/sessions/{session_id}:end"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/solari.ledger.v1.CaptureService/EndSession", runtime.WithHTTPPathPattern("/v1/sessions/{session_id}/end"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -296,7 +296,7 @@ func RegisterCaptureServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/solari.ledger.v1.CaptureService/EndSession", runtime.WithHTTPPathPattern("/v1/sessions/{session_id}:end"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/solari.ledger.v1.CaptureService/EndSession", runtime.WithHTTPPathPattern("/v1/sessions/{session_id}/end"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -315,7 +315,7 @@ func RegisterCaptureServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 var (
 	pattern_CaptureService_BeginSession_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "sessions"}, ""))
 	pattern_CaptureService_RecordAction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "sessions", "session_id", "actions"}, ""))
-	pattern_CaptureService_EndSession_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "sessions", "session_id"}, "end"))
+	pattern_CaptureService_EndSession_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "sessions", "session_id", "end"}, ""))
 )
 
 var (

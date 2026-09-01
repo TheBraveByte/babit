@@ -90,7 +90,7 @@ Grants and delegation:
 POST /v1/grants:root                    issue a root grant
 POST /v1/grants                         delegate a scoped sub-grant
 GET  /v1/grants/{grant_id}:verify       verify a delegation chain
-POST /v1/grants/{grant_id}:revoke       revoke a grant
+POST /v1/grants/{grant_id}/revoke       revoke a grant
 ```
 
 Capture and sessions:
@@ -98,7 +98,7 @@ Capture and sessions:
 ```
 POST /v1/sessions                       begin a capture session
 POST /v1/sessions/{session_id}/actions  record and notarize an action
-POST /v1/sessions/{session_id}:end      end a session and checkpoint
+POST /v1/sessions/{session_id}/end      end a session and checkpoint
 GET  /v1/sessions/{session_id}:replay   stream a deterministic replay
 GET  /v1/sessions/{session_id}/anchor   fetch the session's anchor
 ```

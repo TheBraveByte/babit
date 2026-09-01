@@ -245,7 +245,7 @@ func RegisterDelegationServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/solari.ledger.v1.DelegationService/Revoke", runtime.WithHTTPPathPattern("/v1/grants/{grant_id}:revoke"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/solari.ledger.v1.DelegationService/Revoke", runtime.WithHTTPPathPattern("/v1/grants/{grant_id}/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -354,7 +354,7 @@ func RegisterDelegationServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/solari.ledger.v1.DelegationService/Revoke", runtime.WithHTTPPathPattern("/v1/grants/{grant_id}:revoke"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/solari.ledger.v1.DelegationService/Revoke", runtime.WithHTTPPathPattern("/v1/grants/{grant_id}/revoke"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -374,7 +374,7 @@ var (
 	pattern_DelegationService_IssueRootGrant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "grants"}, "root"))
 	pattern_DelegationService_Delegate_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "grants"}, ""))
 	pattern_DelegationService_VerifyChain_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "grants", "grant_id"}, "verify"))
-	pattern_DelegationService_Revoke_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "grants", "grant_id"}, "revoke"))
+	pattern_DelegationService_Revoke_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "grants", "grant_id", "revoke"}, ""))
 )
 
 var (
