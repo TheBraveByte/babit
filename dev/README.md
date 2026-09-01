@@ -24,6 +24,6 @@ there only if the server was started with `NAL_API_KEY` (this is babit's gateway
 the Solari key).
 
 Environments:
-- `dev` — the local gateway (`make run` + `make gateway`).
-- `render` — the deployed instance. Select it in the HTTP Client and run the same steps
+- `dev`: the local gateway (`make run` + `make gateway`).
+- `render`: the deployed instance. Select it in the HTTP Client and run the same steps
   against the live service.

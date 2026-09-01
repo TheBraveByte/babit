@@ -11,12 +11,12 @@ identity, delegation, and independently verifiable evidence.
 A human issues a root grant; agents delegate scoped, signed sub-grants. Each action is
 recorded against a grant, hash-chained, signed (Ed25519), and folded into a Merkle root
 committed to an external anchor. A receipt (event, delegation chain, inclusion proof,
-anchor, public key) verifies offline — change one byte and verification fails.
+anchor, public key) verifies offline. Change one byte and verification fails.
 
 ## Architecture
 
 Proto-first: the contract in `proto/` generates the Go types, gRPC, REST gateway, and
-OpenAPI. Dependencies run one way — `gateway -> services -> core <- adapters`.
+OpenAPI. Dependencies run one way: `gateway -> services -> core <- adapters`.
 
 ```
 proto/solari/ledger/v1/   contract (one file per service)

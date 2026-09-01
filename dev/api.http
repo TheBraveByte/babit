@@ -1,4 +1,4 @@
-### Notarized Action Ledger - manual API walkthrough
+### Babit API walkthrough
 ###
 ### Prerequisites:
 ###   make db-up      # Postgres

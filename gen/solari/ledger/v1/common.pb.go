@@ -735,8 +735,8 @@ const file_solari_ledger_v1_common_proto_rawDesc = "" +
 	"\x13SURFACE_UNSPECIFIED\x10\x00\x12\x13\n" +
 	"\x0fSURFACE_BROWSER\x10\x01\x12\x13\n" +
 	"\x0fSURFACE_SANDBOX\x10\x02\x12\x13\n" +
-	"\x0fSURFACE_DESKTOP\x10\x03B\xd8\x01\x92A\xa0\x01\x12w\n" +
-	"\x17Notarized Action Ledger\x12UTamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari.2\x051.0.0*\x01\x022\x10application/json:\x10application/jsonZ2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\x0fSURFACE_DESKTOP\x10\x03B\xe8\x01\x92A\xb0\x01\x12\x86\x01\n" +
+	"\x05Babit\x12vBabit Notarized Action Ledger. A tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari.2\x051.0.0*\x01\x022\x10application/json:\x10application/jsonZ2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_common_proto_rawDescOnce sync.Once
