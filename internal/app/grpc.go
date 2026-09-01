@@ -1,0 +1,94 @@
+package app
+
+import (
+	"context"
+	"encoding/hex"
+	"fmt"
+	"log"
+
+	"github.com/babit/nal/config"
+	"github.com/babit/nal/db"
+	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/adapters/anchor"
+	"github.com/babit/nal/internal/adapters/solari"
+	"github.com/babit/nal/internal/adapters/store"
+	"github.com/babit/nal/internal/core/clock"
+	"github.com/babit/nal/internal/core/graph"
+	"github.com/babit/nal/internal/core/ids"
+	"github.com/babit/nal/internal/core/merkle"
+	"github.com/babit/nal/internal/core/seal"
+	"github.com/babit/nal/internal/core/sign"
+	"github.com/babit/nal/internal/errs"
+	"github.com/babit/nal/internal/ports"
+	"github.com/babit/nal/internal/service"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
+)
+
+func NewGRPCServer(ctx context.Context, cfg *config.Config) (*grpc.Server, error) {
+	if err := db.Init(ctx, cfg.DatabaseURL); err != nil {
+		return nil, fmt.Errorf("init db: %w", err)
+	}
+	signer, err := notarySigner(cfg.NotarySeed)
+	if err != nil {
+		return nil, err
+	}
+	st := store.New(db.Q)
+	sealer := seal.New(signer)
+	tree := merkle.New()
+	verifier := graph.New(signer)
+	idgen := ids.New()
+	clk := clock.System()
+	anc := anchor.NewInMemory(clk)
+	sol := solariClient(cfg.Solari)
+	notaryCore := service.NewNotaryCore(st.Events(), sealer, tree, anc)
+
+	srv := grpc.NewServer(grpc.ChainUnaryInterceptor(apiKeyInterceptor(cfg.APIKey), errs.UnaryInterceptor()))
+	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), signer, verifier, idgen, clk))
+	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer))
+	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), verifier, notaryCore, notaryCore, idgen, clk))
+	ledgerv1.RegisterLedgerServiceServer(srv, service.NewLedger(st.Events(), st.Grants(), tree, anc))
+	ledgerv1.RegisterReplayServiceServer(srv, service.NewReplay(st.Events(), sol))
+	ledgerv1.RegisterVerifyServiceServer(srv, service.NewVerify(signer, tree, verifier, clk))
+	return srv, nil
+}
+
+func notarySigner(seedHex string) (*sign.Signer, error) {
+	if seedHex == "" {
+		log.Print("NAL_NOTARY_SEED unset: generating an ephemeral notary key (receipts break across restarts)")
+		return sign.NewEd25519()
+	}
+	seed, err := hex.DecodeString(seedHex)
+	if err != nil {
+		return nil, fmt.Errorf("decode NAL_NOTARY_SEED: %w", err)
+	}
+	return sign.FromSeed(seed)
+}
+
+func solariClient(cfg config.SolariConfig) ports.Solari {
+	if cfg.APIKey == "" {
+		log.Print("solari disabled: SOLARI_API_KEY not set")
+		return solari.Disabled()
+	}
+	c, err := solari.New(cfg.APIKey, cfg.BaseURL)
+	if err != nil {
+		log.Printf("solari disabled: %v", err)
+		return solari.Disabled()
+	}
+	return c
+}
+
+func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+		if want == "" {
+			return handler(ctx, req)
+		}
+		md, ok := metadata.FromIncomingContext(ctx)
+		if !ok || len(md.Get("x-api-key")) == 0 || md.Get("x-api-key")[0] != want {
+			return nil, status.Error(codes.Unauthenticated, "missing or invalid x-api-key")
+		}
+		return handler(ctx, req)
+	}
+}

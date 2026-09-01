@@ -19,6 +19,7 @@ type Config struct {
 	DatabaseURL string `env:"DATABASE_URL" envDefault:"postgres://postgres:pass@localhost:55432/nal?sslmode=disable"`
 	NotarySeed  string `env:"NAL_NOTARY_SEED" envDefault:""`
 	APIKey      string `env:"NAL_API_KEY" envDefault:""`
+	Port        string `env:"PORT" envDefault:""`
 	Solari      SolariConfig
 }
 
@@ -35,6 +36,10 @@ func Load() (*Config, error) {
 	if err := env.Parse(&c); err != nil {
 		return nil, fmt.Errorf("parse env: %w", err)
 	}
+	// Render and similar platforms inject the web port as PORT.
+	if c.Port != "" {
+		c.HTTPAddr = ":" + c.Port
+	}
 	if err := c.validate(); err != nil {
 		return nil, err
 	}
@@ -46,13 +51,8 @@ func (c *Config) validate() error {
 	if c.DatabaseURL == "" {
 		missing = append(missing, "DATABASE_URL")
 	}
-	if c.Environment == "PROD" {
-		if c.NotarySeed == "" {
-			missing = append(missing, "NAL_NOTARY_SEED")
-		}
-		if c.Solari.APIKey == "" {
-			missing = append(missing, "SOLARI_API_KEY")
-		}
+	if c.Environment == "PROD" && c.NotarySeed == "" {
+		missing = append(missing, "NAL_NOTARY_SEED")
 	}
 	if len(missing) > 0 {
 		return fmt.Errorf("missing required config: %s", strings.Join(missing, ", "))
