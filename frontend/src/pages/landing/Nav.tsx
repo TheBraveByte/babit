@@ -19,7 +19,6 @@ export function Nav() {
 
   const navLinks = [
     { label: "Product", href: "#product" },
-    { label: "How it works", href: "#how-it-works" },
     { label: "Developers", href: "#developers" },
     { label: "Security", href: "#security" },
   ];
@@ -37,26 +36,26 @@ export function Nav() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-md border-b border-neutral-200 py-3 shadow-2xs"
+          ? "bg-[#FCFCFB]/90 backdrop-blur-md border-b border-[#E8E8E5] py-3.5"
           : "bg-transparent py-5"
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5">
-          <BabitLogo className="w-5 h-5 text-neutral-900" />
-          <span className="font-semibold text-base tracking-tight font-mono text-neutral-900">
+          <BabitLogo className="w-5 h-5 text-[#111111]" />
+          <span className="font-semibold text-[15px] tracking-tight font-mono text-[#111111]">
             babit
           </span>
         </Link>
 
         {/* Desktop Nav - 14-15px typography */}
-        <nav className="hidden md:flex items-center gap-7">
+        <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((item) => (
             <button
               key={item.label}
               onClick={() => scrollTo(item.href)}
-              className="text-[14px] font-medium text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
+              className="text-[14px] font-medium text-[#6B6B6B] hover:text-[#111111] transition-colors cursor-pointer"
             >
               {item.label}
             </button>
@@ -68,7 +67,7 @@ export function Nav() {
           {isAuthenticated ? (
             <button
               onClick={() => navigate("/dashboard")}
-              className="px-4 py-2 text-[14px] font-medium bg-neutral-900 text-white rounded-md hover:bg-neutral-800 transition-all cursor-pointer shadow-2xs"
+              className="px-4 py-2 text-[14px] font-medium bg-[#111111] text-white rounded-babit hover:bg-[#222222] transition-all cursor-pointer shadow-2xs"
             >
               Console →
             </button>
@@ -76,13 +75,13 @@ export function Nav() {
             <>
               <button
                 onClick={() => navigate("/login")}
-                className="text-[14px] font-medium text-neutral-700 hover:text-neutral-900 transition-colors cursor-pointer px-3 py-1.5"
+                className="text-[14px] font-medium text-[#6B6B6B] hover:text-[#111111] transition-colors cursor-pointer px-2.5 py-1.5"
               >
                 Sign in
               </button>
               <button
                 onClick={() => navigate("/signup")}
-                className="px-4 py-2 text-[14px] font-medium bg-neutral-900 text-white rounded-md hover:bg-neutral-800 transition-all cursor-pointer shadow-2xs"
+                className="px-4 py-2 text-[14px] font-medium bg-[#111111] text-white rounded-babit hover:bg-[#222222] transition-all cursor-pointer shadow-2xs"
               >
                 Get started
               </button>
@@ -92,7 +91,7 @@ export function Nav() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-1.5 text-neutral-700 hover:text-neutral-900"
+            className="md:hidden p-1.5 text-[#111111]"
             aria-label="Toggle menu"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,23 +107,23 @@ export function Nav() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-neutral-200 px-4 pt-2 pb-4 space-y-2 animate-fade-in shadow-md">
+        <div className="md:hidden bg-[#FFFFFF] border-b border-[#E8E8E5] px-4 pt-2 pb-4 space-y-2 animate-fade-in shadow-md">
           {navLinks.map((item) => (
             <button
               key={item.label}
               onClick={() => scrollTo(item.href)}
-              className="block w-full text-left py-2.5 text-[14px] text-neutral-700 hover:text-neutral-900 font-medium"
+              className="block w-full text-left py-2.5 text-[14px] text-[#111111] font-medium"
             >
               {item.label}
             </button>
           ))}
-          <div className="pt-3 border-t border-neutral-100 flex flex-col gap-2">
+          <div className="pt-3 border-t border-[#F0F0ED] flex flex-col gap-2">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 navigate("/login");
               }}
-              className="w-full text-center py-2.5 text-[14px] text-neutral-700 font-medium"
+              className="w-full text-center py-2.5 text-[14px] text-[#111111] font-medium"
             >
               Sign in
             </button>
@@ -133,7 +132,7 @@ export function Nav() {
                 setMobileMenuOpen(false);
                 navigate("/signup");
               }}
-              className="w-full text-center py-2.5 text-[14px] bg-neutral-900 text-white rounded-md font-medium"
+              className="w-full text-center py-2.5 text-[14px] bg-[#111111] text-white rounded-babit font-medium"
             >
               Get started
             </button>
