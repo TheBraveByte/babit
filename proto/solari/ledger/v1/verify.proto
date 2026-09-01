@@ -16,7 +16,6 @@ service VerifyService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Verify chain, signature, anchor and authority of a proof"
-      tags: "verify"
     };
   }
 }

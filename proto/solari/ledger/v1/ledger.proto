@@ -13,14 +13,12 @@ service LedgerService {
     option (google.api.http) = {get: "/v1/events/{event_id}"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Read a sealed action event"
-      tags: "ledger"
     };
   }
   rpc GetInclusionProof(GetInclusionProofRequest) returns (GetInclusionProofResponse) {
     option (google.api.http) = {get: "/v1/events/{event_id}:proof"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Build an offline-verifiable inclusion proof"
-      tags: "ledger"
     };
   }
 }

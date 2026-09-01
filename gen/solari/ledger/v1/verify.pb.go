@@ -164,10 +164,9 @@ const file_solari_ledger_v1_verify_proto_rawDesc = "" +
 	"\x0fsignature_valid\x18\x03 \x01(\bR\x0esignatureValid\x12\x1a\n" +
 	"\banchored\x18\x04 \x01(\bR\banchored\x12'\n" +
 	"\x0fauthority_valid\x18\x05 \x01(\bR\x0eauthorityValid\x12\x16\n" +
-	"\x06reason\x18\x06 \x01(\tR\x06reason:n\x92Ak2i{\"valid\":true,\"chainIntact\":true,\"signatureValid\":true,\"anchored\":true,\"authorityValid\":true,\"reason\":\"\"}2\xcf\x01\n" +
-	"\rVerifyService\x12\xbd\x01\n" +
-	"\vVerifyProof\x12$.solari.ledger.v1.VerifyProofRequest\x1a%.solari.ledger.v1.VerifyProofResponse\"a\x92AB\n" +
-	"\x06verify\x128Verify chain, signature, anchor and authority of a proof\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/proofs:verifyB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\x06reason\x18\x06 \x01(\tR\x06reason:n\x92Ak2i{\"valid\":true,\"chainIntact\":true,\"signatureValid\":true,\"anchored\":true,\"authorityValid\":true,\"reason\":\"\"}2\xc7\x01\n" +
+	"\rVerifyService\x12\xb5\x01\n" +
+	"\vVerifyProof\x12$.solari.ledger.v1.VerifyProofRequest\x1a%.solari.ledger.v1.VerifyProofResponse\"Y\x92A:\x128Verify chain, signature, anchor and authority of a proof\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/proofs:verifyB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_verify_proto_rawDescOnce sync.Once

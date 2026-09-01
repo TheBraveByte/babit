@@ -14,14 +14,12 @@ service NotaryService {
     option (google.api.http) = {get: "/v1/sessions/{session_id}/anchor"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Fetch the external anchor for a session"
-      tags: "notary"
     };
   }
   rpc GetPublicKey(GetPublicKeyRequest) returns (GetPublicKeyResponse) {
     option (google.api.http) = {get: "/v1/notary/public-key"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Fetch the notary public key for offline verification"
-      tags: "notary"
     };
   }
 }

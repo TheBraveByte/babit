@@ -459,21 +459,13 @@ const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
 	"\bgrant_id\x18\x01 \x01(\tR\agrantId\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\"*\n" +
 	"\x0eRevokeResponse\x12\x18\n" +
-	"\arevoked\x18\x01 \x01(\bR\arevoked2\xe4\x05\n" +
-	"\x11DelegationService\x12\xb8\x01\n" +
-	"\x0eIssueRootGrant\x12'.solari.ledger.v1.IssueRootGrantRequest\x1a(.solari.ledger.v1.IssueRootGrantResponse\"S\x92A6\n" +
-	"\n" +
-	"delegation\x12(Issue a root grant for a human principal\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/grants:root\x12\xab\x01\n" +
-	"\bDelegate\x12!.solari.ledger.v1.DelegateRequest\x1a\".solari.ledger.v1.DelegateResponse\"X\x92A@\n" +
-	"\n" +
-	"delegation\x122Delegate scoped authority to an agent or sub-agent\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
-	"/v1/grants\x12\xbb\x01\n" +
-	"\vVerifyChain\x12$.solari.ledger.v1.VerifyChainRequest\x1a%.solari.ledger.v1.VerifyChainResponse\"_\x92A8\n" +
-	"\n" +
-	"delegation\x12*Verify a delegation chain back to its root\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/grants/{grant_id}:verify\x12\xa7\x01\n" +
-	"\x06Revoke\x12\x1f.solari.ledger.v1.RevokeRequest\x1a .solari.ledger.v1.RevokeResponse\"Z\x92A0\n" +
-	"\n" +
-	"delegation\x12\"Revoke a grant and its descendants\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/grants/{grant_id}/revokeB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\arevoked\x18\x01 \x01(\bR\arevoked2\xb4\x05\n" +
+	"\x11DelegationService\x12\xac\x01\n" +
+	"\x0eIssueRootGrant\x12'.solari.ledger.v1.IssueRootGrantRequest\x1a(.solari.ledger.v1.IssueRootGrantResponse\"G\x92A*\x12(Issue a root grant for a human principal\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/grants:root\x12\x9f\x01\n" +
+	"\bDelegate\x12!.solari.ledger.v1.DelegateRequest\x1a\".solari.ledger.v1.DelegateResponse\"L\x92A4\x122Delegate scoped authority to an agent or sub-agent\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
+	"/v1/grants\x12\xaf\x01\n" +
+	"\vVerifyChain\x12$.solari.ledger.v1.VerifyChainRequest\x1a%.solari.ledger.v1.VerifyChainResponse\"S\x92A,\x12*Verify a delegation chain back to its root\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/grants/{grant_id}:verify\x12\x9b\x01\n" +
+	"\x06Revoke\x12\x1f.solari.ledger.v1.RevokeRequest\x1a .solari.ledger.v1.RevokeResponse\"N\x92A$\x12\"Revoke a grant and its descendants\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/grants/{grant_id}/revokeB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_delegation_proto_rawDescOnce sync.Once

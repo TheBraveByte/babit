@@ -211,12 +211,10 @@ const file_solari_ledger_v1_ledger_proto_rawDesc = "" +
 	"\x18GetInclusionProofRequest\x12\x19\n" +
 	"\bevent_id\x18\x01 \x01(\tR\aeventId\"J\n" +
 	"\x19GetInclusionProofResponse\x12-\n" +
-	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof2\xf5\x02\n" +
-	"\rLedgerService\x12\x97\x01\n" +
-	"\bGetEvent\x12!.solari.ledger.v1.GetEventRequest\x1a\".solari.ledger.v1.GetEventResponse\"D\x92A$\n" +
-	"\x06ledger\x12\x1aRead a sealed action event\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/events/{event_id}\x12\xc9\x01\n" +
-	"\x11GetInclusionProof\x12*.solari.ledger.v1.GetInclusionProofRequest\x1a+.solari.ledger.v1.GetInclusionProofResponse\"[\x92A5\n" +
-	"\x06ledger\x12+Build an offline-verifiable inclusion proof\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/events/{event_id}:proofB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof2\xe5\x02\n" +
+	"\rLedgerService\x12\x8f\x01\n" +
+	"\bGetEvent\x12!.solari.ledger.v1.GetEventRequest\x1a\".solari.ledger.v1.GetEventResponse\"<\x92A\x1c\x12\x1aRead a sealed action event\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/events/{event_id}\x12\xc1\x01\n" +
+	"\x11GetInclusionProof\x12*.solari.ledger.v1.GetInclusionProofRequest\x1a+.solari.ledger.v1.GetInclusionProofResponse\"S\x92A-\x12+Build an offline-verifiable inclusion proof\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/events/{event_id}:proofB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_ledger_proto_rawDescOnce sync.Once

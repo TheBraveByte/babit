@@ -5,26 +5,6 @@
     "description": "Tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari.",
     "version": "1.0.0"
   },
-  "tags": [
-    {
-      "name": "CaptureService"
-    },
-    {
-      "name": "DelegationService"
-    },
-    {
-      "name": "LedgerService"
-    },
-    {
-      "name": "NotaryService"
-    },
-    {
-      "name": "ReplayService"
-    },
-    {
-      "name": "VerifyService"
-    }
-  ],
   "schemes": [
     "https"
   ],
@@ -60,9 +40,6 @@
             "required": true,
             "type": "string"
           }
-        ],
-        "tags": [
-          "ledger"
         ]
       }
     },
@@ -91,9 +68,6 @@
             "required": true,
             "type": "string"
           }
-        ],
-        "tags": [
-          "ledger"
         ]
       }
     },
@@ -124,9 +98,6 @@
               "$ref": "#/definitions/v1DelegateRequest"
             }
           }
-        ],
-        "tags": [
-          "delegation"
         ]
       }
     },
@@ -163,9 +134,6 @@
               "$ref": "#/definitions/DelegationServiceRevokeBody"
             }
           }
-        ],
-        "tags": [
-          "delegation"
         ]
       }
     },
@@ -194,9 +162,6 @@
             "required": true,
             "type": "string"
           }
-        ],
-        "tags": [
-          "delegation"
         ]
       }
     },
@@ -227,9 +192,6 @@
               "$ref": "#/definitions/v1IssueRootGrantRequest"
             }
           }
-        ],
-        "tags": [
-          "delegation"
         ]
       }
     },
@@ -250,10 +212,7 @@
               "$ref": "#/definitions/rpcStatus"
             }
           }
-        },
-        "tags": [
-          "notary"
-        ]
+        }
       }
     },
     "/v1/proofs:verify": {
@@ -283,9 +242,6 @@
               "$ref": "#/definitions/v1VerifyProofRequest"
             }
           }
-        ],
-        "tags": [
-          "verify"
         ]
       }
     },
@@ -316,9 +272,6 @@
               "$ref": "#/definitions/v1BeginSessionRequest"
             }
           }
-        ],
-        "tags": [
-          "capture"
         ]
       }
     },
@@ -355,9 +308,6 @@
               "$ref": "#/definitions/CaptureServiceRecordActionBody"
             }
           }
-        ],
-        "tags": [
-          "capture"
         ]
       }
     },
@@ -386,9 +336,6 @@
             "required": true,
             "type": "string"
           }
-        ],
-        "tags": [
-          "notary"
         ]
       }
     },
@@ -425,9 +372,6 @@
               "$ref": "#/definitions/CaptureServiceEndSessionBody"
             }
           }
-        ],
-        "tags": [
-          "capture"
         ]
       }
     },
@@ -465,9 +409,6 @@
             "required": true,
             "type": "string"
           }
-        ],
-        "tags": [
-          "replay"
         ]
       }
     }

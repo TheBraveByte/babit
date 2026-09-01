@@ -129,10 +129,9 @@ const file_solari_ledger_v1_replay_proto_rawDesc = "" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"^\n" +
 	"\x11GetReplayResponse\x123\n" +
 	"\x05event\x18\x01 \x01(\v2\x1d.solari.ledger.v1.ActionEventR\x05event\x12\x14\n" +
-	"\x05frame\x18\x02 \x01(\fR\x05frame2\xc4\x01\n" +
-	"\rReplayService\x12\xb2\x01\n" +
-	"\tGetReplay\x12\".solari.ledger.v1.GetReplayRequest\x1a#.solari.ledger.v1.GetReplayResponse\"Z\x92A/\n" +
-	"\x06replay\x12%Stream a deterministic session replay\x82\xd3\xe4\x93\x02\"\x12 /v1/sessions/{session_id}:replay0\x01B4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\x05frame\x18\x02 \x01(\fR\x05frame2\xbc\x01\n" +
+	"\rReplayService\x12\xaa\x01\n" +
+	"\tGetReplay\x12\".solari.ledger.v1.GetReplayRequest\x1a#.solari.ledger.v1.GetReplayResponse\"R\x92A'\x12%Stream a deterministic session replay\x82\xd3\xe4\x93\x02\"\x12 /v1/sessions/{session_id}:replay0\x01B4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_replay_proto_rawDescOnce sync.Once

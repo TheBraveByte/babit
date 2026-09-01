@@ -16,7 +16,6 @@ service DelegationService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Issue a root grant for a human principal"
-      tags: "delegation"
     };
   }
   rpc Delegate(DelegateRequest) returns (DelegateResponse) {
@@ -26,14 +25,12 @@ service DelegationService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Delegate scoped authority to an agent or sub-agent"
-      tags: "delegation"
     };
   }
   rpc VerifyChain(VerifyChainRequest) returns (VerifyChainResponse) {
     option (google.api.http) = {get: "/v1/grants/{grant_id}:verify"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Verify a delegation chain back to its root"
-      tags: "delegation"
     };
   }
   rpc Revoke(RevokeRequest) returns (RevokeResponse) {
@@ -43,7 +40,6 @@ service DelegationService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Revoke a grant and its descendants"
-      tags: "delegation"
     };
   }
 }
