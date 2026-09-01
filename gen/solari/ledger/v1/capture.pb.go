@@ -388,15 +388,12 @@ const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"I\n" +
 	"\x12EndSessionResponse\x123\n" +
-	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession2\xaf\x04\n" +
-	"\x0eCaptureService\x12\xb0\x01\n" +
-	"\fBeginSession\x12%.solari.ledger.v1.BeginSessionRequest\x1a&.solari.ledger.v1.BeginSessionResponse\"Q\x92A7\n" +
-	"\acapture\x12,Open a capture session bound to a root grant\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/sessions\x12\xc0\x01\n" +
-	"\fRecordAction\x12%.solari.ledger.v1.RecordActionRequest\x1a&.solari.ledger.v1.RecordActionResponse\"a\x92A2\n" +
-	"\acapture\x12'Record and notarize one executed action\x82\xd3\xe4\x93\x02&:\x01*\"!/v1/sessions/{session_id}/actions\x12\xa6\x01\n" +
+	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession2\x94\x04\n" +
+	"\x0eCaptureService\x12\xa7\x01\n" +
+	"\fBeginSession\x12%.solari.ledger.v1.BeginSessionRequest\x1a&.solari.ledger.v1.BeginSessionResponse\"H\x92A.\x12,Open a capture session bound to a root grant\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/sessions\x12\xb7\x01\n" +
+	"\fRecordAction\x12%.solari.ledger.v1.RecordActionRequest\x1a&.solari.ledger.v1.RecordActionResponse\"X\x92A)\x12'Record and notarize one executed action\x82\xd3\xe4\x93\x02&:\x01*\"!/v1/sessions/{session_id}/actions\x12\x9d\x01\n" +
 	"\n" +
-	"EndSession\x12#.solari.ledger.v1.EndSessionRequest\x1a$.solari.ledger.v1.EndSessionResponse\"M\x92A\"\n" +
-	"\acapture\x12\x17Close a capture session\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/sessions/{session_id}/endB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"EndSession\x12#.solari.ledger.v1.EndSessionRequest\x1a$.solari.ledger.v1.EndSessionResponse\"D\x92A\x19\x12\x17Close a capture session\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/sessions/{session_id}/endB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_capture_proto_rawDescOnce sync.Once

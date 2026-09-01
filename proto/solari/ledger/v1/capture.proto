@@ -16,7 +16,6 @@ service CaptureService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Open a capture session bound to a root grant"
-      tags: "capture"
     };
   }
   rpc RecordAction(RecordActionRequest) returns (RecordActionResponse) {
@@ -26,7 +25,6 @@ service CaptureService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Record and notarize one executed action"
-      tags: "capture"
     };
   }
   rpc EndSession(EndSessionRequest) returns (EndSessionResponse) {
@@ -36,7 +34,6 @@ service CaptureService {
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Close a capture session"
-      tags: "capture"
     };
   }
 }

@@ -305,13 +305,11 @@ const file_solari_ledger_v1_notary_proto_rawDesc = "" +
 	"\x14GetPublicKeyResponse\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x1d\n" +
 	"\n" +
-	"public_key\x18\x02 \x01(\fR\tpublicKey2\xd7\x03\n" +
+	"public_key\x18\x02 \x01(\fR\tpublicKey2\xc7\x03\n" +
 	"\rNotaryService\x12Q\n" +
-	"\bNotarize\x12!.solari.ledger.v1.NotarizeRequest\x1a\".solari.ledger.v1.NotarizeResponse\x12\xb2\x01\n" +
-	"\tGetAnchor\x12\".solari.ledger.v1.GetAnchorRequest\x1a#.solari.ledger.v1.GetAnchorResponse\"\\\x92A1\n" +
-	"\x06notary\x12'Fetch the external anchor for a session\x82\xd3\xe4\x93\x02\"\x12 /v1/sessions/{session_id}/anchor\x12\xbd\x01\n" +
-	"\fGetPublicKey\x12%.solari.ledger.v1.GetPublicKeyRequest\x1a&.solari.ledger.v1.GetPublicKeyResponse\"^\x92A>\n" +
-	"\x06notary\x124Fetch the notary public key for offline verification\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/notary/public-keyB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\bNotarize\x12!.solari.ledger.v1.NotarizeRequest\x1a\".solari.ledger.v1.NotarizeResponse\x12\xaa\x01\n" +
+	"\tGetAnchor\x12\".solari.ledger.v1.GetAnchorRequest\x1a#.solari.ledger.v1.GetAnchorResponse\"T\x92A)\x12'Fetch the external anchor for a session\x82\xd3\xe4\x93\x02\"\x12 /v1/sessions/{session_id}/anchor\x12\xb5\x01\n" +
+	"\fGetPublicKey\x12%.solari.ledger.v1.GetPublicKeyRequest\x1a&.solari.ledger.v1.GetPublicKeyResponse\"V\x92A6\x124Fetch the notary public key for offline verification\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/notary/public-keyB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_notary_proto_rawDescOnce sync.Once

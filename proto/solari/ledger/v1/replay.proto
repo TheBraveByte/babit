@@ -13,7 +13,6 @@ service ReplayService {
     option (google.api.http) = {get: "/v1/sessions/{session_id}:replay"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Stream a deterministic session replay"
-      tags: "replay"
     };
   }
 }
