@@ -59,7 +59,7 @@ func (q *Queries) AppendEvent(ctx context.Context, arg AppendEventParams) error 
 }
 
 const eventsBySession = `-- name: EventsBySession :many
-SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature FROM events
+SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid FROM events
 WHERE session_id = $1
 ORDER BY sequence
 `
@@ -88,6 +88,7 @@ func (q *Queries) EventsBySession(ctx context.Context, sessionID string) ([]Even
 			&i.ContentHash,
 			&i.PrevHash,
 			&i.NotarySignature,
+			&i.Uuid,
 		); err != nil {
 			return nil, err
 		}
@@ -100,7 +101,7 @@ func (q *Queries) EventsBySession(ctx context.Context, sessionID string) ([]Even
 }
 
 const eventsInRange = `-- name: EventsInRange :many
-SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature FROM events
+SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid FROM events
 WHERE sequence >= $1 AND sequence <= $2
 ORDER BY sequence
 `
@@ -134,6 +135,7 @@ func (q *Queries) EventsInRange(ctx context.Context, arg EventsInRangeParams) ([
 			&i.ContentHash,
 			&i.PrevHash,
 			&i.NotarySignature,
+			&i.Uuid,
 		); err != nil {
 			return nil, err
 		}
@@ -146,7 +148,7 @@ func (q *Queries) EventsInRange(ctx context.Context, arg EventsInRangeParams) ([
 }
 
 const getEvent = `-- name: GetEvent :one
-SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature FROM events WHERE event_id = $1
+SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid FROM events WHERE event_id = $1
 `
 
 func (q *Queries) GetEvent(ctx context.Context, eventID string) (Event, error) {
@@ -167,12 +169,13 @@ func (q *Queries) GetEvent(ctx context.Context, eventID string) (Event, error) {
 		&i.ContentHash,
 		&i.PrevHash,
 		&i.NotarySignature,
+		&i.Uuid,
 	)
 	return i, err
 }
 
 const lastEventBySession = `-- name: LastEventBySession :one
-SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature FROM events
+SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid FROM events
 WHERE session_id = $1
 ORDER BY sequence DESC
 LIMIT 1
@@ -196,6 +199,7 @@ func (q *Queries) LastEventBySession(ctx context.Context, sessionID string) (Eve
 		&i.ContentHash,
 		&i.PrevHash,
 		&i.NotarySignature,
+		&i.Uuid,
 	)
 	return i, err
 }
