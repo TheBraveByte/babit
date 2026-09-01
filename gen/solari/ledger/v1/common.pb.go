@@ -667,7 +667,7 @@ var File_solari_ledger_v1_common_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_common_proto_rawDesc = "" +
 	"\n" +
-	"\x1dsolari/ledger/v1/common.proto\x12\x10solari.ledger.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xf0\x04\n" +
+	"\x1dsolari/ledger/v1/common.proto\x12\x10solari.ledger.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\"\xf1\x04\n" +
 	"\x05Grant\x12\x19\n" +
 	"\bgrant_id\x18\x01 \x01(\tR\agrantId\x12&\n" +
 	"\x0fparent_grant_id\x18\x02 \x01(\tR\rparentGrantId\x12!\n" +
@@ -678,11 +678,11 @@ const file_solari_ledger_v1_common_proto_rawDesc = "" +
 	"\x05scope\x18\x06 \x01(\v2\x17.solari.ledger.v1.ScopeR\x05scope\x129\n" +
 	"\n" +
 	"expires_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12)\n" +
-	"\x10parent_signature\x18\b \x01(\fR\x0fparentSignature:\xa8\x02\x92A\xa4\x022\xa1\x02{\"grant_id\":\"grn_2f9a\",\"parent_grant_id\":\"grn_root_88\",\"principal_id\":\"usr_alice\",\"subject_id\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resource_globs\":[\"https://shop.example.com/*\"],\"max_value_cents\":50000,\"max_depth\":2},\"expires_at\":\"2026-09-01T18:00:00Z\"}\"s\n" +
+	"\x10parent_signature\x18\b \x01(\fR\x0fparentSignature:\xa9\x02\x92A\xa5\x022\xa2\x02{\"grant_id\":\"BAL-417849\",\"parent_grant_id\":\"BAL-100200\",\"principal_id\":\"usr_alice\",\"subject_id\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resource_globs\":[\"https://shop.example.com/*\"],\"max_value_cents\":50000,\"max_depth\":2},\"expires_at\":\"2026-09-01T18:00:00Z\"}\"s\n" +
 	"\x05Scope\x12%\n" +
 	"\x0eresource_globs\x18\x01 \x03(\tR\rresourceGlobs\x12&\n" +
 	"\x0fmax_value_cents\x18\x02 \x01(\x03R\rmaxValueCents\x12\x1b\n" +
-	"\tmax_depth\x18\x03 \x01(\x05R\bmaxDepth\"\xf6\x05\n" +
+	"\tmax_depth\x18\x03 \x01(\x05R\bmaxDepth\"\xfc\x05\n" +
 	"\vActionEvent\x12\x19\n" +
 	"\bevent_id\x18\x01 \x01(\tR\aeventId\x12\x1d\n" +
 	"\n" +
@@ -701,7 +701,7 @@ const file_solari_ledger_v1_common_proto_rawDesc = "" +
 	"occurredAt\x12!\n" +
 	"\fcontent_hash\x18\f \x01(\fR\vcontentHash\x12\x1b\n" +
 	"\tprev_hash\x18\r \x01(\fR\bprevHash\x12)\n" +
-	"\x10notary_signature\x18\x0e \x01(\fR\x0fnotarySignature:\xdd\x01\x92A\xd9\x012\xd6\x01{\"event_id\":\"evt_7c31\",\"session_id\":\"ses_4a10\",\"sequence\":7,\"surface\":\"SURFACE_BROWSER\",\"action_type\":\"click\",\"grant_id\":\"grn_2f9a\",\"recording_ref\":\"slr://rec/ses_4a10/frame/7\",\"occurred_at\":\"2026-09-01T12:03:11Z\"}\"\xf4\x01\n" +
+	"\x10notary_signature\x18\x0e \x01(\fR\x0fnotarySignature:\xe3\x01\x92A\xdf\x012\xdc\x01{\"event_id\":\"BAL-778812\",\"session_id\":\"BAL-4a1055\",\"sequence\":7,\"surface\":\"SURFACE_BROWSER\",\"action_type\":\"browser.click\",\"grant_id\":\"BAL-417849\",\"recording_ref\":\"slr://session/demo\",\"occurred_at\":\"2026-09-01T12:03:11Z\"}\"\xf4\x01\n" +
 	"\x05Proof\x123\n" +
 	"\x05event\x18\x01 \x01(\v2\x1d.solari.ledger.v1.ActionEventR\x05event\x12\x1f\n" +
 	"\vmerkle_path\x18\x02 \x03(\fR\n" +

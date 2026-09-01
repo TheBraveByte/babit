@@ -20,7 +20,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 message Grant {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    example: "{\"grant_id\":\"grn_2f9a\",\"parent_grant_id\":\"grn_root_88\",\"principal_id\":\"usr_alice\",\"subject_id\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resource_globs\":[\"https://shop.example.com/*\"],\"max_value_cents\":50000,\"max_depth\":2},\"expires_at\":\"2026-09-01T18:00:00Z\"}"
+    example: "{\"grant_id\":\"BAL-417849\",\"parent_grant_id\":\"BAL-100200\",\"principal_id\":\"usr_alice\",\"subject_id\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resource_globs\":[\"https://shop.example.com/*\"],\"max_value_cents\":50000,\"max_depth\":2},\"expires_at\":\"2026-09-01T18:00:00Z\"}"
   };
   string grant_id = 1;
   string parent_grant_id = 2;
@@ -47,7 +47,7 @@ enum Surface {
 
 message ActionEvent {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    example: "{\"event_id\":\"evt_7c31\",\"session_id\":\"ses_4a10\",\"sequence\":7,\"surface\":\"SURFACE_BROWSER\",\"action_type\":\"click\",\"grant_id\":\"grn_2f9a\",\"recording_ref\":\"slr://rec/ses_4a10/frame/7\",\"occurred_at\":\"2026-09-01T12:03:11Z\"}"
+    example: "{\"event_id\":\"BAL-778812\",\"session_id\":\"BAL-4a1055\",\"sequence\":7,\"surface\":\"SURFACE_BROWSER\",\"action_type\":\"browser.click\",\"grant_id\":\"BAL-417849\",\"recording_ref\":\"slr://session/demo\",\"occurred_at\":\"2026-09-01T12:03:11Z\"}"
   };
   string event_id = 1;
   string session_id = 2;

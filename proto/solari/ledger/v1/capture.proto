@@ -40,7 +40,7 @@ service CaptureService {
 
 message BeginSessionRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    example: "{\"rootGrantId\":\"grn_root_88\",\"surface\":\"SURFACE_BROWSER\"}"
+    example: "{\"root_grant_id\":\"BAL-417849\",\"surface\":\"SURFACE_BROWSER\"}"
   };
   string root_grant_id = 1;
   Surface surface = 2;
@@ -52,7 +52,7 @@ message BeginSessionResponse {
 
 message RecordActionRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    example: "{\"grantId\":\"grn_2f9a\",\"actionType\":\"browser.click\",\"resource\":\"https://shop.example.com/cart\",\"recordingRef\":\"slr://session/demo\"}"
+    example: "{\"grant_id\":\"BAL-417849\",\"action_type\":\"browser.click\",\"resource\":\"https://shop.example.com/cart\",\"recording_ref\":\"slr://session/demo\"}"
   };
   string session_id = 1;
   string grant_id = 2;

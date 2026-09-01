@@ -15,3 +15,4 @@ plugins:
       - allow_merge=true
       - merge_file_name=ledger
       - disable_service_tags=true
+      - json_names_for_fields=false
