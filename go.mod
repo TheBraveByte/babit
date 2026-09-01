@@ -9,6 +9,7 @@ require (
 	github.com/pressly/goose/v3 v3.27.3
 	github.com/solari-sdk/solari-browser-go v0.1.2
 	github.com/solari-sdk/solari-sandbox-go v0.1.2
+	github.com/stretchr/testify v1.12.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20260831171406-18b4a7587f8a
 	google.golang.org/grpc v1.83.0
 	google.golang.org/protobuf v1.36.12
@@ -28,7 +29,9 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/sethvargo/go-retry v0.4.0 // indirect
+	github.com/stretchr/objx v0.5.3 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect

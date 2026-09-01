@@ -1,0 +1,8 @@
+template: testify
+dir: "internal/mocks"
+pkgname: "mocks"
+filename: "{{.InterfaceName}}.go"
+packages:
+  github.com/babit/nal/internal/ports:
+    config:
+      all: true
