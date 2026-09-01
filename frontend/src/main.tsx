@@ -4,6 +4,9 @@ import "./index.css";
 import { App } from "@/App";
 import { RouterProvider } from "@/lib/router";
 import { AuthProvider } from "@/lib/auth";
+import { initTheme } from "@/lib/theme";
+
+initTheme();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
