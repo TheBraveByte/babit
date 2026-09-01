@@ -1,8 +1,15 @@
-### Notarized Action Ledger — manual API walkthrough
-### Run: make db-up && make run (gRPC :9090) and make gateway (REST :8080).
-### Select the "dev" environment, then send requests top to bottom.
+### Notarized Action Ledger - manual API walkthrough
+###
+### Prerequisites:
+###   make db-up      # Postgres
+###   make run        # nald,    gRPC on :9090
+###   make gateway    # gateway, REST on :8080
+###
+### Then select the "dev" environment and run the steps in order (top to bottom).
+### Each step captures what the next one needs and asserts its own result, so you
+### can run them one at a time and watch each pass.
 
-### Issue a root grant for a human principal
+### 1. Issue a root grant for a human principal -> 200
 POST {{host}}/v1/grants:root
 Content-Type: application/json
 X-Api-Key: {{apiKey}}
@@ -13,11 +20,14 @@ X-Api-Key: {{apiKey}}
 }
 
 > {%
+    client.test("1: root issued", () => {
+        client.assert(response.status === 200, "status " + response.status);
+        client.assert(response.body.grant.grantId, "no grantId");
+    });
     client.global.set("rootGrant", response.body.grant.grantId);
-    client.test("root issued", () => client.assert(response.status === 200));
 %}
 
-### Delegate a scoped sub-grant to an agent
+### 2. Delegate a scoped sub-grant to an agent -> 200
 POST {{host}}/v1/grants
 Content-Type: application/json
 X-Api-Key: {{apiKey}}
@@ -30,14 +40,19 @@ X-Api-Key: {{apiKey}}
 }
 
 > {%
+    client.test("2: delegated", () => client.assert(response.status === 200));
     client.global.set("childGrant", response.body.grant.grantId);
 %}
 
-### Verify the delegation chain back to its root
+### 3. Verify the delegation chain back to its root -> valid: true
 GET {{host}}/v1/grants/{{childGrant}}:verify
 X-Api-Key: {{apiKey}}
 
-### Begin a capture session
+> {%
+    client.test("3: chain valid", () => client.assert(response.body.valid === true));
+%}
+
+### 4. Begin a capture session -> 200
 POST {{host}}/v1/sessions
 Content-Type: application/json
 X-Api-Key: {{apiKey}}
@@ -48,10 +63,11 @@ X-Api-Key: {{apiKey}}
 }
 
 > {%
+    client.test("4: session started", () => client.assert(response.status === 200));
     client.global.set("sessionId", response.body.session.sessionId);
 %}
 
-### Record and notarize an action
+### 5. Record and notarize an action -> 200
 POST {{host}}/v1/sessions/{{sessionId}}/actions
 Content-Type: application/json
 X-Api-Key: {{apiKey}}
@@ -64,51 +80,80 @@ X-Api-Key: {{apiKey}}
 }
 
 > {%
+    client.test("5: action recorded", () => client.assert(response.status === 200));
     client.global.set("eventId", response.body.event.eventId);
 %}
 
-### End the session (checkpoints the Merkle root)
+### 6. End the session (checkpoints the Merkle root) -> 200
 POST {{host}}/v1/sessions/{{sessionId}}/end
 Content-Type: application/json
 X-Api-Key: {{apiKey}}
 
 {}
 
-### Read the sealed event
+> {%
+    client.test("6: session ended", () => client.assert(response.status === 200));
+%}
+
+### 7. Read the sealed event -> 200
 GET {{host}}/v1/events/{{eventId}}
 X-Api-Key: {{apiKey}}
 
-### Build an inclusion proof and keep it for verification
+> {%
+    client.test("7: event readable", () => client.assert(response.status === 200));
+%}
+
+### 8. Build an inclusion proof and keep it for step 10 -> 200
 GET {{host}}/v1/events/{{eventId}}:proof
 X-Api-Key: {{apiKey}}
 
 > {%
+    client.test("8: proof built", () => client.assert(response.status === 200));
     client.global.set("proof", JSON.stringify(response.body.proof));
 %}
 
-### Fetch the notary public key (for offline verification)
+### 9. Fetch the notary public key (used for offline verification) -> 200
 GET {{host}}/v1/notary/public-key
 X-Api-Key: {{apiKey}}
 
-### Verify the proof server-side (expect valid: true)
+> {%
+    client.test("9: public key", () => client.assert(response.body.publicKey));
+%}
+
+### 10. Verify the proof server-side -> valid: true, anchored: true
 POST {{host}}/v1/proofs:verify
 Content-Type: application/json
 X-Api-Key: {{apiKey}}
 
 { "proof": {{proof}} }
 
-### Fetch the session anchor
+> {%
+    client.test("10: proof verifies", () => {
+        client.assert(response.body.valid === true, "not valid");
+        client.assert(response.body.anchored === true, "not anchored");
+    });
+%}
+
+### 11. Fetch the session anchor -> 200
 GET {{host}}/v1/sessions/{{sessionId}}/anchor
 X-Api-Key: {{apiKey}}
 
-### Revoke the agent's grant
+> {%
+    client.test("11: anchor present", () => client.assert(response.body.anchor.root));
+%}
+
+### 12. Revoke the agent's grant -> revoked: true
 POST {{host}}/v1/grants/{{childGrant}}/revoke
 Content-Type: application/json
 X-Api-Key: {{apiKey}}
 
 { "reason": "manual test" }
 
-### Recording after revocation is denied (expect 403 PERMISSION_DENIED)
+> {%
+    client.test("12: revoked", () => client.assert(response.body.revoked === true));
+%}
+
+### 13. Recording after revocation is denied -> 403 PERMISSION_DENIED
 POST {{host}}/v1/sessions/{{sessionId}}/actions
 Content-Type: application/json
 X-Api-Key: {{apiKey}}
@@ -118,3 +163,7 @@ X-Api-Key: {{apiKey}}
   "actionType": "browser.click",
   "recordingRef": "slr://session/demo"
 }
+
+> {%
+    client.test("13: denied after revoke", () => client.assert(response.status === 403, "status " + response.status));
+%}
