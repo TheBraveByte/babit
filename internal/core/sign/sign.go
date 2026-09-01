@@ -26,7 +26,30 @@ func NewEd25519() (*Signer, error) {
 	}, nil
 }
 
+func FromSeed(seed []byte) (*Signer, error) {
+	if len(seed) != ed25519.SeedSize {
+		return nil, fmt.Errorf("seed must be %d bytes, got %d", ed25519.SeedSize, len(seed))
+	}
+	priv := ed25519.NewKeyFromSeed(seed)
+	pub := priv.Public().(ed25519.PublicKey)
+	return &Signer{
+		keyID: DefaultKeyID,
+		priv:  priv,
+		pubs:  map[string]ed25519.PublicKey{DefaultKeyID: pub},
+	}, nil
+}
+
+func VerifierFromPublicKey(keyID string, pub []byte) *Signer {
+	return &Signer{
+		keyID: keyID,
+		pubs:  map[string]ed25519.PublicKey{keyID: ed25519.PublicKey(pub)},
+	}
+}
+
 func (s *Signer) Sign(msg []byte) ([]byte, string, error) {
+	if s.priv == nil {
+		return nil, "", fmt.Errorf("signer %s is verify-only", s.keyID)
+	}
 	sig := ed25519.Sign(s.priv, msg)
 	return sig, s.keyID, nil
 }
