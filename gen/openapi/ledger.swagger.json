@@ -15,6 +15,86 @@
     "application/json"
   ],
   "paths": {
+    "/v1/auth/login": {
+      "post": {
+        "summary": "Authenticate and return a session token",
+        "operationId": "AuthService_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1LoginRequest"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/auth/me": {
+      "get": {
+        "summary": "Return the current user and organization branding",
+        "operationId": "AuthService_Me",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1MeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/signup": {
+      "post": {
+        "summary": "Create an account and return a session token",
+        "operationId": "AuthService_Signup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SignupResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SignupRequest"
+            }
+          }
+        ]
+      }
+    },
     "/v1/events/{event_id}": {
       "get": {
         "summary": "Read a sealed action event",
@@ -502,6 +582,15 @@
         }
       }
     },
+    "v1AccountType": {
+      "type": "string",
+      "enum": [
+        "ACCOUNT_TYPE_UNSPECIFIED",
+        "ACCOUNT_TYPE_PERSONAL",
+        "ACCOUNT_TYPE_ORGANIZATION"
+      ],
+      "default": "ACCOUNT_TYPE_UNSPECIFIED"
+    },
     "v1ActionEvent": {
       "type": "object",
       "example": {
@@ -607,6 +696,20 @@
       "properties": {
         "session": {
           "$ref": "#/definitions/v1Session"
+        }
+      }
+    },
+    "v1Branding": {
+      "type": "object",
+      "properties": {
+        "company_name": {
+          "type": "string"
+        },
+        "logo_url": {
+          "type": "string"
+        },
+        "brand_color": {
+          "type": "string"
         }
       }
     },
@@ -786,6 +889,43 @@
         }
       }
     },
+    "v1LoginRequest": {
+      "type": "object",
+      "example": {
+        "email": "alice@acme.com",
+        "password": "correct-horse"
+      },
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "v1LoginResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      }
+    },
+    "v1MeResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        },
+        "branding": {
+          "$ref": "#/definitions/v1Branding"
+        }
+      }
+    },
     "v1Proof": {
       "type": "object",
       "properties": {
@@ -876,6 +1016,48 @@
         }
       }
     },
+    "v1SignupRequest": {
+      "type": "object",
+      "example": {
+        "email": "alice@acme.com",
+        "password": "correct-horse",
+        "account_type": "ACCOUNT_TYPE_ORGANIZATION",
+        "org_name": "Acme",
+        "org_domain": "acme.com",
+        "industry": "software"
+      },
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "account_type": {
+          "$ref": "#/definitions/v1AccountType"
+        },
+        "org_name": {
+          "type": "string"
+        },
+        "org_domain": {
+          "type": "string"
+        },
+        "industry": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SignupResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      }
+    },
     "v1Surface": {
       "type": "string",
       "enum": [
@@ -885,6 +1067,33 @@
         "SURFACE_DESKTOP"
       ],
       "default": "SURFACE_UNSPECIFIED"
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "account_type": {
+          "$ref": "#/definitions/v1AccountType"
+        },
+        "org_name": {
+          "type": "string"
+        },
+        "org_domain": {
+          "type": "string"
+        },
+        "industry": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
     },
     "v1VerifyChainResponse": {
       "type": "object",

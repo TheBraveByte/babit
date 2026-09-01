@@ -5,13 +5,17 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"strings"
+	"time"
 
 	"github.com/babit/nal/config"
 	"github.com/babit/nal/db"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	"github.com/babit/nal/internal/adapters/anchor"
+	"github.com/babit/nal/internal/adapters/brandfetch"
 	"github.com/babit/nal/internal/adapters/solari"
 	"github.com/babit/nal/internal/adapters/store"
+	coreauth "github.com/babit/nal/internal/core/auth"
 	"github.com/babit/nal/internal/core/clock"
 	"github.com/babit/nal/internal/core/graph"
 	"github.com/babit/nal/internal/core/ids"
@@ -43,9 +47,15 @@ func NewGRPCServer(ctx context.Context, cfg *config.Config) (*grpc.Server, error
 	clk := clock.System()
 	anc := anchor.NewInMemory(clk)
 	sol := solariClient(cfg.Solari)
+	brands := brandResolver(cfg.Brandfetch)
 	notaryCore := service.NewNotaryCore(st.Events(), sealer, tree, anc)
 
-	srv := grpc.NewServer(grpc.ChainUnaryInterceptor(apiKeyInterceptor(cfg.APIKey), errs.UnaryInterceptor()))
+	srv := grpc.NewServer(grpc.ChainUnaryInterceptor(
+		apiKeyInterceptor(cfg.APIKey),
+		jwtInterceptor(cfg.JWTSecret),
+		errs.UnaryInterceptor(),
+	))
+	ledgerv1.RegisterAuthServiceServer(srv, service.NewAuth(st.Users(), brands, cfg.JWTSecret, 24*time.Hour))
 	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), signer, verifier, idgen, clk))
 	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer))
 	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), verifier, notaryCore, notaryCore, idgen, clk))
@@ -78,6 +88,31 @@ func solariClient(cfg config.SolariConfig) ports.Solari {
 		return solari.Disabled()
 	}
 	return c
+}
+
+func brandResolver(cfg config.BrandfetchConfig) ports.BrandResolver {
+	if cfg.APIKey == "" {
+		log.Print("brandfetch disabled: BRANDFETCH_API_KEY not set")
+		return brandfetch.Disabled()
+	}
+	return brandfetch.New(cfg.APIKey)
+}
+
+func jwtInterceptor(secret string) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+		md, ok := metadata.FromIncomingContext(ctx)
+		if ok {
+			if vals := md.Get("authorization"); len(vals) > 0 {
+				tok := strings.TrimSpace(vals[0])
+				tok = strings.TrimPrefix(tok, "Bearer ")
+				tok = strings.TrimPrefix(tok, "bearer ")
+				if uid, err := coreauth.ParseToken(tok, secret); err == nil {
+					ctx = coreauth.WithUserID(ctx, uid)
+				}
+			}
+		}
+		return handler(ctx, req)
+	}
 }
 
 func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {

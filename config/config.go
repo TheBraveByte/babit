@@ -19,13 +19,19 @@ type Config struct {
 	DatabaseURL string `env:"DATABASE_URL" envDefault:"postgres://postgres:pass@localhost:55432/nal?sslmode=disable"`
 	NotarySeed  string `env:"NAL_NOTARY_SEED" envDefault:""`
 	APIKey      string `env:"NAL_API_KEY" envDefault:""`
+	JWTSecret   string `env:"NAL_JWT_SECRET" envDefault:"dev-insecure-secret-change-me"`
 	Port        string `env:"PORT" envDefault:""`
 	Solari      SolariConfig
+	Brandfetch  BrandfetchConfig
 }
 
 type SolariConfig struct {
 	APIKey  string `env:"SOLARI_API_KEY" envDefault:""`
 	BaseURL string `env:"SOLARI_BASE_URL" envDefault:""`
+}
+
+type BrandfetchConfig struct {
+	APIKey string `env:"BRANDFETCH_API_KEY" envDefault:""`
 }
 
 func Load() (*Config, error) {
@@ -51,8 +57,13 @@ func (c *Config) validate() error {
 	if c.DatabaseURL == "" {
 		missing = append(missing, "DATABASE_URL")
 	}
-	if c.Environment == "PROD" && c.NotarySeed == "" {
-		missing = append(missing, "NAL_NOTARY_SEED")
+	if c.Environment == "PROD" {
+		if c.NotarySeed == "" {
+			missing = append(missing, "NAL_NOTARY_SEED")
+		}
+		if c.JWTSecret == "" || c.JWTSecret == "dev-insecure-secret-change-me" {
+			missing = append(missing, "NAL_JWT_SECRET")
+		}
 	}
 	if len(missing) > 0 {
 		return fmt.Errorf("missing required config: %s", strings.Join(missing, ", "))

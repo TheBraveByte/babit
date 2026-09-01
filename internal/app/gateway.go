@@ -23,6 +23,7 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 	)
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	registrars := []gwRegistrar{
+		ledgerv1.RegisterAuthServiceHandlerFromEndpoint,
 		ledgerv1.RegisterDelegationServiceHandlerFromEndpoint,
 		ledgerv1.RegisterCaptureServiceHandlerFromEndpoint,
 		ledgerv1.RegisterNotaryServiceHandlerFromEndpoint,
