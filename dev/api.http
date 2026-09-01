@@ -5,9 +5,8 @@
 ###   make run        # nald,    gRPC on :9090
 ###   make gateway    # gateway, REST on :8080
 ###
-### Then select the "dev" environment and run the steps in order (top to bottom).
-### Each step captures what the next one needs and asserts its own result, so you
-### can run them one at a time and watch each pass.
+### Select the "dev" or "render" environment and run the steps in order (top to bottom).
+### Each step captures what the next one needs and asserts its own result.
 
 ### 1. Issue a root grant for a human principal -> 200
 POST {{host}}/v1/grants:root
@@ -22,9 +21,9 @@ X-Api-Key: {{apiKey}}
 > {%
     client.test("1: root issued", () => {
         client.assert(response.status === 200, "status " + response.status);
-        client.assert(response.body.grant.grantId, "no grantId");
+        client.assert(response.body.grant.grant_id, "no grant_id");
     });
-    client.global.set("rootGrant", response.body.grant.grantId);
+    client.global.set("rootGrant", response.body.grant.grant_id);
 %}
 
 ### 2. Delegate a scoped sub-grant to an agent -> 200
@@ -33,15 +32,15 @@ Content-Type: application/json
 X-Api-Key: {{apiKey}}
 
 {
-  "parentGrantId": "{{rootGrant}}",
-  "subjectId": "agt_shopper",
+  "parent_grant_id": "{{rootGrant}}",
+  "subject_id": "agt_shopper",
   "capabilities": ["browser.click"],
-  "scope": { "resourceGlobs": ["https://shop.example.com/*"], "maxValueCents": 50000 }
+  "scope": { "resource_globs": ["https://shop.example.com/*"], "max_value_cents": 50000 }
 }
 
 > {%
     client.test("2: delegated", () => client.assert(response.status === 200));
-    client.global.set("childGrant", response.body.grant.grantId);
+    client.global.set("childGrant", response.body.grant.grant_id);
 %}
 
 ### 3. Verify the delegation chain back to its root -> valid: true
@@ -58,13 +57,13 @@ Content-Type: application/json
 X-Api-Key: {{apiKey}}
 
 {
-  "rootGrantId": "{{rootGrant}}",
+  "root_grant_id": "{{rootGrant}}",
   "surface": "SURFACE_BROWSER"
 }
 
 > {%
     client.test("4: session started", () => client.assert(response.status === 200));
-    client.global.set("sessionId", response.body.session.sessionId);
+    client.global.set("sessionId", response.body.session.session_id);
 %}
 
 ### 5. Record and notarize an action -> 200
@@ -73,15 +72,15 @@ Content-Type: application/json
 X-Api-Key: {{apiKey}}
 
 {
-  "grantId": "{{childGrant}}",
-  "actionType": "browser.click",
+  "grant_id": "{{childGrant}}",
+  "action_type": "browser.click",
   "resource": "https://shop.example.com/cart",
-  "recordingRef": "slr://session/demo"
+  "recording_ref": "slr://session/demo"
 }
 
 > {%
     client.test("5: action recorded", () => client.assert(response.status === 200));
-    client.global.set("eventId", response.body.event.eventId);
+    client.global.set("eventId", response.body.event.event_id);
 %}
 
 ### 6. End the session (checkpoints the Merkle root) -> 200
@@ -117,7 +116,7 @@ GET {{host}}/v1/notary/public-key
 X-Api-Key: {{apiKey}}
 
 > {%
-    client.test("9: public key", () => client.assert(response.body.publicKey));
+    client.test("9: public key", () => client.assert(response.body.public_key));
 %}
 
 ### 10. Verify the proof server-side -> valid: true, anchored: true
@@ -159,9 +158,9 @@ Content-Type: application/json
 X-Api-Key: {{apiKey}}
 
 {
-  "grantId": "{{childGrant}}",
-  "actionType": "browser.click",
-  "recordingRef": "slr://session/demo"
+  "grant_id": "{{childGrant}}",
+  "action_type": "browser.click",
+  "recording_ref": "slr://session/demo"
 }
 
 > {%
