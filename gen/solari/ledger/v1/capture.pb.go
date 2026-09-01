@@ -128,6 +128,8 @@ type RecordActionRequest struct {
 	PreStateHash  []byte                 `protobuf:"bytes,5,opt,name=pre_state_hash,json=preStateHash,proto3" json:"pre_state_hash,omitempty"`
 	PostStateHash []byte                 `protobuf:"bytes,6,opt,name=post_state_hash,json=postStateHash,proto3" json:"post_state_hash,omitempty"`
 	RecordingRef  string                 `protobuf:"bytes,7,opt,name=recording_ref,json=recordingRef,proto3" json:"recording_ref,omitempty"`
+	Resource      string                 `protobuf:"bytes,8,opt,name=resource,proto3" json:"resource,omitempty"`
+	ValueCents    int64                  `protobuf:"varint,9,opt,name=value_cents,json=valueCents,proto3" json:"value_cents,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -209,6 +211,20 @@ func (x *RecordActionRequest) GetRecordingRef() string {
 		return x.RecordingRef
 	}
 	return ""
+}
+
+func (x *RecordActionRequest) GetResource() string {
+	if x != nil {
+		return x.Resource
+	}
+	return ""
+}
+
+func (x *RecordActionRequest) GetValueCents() int64 {
+	if x != nil {
+		return x.ValueCents
+	}
+	return 0
 }
 
 type RecordActionResponse struct {
@@ -352,7 +368,7 @@ const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\rroot_grant_id\x18\x01 \x01(\tR\vrootGrantId\x123\n" +
 	"\asurface\x18\x02 \x01(\x0e2\x19.solari.ledger.v1.SurfaceR\asurface\"K\n" +
 	"\x14BeginSessionResponse\x123\n" +
-	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"\x8a\x02\n" +
+	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"\xc7\x02\n" +
 	"\x13RecordActionRequest\x12\x1d\n" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x19\n" +
@@ -362,7 +378,10 @@ const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\x0eaction_payload\x18\x04 \x01(\fR\ractionPayload\x12$\n" +
 	"\x0epre_state_hash\x18\x05 \x01(\fR\fpreStateHash\x12&\n" +
 	"\x0fpost_state_hash\x18\x06 \x01(\fR\rpostStateHash\x12#\n" +
-	"\rrecording_ref\x18\a \x01(\tR\frecordingRef\"K\n" +
+	"\rrecording_ref\x18\a \x01(\tR\frecordingRef\x12\x1a\n" +
+	"\bresource\x18\b \x01(\tR\bresource\x12\x1f\n" +
+	"\vvalue_cents\x18\t \x01(\x03R\n" +
+	"valueCents\"K\n" +
 	"\x14RecordActionResponse\x123\n" +
 	"\x05event\x18\x01 \x01(\v2\x1d.solari.ledger.v1.ActionEventR\x05event\"2\n" +
 	"\x11EndSessionRequest\x12\x1d\n" +

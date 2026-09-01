@@ -58,6 +58,8 @@ message RecordActionRequest {
   bytes pre_state_hash = 5;
   bytes post_state_hash = 6;
   string recording_ref = 7;
+  string resource = 8;
+  int64 value_cents = 9;
 }
 
 message RecordActionResponse {

@@ -233,6 +233,29 @@
         ]
       }
     },
+    "/v1/notary/public-key": {
+      "get": {
+        "summary": "Fetch the notary public key for offline verification",
+        "operationId": "NotaryService_GetPublicKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetPublicKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "notary"
+        ]
+      }
+    },
     "/v1/proofs:verify": {
       "post": {
         "summary": "Verify chain, signature, anchor and authority of a proof",
@@ -486,6 +509,13 @@
         },
         "recordingRef": {
           "type": "string"
+        },
+        "resource": {
+          "type": "string"
+        },
+        "valueCents": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -686,6 +716,18 @@
       "properties": {
         "proof": {
           "$ref": "#/definitions/v1Proof"
+        }
+      }
+    },
+    "v1GetPublicKeyResponse": {
+      "type": "object",
+      "properties": {
+        "keyId": {
+          "type": "string"
+        },
+        "publicKey": {
+          "type": "string",
+          "format": "byte"
         }
       }
     },

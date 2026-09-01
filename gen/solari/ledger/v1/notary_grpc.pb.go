@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NotaryService_Notarize_FullMethodName  = "/solari.ledger.v1.NotaryService/Notarize"
-	NotaryService_GetAnchor_FullMethodName = "/solari.ledger.v1.NotaryService/GetAnchor"
+	NotaryService_Notarize_FullMethodName     = "/solari.ledger.v1.NotaryService/Notarize"
+	NotaryService_GetAnchor_FullMethodName    = "/solari.ledger.v1.NotaryService/GetAnchor"
+	NotaryService_GetPublicKey_FullMethodName = "/solari.ledger.v1.NotaryService/GetPublicKey"
 )
 
 // NotaryServiceClient is the client API for NotaryService service.
@@ -29,6 +30,7 @@ const (
 type NotaryServiceClient interface {
 	Notarize(ctx context.Context, in *NotarizeRequest, opts ...grpc.CallOption) (*NotarizeResponse, error)
 	GetAnchor(ctx context.Context, in *GetAnchorRequest, opts ...grpc.CallOption) (*GetAnchorResponse, error)
+	GetPublicKey(ctx context.Context, in *GetPublicKeyRequest, opts ...grpc.CallOption) (*GetPublicKeyResponse, error)
 }
 
 type notaryServiceClient struct {
@@ -59,12 +61,23 @@ func (c *notaryServiceClient) GetAnchor(ctx context.Context, in *GetAnchorReques
 	return out, nil
 }
 
+func (c *notaryServiceClient) GetPublicKey(ctx context.Context, in *GetPublicKeyRequest, opts ...grpc.CallOption) (*GetPublicKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPublicKeyResponse)
+	err := c.cc.Invoke(ctx, NotaryService_GetPublicKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotaryServiceServer is the server API for NotaryService service.
 // All implementations must embed UnimplementedNotaryServiceServer
 // for forward compatibility.
 type NotaryServiceServer interface {
 	Notarize(context.Context, *NotarizeRequest) (*NotarizeResponse, error)
 	GetAnchor(context.Context, *GetAnchorRequest) (*GetAnchorResponse, error)
+	GetPublicKey(context.Context, *GetPublicKeyRequest) (*GetPublicKeyResponse, error)
 	mustEmbedUnimplementedNotaryServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedNotaryServiceServer) Notarize(context.Context, *NotarizeReque
 }
 func (UnimplementedNotaryServiceServer) GetAnchor(context.Context, *GetAnchorRequest) (*GetAnchorResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetAnchor not implemented")
+}
+func (UnimplementedNotaryServiceServer) GetPublicKey(context.Context, *GetPublicKeyRequest) (*GetPublicKeyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetPublicKey not implemented")
 }
 func (UnimplementedNotaryServiceServer) mustEmbedUnimplementedNotaryServiceServer() {}
 func (UnimplementedNotaryServiceServer) testEmbeddedByValue()                       {}
@@ -138,6 +154,24 @@ func _NotaryService_GetAnchor_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotaryService_GetPublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPublicKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotaryServiceServer).GetPublicKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotaryService_GetPublicKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotaryServiceServer).GetPublicKey(ctx, req.(*GetPublicKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotaryService_ServiceDesc is the grpc.ServiceDesc for NotaryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var NotaryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAnchor",
 			Handler:    _NotaryService_GetAnchor_Handler,
+		},
+		{
+			MethodName: "GetPublicKey",
+			Handler:    _NotaryService_GetPublicKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

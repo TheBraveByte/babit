@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -30,6 +31,7 @@ func TestRecordActionHappyPath(t *testing.T) {
 	grants.EXPECT().Chain(mock.Anything, "grn_leaf").Return(grantChain("browser.click"), nil)
 	verifier.EXPECT().VerifyChain(mock.Anything, mock.Anything).Return(nil)
 	grants.EXPECT().IsRevoked(mock.Anything, "grn_leaf").Return(false, nil)
+	verifier.EXPECT().Authorizes(mock.Anything, "browser.click", "", int64(0)).Return(nil)
 	sessions.EXPECT().NextSequence(mock.Anything, "ses").Return(int64(1), nil)
 	idgen.EXPECT().New("evt").Return("evt_1")
 	clk.EXPECT().Now().Return(time.Unix(0, 0))
@@ -48,6 +50,7 @@ func TestRecordActionDeniesUngrantedCapabilityUnit(t *testing.T) {
 	grants.EXPECT().Chain(mock.Anything, "grn_leaf").Return(grantChain("browser.click"), nil)
 	verifier.EXPECT().VerifyChain(mock.Anything, mock.Anything).Return(nil)
 	grants.EXPECT().IsRevoked(mock.Anything, "grn_leaf").Return(false, nil)
+	verifier.EXPECT().Authorizes(mock.Anything, "sandbox.exec", "", int64(0)).Return(errors.New("capability not granted"))
 	clk.EXPECT().Now().Return(time.Unix(0, 0))
 
 	c := service.NewCapture(sessions, grants, verifier, notary, checkpoint, idgen, clk)

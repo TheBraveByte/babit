@@ -78,10 +78,11 @@ func checkNonWidening(parent, child *ledgerv1.Grant) error {
 }
 
 func (v verifier) Authorizes(grant *ledgerv1.Grant, capability, resource string, valueCents int64) error {
-	if !hasCapability(grant, capability) {
+	if len(grant.GetCapabilities()) > 0 && !hasCapability(grant, capability) {
 		return fmt.Errorf("authorize capability: %w", fmt.Errorf("capability %q not granted", capability))
 	}
-	if !matchesResource(grant.GetScope().GetResourceGlobs(), resource) {
+	globs := grant.GetScope().GetResourceGlobs()
+	if len(globs) > 0 && resource != "" && !matchesResource(globs, resource) {
 		return fmt.Errorf("authorize resource: %w", fmt.Errorf("resource %q not in scope", resource))
 	}
 	max := grant.GetScope().GetMaxValueCents()

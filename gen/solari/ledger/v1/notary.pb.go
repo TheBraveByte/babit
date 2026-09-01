@@ -199,6 +199,94 @@ func (x *GetAnchorResponse) GetAnchor() *Anchor {
 	return nil
 }
 
+type GetPublicKeyRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPublicKeyRequest) Reset() {
+	*x = GetPublicKeyRequest{}
+	mi := &file_solari_ledger_v1_notary_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPublicKeyRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPublicKeyRequest) ProtoMessage() {}
+
+func (x *GetPublicKeyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_notary_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPublicKeyRequest.ProtoReflect.Descriptor instead.
+func (*GetPublicKeyRequest) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_notary_proto_rawDescGZIP(), []int{4}
+}
+
+type GetPublicKeyResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	KeyId         string                 `protobuf:"bytes,1,opt,name=key_id,json=keyId,proto3" json:"key_id,omitempty"`
+	PublicKey     []byte                 `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPublicKeyResponse) Reset() {
+	*x = GetPublicKeyResponse{}
+	mi := &file_solari_ledger_v1_notary_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPublicKeyResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPublicKeyResponse) ProtoMessage() {}
+
+func (x *GetPublicKeyResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_notary_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPublicKeyResponse.ProtoReflect.Descriptor instead.
+func (*GetPublicKeyResponse) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_notary_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetPublicKeyResponse) GetKeyId() string {
+	if x != nil {
+		return x.KeyId
+	}
+	return ""
+}
+
+func (x *GetPublicKeyResponse) GetPublicKey() []byte {
+	if x != nil {
+		return x.PublicKey
+	}
+	return nil
+}
+
 var File_solari_ledger_v1_notary_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_notary_proto_rawDesc = "" +
@@ -212,11 +300,18 @@ const file_solari_ledger_v1_notary_proto_rawDesc = "" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"E\n" +
 	"\x11GetAnchorResponse\x120\n" +
-	"\x06anchor\x18\x01 \x01(\v2\x18.solari.ledger.v1.AnchorR\x06anchor2\x97\x02\n" +
+	"\x06anchor\x18\x01 \x01(\v2\x18.solari.ledger.v1.AnchorR\x06anchor\"\x15\n" +
+	"\x13GetPublicKeyRequest\"L\n" +
+	"\x14GetPublicKeyResponse\x12\x15\n" +
+	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x1d\n" +
+	"\n" +
+	"public_key\x18\x02 \x01(\fR\tpublicKey2\xd7\x03\n" +
 	"\rNotaryService\x12Q\n" +
 	"\bNotarize\x12!.solari.ledger.v1.NotarizeRequest\x1a\".solari.ledger.v1.NotarizeResponse\x12\xb2\x01\n" +
 	"\tGetAnchor\x12\".solari.ledger.v1.GetAnchorRequest\x1a#.solari.ledger.v1.GetAnchorResponse\"\\\x92A1\n" +
-	"\x06notary\x12'Fetch the external anchor for a session\x82\xd3\xe4\x93\x02\"\x12 /v1/sessions/{session_id}/anchorB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\x06notary\x12'Fetch the external anchor for a session\x82\xd3\xe4\x93\x02\"\x12 /v1/sessions/{session_id}/anchor\x12\xbd\x01\n" +
+	"\fGetPublicKey\x12%.solari.ledger.v1.GetPublicKeyRequest\x1a&.solari.ledger.v1.GetPublicKeyResponse\"^\x92A>\n" +
+	"\x06notary\x124Fetch the notary public key for offline verification\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/notary/public-keyB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_notary_proto_rawDescOnce sync.Once
@@ -230,25 +325,29 @@ func file_solari_ledger_v1_notary_proto_rawDescGZIP() []byte {
 	return file_solari_ledger_v1_notary_proto_rawDescData
 }
 
-var file_solari_ledger_v1_notary_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_solari_ledger_v1_notary_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_solari_ledger_v1_notary_proto_goTypes = []any{
-	(*NotarizeRequest)(nil),   // 0: solari.ledger.v1.NotarizeRequest
-	(*NotarizeResponse)(nil),  // 1: solari.ledger.v1.NotarizeResponse
-	(*GetAnchorRequest)(nil),  // 2: solari.ledger.v1.GetAnchorRequest
-	(*GetAnchorResponse)(nil), // 3: solari.ledger.v1.GetAnchorResponse
-	(*ActionEvent)(nil),       // 4: solari.ledger.v1.ActionEvent
-	(*Anchor)(nil),            // 5: solari.ledger.v1.Anchor
+	(*NotarizeRequest)(nil),      // 0: solari.ledger.v1.NotarizeRequest
+	(*NotarizeResponse)(nil),     // 1: solari.ledger.v1.NotarizeResponse
+	(*GetAnchorRequest)(nil),     // 2: solari.ledger.v1.GetAnchorRequest
+	(*GetAnchorResponse)(nil),    // 3: solari.ledger.v1.GetAnchorResponse
+	(*GetPublicKeyRequest)(nil),  // 4: solari.ledger.v1.GetPublicKeyRequest
+	(*GetPublicKeyResponse)(nil), // 5: solari.ledger.v1.GetPublicKeyResponse
+	(*ActionEvent)(nil),          // 6: solari.ledger.v1.ActionEvent
+	(*Anchor)(nil),               // 7: solari.ledger.v1.Anchor
 }
 var file_solari_ledger_v1_notary_proto_depIdxs = []int32{
-	4, // 0: solari.ledger.v1.NotarizeRequest.event:type_name -> solari.ledger.v1.ActionEvent
-	4, // 1: solari.ledger.v1.NotarizeResponse.event:type_name -> solari.ledger.v1.ActionEvent
-	5, // 2: solari.ledger.v1.GetAnchorResponse.anchor:type_name -> solari.ledger.v1.Anchor
+	6, // 0: solari.ledger.v1.NotarizeRequest.event:type_name -> solari.ledger.v1.ActionEvent
+	6, // 1: solari.ledger.v1.NotarizeResponse.event:type_name -> solari.ledger.v1.ActionEvent
+	7, // 2: solari.ledger.v1.GetAnchorResponse.anchor:type_name -> solari.ledger.v1.Anchor
 	0, // 3: solari.ledger.v1.NotaryService.Notarize:input_type -> solari.ledger.v1.NotarizeRequest
 	2, // 4: solari.ledger.v1.NotaryService.GetAnchor:input_type -> solari.ledger.v1.GetAnchorRequest
-	1, // 5: solari.ledger.v1.NotaryService.Notarize:output_type -> solari.ledger.v1.NotarizeResponse
-	3, // 6: solari.ledger.v1.NotaryService.GetAnchor:output_type -> solari.ledger.v1.GetAnchorResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
+	4, // 5: solari.ledger.v1.NotaryService.GetPublicKey:input_type -> solari.ledger.v1.GetPublicKeyRequest
+	1, // 6: solari.ledger.v1.NotaryService.Notarize:output_type -> solari.ledger.v1.NotarizeResponse
+	3, // 7: solari.ledger.v1.NotaryService.GetAnchor:output_type -> solari.ledger.v1.GetAnchorResponse
+	5, // 8: solari.ledger.v1.NotaryService.GetPublicKey:output_type -> solari.ledger.v1.GetPublicKeyResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
 	3, // [3:3] is the sub-list for extension extendee
 	0, // [0:3] is the sub-list for field type_name
@@ -266,7 +365,7 @@ func file_solari_ledger_v1_notary_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_solari_ledger_v1_notary_proto_rawDesc), len(file_solari_ledger_v1_notary_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

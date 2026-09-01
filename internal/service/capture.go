@@ -55,8 +55,8 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 		return nil, err
 	}
 	leaf := chain[len(chain)-1]
-	if !hasCapability(leaf, req.GetActionType()) {
-		return nil, status.Errorf(codes.PermissionDenied, "capability %q not granted", req.GetActionType())
+	if err := c.verifier.Authorizes(leaf, req.GetActionType(), req.GetResource(), req.GetValueCents()); err != nil {
+		return nil, status.Errorf(codes.PermissionDenied, "authorize: %v", err)
 	}
 	seq, err := c.sessions.NextSequence(ctx, req.GetSessionId())
 	if err != nil {
@@ -106,11 +106,3 @@ func (c *Capture) ensureNotRevoked(ctx context.Context, chain []*ledgerv1.Grant)
 	return nil
 }
 
-func hasCapability(g *ledgerv1.Grant, capability string) bool {
-	for _, c := range g.GetCapabilities() {
-		if c == capability {
-			return true
-		}
-	}
-	return false
-}
