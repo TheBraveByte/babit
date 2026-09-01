@@ -62,6 +62,9 @@ func checkExpiry(g *ledgerv1.Grant, now time.Time) error {
 }
 
 func checkNonWidening(parent, child *ledgerv1.Grant) error {
+	if len(parent.GetCapabilities()) == 0 {
+		return nil
+	}
 	set := make(map[string]struct{}, len(parent.GetCapabilities()))
 	for _, c := range parent.GetCapabilities() {
 		set[c] = struct{}{}
