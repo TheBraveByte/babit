@@ -19,7 +19,7 @@ func TestIssueRootGrantSignsAndStores(t *testing.T) {
 	grants := mocks.NewMockGrantStore(t)
 	signer := mocks.NewMockSigner(t)
 	idgen := mocks.NewMockIDGen(t)
-	idgen.EXPECT().New("grn").Return("grn_1")
+	idgen.EXPECT().New().Return("grn_1")
 	signer.EXPECT().Sign(mock.Anything).Return([]byte("sig"), "nal-notary-1", nil)
 	grants.EXPECT().Put(mock.Anything, mock.MatchedBy(func(g *ledgerv1.Grant) bool {
 		return g.GetGrantId() == "grn_1" && g.GetSubjectId() == "usr"

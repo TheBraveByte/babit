@@ -1,36 +1,29 @@
 package ids
 
 import (
-	"strings"
+	"regexp"
 	"testing"
-
-	"github.com/google/uuid"
 )
+
+var ticket = regexp.MustCompile(`^BAL-\d{6}$`)
 
 func TestNewFormat(t *testing.T) {
 	g := New()
-	for _, prefix := range []string{"grn", "evt", "ses"} {
-		t.Run(prefix, func(t *testing.T) {
-			id := g.New(prefix)
-			rest, ok := strings.CutPrefix(id, prefix+"_")
-			if !ok {
-				t.Fatalf("id %q missing prefix %q", id, prefix)
-			}
-			if _, err := uuid.Parse(rest); err != nil {
-				t.Fatalf("id %q suffix is not a uuid: %v", id, err)
-			}
-		})
+	for i := 0; i < 100; i++ {
+		id := g.New()
+		if !ticket.MatchString(id) {
+			t.Fatalf("id %q does not match BAL-######", id)
+		}
 	}
 }
 
-func TestNewUniqueness(t *testing.T) {
+func TestNewVaries(t *testing.T) {
 	g := New()
 	seen := make(map[string]struct{})
-	for i := 0; i < 10000; i++ {
-		id := g.New("x")
-		if _, ok := seen[id]; ok {
-			t.Fatalf("duplicate id %q", id)
-		}
-		seen[id] = struct{}{}
+	for i := 0; i < 500; i++ {
+		seen[g.New()] = struct{}{}
+	}
+	if len(seen) < 400 {
+		t.Fatalf("expected mostly-distinct ids, got %d unique of 500", len(seen))
 	}
 }

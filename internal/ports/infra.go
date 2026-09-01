@@ -21,5 +21,5 @@ type Clock interface {
 }
 
 type IDGen interface {
-	New(prefix string) string
+	New() string
 }

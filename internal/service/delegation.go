@@ -24,7 +24,7 @@ func NewDelegation(grants ports.GrantStore, signer ports.Signer, verifier ports.
 
 func (d *Delegation) IssueRootGrant(ctx context.Context, req *ledgerv1.IssueRootGrantRequest) (*ledgerv1.IssueRootGrantResponse, error) {
 	g := &ledgerv1.Grant{
-		GrantId:     d.ids.New("grn"),
+		GrantId:     d.ids.New(),
 		PrincipalId: req.GetPrincipalId(),
 		SubjectId:   req.GetPrincipalId(),
 		Scope:       req.GetScope(),
@@ -51,7 +51,7 @@ func (d *Delegation) Delegate(ctx context.Context, req *ledgerv1.DelegateRequest
 		return nil, errs.New(errs.FailedPrecondition, "parent grant %s revoked", parent.GetGrantId())
 	}
 	child := &ledgerv1.Grant{
-		GrantId:       d.ids.New("grn"),
+		GrantId:       d.ids.New(),
 		ParentGrantId: parent.GetGrantId(),
 		PrincipalId:   parent.GetSubjectId(),
 		SubjectId:     req.GetSubjectId(),

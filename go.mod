@@ -5,7 +5,6 @@ go 1.26
 require (
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/chromedp/chromedp v0.11.2
-	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.30.0
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/joho/godotenv v1.5.1
