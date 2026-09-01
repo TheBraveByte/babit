@@ -32,7 +32,7 @@ func TestRecordActionHappyPath(t *testing.T) {
 	grants.EXPECT().IsRevoked(mock.Anything, "grn_leaf").Return(false, nil)
 	verifier.EXPECT().Authorizes(mock.Anything, "browser.click", "", int64(0)).Return(nil)
 	sessions.EXPECT().NextSequence(mock.Anything, "ses").Return(int64(1), nil)
-	idgen.EXPECT().New("evt").Return("evt_1")
+	idgen.EXPECT().New().Return("evt_1")
 	clk.EXPECT().Now().Return(time.Unix(0, 0))
 	notary.EXPECT().Notarize(mock.Anything, mock.Anything).Return(&ledgerv1.ActionEvent{EventId: "evt_1", Sequence: 1}, nil)
 

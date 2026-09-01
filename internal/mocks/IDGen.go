@@ -36,16 +36,16 @@ func (_m *MockIDGen) EXPECT() *MockIDGen_Expecter {
 }
 
 // New provides a mock function for the type MockIDGen
-func (_mock *MockIDGen) New(prefix string) string {
-	ret := _mock.Called(prefix)
+func (_mock *MockIDGen) New() string {
+	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for New")
 	}
 
 	var r0 string
-	if returnFunc, ok := ret.Get(0).(func(string) string); ok {
-		r0 = returnFunc(prefix)
+	if returnFunc, ok := ret.Get(0).(func() string); ok {
+		r0 = returnFunc()
 	} else {
 		r0 = ret.Get(0).(string)
 	}
@@ -58,20 +58,13 @@ type MockIDGen_New_Call struct {
 }
 
 // New is a helper method to define mock.On call
-//   - prefix string
-func (_e *MockIDGen_Expecter) New(prefix any) *MockIDGen_New_Call {
-	return &MockIDGen_New_Call{Call: _e.mock.On("New", prefix)}
+func (_e *MockIDGen_Expecter) New() *MockIDGen_New_Call {
+	return &MockIDGen_New_Call{Call: _e.mock.On("New")}
 }
 
-func (_c *MockIDGen_New_Call) Run(run func(prefix string)) *MockIDGen_New_Call {
+func (_c *MockIDGen_New_Call) Run(run func()) *MockIDGen_New_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 string
-		if args[0] != nil {
-			arg0 = args[0].(string)
-		}
-		run(
-			arg0,
-		)
+		run()
 	})
 	return _c
 }
@@ -81,7 +74,7 @@ func (_c *MockIDGen_New_Call) Return(s string) *MockIDGen_New_Call {
 	return _c
 }
 
-func (_c *MockIDGen_New_Call) RunAndReturn(run func(prefix string) string) *MockIDGen_New_Call {
+func (_c *MockIDGen_New_Call) RunAndReturn(run func() string) *MockIDGen_New_Call {
 	_c.Call.Return(run)
 	return _c
 }

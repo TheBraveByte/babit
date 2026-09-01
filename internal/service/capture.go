@@ -27,7 +27,7 @@ func NewCapture(sessions ports.SessionStore, grants ports.GrantStore, verifier p
 
 func (c *Capture) BeginSession(ctx context.Context, req *ledgerv1.BeginSessionRequest) (*ledgerv1.BeginSessionResponse, error) {
 	s := &ledgerv1.Session{
-		SessionId:   c.ids.New("ses"),
+		SessionId:   c.ids.New(),
 		RootGrantId: req.GetRootGrantId(),
 		Surface:     req.GetSurface(),
 		StartedAt:   timestamppb.New(c.clock.Now()),
@@ -62,7 +62,7 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 		return nil, err
 	}
 	draft := &ledgerv1.ActionEvent{
-		EventId:       c.ids.New("evt"),
+		EventId:       c.ids.New(),
 		SessionId:     req.GetSessionId(),
 		Sequence:      seq,
 		Surface:       session.GetSurface(),
