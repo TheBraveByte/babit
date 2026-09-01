@@ -12,7 +12,7 @@ import (
 )
 
 const getGrant = `-- name: GetGrant :one
-SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities, resource_globs, max_value_cents, max_depth, expires_at, parent_signature FROM grants WHERE grant_id = $1
+SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities, resource_globs, max_value_cents, max_depth, expires_at, parent_signature, uuid FROM grants WHERE grant_id = $1
 `
 
 func (q *Queries) GetGrant(ctx context.Context, grantID string) (Grant, error) {
@@ -29,17 +29,18 @@ func (q *Queries) GetGrant(ctx context.Context, grantID string) (Grant, error) {
 		&i.MaxDepth,
 		&i.ExpiresAt,
 		&i.ParentSignature,
+		&i.Uuid,
 	)
 	return i, err
 }
 
 const grantChain = `-- name: GrantChain :many
 WITH RECURSIVE chain AS (
-    SELECT g.grant_id, g.parent_grant_id, g.principal_id, g.subject_id, g.capabilities, g.resource_globs, g.max_value_cents, g.max_depth, g.expires_at, g.parent_signature, 0 AS depth
+    SELECT g.grant_id, g.parent_grant_id, g.principal_id, g.subject_id, g.capabilities, g.resource_globs, g.max_value_cents, g.max_depth, g.expires_at, g.parent_signature, g.uuid, 0 AS depth
     FROM grants g
     WHERE g.grant_id = $1
     UNION ALL
-    SELECT p.grant_id, p.parent_grant_id, p.principal_id, p.subject_id, p.capabilities, p.resource_globs, p.max_value_cents, p.max_depth, p.expires_at, p.parent_signature, c.depth + 1
+    SELECT p.grant_id, p.parent_grant_id, p.principal_id, p.subject_id, p.capabilities, p.resource_globs, p.max_value_cents, p.max_depth, p.expires_at, p.parent_signature, p.uuid, c.depth + 1
     FROM grants p
     JOIN chain c ON p.grant_id = c.parent_grant_id
     WHERE c.parent_grant_id <> ''

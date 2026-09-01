@@ -23,6 +23,7 @@ type Event struct {
 	ContentHash     []byte
 	PrevHash        []byte
 	NotarySignature []byte
+	Uuid            pgtype.UUID
 }
 
 type Grant struct {
@@ -36,6 +37,7 @@ type Grant struct {
 	MaxDepth        int32
 	ExpiresAt       pgtype.Timestamptz
 	ParentSignature []byte
+	Uuid            pgtype.UUID
 }
 
 type Revocation struct {
@@ -51,4 +53,5 @@ type Session struct {
 	StartedAt   pgtype.Timestamptz
 	EndedAt     pgtype.Timestamptz
 	EventCount  int64
+	Uuid        pgtype.UUID
 }

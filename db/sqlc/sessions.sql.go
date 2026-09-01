@@ -44,7 +44,7 @@ const endSession = `-- name: EndSession :one
 UPDATE sessions
 SET ended_at = $2
 WHERE session_id = $1
-RETURNING session_id, root_grant_id, surface, started_at, ended_at, event_count
+RETURNING session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid
 `
 
 type EndSessionParams struct {
@@ -62,12 +62,13 @@ func (q *Queries) EndSession(ctx context.Context, arg EndSessionParams) (Session
 		&i.StartedAt,
 		&i.EndedAt,
 		&i.EventCount,
+		&i.Uuid,
 	)
 	return i, err
 }
 
 const getSession = `-- name: GetSession :one
-SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count FROM sessions WHERE session_id = $1
+SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid FROM sessions WHERE session_id = $1
 `
 
 func (q *Queries) GetSession(ctx context.Context, sessionID string) (Session, error) {
@@ -80,6 +81,7 @@ func (q *Queries) GetSession(ctx context.Context, sessionID string) (Session, er
 		&i.StartedAt,
 		&i.EndedAt,
 		&i.EventCount,
+		&i.Uuid,
 	)
 	return i, err
 }
