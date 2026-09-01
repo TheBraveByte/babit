@@ -1,4 +1,4 @@
-import React, { useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { IconCopy, IconCheck, IconAlertCircle } from "./icons";
 
 export function Card({
@@ -38,7 +38,7 @@ export function Field({
 }: {
   label: string;
   children: ReactNode;
-  hint?: string;
+  hint?: ReactNode;
   error?: string;
 }) {
   return (
