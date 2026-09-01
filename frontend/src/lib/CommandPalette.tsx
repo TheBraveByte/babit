@@ -4,7 +4,7 @@ import { IconSearch, IconActivity, IconCpu, IconGitBranch, IconFileText, IconShi
 
 interface CommandItem {
   id: string;
-  category: "Navigation" | "Actions" | "Receipts" | "Agents";
+  category: "Navigation";
   title: string;
   subtitle?: string;
   icon: React.ReactNode;
@@ -50,15 +50,15 @@ export function CommandPalette({
       id: "nav-overview",
       category: "Navigation",
       title: "Overview",
-      subtitle: "System health, throughput and live actions",
+      subtitle: "Workspace summary and notary key",
       icon: <IconActivity className="w-4 h-4 text-neutral-500" />,
       action: () => { navigate("/dashboard/overview"); onClose(); },
     },
     {
       id: "nav-activity",
       category: "Navigation",
-      title: "Activity Log",
-      subtitle: "Full audit log of agent actions",
+      title: "Activity",
+      subtitle: "Look up an action event by ID",
       icon: <IconFileText className="w-4 h-4 text-neutral-500" />,
       action: () => { navigate("/dashboard/activity"); onClose(); },
     },
@@ -66,15 +66,15 @@ export function CommandPalette({
       id: "nav-agents",
       category: "Navigation",
       title: "Agents",
-      subtitle: "Registered autonomous actors and keys",
+      subtitle: "Autonomous subjects under delegated authority",
       icon: <IconCpu className="w-4 h-4 text-neutral-500" />,
       action: () => { navigate("/dashboard/agents"); onClose(); },
     },
     {
       id: "nav-delegations",
       category: "Navigation",
-      title: "Delegations & Grants",
-      subtitle: "Authority hierarchy and capability scopes",
+      title: "Delegations",
+      subtitle: "Issue, delegate, verify and revoke grants",
       icon: <IconGitBranch className="w-4 h-4 text-neutral-500" />,
       action: () => { navigate("/dashboard/delegations"); onClose(); },
     },
@@ -82,7 +82,7 @@ export function CommandPalette({
       id: "nav-receipts",
       category: "Navigation",
       title: "Receipts",
-      subtitle: "Sealed cryptographic evidence records",
+      subtitle: "Fetch a sealed inclusion proof by event ID",
       icon: <IconShieldCheck className="w-4 h-4 text-neutral-500" />,
       action: () => { navigate("/dashboard/receipts"); onClose(); },
     },
@@ -90,7 +90,7 @@ export function CommandPalette({
       id: "nav-verify",
       category: "Navigation",
       title: "Verify Evidence",
-      subtitle: "Standalone receipt proof validator",
+      subtitle: "Independent receipt and proof validator",
       icon: <IconShieldCheck className="w-4 h-4 text-emerald-600" />,
       action: () => { navigate("/dashboard/verify"); onClose(); },
     },
@@ -98,25 +98,9 @@ export function CommandPalette({
       id: "nav-settings",
       category: "Navigation",
       title: "Settings",
-      subtitle: "Workspace, API keys and organization profile",
+      subtitle: "Account profile, branding and notary key",
       icon: <IconSettings className="w-4 h-4 text-neutral-500" />,
       action: () => { navigate("/dashboard/settings"); onClose(); },
-    },
-    {
-      id: "act-48102",
-      category: "Actions",
-      title: "Action #act_payout_authorized_491",
-      subtitle: "claims-agent → approve_payout ($4,200)",
-      icon: <IconFileText className="w-4 h-4 text-emerald-600" />,
-      action: () => { navigate("/dashboard/receipts"); onClose(); },
-    },
-    {
-      id: "agt-claims",
-      category: "Agents",
-      title: "claims-agent",
-      subtitle: "Registered with capabilities [claims.approve, claims.review]",
-      icon: <IconCpu className="w-4 h-4 text-neutral-500" />,
-      action: () => { navigate("/dashboard/agents"); onClose(); },
     },
   ];
 

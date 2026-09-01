@@ -3,6 +3,7 @@ import { BabitLogo, IconActivity, IconShieldCheck, IconGitBranch, IconCpu, IconS
 import { useAuth } from "@/lib/auth";
 import { useRouter, Link } from "@/lib/router";
 import { CommandPalette } from "@/lib/CommandPalette";
+import { api } from "@/api/client";
 
 export type DashboardTab =
   | "overview"
@@ -45,6 +46,21 @@ export function DashboardLayout({
   const { navigate } = useRouter();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [notaryOnline, setNotaryOnline] = useState<boolean | null>(null);
+
+  // Reflect real notary availability rather than a hard-coded status
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await api.GET("/v1/notary/public-key", {});
+        if (active) setNotaryOnline(!!res.data?.public_key);
+      } catch {
+        if (active) setNotaryOnline(false);
+      }
+    })();
+    return () => { active = false; };
+  }, []);
 
   // Listen for Cmd+K / Ctrl+K
   useEffect(() => {
@@ -242,10 +258,19 @@ export function DashboardLayout({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              <span>NOTARY ACTIVE</span>
-            </div>
+            {notaryOnline !== null && (
+              notaryOnline ? (
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>NOTARY ONLINE</span>
+                </div>
+              ) : (
+                <div className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-[#6B6B6B] bg-[#F7F7F5] px-2.5 py-0.5 rounded border border-[#E8E8E5] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#B0B0AC]" />
+                  <span>NOTARY OFFLINE</span>
+                </div>
+              )
+            )}
 
             <Link
               to="/"
