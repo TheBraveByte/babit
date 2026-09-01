@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "solari/ledger/v1/common.proto";
+
+service ReplayService {
+  rpc GetReplay(GetReplayRequest) returns (stream GetReplayResponse) {
+    option (google.api.http) = {get: "/v1/sessions/{session_id}:replay"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Stream a deterministic session replay"
+      tags: "replay"
+    };
+  }
+}
+
+message GetReplayRequest {
+  string session_id = 1;
+}
+
+message GetReplayResponse {
+  ActionEvent event = 1;
+  bytes frame = 2;
+}

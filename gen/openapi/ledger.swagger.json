@@ -7,16 +7,16 @@
   },
   "tags": [
     {
-      "name": "DelegationService"
-    },
-    {
       "name": "CaptureService"
     },
     {
-      "name": "NotaryService"
+      "name": "DelegationService"
     },
     {
       "name": "LedgerService"
+    },
+    {
+      "name": "NotaryService"
     },
     {
       "name": "ReplayService"

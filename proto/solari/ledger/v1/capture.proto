@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "solari/ledger/v1/common.proto";
+
+service CaptureService {
+  rpc BeginSession(BeginSessionRequest) returns (BeginSessionResponse) {
+    option (google.api.http) = {
+      post: "/v1/sessions"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Open a capture session bound to a root grant"
+      tags: "capture"
+    };
+  }
+  rpc RecordAction(RecordActionRequest) returns (RecordActionResponse) {
+    option (google.api.http) = {
+      post: "/v1/sessions/{session_id}/actions"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Record and notarize one executed action"
+      tags: "capture"
+    };
+  }
+  rpc EndSession(EndSessionRequest) returns (EndSessionResponse) {
+    option (google.api.http) = {
+      post: "/v1/sessions/{session_id}:end"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Close a capture session"
+      tags: "capture"
+    };
+  }
+}
+
+message BeginSessionRequest {
+  string root_grant_id = 1;
+  Surface surface = 2;
+}
+
+message BeginSessionResponse {
+  Session session = 1;
+}
+
+message RecordActionRequest {
+  string session_id = 1;
+  string grant_id = 2;
+  string action_type = 3;
+  bytes action_payload = 4;
+  bytes pre_state_hash = 5;
+  bytes post_state_hash = 6;
+  string recording_ref = 7;
+}
+
+message RecordActionResponse {
+  ActionEvent event = 1;
+}
+
+message EndSessionRequest {
+  string session_id = 1;
+}
+
+message EndSessionResponse {
+  Session session = 1;
+}

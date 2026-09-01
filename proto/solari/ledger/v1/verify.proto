@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "solari/ledger/v1/common.proto";
+
+service VerifyService {
+  rpc VerifyProof(VerifyProofRequest) returns (VerifyProofResponse) {
+    option (google.api.http) = {
+      post: "/v1/proofs:verify"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Verify chain, signature, anchor and authority of a proof"
+      tags: "verify"
+    };
+  }
+}
+
+message VerifyProofRequest {
+  Proof proof = 1;
+}
+
+message VerifyProofResponse {
+  bool valid = 1;
+  bool chain_intact = 2;
+  bool signature_valid = 3;
+  bool anchored = 4;
+  bool authority_valid = 5;
+  string reason = 6;
+}

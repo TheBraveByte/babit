@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "solari/ledger/v1/common.proto";
+
+service NotaryService {
+  rpc Notarize(NotarizeRequest) returns (NotarizeResponse);
+  rpc GetAnchor(GetAnchorRequest) returns (GetAnchorResponse) {
+    option (google.api.http) = {get: "/v1/anchors/{sequence}"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Fetch the external anchor covering a sequence"
+      tags: "notary"
+    };
+  }
+}
+
+message NotarizeRequest {
+  ActionEvent event = 1;
+}
+
+message NotarizeResponse {
+  ActionEvent event = 1;
+}
+
+message GetAnchorRequest {
+  int64 sequence = 1;
+}
+
+message GetAnchorResponse {
+  Anchor anchor = 1;
+}

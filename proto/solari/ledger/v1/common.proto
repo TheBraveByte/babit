@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Notarized Action Ledger"
+    version: "1.0.0"
+    description: "Tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari."
+  }
+  schemes: HTTPS
+  consumes: "application/json"
+  produces: "application/json"
+};
+
+message Grant {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"grant_id\":\"grn_2f9a\",\"parent_grant_id\":\"grn_root_88\",\"principal_id\":\"usr_alice\",\"subject_id\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resource_globs\":[\"https://shop.example.com/*\"],\"max_value_cents\":50000,\"max_depth\":2},\"expires_at\":\"2026-09-01T18:00:00Z\"}"
+  };
+  string grant_id = 1;
+  string parent_grant_id = 2;
+  string principal_id = 3;
+  string subject_id = 4;
+  repeated string capabilities = 5;
+  Scope scope = 6;
+  google.protobuf.Timestamp expires_at = 7;
+  bytes parent_signature = 8;
+}
+
+message Scope {
+  repeated string resource_globs = 1;
+  int64 max_value_cents = 2;
+  int32 max_depth = 3;
+}
+
+enum Surface {
+  SURFACE_UNSPECIFIED = 0;
+  SURFACE_BROWSER = 1;
+  SURFACE_SANDBOX = 2;
+  SURFACE_DESKTOP = 3;
+}
+
+message ActionEvent {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"event_id\":\"evt_7c31\",\"session_id\":\"ses_4a10\",\"sequence\":7,\"surface\":\"SURFACE_BROWSER\",\"action_type\":\"click\",\"grant_id\":\"grn_2f9a\",\"recording_ref\":\"slr://rec/ses_4a10/frame/7\",\"occurred_at\":\"2026-09-01T12:03:11Z\"}"
+  };
+  string event_id = 1;
+  string session_id = 2;
+  int64 sequence = 3;
+  Surface surface = 4;
+  string action_type = 5;
+  bytes action_payload = 6;
+  string grant_id = 7;
+  bytes pre_state_hash = 8;
+  bytes post_state_hash = 9;
+  string recording_ref = 10;
+  google.protobuf.Timestamp occurred_at = 11;
+  bytes content_hash = 12;
+  bytes prev_hash = 13;
+  bytes notary_signature = 14;
+}
+
+message Proof {
+  ActionEvent event = 1;
+  repeated bytes merkle_path = 2;
+  bytes merkle_root = 3;
+  Anchor anchor = 4;
+  repeated Grant delegation_chain = 5;
+}
+
+message Anchor {
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_RFC3161_TSA = 1;
+    KIND_TRANSPARENCY_LOG = 2;
+    KIND_PUBLIC_CHAIN = 3;
+  }
+  Kind kind = 1;
+  bytes root = 2;
+  bytes anchor_receipt = 3;
+  google.protobuf.Timestamp anchored_at = 4;
+}
+
+message Session {
+  string session_id = 1;
+  string root_grant_id = 2;
+  Surface surface = 3;
+  google.protobuf.Timestamp started_at = 4;
+  google.protobuf.Timestamp ended_at = 5;
+  int64 event_count = 6;
+}
