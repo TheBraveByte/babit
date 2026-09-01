@@ -26,15 +26,15 @@ export function Footer() {
               </span>
             </div>
             <p className="text-xs leading-relaxed max-w-xs" style={{ color: "var(--muted)" }}>
-              Proof for autonomous actions.
+              A tamper-proof receipt for what your agents do.
             </p>
             {/* Operational status — no fake percentages */}
             <div
               className="inline-flex items-center gap-2 text-[11px] font-mono px-2.5 py-1 rounded-babit-sm"
               style={{
-                color: "#065F46",
-                backgroundColor: "#ECFDF5",
-                border: "1px solid #A7F3D0",
+                color: "var(--color-verified)",
+                backgroundColor: "var(--color-verified-bg)",
+                border: "1px solid var(--color-verified-border)",
               }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-subtle shrink-0" />
@@ -51,9 +51,9 @@ export function Footer() {
               Product
             </span>
             <ul className="space-y-2" style={{ color: "var(--muted)" }}>
-              <li><a href="#product" className="hover:text-[var(--fg)] transition-colors">How it works</a></li>
-              <li><a href="#product" className="hover:text-[var(--fg)] transition-colors">Authority chain</a></li>
-              <li><a href="#security" className="hover:text-[var(--fg)] transition-colors">Offline verification</a></li>
+              <li><a href="#how" className="hover:text-[var(--fg)] transition-colors">How it works</a></li>
+              <li><a href="#product" className="hover:text-[var(--fg)] transition-colors">Chain of authority</a></li>
+              <li><a href="#product" className="hover:text-[var(--fg)] transition-colors">The receipt</a></li>
               <li><Link to="/login" className="hover:text-[var(--fg)] transition-colors">Console</Link></li>
             </ul>
           </div>
@@ -87,13 +87,12 @@ export function Footer() {
               className="text-xs font-semibold uppercase tracking-wider block font-mono"
               style={{ color: "var(--fg)" }}
             >
-              Security
+              Verify
             </span>
             <ul className="space-y-2" style={{ color: "var(--muted)" }}>
-              <li><a href="#security" className="hover:text-[var(--fg)] transition-colors">Ed25519 notary</a></li>
-              <li><a href="#security" className="hover:text-[var(--fg)] transition-colors">Merkle proofs</a></li>
-              <li><a href="#security" className="hover:text-[var(--fg)] transition-colors">Hash chains</a></li>
-              <li><span>RFC 3161 TSA</span></li>
+              <li><a href="#security" className="hover:text-[var(--fg)] transition-colors">Verify it yourself</a></li>
+              <li><a href="#security" className="hover:text-[var(--fg)] transition-colors">Works offline</a></li>
+              <li><a href="#developers" className="hover:text-[var(--fg)] transition-colors">Public key</a></li>
             </ul>
           </div>
         </div>
@@ -106,14 +105,8 @@ export function Footer() {
             color: "var(--muted)",
           }}
         >
-          <div>© {new Date().getFullYear()} Babit. Proof for autonomous actions.</div>
-          <div className="flex items-center gap-4">
-            <span>ed25519</span>
-            <span style={{ color: "var(--border)" }}>•</span>
-            <span>sha-256</span>
-            <span style={{ color: "var(--border)" }}>•</span>
-            <span>merkle</span>
-          </div>
+          <div>© {new Date().getFullYear()} babit. Proof for autonomous actions.</div>
+          <div>Don't trust us. Verify it yourself.</div>
         </div>
       </div>
     </footer>
