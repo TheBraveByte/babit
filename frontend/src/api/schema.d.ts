@@ -4,6 +4,57 @@
  */
 
 export interface paths {
+    "/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Authenticate and return a session token */
+        post: operations["AuthService_Login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Return the current user and organization branding */
+        get: operations["AuthService_Me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create an account and return a session token */
+        post: operations["AuthService_Signup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/events/{event_id}": {
         parameters: {
             query?: never;
@@ -272,6 +323,11 @@ export interface components {
             details?: components["schemas"]["protobufAny"][];
         };
         /**
+         * @default ACCOUNT_TYPE_UNSPECIFIED
+         * @enum {string}
+         */
+        v1AccountType: "ACCOUNT_TYPE_UNSPECIFIED" | "ACCOUNT_TYPE_PERSONAL" | "ACCOUNT_TYPE_ORGANIZATION";
+        /**
          * @example {
          *       "event_id": "BAL-778812",
          *       "session_id": "BAL-4a1055",
@@ -328,6 +384,11 @@ export interface components {
         };
         v1BeginSessionResponse: {
             session?: components["schemas"]["v1Session"];
+        };
+        v1Branding: {
+            company_name?: string;
+            logo_url?: string;
+            brand_color?: string;
         };
         /**
          * @example {
@@ -424,6 +485,24 @@ export interface components {
         v1IssueRootGrantResponse: {
             grant?: components["schemas"]["v1Grant"];
         };
+        /**
+         * @example {
+         *       "email": "alice@acme.com",
+         *       "password": "correct-horse"
+         *     }
+         */
+        v1LoginRequest: {
+            email?: string;
+            password?: string;
+        };
+        v1LoginResponse: {
+            token?: string;
+            user?: components["schemas"]["v1User"];
+        };
+        v1MeResponse: {
+            user?: components["schemas"]["v1User"];
+            branding?: components["schemas"]["v1Branding"];
+        };
         v1Proof: {
             event?: components["schemas"]["v1ActionEvent"];
             merkle_path?: string[];
@@ -457,10 +536,42 @@ export interface components {
             event_count?: string;
         };
         /**
+         * @example {
+         *       "email": "alice@acme.com",
+         *       "password": "correct-horse",
+         *       "account_type": "ACCOUNT_TYPE_ORGANIZATION",
+         *       "org_name": "Acme",
+         *       "org_domain": "acme.com",
+         *       "industry": "software"
+         *     }
+         */
+        v1SignupRequest: {
+            email?: string;
+            password?: string;
+            account_type?: components["schemas"]["v1AccountType"];
+            org_name?: string;
+            org_domain?: string;
+            industry?: string;
+        };
+        v1SignupResponse: {
+            token?: string;
+            user?: components["schemas"]["v1User"];
+        };
+        /**
          * @default SURFACE_UNSPECIFIED
          * @enum {string}
          */
         v1Surface: "SURFACE_UNSPECIFIED" | "SURFACE_BROWSER" | "SURFACE_SANDBOX" | "SURFACE_DESKTOP";
+        v1User: {
+            id?: string;
+            email?: string;
+            account_type?: components["schemas"]["v1AccountType"];
+            org_name?: string;
+            org_domain?: string;
+            industry?: string;
+            /** Format: date-time */
+            created_at?: string;
+        };
         v1VerifyChainResponse: {
             valid?: boolean;
             chain?: components["schemas"]["v1Grant"][];
@@ -496,6 +607,101 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    AuthService_Login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["v1LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1LoginResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    AuthService_Me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1MeResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    AuthService_Signup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["v1SignupRequest"];
+            };
+        };
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1SignupResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
     LedgerService_GetEvent: {
         parameters: {
             query?: never;

@@ -12,8 +12,8 @@
 
 :root {
   --brand-accent: #0f172a;
-  --brand-accent-subtle: rgba(15, 23, 42, 0.06);
-  --brand-accent-border: rgba(15, 23, 42, 0.15);
+  --brand-accent-subtle: rgba(15, 23, 42, 0.05);
+  --brand-accent-border: rgba(15, 23, 42, 0.12);
 }
 
 html {
@@ -29,6 +29,8 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  color: #09090b;
+  background-color: #fafafa;
 }
 
 /* Tabular figures for data, hashes, IDs */
@@ -38,74 +40,31 @@ body {
 
 /* Subtle scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
+  background: #e4e4e7;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1aa;
 }
 
-/* Animation utilities */
+/* Subtle fade in animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulseGlow {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.05); }
-}
-
-@keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(1000%); }
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-
 .animate-fade-in {
-  animation: fadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-pulse-subtle {
-  animation: pulseGlow 2.5s ease-in-out infinite;
-}
-
-.animate-slide-in {
-  animation: slideInRight 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Enterprise grid background */
-.bg-grid-pattern {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-.bg-grid-pattern-dark {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Hairline rule */
-.hairline-b {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-.hairline-t {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-}
-.hairline-r {
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-}
-.hairline-l {
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
+/* Restrained hairline borders */
+.border-subtle {
+  border-color: #e4e4e7;
 }
