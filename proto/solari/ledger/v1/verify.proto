@@ -26,6 +26,9 @@ message VerifyProofRequest {
 }
 
 message VerifyProofResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"valid\":true,\"chainIntact\":true,\"signatureValid\":true,\"anchored\":true,\"authorityValid\":true,\"reason\":\"\"}"
+  };
   bool valid = 1;
   bool chain_intact = 2;
   bool signature_valid = 3;

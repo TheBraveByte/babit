@@ -49,6 +49,9 @@ service DelegationService {
 }
 
 message IssueRootGrantRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"principalId\":\"usr_alice\",\"scope\":{\"maxDepth\":3}}"
+  };
   string principal_id = 1;
   Scope scope = 2;
 }
@@ -58,6 +61,9 @@ message IssueRootGrantResponse {
 }
 
 message DelegateRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"parentGrantId\":\"grn_2f9a\",\"subjectId\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resourceGlobs\":[\"https://shop.example.com/*\"],\"maxValueCents\":50000,\"maxDepth\":2}}"
+  };
   string parent_grant_id = 1;
   string subject_id = 2;
   repeated string capabilities = 3;
