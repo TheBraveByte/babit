@@ -1,75 +1,91 @@
 import React, { useState } from "react";
 import { AuthLayout } from "./AuthLayout";
 import { Link } from "@/lib/router";
-import { Button, Field, TextInput } from "@/lib/ui";
-import { IconCheckCircle } from "@/lib/icons";
+import { Button, Field, TextInput, Error } from "@/lib/ui";
+import { IconCheck } from "@/lib/icons";
 
 export function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email) {
+      setError("Please provide your account email.");
+      return;
+    }
+
     setLoading(true);
+    setError(null);
+
+    // Simulate link dispatch
     setTimeout(() => {
       setLoading(false);
-      setSubmitted(true);
+      setSent(true);
     }, 600);
   };
 
   return (
     <AuthLayout
-      title={submitted ? "Check your inbox" : "Reset your password"}
-      subtitle={
-        submitted
-          ? `We've sent password reset instructions to ${email}`
-          : "Enter your email address and we will send you a secure link to reset your password."
-      }
+      title="Reset your password"
+      subtitle="Enter your verified work email and we'll dispatch a secure recovery token."
       footer={
         <p>
-          Remember your password?{" "}
-          <Link to="/login" className="font-medium text-neutral-900 hover:underline">
-            Back to sign in
+          Remember your credentials?{" "}
+          <Link to="/login" className="font-semibold underline hover:opacity-80" style={{ color: "var(--fg)" }}>
+            Sign in
           </Link>
         </p>
       }
     >
-      {submitted ? (
-        <div className="text-center py-4 space-y-4 animate-fade-in">
-          <div className="mx-auto w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <IconCheckCircle className="w-6 h-6" />
+      {sent ? (
+        <div className="space-y-4 text-center font-sans">
+          <div className="p-4 rounded-babit bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs space-y-2">
+            <div className="flex items-center justify-center gap-1.5 font-bold">
+              <IconCheck className="w-4 h-4 text-emerald-700" />
+              <span>Recovery link sent</span>
+            </div>
+            <p className="text-[11px] leading-relaxed">
+              If an active workspace is associated with <strong>{email}</strong>, you will receive password reset instructions shortly.
+            </p>
           </div>
-          <p className="text-xs text-neutral-600 leading-relaxed">
-            If an account exists with this email, you will receive an authorization email shortly with instructions.
-          </p>
-          <Link to="/login">
-            <Button variant="secondary" size="md" className="w-full mt-2">
-              Return to login
-            </Button>
+
+          <Link
+            to="/login"
+            className="block text-xs font-semibold py-2 rounded-babit text-center transition-colors"
+            style={{
+              backgroundColor: "var(--fg)",
+              color: "var(--surface)",
+            }}
+          >
+            Return to Sign In
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 font-sans">
+          {error && <Error message={error} />}
+
           <Field label="Work email">
             <TextInput
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="alice@company.com"
+              autoComplete="email"
               required
             />
           </Field>
 
           <Button
             type="submit"
-            variant="brand"
+            variant="primary"
             size="md"
             loading={loading}
             className="w-full justify-center mt-2"
           >
-            Send reset link
+            Send recovery link
           </Button>
         </form>
       )}

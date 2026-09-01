@@ -14,35 +14,63 @@ export function AuthLayout({
   footer?: ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-neutral-50 relative overflow-hidden">
-      {/* Background subtle grid pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none" />
+    <div
+      className="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      style={{ backgroundColor: "var(--bg)" }}
+    >
+      {/* Background — Variant A: Clean with barely-visible dot grid */}
+      <div className="absolute inset-0 bg-dot-subtle opacity-40 pointer-events-none" />
+      {/* Subtle gradient fade at top and bottom */}
+      <div
+        className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, var(--bg), transparent)" }}
+      />
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="flex justify-center mb-6">
-          <Link to="/" className="flex items-center gap-2.5 text-neutral-900 hover:opacity-80 transition-opacity">
-            <BabitLogo className="w-7 h-7" />
-            <span className="font-semibold text-lg tracking-tight font-mono">babit</span>
+      <div className="sm:mx-auto sm:w-full sm:max-w-[400px] relative z-10">
+        {/* Brand logo + wordmark */}
+        <div className="flex justify-center mb-8">
+          <Link
+            to="/"
+            className="flex items-center gap-2.5 transition-opacity hover:opacity-75"
+            style={{ color: "var(--fg)" }}
+          >
+            <BabitLogo className="w-6 h-6" />
+            <span className="font-semibold text-[17px] tracking-tight font-mono">babit</span>
           </Link>
         </div>
 
-        <h1 className="text-center text-xl font-semibold tracking-tight text-neutral-900">
-          {title}
-        </h1>
-        {subtitle && (
-          <p className="mt-1.5 text-center text-xs text-neutral-500 max-w-sm mx-auto">
-            {subtitle}
-          </p>
-        )}
+        <div className="text-center mb-6 space-y-1">
+          <h1
+            className="text-[22px] font-semibold tracking-tight"
+            style={{ color: "var(--fg)" }}
+          >
+            {title}
+          </h1>
+          {subtitle && (
+            <p className="text-[14px] leading-relaxed" style={{ color: "var(--muted)" }}>
+              {subtitle}
+            </p>
+          )}
+        </div>
       </div>
 
-      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="bg-white py-7 px-6 sm:px-8 shadow-xs border border-neutral-200/80 rounded-xl">
+      {/* Form card */}
+      <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-[400px] relative z-10">
+        <div
+          className="py-7 px-6 sm:px-8 rounded-babit-lg shadow-xs"
+          style={{
+            backgroundColor: "var(--surface)",
+            border: "1px solid var(--border)",
+          }}
+        >
           {children}
         </div>
 
         {footer && (
-          <div className="mt-6 text-center text-xs text-neutral-500">
+          <div
+            className="mt-5 text-center text-xs"
+            style={{ color: "var(--muted)" }}
+          >
             {footer}
           </div>
         )}
