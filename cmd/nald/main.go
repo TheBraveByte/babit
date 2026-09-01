@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/hex"
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -20,6 +22,9 @@ import (
 	"github.com/babit/nal/internal/ports"
 	"github.com/babit/nal/internal/service"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 func main() {
@@ -31,7 +36,7 @@ func main() {
 	defer db.Close()
 
 	st := store.New(db.Q)
-	signer, err := sign.NewEd25519()
+	signer, err := notarySigner()
 	if err != nil {
 		log.Fatalf("init signer: %v", err)
 	}
@@ -44,9 +49,9 @@ func main() {
 	sol := solariClient()
 	notaryCore := service.NewNotaryCore(st.Events(), sealer, tree, anc)
 
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(apiKeyInterceptor(os.Getenv("NAL_API_KEY"))))
 	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), signer, verifier, idgen, clk))
-	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc))
+	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer))
 	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), verifier, notaryCore, notaryCore, idgen, clk))
 	ledgerv1.RegisterLedgerServiceServer(srv, service.NewLedger(st.Events(), st.Grants(), tree, anc))
 	ledgerv1.RegisterReplayServiceServer(srv, service.NewReplay(st.Events(), sol))
@@ -60,6 +65,32 @@ func main() {
 	log.Printf("nald grpc listening on %s", addr)
 	if err := srv.Serve(lis); err != nil {
 		log.Fatalf("serve: %v", err)
+	}
+}
+
+func notarySigner() (*sign.Signer, error) {
+	seedHex := os.Getenv("NAL_NOTARY_SEED")
+	if seedHex == "" {
+		log.Print("NAL_NOTARY_SEED unset: generating an ephemeral notary key (receipts break across restarts)")
+		return sign.NewEd25519()
+	}
+	seed, err := hex.DecodeString(seedHex)
+	if err != nil {
+		return nil, fmt.Errorf("decode NAL_NOTARY_SEED: %w", err)
+	}
+	return sign.FromSeed(seed)
+}
+
+func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+		if want == "" {
+			return handler(ctx, req)
+		}
+		md, ok := metadata.FromIncomingContext(ctx)
+		if !ok || len(md.Get("x-api-key")) == 0 || md.Get("x-api-key")[0] != want {
+			return nil, status.Error(codes.Unauthenticated, "missing or invalid x-api-key")
+		}
+		return handler(ctx, req)
 	}
 }
 
