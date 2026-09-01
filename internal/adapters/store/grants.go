@@ -2,12 +2,10 @@ package store
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
-	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	storedb "github.com/babit/nal/db/sqlc"
-	"github.com/jackc/pgx/v5"
+	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/errs"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -39,7 +37,7 @@ func (s *grantStore) Put(ctx context.Context, grant *ledgerv1.Grant) error {
 		ExpiresAt:       toTimestamptz(grant.ExpiresAt),
 		ParentSignature: grant.ParentSignature,
 	}); err != nil {
-		return fmt.Errorf("put grant: %w", err)
+		return opErr(err, "put grant")
 	}
 	return nil
 }
@@ -47,10 +45,7 @@ func (s *grantStore) Put(ctx context.Context, grant *ledgerv1.Grant) error {
 func (s *grantStore) Get(ctx context.Context, grantID string) (*ledgerv1.Grant, error) {
 	row, err := s.q.GetGrant(ctx, grantID)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("get grant %s: %w", grantID, ErrNotFound)
-		}
-		return nil, fmt.Errorf("get grant: %w", err)
+		return nil, lookupErr(err, "grant", grantID)
 	}
 	return grantFromModel(row), nil
 }
@@ -58,10 +53,10 @@ func (s *grantStore) Get(ctx context.Context, grantID string) (*ledgerv1.Grant, 
 func (s *grantStore) Chain(ctx context.Context, grantID string) ([]*ledgerv1.Grant, error) {
 	rows, err := s.q.GrantChain(ctx, grantID)
 	if err != nil {
-		return nil, fmt.Errorf("grant chain: %w", err)
+		return nil, opErr(err, "grant chain")
 	}
 	if len(rows) == 0 {
-		return nil, fmt.Errorf("grant chain %s: %w", grantID, ErrNotFound)
+		return nil, errs.New(errs.NotFound, "grant chain %s not found", grantID)
 	}
 	out := make([]*ledgerv1.Grant, 0, len(rows))
 	for _, row := range rows {
@@ -72,7 +67,7 @@ func (s *grantStore) Chain(ctx context.Context, grantID string) ([]*ledgerv1.Gra
 
 func (s *grantStore) Revoke(ctx context.Context, grantID, reason string) error {
 	if err := s.q.Revoke(ctx, storedb.RevokeParams{GrantID: grantID, Reason: reason}); err != nil {
-		return fmt.Errorf("revoke grant: %w", err)
+		return opErr(err, "revoke grant")
 	}
 	return nil
 }
@@ -80,7 +75,7 @@ func (s *grantStore) Revoke(ctx context.Context, grantID, reason string) error {
 func (s *grantStore) IsRevoked(ctx context.Context, grantID string) (bool, error) {
 	revoked, err := s.q.IsRevoked(ctx, grantID)
 	if err != nil {
-		return false, fmt.Errorf("is revoked: %w", err)
+		return false, opErr(err, "is revoked")
 	}
 	return revoked, nil
 }

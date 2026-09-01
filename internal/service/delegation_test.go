@@ -7,13 +7,12 @@ import (
 	"time"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/mocks"
 	"github.com/babit/nal/internal/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func TestIssueRootGrantSignsAndStores(t *testing.T) {
@@ -44,7 +43,7 @@ func TestDelegateRejectsRevokedParent(t *testing.T) {
 	_, err := d.Delegate(context.Background(), &ledgerv1.DelegateRequest{ParentGrantId: "grn_parent", SubjectId: "agt"})
 
 	require.Error(t, err)
-	assert.Equal(t, codes.FailedPrecondition, status.Code(err))
+	assert.Equal(t, errs.FailedPrecondition, errs.KindOf(err))
 }
 
 func TestVerifyChainReportsInvalid(t *testing.T) {

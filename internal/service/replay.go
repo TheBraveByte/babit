@@ -2,10 +2,9 @@ package service
 
 import (
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type Replay struct {
@@ -22,7 +21,7 @@ func (r *Replay) GetReplay(req *ledgerv1.GetReplayRequest, stream grpc.ServerStr
 	ctx := stream.Context()
 	events, err := r.events.BySession(ctx, req.GetSessionId())
 	if err != nil {
-		return status.Errorf(codes.NotFound, "session events: %v", err)
+		return errs.GRPCStatus(errs.Wrap(errs.NotFound, err, "session events"))
 	}
 	for _, ev := range events {
 		var frame []byte
@@ -30,7 +29,7 @@ func (r *Replay) GetReplay(req *ledgerv1.GetReplayRequest, stream grpc.ServerStr
 			frame = b
 		}
 		if err := stream.Send(&ledgerv1.GetReplayResponse{Event: ev, Frame: frame}); err != nil {
-			return status.Errorf(codes.Internal, "send frame: %v", err)
+			return errs.GRPCStatus(errs.Wrap(errs.Internal, err, "send frame"))
 		}
 	}
 	return nil

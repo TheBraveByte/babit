@@ -3,10 +3,10 @@ package anchor
 import (
 	"context"
 	"encoding/hex"
-	"fmt"
 	"sync"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -39,7 +39,7 @@ func (a *inMemory) Get(ctx context.Context, sessionID string) (*ledgerv1.Anchor,
 	defer a.mu.RUnlock()
 	anchor, ok := a.entries[sessionID]
 	if !ok {
-		return nil, fmt.Errorf("anchor for session %s not found", sessionID)
+		return nil, errs.New(errs.NotFound, "anchor for session %s not found", sessionID)
 	}
 	return anchor, nil
 }

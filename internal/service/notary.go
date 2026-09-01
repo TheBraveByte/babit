@@ -5,9 +5,8 @@ import (
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	"github.com/babit/nal/internal/core/sign"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type NotaryCore struct {
@@ -66,7 +65,7 @@ func NewNotary(core ports.Notarizer, anchor ports.Anchor, signer ports.Signer) *
 func (s *Notary) Notarize(ctx context.Context, req *ledgerv1.NotarizeRequest) (*ledgerv1.NotarizeResponse, error) {
 	sealed, err := s.core.Notarize(ctx, req.GetEvent())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "notarize: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.NotarizeResponse{Event: sealed}, nil
 }
@@ -74,7 +73,7 @@ func (s *Notary) Notarize(ctx context.Context, req *ledgerv1.NotarizeRequest) (*
 func (s *Notary) GetAnchor(ctx context.Context, req *ledgerv1.GetAnchorRequest) (*ledgerv1.GetAnchorResponse, error) {
 	a, err := s.anchor.Get(ctx, req.GetSessionId())
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "anchor: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.GetAnchorResponse{Anchor: a}, nil
 }
@@ -82,7 +81,7 @@ func (s *Notary) GetAnchor(ctx context.Context, req *ledgerv1.GetAnchorRequest) 
 func (s *Notary) GetPublicKey(ctx context.Context, req *ledgerv1.GetPublicKeyRequest) (*ledgerv1.GetPublicKeyResponse, error) {
 	pub, ok := s.signer.PublicKey(sign.DefaultKeyID)
 	if !ok {
-		return nil, status.Error(codes.Internal, "notary public key unavailable")
+		return nil, errs.New(errs.Internal, "notary public key unavailable")
 	}
 	return &ledgerv1.GetPublicKeyResponse{KeyId: sign.DefaultKeyID, PublicKey: pub}, nil
 }

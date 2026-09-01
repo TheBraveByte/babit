@@ -2,12 +2,9 @@ package store
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
-	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	storedb "github.com/babit/nal/db/sqlc"
-	"github.com/jackc/pgx/v5"
+	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 )
 
 type eventStore struct {
@@ -31,7 +28,7 @@ func (s *eventStore) Append(ctx context.Context, event *ledgerv1.ActionEvent) er
 		PrevHash:        event.PrevHash,
 		NotarySignature: event.NotarySignature,
 	}); err != nil {
-		return fmt.Errorf("append event: %w", err)
+		return opErr(err, "append event")
 	}
 	return nil
 }
@@ -39,10 +36,7 @@ func (s *eventStore) Append(ctx context.Context, event *ledgerv1.ActionEvent) er
 func (s *eventStore) Get(ctx context.Context, eventID string) (*ledgerv1.ActionEvent, error) {
 	row, err := s.q.GetEvent(ctx, eventID)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("get event %s: %w", eventID, ErrNotFound)
-		}
-		return nil, fmt.Errorf("get event: %w", err)
+		return nil, lookupErr(err, "event", eventID)
 	}
 	return eventFromRow(row), nil
 }
@@ -50,10 +44,7 @@ func (s *eventStore) Get(ctx context.Context, eventID string) (*ledgerv1.ActionE
 func (s *eventStore) Last(ctx context.Context, sessionID string) (*ledgerv1.ActionEvent, error) {
 	row, err := s.q.LastEventBySession(ctx, sessionID)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("last event %s: %w", sessionID, ErrNotFound)
-		}
-		return nil, fmt.Errorf("last event: %w", err)
+		return nil, lookupErr(err, "last event for session", sessionID)
 	}
 	return eventFromRow(row), nil
 }
@@ -61,7 +52,7 @@ func (s *eventStore) Last(ctx context.Context, sessionID string) (*ledgerv1.Acti
 func (s *eventStore) BySession(ctx context.Context, sessionID string) ([]*ledgerv1.ActionEvent, error) {
 	rows, err := s.q.EventsBySession(ctx, sessionID)
 	if err != nil {
-		return nil, fmt.Errorf("events by session: %w", err)
+		return nil, opErr(err, "events by session")
 	}
 	out := make([]*ledgerv1.ActionEvent, 0, len(rows))
 	for _, row := range rows {
@@ -73,7 +64,7 @@ func (s *eventStore) BySession(ctx context.Context, sessionID string) ([]*ledger
 func (s *eventStore) Range(ctx context.Context, fromSeq, toSeq int64) ([]*ledgerv1.ActionEvent, error) {
 	rows, err := s.q.EventsInRange(ctx, storedb.EventsInRangeParams{Sequence: fromSeq, Sequence_2: toSeq})
 	if err != nil {
-		return nil, fmt.Errorf("events in range: %w", err)
+		return nil, opErr(err, "events in range")
 	}
 	out := make([]*ledgerv1.ActionEvent, 0, len(rows))
 	for _, row := range rows {

@@ -4,12 +4,23 @@ import (
 	"errors"
 
 	storedb "github.com/babit/nal/db/sqlc"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var ErrNotFound = errors.New("not found")
+func lookupErr(err error, entity, id string) error {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return errs.New(errs.NotFound, "%s %s not found", entity, id)
+	}
+	return errs.Wrap(errs.Internal, err, "%s %s", entity, id)
+}
+
+func opErr(err error, op string) error {
+	return errs.Wrap(errs.Internal, err, "%s", op)
+}
 
 type Store struct {
 	q *storedb.Queries

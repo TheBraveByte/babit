@@ -7,13 +7,12 @@ import (
 	"time"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/mocks"
 	"github.com/babit/nal/internal/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func captureDeps(t *testing.T) (*mocks.MockSessionStore, *mocks.MockGrantStore, *mocks.MockDelegationVerifier, *mocks.MockNotarizer, *mocks.MockCheckpointer, *mocks.MockIDGen, *mocks.MockClock) {
@@ -57,7 +56,7 @@ func TestRecordActionDeniesUngrantedCapabilityUnit(t *testing.T) {
 	_, err := c.RecordAction(context.Background(), &ledgerv1.RecordActionRequest{SessionId: "ses", GrantId: "grn_leaf", ActionType: "sandbox.exec"})
 
 	require.Error(t, err)
-	assert.Equal(t, codes.PermissionDenied, status.Code(err))
+	assert.Equal(t, errs.PermissionDenied, errs.KindOf(err))
 }
 
 func TestRecordActionDeniesRevokedGrantUnit(t *testing.T) {
@@ -72,7 +71,7 @@ func TestRecordActionDeniesRevokedGrantUnit(t *testing.T) {
 	_, err := c.RecordAction(context.Background(), &ledgerv1.RecordActionRequest{SessionId: "ses", GrantId: "grn_leaf", ActionType: "browser.click"})
 
 	require.Error(t, err)
-	assert.Equal(t, codes.PermissionDenied, status.Code(err))
+	assert.Equal(t, errs.PermissionDenied, errs.KindOf(err))
 }
 
 func TestEndSessionCheckpoints(t *testing.T) {

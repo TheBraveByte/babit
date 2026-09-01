@@ -5,9 +5,8 @@ import (
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	"github.com/babit/nal/internal/core/canon"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type Delegation struct {
@@ -34,7 +33,7 @@ func (d *Delegation) IssueRootGrant(ctx context.Context, req *ledgerv1.IssueRoot
 		return nil, err
 	}
 	if err := d.grants.Put(ctx, g); err != nil {
-		return nil, status.Errorf(codes.Internal, "put grant: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.IssueRootGrantResponse{Grant: g}, nil
 }
@@ -42,14 +41,14 @@ func (d *Delegation) IssueRootGrant(ctx context.Context, req *ledgerv1.IssueRoot
 func (d *Delegation) Delegate(ctx context.Context, req *ledgerv1.DelegateRequest) (*ledgerv1.DelegateResponse, error) {
 	parent, err := d.grants.Get(ctx, req.GetParentGrantId())
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "parent grant: %v", err)
+		return nil, err
 	}
 	revoked, err := d.grants.IsRevoked(ctx, parent.GetGrantId())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "check revocation: %v", err)
+		return nil, err
 	}
 	if revoked {
-		return nil, status.Errorf(codes.FailedPrecondition, "parent grant %s revoked", parent.GetGrantId())
+		return nil, errs.New(errs.FailedPrecondition, "parent grant %s revoked", parent.GetGrantId())
 	}
 	child := &ledgerv1.Grant{
 		GrantId:       d.ids.New("grn"),
@@ -63,7 +62,7 @@ func (d *Delegation) Delegate(ctx context.Context, req *ledgerv1.DelegateRequest
 		return nil, err
 	}
 	if err := d.grants.Put(ctx, child); err != nil {
-		return nil, status.Errorf(codes.Internal, "put grant: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.DelegateResponse{Grant: child}, nil
 }
@@ -71,7 +70,7 @@ func (d *Delegation) Delegate(ctx context.Context, req *ledgerv1.DelegateRequest
 func (d *Delegation) VerifyChain(ctx context.Context, req *ledgerv1.VerifyChainRequest) (*ledgerv1.VerifyChainResponse, error) {
 	chain, err := d.grants.Chain(ctx, req.GetGrantId())
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "chain: %v", err)
+		return nil, err
 	}
 	verr := d.verifier.VerifyChain(chain, d.clock.Now())
 	return &ledgerv1.VerifyChainResponse{Valid: verr == nil, Chain: chain, Reason: reasonOf(verr)}, nil
@@ -79,7 +78,7 @@ func (d *Delegation) VerifyChain(ctx context.Context, req *ledgerv1.VerifyChainR
 
 func (d *Delegation) Revoke(ctx context.Context, req *ledgerv1.RevokeRequest) (*ledgerv1.RevokeResponse, error) {
 	if err := d.grants.Revoke(ctx, req.GetGrantId(), req.GetReason()); err != nil {
-		return nil, status.Errorf(codes.Internal, "revoke: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.RevokeResponse{Revoked: true}, nil
 }
@@ -87,7 +86,7 @@ func (d *Delegation) Revoke(ctx context.Context, req *ledgerv1.RevokeRequest) (*
 func (d *Delegation) sign(g *ledgerv1.Grant) error {
 	sig, _, err := d.signer.Sign(canon.Grant(g))
 	if err != nil {
-		return status.Errorf(codes.Internal, "sign grant: %v", err)
+		return errs.Wrap(errs.Internal, err, "sign grant")
 	}
 	g.ParentSignature = sig
 	return nil

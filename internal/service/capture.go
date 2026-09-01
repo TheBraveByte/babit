@@ -5,9 +5,8 @@ import (
 	"time"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -34,7 +33,7 @@ func (c *Capture) BeginSession(ctx context.Context, req *ledgerv1.BeginSessionRe
 		StartedAt:   timestamppb.New(c.clock.Now()),
 	}
 	if err := c.sessions.Create(ctx, s); err != nil {
-		return nil, status.Errorf(codes.Internal, "create session: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.BeginSessionResponse{Session: s}, nil
 }
@@ -42,25 +41,25 @@ func (c *Capture) BeginSession(ctx context.Context, req *ledgerv1.BeginSessionRe
 func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRequest) (*ledgerv1.RecordActionResponse, error) {
 	session, err := c.sessions.Get(ctx, req.GetSessionId())
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "session: %v", err)
+		return nil, err
 	}
 	chain, err := c.grants.Chain(ctx, req.GetGrantId())
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "grant chain: %v", err)
+		return nil, err
 	}
 	if err := c.verifier.VerifyChain(chain, c.clock.Now()); err != nil {
-		return nil, status.Errorf(codes.PermissionDenied, "verify chain: %v", err)
+		return nil, errs.Wrap(errs.PermissionDenied, err, "verify chain")
 	}
 	if err := c.ensureNotRevoked(ctx, chain); err != nil {
 		return nil, err
 	}
 	leaf := chain[len(chain)-1]
 	if err := c.verifier.Authorizes(leaf, req.GetActionType(), req.GetResource(), req.GetValueCents()); err != nil {
-		return nil, status.Errorf(codes.PermissionDenied, "authorize: %v", err)
+		return nil, errs.Wrap(errs.PermissionDenied, err, "authorize")
 	}
 	seq, err := c.sessions.NextSequence(ctx, req.GetSessionId())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "next sequence: %v", err)
+		return nil, err
 	}
 	draft := &ledgerv1.ActionEvent{
 		EventId:       c.ids.New("evt"),
@@ -77,7 +76,7 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 	}
 	sealed, err := c.notary.Notarize(ctx, draft)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "notarize: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.RecordActionResponse{Event: sealed}, nil
 }
@@ -85,10 +84,10 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 func (c *Capture) EndSession(ctx context.Context, req *ledgerv1.EndSessionRequest) (*ledgerv1.EndSessionResponse, error) {
 	s, err := c.sessions.End(ctx, req.GetSessionId(), c.clock.Now())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "end session: %v", err)
+		return nil, err
 	}
 	if _, err := c.checkpoint.Checkpoint(ctx, req.GetSessionId()); err != nil {
-		return nil, status.Errorf(codes.Internal, "checkpoint: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.EndSessionResponse{Session: s}, nil
 }
@@ -97,10 +96,10 @@ func (c *Capture) ensureNotRevoked(ctx context.Context, chain []*ledgerv1.Grant)
 	for _, g := range chain {
 		revoked, err := c.grants.IsRevoked(ctx, g.GetGrantId())
 		if err != nil {
-			return status.Errorf(codes.Internal, "check revocation: %v", err)
+			return err
 		}
 		if revoked {
-			return status.Errorf(codes.PermissionDenied, "grant %s revoked", g.GetGrantId())
+			return errs.New(errs.PermissionDenied, "grant %s revoked", g.GetGrantId())
 		}
 	}
 	return nil

@@ -4,9 +4,8 @@ import (
 	"context"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type Ledger struct {
@@ -24,7 +23,7 @@ func NewLedger(events ports.EventStore, grants ports.GrantStore, merkle ports.Me
 func (l *Ledger) GetEvent(ctx context.Context, req *ledgerv1.GetEventRequest) (*ledgerv1.GetEventResponse, error) {
 	ev, err := l.events.Get(ctx, req.GetEventId())
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "event: %v", err)
+		return nil, err
 	}
 	return &ledgerv1.GetEventResponse{Event: ev}, nil
 }
@@ -32,11 +31,11 @@ func (l *Ledger) GetEvent(ctx context.Context, req *ledgerv1.GetEventRequest) (*
 func (l *Ledger) GetInclusionProof(ctx context.Context, req *ledgerv1.GetInclusionProofRequest) (*ledgerv1.GetInclusionProofResponse, error) {
 	ev, err := l.events.Get(ctx, req.GetEventId())
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "event: %v", err)
+		return nil, err
 	}
 	events, err := l.events.BySession(ctx, ev.GetSessionId())
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "session events: %v", err)
+		return nil, err
 	}
 	leaves := make([][]byte, len(events))
 	for i, e := range events {
@@ -46,7 +45,7 @@ func (l *Ledger) GetInclusionProof(ctx context.Context, req *ledgerv1.GetInclusi
 	root := l.merkle.Root(leaves)
 	path, err := l.merkle.Path(leaves, index)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "merkle path: %v", err)
+		return nil, errs.Wrap(errs.Internal, err, "merkle path")
 	}
 	var anchor *ledgerv1.Anchor
 	if a, aerr := l.anchor.Get(ctx, ev.GetSessionId()); aerr == nil {
