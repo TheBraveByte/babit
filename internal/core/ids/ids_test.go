@@ -3,20 +3,21 @@ package ids
 import (
 	"strings"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestNewFormat(t *testing.T) {
 	g := New()
-	cases := []string{"grant", "evt", "sess"}
-	for _, prefix := range cases {
+	for _, prefix := range []string{"grn", "evt", "ses"} {
 		t.Run(prefix, func(t *testing.T) {
 			id := g.New(prefix)
-			if !strings.HasPrefix(id, prefix+"_") {
+			rest, ok := strings.CutPrefix(id, prefix+"_")
+			if !ok {
 				t.Fatalf("id %q missing prefix %q", id, prefix)
 			}
-			hexPart := strings.TrimPrefix(id, prefix+"_")
-			if len(hexPart) != 12 {
-				t.Fatalf("hex len = %d want 12", len(hexPart))
+			if _, err := uuid.Parse(rest); err != nil {
+				t.Fatalf("id %q suffix is not a uuid: %v", id, err)
 			}
 		})
 	}
