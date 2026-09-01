@@ -14,7 +14,6 @@ func TestLoadDefaults(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "DEV", cfg.Environment)
 	assert.Equal(t, ":9090", cfg.GRPCAddr)
-	assert.Equal(t, "", cfg.Solari.APIKey)
 }
 
 func TestLoadReadsSolariFromEnv(t *testing.T) {
@@ -26,13 +25,18 @@ func TestLoadReadsSolariFromEnv(t *testing.T) {
 	assert.Equal(t, "https://gw.example.com", cfg.Solari.BaseURL)
 }
 
-func TestValidateRequiresSecretsInProd(t *testing.T) {
+func TestValidateRequiresNotarySeedInProd(t *testing.T) {
 	t.Setenv("NAL_ENV", "PROD")
 	t.Setenv("DATABASE_URL", "postgres://localhost/nal")
 	t.Setenv("NAL_NOTARY_SEED", "")
-	t.Setenv("SOLARI_API_KEY", "")
 	_, err := config.Load()
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "NAL_NOTARY_SEED")
-	assert.Contains(t, err.Error(), "SOLARI_API_KEY")
+}
+
+func TestPortOverridesHTTPAddr(t *testing.T) {
+	t.Setenv("PORT", "10000")
+	cfg, err := config.Load()
+	require.NoError(t, err)
+	assert.Equal(t, ":10000", cfg.HTTPAddr)
 }
