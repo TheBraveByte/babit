@@ -148,7 +148,9 @@ internal/adapters/        Solari SDK client, Postgres store, anchor
 internal/interceptor/     browser and sandbox wrappers that notarize real Solari actions
 internal/receipt/         portable receipt format and offline verification
 internal/errs/            typed domain errors and gRPC mapping
-cmd/nald, cmd/gateway     gRPC host and REST gateway
+internal/app/             assembles the gRPC server and REST gateway (shared wiring)
+cmd/nald, cmd/gateway     gRPC host and REST gateway (run separately)
+cmd/server                combined gRPC + gateway in one process (for deployment)
 cmd/babit                 the fetch/verify CLI
 ```
 
