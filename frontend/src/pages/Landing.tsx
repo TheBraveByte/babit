@@ -11,26 +11,41 @@ import { Footer } from "./landing/Footer";
 
 export function Landing() {
   return (
-    <div className="min-h-screen bg-[#FCFCFB] text-[#111111] selection:bg-[#111111] selection:text-white font-sans">
+    <div className="min-h-screen font-sans" style={{ backgroundColor: "var(--bg)", color: "var(--fg)" }}>
       <Nav />
+
       <main>
-        {/* Hero Section */}
+        {/* Hero */}
         <Hero />
-        {/* Section 2: Autonomous software needs more than logs */}
-        <SectionLogsVsEvidence />
-        {/* Section 3: Follow the authority */}
+
+        {/* Section 2: id="product" — Logs vs Evidence */}
+        <div id="product">
+          <SectionLogsVsEvidence />
+        </div>
+
+        {/* Section 3: Authority chain — also under #product */}
         <SectionAuthorityChain />
-        {/* Section 4: Every consequential action leaves evidence (Centerpiece Receipt) */}
+
+        {/* Section 4: Centerpiece receipt */}
         <SectionReceiptCenterpiece />
-        {/* Section 5: Verify the record */}
-        <SectionVerifyRecord />
-        {/* Section 6: Built for engineers */}
-        <SectionBuiltForEngineers />
-        {/* Section 7: Evidence that stands on its own */}
+
+        {/* Section 5: id="security" — Verify the record */}
+        <div id="security">
+          <SectionVerifyRecord />
+        </div>
+
+        {/* Section 6: id="developers" — Built for engineers */}
+        <div id="developers">
+          <SectionBuiltForEngineers />
+        </div>
+
+        {/* Section 7: Offline verification */}
         <SectionOfflineEvidence />
+
         {/* Final CTA */}
         <FinalCTA />
       </main>
+
       <Footer />
     </div>
   );
