@@ -363,12 +363,12 @@ var File_solari_ledger_v1_capture_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\n" +
-	"\x1esolari/ledger/v1/capture.proto\x12\x10solari.ledger.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1dsolari/ledger/v1/common.proto\"n\n" +
+	"\x1esolari/ledger/v1/capture.proto\x12\x10solari.ledger.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1dsolari/ledger/v1/common.proto\"\xae\x01\n" +
 	"\x13BeginSessionRequest\x12\"\n" +
 	"\rroot_grant_id\x18\x01 \x01(\tR\vrootGrantId\x123\n" +
-	"\asurface\x18\x02 \x01(\x0e2\x19.solari.ledger.v1.SurfaceR\asurface\"K\n" +
+	"\asurface\x18\x02 \x01(\x0e2\x19.solari.ledger.v1.SurfaceR\asurface:>\x92A;29{\"rootGrantId\":\"grn_root_88\",\"surface\":\"SURFACE_BROWSER\"}\"K\n" +
 	"\x14BeginSessionResponse\x123\n" +
-	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"\xc7\x02\n" +
+	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"\xd3\x03\n" +
 	"\x13RecordActionRequest\x12\x1d\n" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x19\n" +
@@ -381,7 +381,7 @@ const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\rrecording_ref\x18\a \x01(\tR\frecordingRef\x12\x1a\n" +
 	"\bresource\x18\b \x01(\tR\bresource\x12\x1f\n" +
 	"\vvalue_cents\x18\t \x01(\x03R\n" +
-	"valueCents\"K\n" +
+	"valueCents:\x89\x01\x92A\x85\x012\x82\x01{\"grantId\":\"grn_2f9a\",\"actionType\":\"browser.click\",\"resource\":\"https://shop.example.com/cart\",\"recordingRef\":\"slr://session/demo\"}\"K\n" +
 	"\x14RecordActionResponse\x123\n" +
 	"\x05event\x18\x01 \x01(\v2\x1d.solari.ledger.v1.ActionEventR\x05event\"2\n" +
 	"\x11EndSessionRequest\x12\x1d\n" +

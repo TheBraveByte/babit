@@ -435,18 +435,18 @@ var File_solari_ledger_v1_delegation_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
 	"\n" +
-	"!solari/ledger/v1/delegation.proto\x12\x10solari.ledger.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1dsolari/ledger/v1/common.proto\"i\n" +
+	"!solari/ledger/v1/delegation.proto\x12\x10solari.ledger.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1dsolari/ledger/v1/common.proto\"\xa2\x01\n" +
 	"\x15IssueRootGrantRequest\x12!\n" +
 	"\fprincipal_id\x18\x01 \x01(\tR\vprincipalId\x12-\n" +
-	"\x05scope\x18\x02 \x01(\v2\x17.solari.ledger.v1.ScopeR\x05scope\"G\n" +
+	"\x05scope\x18\x02 \x01(\v2\x17.solari.ledger.v1.ScopeR\x05scope:7\x92A422{\"principalId\":\"usr_alice\",\"scope\":{\"maxDepth\":3}}\"G\n" +
 	"\x16IssueRootGrantResponse\x12-\n" +
-	"\x05grant\x18\x01 \x01(\v2\x17.solari.ledger.v1.GrantR\x05grant\"\xab\x01\n" +
+	"\x05grant\x18\x01 \x01(\v2\x17.solari.ledger.v1.GrantR\x05grant\"\xf7\x02\n" +
 	"\x0fDelegateRequest\x12&\n" +
 	"\x0fparent_grant_id\x18\x01 \x01(\tR\rparentGrantId\x12\x1d\n" +
 	"\n" +
 	"subject_id\x18\x02 \x01(\tR\tsubjectId\x12\"\n" +
 	"\fcapabilities\x18\x03 \x03(\tR\fcapabilities\x12-\n" +
-	"\x05scope\x18\x04 \x01(\v2\x17.solari.ledger.v1.ScopeR\x05scope\"A\n" +
+	"\x05scope\x18\x04 \x01(\v2\x17.solari.ledger.v1.ScopeR\x05scope:\xc9\x01\x92A\xc5\x012\xc2\x01{\"parentGrantId\":\"grn_2f9a\",\"subjectId\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resourceGlobs\":[\"https://shop.example.com/*\"],\"maxValueCents\":50000,\"maxDepth\":2}}\"A\n" +
 	"\x10DelegateResponse\x12-\n" +
 	"\x05grant\x18\x01 \x01(\v2\x17.solari.ledger.v1.GrantR\x05grant\"/\n" +
 	"\x12VerifyChainRequest\x12\x19\n" +

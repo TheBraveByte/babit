@@ -157,14 +157,14 @@ const file_solari_ledger_v1_verify_proto_rawDesc = "" +
 	"\n" +
 	"\x1dsolari/ledger/v1/verify.proto\x12\x10solari.ledger.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1dsolari/ledger/v1/common.proto\"C\n" +
 	"\x12VerifyProofRequest\x12-\n" +
-	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof\"\xd4\x01\n" +
+	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof\"\xc4\x02\n" +
 	"\x13VerifyProofResponse\x12\x14\n" +
 	"\x05valid\x18\x01 \x01(\bR\x05valid\x12!\n" +
 	"\fchain_intact\x18\x02 \x01(\bR\vchainIntact\x12'\n" +
 	"\x0fsignature_valid\x18\x03 \x01(\bR\x0esignatureValid\x12\x1a\n" +
 	"\banchored\x18\x04 \x01(\bR\banchored\x12'\n" +
 	"\x0fauthority_valid\x18\x05 \x01(\bR\x0eauthorityValid\x12\x16\n" +
-	"\x06reason\x18\x06 \x01(\tR\x06reason2\xcf\x01\n" +
+	"\x06reason\x18\x06 \x01(\tR\x06reason:n\x92Ak2i{\"valid\":true,\"chainIntact\":true,\"signatureValid\":true,\"anchored\":true,\"authorityValid\":true,\"reason\":\"\"}2\xcf\x01\n" +
 	"\rVerifyService\x12\xbd\x01\n" +
 	"\vVerifyProof\x12$.solari.ledger.v1.VerifyProofRequest\x1a%.solari.ledger.v1.VerifyProofResponse\"a\x92AB\n" +
 	"\x06verify\x128Verify chain, signature, anchor and authority of a proof\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/proofs:verifyB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"

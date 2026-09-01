@@ -488,6 +488,12 @@
     },
     "CaptureServiceRecordActionBody": {
       "type": "object",
+      "example": {
+        "grantId": "grn_2f9a",
+        "actionType": "browser.click",
+        "resource": "https://shop.example.com/cart",
+        "recordingRef": "slr://session/demo"
+      },
       "properties": {
         "grantId": {
           "type": "string"
@@ -642,6 +648,10 @@
     },
     "v1BeginSessionRequest": {
       "type": "object",
+      "example": {
+        "rootGrantId": "grn_root_88",
+        "surface": "SURFACE_BROWSER"
+      },
       "properties": {
         "rootGrantId": {
           "type": "string"
@@ -661,6 +671,21 @@
     },
     "v1DelegateRequest": {
       "type": "object",
+      "example": {
+        "parentGrantId": "grn_2f9a",
+        "subjectId": "agt_shopper",
+        "capabilities": [
+          "browser.click",
+          "browser.type"
+        ],
+        "scope": {
+          "resourceGlobs": [
+            "https://shop.example.com/*"
+          ],
+          "maxValueCents": 50000,
+          "maxDepth": 2
+        }
+      },
       "properties": {
         "parentGrantId": {
           "type": "string"
@@ -797,6 +822,12 @@
     },
     "v1IssueRootGrantRequest": {
       "type": "object",
+      "example": {
+        "principalId": "usr_alice",
+        "scope": {
+          "maxDepth": 3
+        }
+      },
       "properties": {
         "principalId": {
           "type": "string"
@@ -942,6 +973,14 @@
     },
     "v1VerifyProofResponse": {
       "type": "object",
+      "example": {
+        "valid": true,
+        "chainIntact": true,
+        "signatureValid": true,
+        "anchored": true,
+        "authorityValid": true,
+        "reason": ""
+      },
       "properties": {
         "valid": {
           "type": "boolean"
