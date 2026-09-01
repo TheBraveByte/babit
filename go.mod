@@ -8,6 +8,7 @@ require (
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/pressly/goose/v3 v3.27.3
 	github.com/solari-sdk/solari-browser-go v0.1.2
+	github.com/solari-sdk/solari-sandbox-go v0.1.2
 	google.golang.org/genproto/googleapis/api v0.0.0-20260831171406-18b4a7587f8a
 	google.golang.org/grpc v1.83.0
 	google.golang.org/protobuf v1.36.12
@@ -19,6 +20,7 @@ require (
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.4.0 // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
