@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: babit
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NAL_ENV
+        value: PROD
+      # Neon connection string. Set in the Render dashboard (mark as secret).
+      # Must include sslmode=require, e.g.
+      # postgres://USER:PASS@ep-xxx.neon.tech/DB?sslmode=require
+      - key: DATABASE_URL
+        sync: false
+      # 32-byte hex Ed25519 seed. Generate: openssl rand -hex 32
+      - key: NAL_NOTARY_SEED
+        sync: false
+      # Optional gateway auth; when set, gRPC calls need x-api-key.
+      - key: NAL_API_KEY
+        sync: false
+      # Solari credentials (https://console.getsolari.com).
+      - key: SOLARI_API_KEY
+        sync: false
+      - key: SOLARI_BASE_URL
+        sync: false
