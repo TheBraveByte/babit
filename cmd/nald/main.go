@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"os"
 
+	"github.com/babit/nal/config"
 	"github.com/babit/nal/db"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	"github.com/babit/nal/internal/adapters/anchor"
@@ -29,15 +29,18 @@ import (
 )
 
 func main() {
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("config: %v", err)
+	}
 	ctx := context.Background()
-	dsn := getenv("DATABASE_URL", "postgres://postgres:pass@localhost:55432/nal?sslmode=disable")
-	if err := db.Init(ctx, dsn); err != nil {
+	if err := db.Init(ctx, cfg.DatabaseURL); err != nil {
 		log.Fatalf("init db: %v", err)
 	}
 	defer db.Close()
 
 	st := store.New(db.Q)
-	signer, err := notarySigner()
+	signer, err := notarySigner(cfg.NotarySeed)
 	if err != nil {
 		log.Fatalf("init signer: %v", err)
 	}
@@ -47,10 +50,10 @@ func main() {
 	idgen := ids.New()
 	clk := clock.System()
 	anc := anchor.NewInMemory(clk)
-	sol := solariClient()
+	sol := solariClient(cfg.Solari)
 	notaryCore := service.NewNotaryCore(st.Events(), sealer, tree, anc)
 
-	srv := grpc.NewServer(grpc.ChainUnaryInterceptor(apiKeyInterceptor(os.Getenv("NAL_API_KEY")), errs.UnaryInterceptor()))
+	srv := grpc.NewServer(grpc.ChainUnaryInterceptor(apiKeyInterceptor(cfg.APIKey), errs.UnaryInterceptor()))
 	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), signer, verifier, idgen, clk))
 	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer))
 	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), verifier, notaryCore, notaryCore, idgen, clk))
@@ -58,19 +61,17 @@ func main() {
 	ledgerv1.RegisterReplayServiceServer(srv, service.NewReplay(st.Events(), sol))
 	ledgerv1.RegisterVerifyServiceServer(srv, service.NewVerify(signer, tree, verifier, clk))
 
-	addr := getenv("GRPC_ADDR", ":9090")
-	lis, err := net.Listen("tcp", addr)
+	lis, err := net.Listen("tcp", cfg.GRPCAddr)
 	if err != nil {
-		log.Fatalf("listen %s: %v", addr, err)
+		log.Fatalf("listen %s: %v", cfg.GRPCAddr, err)
 	}
-	log.Printf("nald grpc listening on %s", addr)
+	log.Printf("nald grpc listening on %s", cfg.GRPCAddr)
 	if err := srv.Serve(lis); err != nil {
 		log.Fatalf("serve: %v", err)
 	}
 }
 
-func notarySigner() (*sign.Signer, error) {
-	seedHex := os.Getenv("NAL_NOTARY_SEED")
+func notarySigner(seedHex string) (*sign.Signer, error) {
 	if seedHex == "" {
 		log.Print("NAL_NOTARY_SEED unset: generating an ephemeral notary key (receipts break across restarts)")
 		return sign.NewEd25519()
@@ -95,18 +96,15 @@ func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
 	}
 }
 
-func solariClient() ports.Solari {
-	c, err := solari.NewFromEnv()
+func solariClient(cfg config.SolariConfig) ports.Solari {
+	if cfg.APIKey == "" {
+		log.Print("solari disabled: SOLARI_API_KEY not set")
+		return solari.Disabled()
+	}
+	c, err := solari.New(cfg.APIKey, cfg.BaseURL)
 	if err != nil {
 		log.Printf("solari disabled: %v", err)
 		return solari.Disabled()
 	}
 	return c
-}
-
-func getenv(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return fallback
 }

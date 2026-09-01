@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
+	"github.com/babit/nal/config"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	"github.com/babit/nal/internal/interceptor"
 	solarisdk "github.com/solari-sdk/solari-browser-go"
@@ -14,16 +14,19 @@ import (
 
 func main() {
 	ctx := context.Background()
-	key := os.Getenv("SOLARI_API_KEY")
-	if key == "" {
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("config: %v", err)
+	}
+	if cfg.Solari.APIKey == "" {
 		log.Fatal("SOLARI_API_KEY required")
 	}
-	sdk, err := solarisdk.NewClient(solarisdk.ClientOptions{APIKey: key})
+	sdk, err := solarisdk.NewClient(solarisdk.ClientOptions{APIKey: cfg.Solari.APIKey, BaseURL: cfg.Solari.BaseURL})
 	if err != nil {
 		log.Fatalf("solari client: %v", err)
 	}
 
-	conn, err := grpc.NewClient(getenv("NAL_GRPC", "localhost:9090"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(cfg.GRPCTarget, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("dial nald: %v", err)
 	}
@@ -61,11 +64,4 @@ func main() {
 		log.Fatalf("navigate: %v", err)
 	}
 	log.Printf("notarized action %s seq=%d", ev.GetEventId(), ev.GetSequence())
-}
-
-func getenv(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return fallback
 }

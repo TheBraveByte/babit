@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 
 	solarisdk "github.com/solari-sdk/solari-browser-go"
@@ -14,14 +13,13 @@ type Client struct {
 	sdk *solarisdk.Client
 }
 
-func NewFromEnv() (*Client, error) {
-	key := os.Getenv("SOLARI_API_KEY")
-	if key == "" {
-		return nil, errors.New("SOLARI_API_KEY not set")
+func New(apiKey, baseURL string) (*Client, error) {
+	if apiKey == "" {
+		return nil, errors.New("solari api key is required")
 	}
-	opts := solarisdk.ClientOptions{APIKey: key}
-	if base := os.Getenv("SOLARI_BASE_URL"); base != "" {
-		opts.BaseURL = base
+	opts := solarisdk.ClientOptions{APIKey: apiKey}
+	if baseURL != "" {
+		opts.BaseURL = baseURL
 	}
 	sdk, err := solarisdk.NewClient(opts)
 	if err != nil {
