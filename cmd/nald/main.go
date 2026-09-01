@@ -19,6 +19,7 @@ import (
 	"github.com/babit/nal/internal/core/merkle"
 	"github.com/babit/nal/internal/core/seal"
 	"github.com/babit/nal/internal/core/sign"
+	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
 	"github.com/babit/nal/internal/service"
 	"google.golang.org/grpc"
@@ -49,7 +50,7 @@ func main() {
 	sol := solariClient()
 	notaryCore := service.NewNotaryCore(st.Events(), sealer, tree, anc)
 
-	srv := grpc.NewServer(grpc.UnaryInterceptor(apiKeyInterceptor(os.Getenv("NAL_API_KEY"))))
+	srv := grpc.NewServer(grpc.ChainUnaryInterceptor(apiKeyInterceptor(os.Getenv("NAL_API_KEY")), errs.UnaryInterceptor()))
 	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), signer, verifier, idgen, clk))
 	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer))
 	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), verifier, notaryCore, notaryCore, idgen, clk))
