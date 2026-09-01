@@ -1,5 +1,6 @@
 import { Nav } from "./landing/Nav";
 import { Hero } from "./landing/Hero";
+import { SectionHowItWorks } from "./landing/SectionHowItWorks";
 import { SectionLogsVsEvidence } from "./landing/SectionLogsVsEvidence";
 import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
 import { SectionReceiptCenterpiece } from "./landing/SectionReceiptCenterpiece";
@@ -18,12 +19,15 @@ export function Landing() {
         {/* Hero */}
         <Hero />
 
-        {/* Section 2: id="product" — Logs vs Evidence */}
+        {/* How it works — the four plain steps */}
+        <SectionHowItWorks />
+
+        {/* id="product" — ordinary log vs babit evidence */}
         <div id="product">
           <SectionLogsVsEvidence />
         </div>
 
-        {/* Section 3: Authority chain — also under #product */}
+        {/* Authority chain — person to agent to sub-agent */}
         <SectionAuthorityChain />
 
         {/* Section 4: Centerpiece receipt */}
