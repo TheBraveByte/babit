@@ -44,6 +44,13 @@ func (d *Delegation) Delegate(ctx context.Context, req *ledgerv1.DelegateRequest
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "parent grant: %v", err)
 	}
+	revoked, err := d.grants.IsRevoked(ctx, parent.GetGrantId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "check revocation: %v", err)
+	}
+	if revoked {
+		return nil, status.Errorf(codes.FailedPrecondition, "parent grant %s revoked", parent.GetGrantId())
+	}
 	child := &ledgerv1.Grant{
 		GrantId:       d.ids.New("grn"),
 		ParentGrantId: parent.GetGrantId(),

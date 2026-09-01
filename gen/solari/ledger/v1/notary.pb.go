@@ -113,7 +113,7 @@ func (x *NotarizeResponse) GetEvent() *ActionEvent {
 
 type GetAnchorRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Sequence      int64                  `protobuf:"varint,1,opt,name=sequence,proto3" json:"sequence,omitempty"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,11 +148,11 @@ func (*GetAnchorRequest) Descriptor() ([]byte, []int) {
 	return file_solari_ledger_v1_notary_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetAnchorRequest) GetSequence() int64 {
+func (x *GetAnchorRequest) GetSessionId() string {
 	if x != nil {
-		return x.Sequence
+		return x.SessionId
 	}
-	return 0
+	return ""
 }
 
 type GetAnchorResponse struct {
@@ -207,15 +207,16 @@ const file_solari_ledger_v1_notary_proto_rawDesc = "" +
 	"\x0fNotarizeRequest\x123\n" +
 	"\x05event\x18\x01 \x01(\v2\x1d.solari.ledger.v1.ActionEventR\x05event\"G\n" +
 	"\x10NotarizeResponse\x123\n" +
-	"\x05event\x18\x01 \x01(\v2\x1d.solari.ledger.v1.ActionEventR\x05event\".\n" +
-	"\x10GetAnchorRequest\x12\x1a\n" +
-	"\bsequence\x18\x01 \x01(\x03R\bsequence\"E\n" +
+	"\x05event\x18\x01 \x01(\v2\x1d.solari.ledger.v1.ActionEventR\x05event\"1\n" +
+	"\x10GetAnchorRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"E\n" +
 	"\x11GetAnchorResponse\x120\n" +
-	"\x06anchor\x18\x01 \x01(\v2\x18.solari.ledger.v1.AnchorR\x06anchor2\x93\x02\n" +
+	"\x06anchor\x18\x01 \x01(\v2\x18.solari.ledger.v1.AnchorR\x06anchor2\x97\x02\n" +
 	"\rNotaryService\x12Q\n" +
-	"\bNotarize\x12!.solari.ledger.v1.NotarizeRequest\x1a\".solari.ledger.v1.NotarizeResponse\x12\xae\x01\n" +
-	"\tGetAnchor\x12\".solari.ledger.v1.GetAnchorRequest\x1a#.solari.ledger.v1.GetAnchorResponse\"X\x92A7\n" +
-	"\x06notary\x12-Fetch the external anchor covering a sequence\x82\xd3\xe4\x93\x02\x18\x12\x16/v1/anchors/{sequence}B4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\bNotarize\x12!.solari.ledger.v1.NotarizeRequest\x1a\".solari.ledger.v1.NotarizeResponse\x12\xb2\x01\n" +
+	"\tGetAnchor\x12\".solari.ledger.v1.GetAnchorRequest\x1a#.solari.ledger.v1.GetAnchorResponse\"\\\x92A1\n" +
+	"\x06notary\x12'Fetch the external anchor for a session\x82\xd3\xe4\x93\x02\"\x12 /v1/sessions/{session_id}/anchorB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_notary_proto_rawDescOnce sync.Once

@@ -11,6 +11,10 @@ type Notarizer interface {
 	Notarize(ctx context.Context, draft *ledgerv1.ActionEvent) (*ledgerv1.ActionEvent, error)
 }
 
+type Checkpointer interface {
+	Checkpoint(ctx context.Context, sessionID string) (*ledgerv1.Anchor, error)
+}
+
 type Signer interface {
 	Sign(msg []byte) (sig []byte, keyID string, err error)
 	Verify(msg, sig []byte, keyID string) bool

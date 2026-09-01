@@ -12,10 +12,12 @@ import (
 type NotaryCore struct {
 	events ports.EventStore
 	sealer ports.Sealer
+	merkle ports.MerkleTree
+	anchor ports.Anchor
 }
 
-func NewNotaryCore(events ports.EventStore, sealer ports.Sealer) *NotaryCore {
-	return &NotaryCore{events: events, sealer: sealer}
+func NewNotaryCore(events ports.EventStore, sealer ports.Sealer, merkle ports.MerkleTree, anchor ports.Anchor) *NotaryCore {
+	return &NotaryCore{events: events, sealer: sealer, merkle: merkle, anchor: anchor}
 }
 
 func (n *NotaryCore) Notarize(ctx context.Context, draft *ledgerv1.ActionEvent) (*ledgerv1.ActionEvent, error) {
@@ -31,6 +33,19 @@ func (n *NotaryCore) Notarize(ctx context.Context, draft *ledgerv1.ActionEvent) 
 		return nil, err
 	}
 	return sealed, nil
+}
+
+func (n *NotaryCore) Checkpoint(ctx context.Context, sessionID string) (*ledgerv1.Anchor, error) {
+	events, err := n.events.BySession(ctx, sessionID)
+	if err != nil {
+		return nil, err
+	}
+	leaves := make([][]byte, len(events))
+	for i, e := range events {
+		leaves[i] = e.GetContentHash()
+	}
+	root := n.merkle.Root(leaves)
+	return n.anchor.Anchor(ctx, sessionID, root)
 }
 
 type Notary struct {
@@ -52,7 +67,7 @@ func (s *Notary) Notarize(ctx context.Context, req *ledgerv1.NotarizeRequest) (*
 }
 
 func (s *Notary) GetAnchor(ctx context.Context, req *ledgerv1.GetAnchorRequest) (*ledgerv1.GetAnchorResponse, error) {
-	a, err := s.anchor.Get(ctx, req.GetSequence())
+	a, err := s.anchor.Get(ctx, req.GetSessionId())
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "anchor: %v", err)
 	}

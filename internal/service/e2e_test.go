@@ -44,11 +44,12 @@ func newRig(t *testing.T) rig {
 	clk := clock.System()
 	verifier := graph.New(signer)
 	tree := merkle.New()
-	core := service.NewNotaryCore(st.Events(), seal.New(signer))
+	anc := anchor.NewInMemory(clk)
+	core := service.NewNotaryCore(st.Events(), seal.New(signer), tree, anc)
 	return rig{
 		delegation: service.NewDelegation(st.Grants(), signer, verifier, ids.New(), clk),
-		capture:    service.NewCapture(st.Sessions(), st.Grants(), verifier, core, ids.New(), clk),
-		ledger:     service.NewLedger(st.Events(), st.Grants(), tree, anchor.NewInMemory(clk)),
+		capture:    service.NewCapture(st.Sessions(), st.Grants(), verifier, core, core, ids.New(), clk),
+		ledger:     service.NewLedger(st.Events(), st.Grants(), tree, anc),
 		verify:     service.NewVerify(signer, tree, verifier, clk),
 	}
 }
@@ -84,6 +85,10 @@ func TestEndToEndNotarizeVerifyAndTamper(t *testing.T) {
 		lastEvent = rec.GetEvent().GetEventId()
 	}
 
+	if _, err := r.capture.EndSession(ctx, &ledgerv1.EndSessionRequest{SessionId: sess.GetSession().GetSessionId()}); err != nil {
+		t.Fatalf("end session: %v", err)
+	}
+
 	pr, err := r.ledger.GetInclusionProof(ctx, &ledgerv1.GetInclusionProofRequest{EventId: lastEvent})
 	if err != nil {
 		t.Fatalf("inclusion proof: %v", err)
@@ -95,6 +100,9 @@ func TestEndToEndNotarizeVerifyAndTamper(t *testing.T) {
 	if !good.GetValid() || !good.GetChainIntact() || !good.GetSignatureValid() || !good.GetAuthorityValid() {
 		t.Fatalf("expected valid proof, got %+v", good)
 	}
+	if !good.GetAnchored() {
+		t.Fatalf("expected anchored proof after session end, got %+v", good)
+	}
 
 	tampered := proto.Clone(pr.GetProof()).(*ledgerv1.Proof)
 	tampered.Event.ActionType = "browser.evil"
@@ -104,6 +112,21 @@ func TestEndToEndNotarizeVerifyAndTamper(t *testing.T) {
 	}
 	if bad.GetChainIntact() || bad.GetValid() {
 		t.Fatalf("tamper not detected: %+v", bad)
+	}
+}
+
+func TestRecordActionDeniesRevokedGrant(t *testing.T) {
+	ctx := context.Background()
+	r := newRig(t)
+	root, _ := r.delegation.IssueRootGrant(ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_rev", Scope: &ledgerv1.Scope{MaxDepth: 3}})
+	child, _ := r.delegation.Delegate(ctx, &ledgerv1.DelegateRequest{ParentGrantId: root.GetGrant().GetGrantId(), SubjectId: "agt_rev", Capabilities: []string{"browser.click"}, Scope: &ledgerv1.Scope{}})
+	sess, _ := r.capture.BeginSession(ctx, &ledgerv1.BeginSessionRequest{RootGrantId: root.GetGrant().GetGrantId(), Surface: ledgerv1.Surface_SURFACE_BROWSER})
+	if _, err := r.delegation.Revoke(ctx, &ledgerv1.RevokeRequest{GrantId: child.GetGrant().GetGrantId(), Reason: "test"}); err != nil {
+		t.Fatalf("revoke: %v", err)
+	}
+	_, err := r.capture.RecordAction(ctx, &ledgerv1.RecordActionRequest{SessionId: sess.GetSession().GetSessionId(), GrantId: child.GetGrant().GetGrantId(), ActionType: "browser.click"})
+	if err == nil {
+		t.Fatal("expected permission denied for revoked grant")
 	}
 }
 

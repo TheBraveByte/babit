@@ -41,13 +41,13 @@ func request_NotaryService_GetAnchor_0(ctx context.Context, marshaler runtime.Ma
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	val, ok := pathParams["sequence"]
+	val, ok := pathParams["session_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequence")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "session_id")
 	}
-	protoReq.Sequence, err = runtime.Int64(val)
+	protoReq.SessionId, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequence", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "session_id", err)
 	}
 	if req.Body != nil {
 		_, _ = io.Copy(io.Discard, req.Body)
@@ -62,13 +62,13 @@ func local_request_NotaryService_GetAnchor_0(ctx context.Context, marshaler runt
 		metadata runtime.ServerMetadata
 		err      error
 	)
-	val, ok := pathParams["sequence"]
+	val, ok := pathParams["session_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sequence")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "session_id")
 	}
-	protoReq.Sequence, err = runtime.Int64(val)
+	protoReq.SessionId, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sequence", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "session_id", err)
 	}
 	msg, err := server.GetAnchor(ctx, &protoReq)
 	return msg, metadata, err
@@ -86,7 +86,7 @@ func RegisterNotaryServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/solari.ledger.v1.NotaryService/GetAnchor", runtime.WithHTTPPathPattern("/v1/anchors/{sequence}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/solari.ledger.v1.NotaryService/GetAnchor", runtime.WithHTTPPathPattern("/v1/sessions/{session_id}/anchor"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -144,7 +144,7 @@ func RegisterNotaryServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/solari.ledger.v1.NotaryService/GetAnchor", runtime.WithHTTPPathPattern("/v1/anchors/{sequence}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/solari.ledger.v1.NotaryService/GetAnchor", runtime.WithHTTPPathPattern("/v1/sessions/{session_id}/anchor"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -161,7 +161,7 @@ func RegisterNotaryServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 }
 
 var (
-	pattern_NotaryService_GetAnchor_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "anchors", "sequence"}, ""))
+	pattern_NotaryService_GetAnchor_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "sessions", "session_id", "anchor"}, ""))
 )
 
 var (

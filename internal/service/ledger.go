@@ -49,7 +49,7 @@ func (l *Ledger) GetInclusionProof(ctx context.Context, req *ledgerv1.GetInclusi
 		return nil, status.Errorf(codes.Internal, "merkle path: %v", err)
 	}
 	var anchor *ledgerv1.Anchor
-	if a, aerr := l.anchor.Get(ctx, ev.GetSequence()); aerr == nil {
+	if a, aerr := l.anchor.Get(ctx, ev.GetSessionId()); aerr == nil {
 		anchor = a
 	}
 	var chain []*ledgerv1.Grant

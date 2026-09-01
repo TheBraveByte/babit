@@ -14,33 +14,32 @@ import (
 type inMemory struct {
 	mu      sync.RWMutex
 	clock   ports.Clock
-	entries map[int64]*ledgerv1.Anchor
+	entries map[string]*ledgerv1.Anchor
 }
 
 func NewInMemory(clock ports.Clock) ports.Anchor {
-	return &inMemory{clock: clock, entries: make(map[int64]*ledgerv1.Anchor)}
+	return &inMemory{clock: clock, entries: make(map[string]*ledgerv1.Anchor)}
 }
 
-func (a *inMemory) Anchor(ctx context.Context, sequence int64, root []byte) (*ledgerv1.Anchor, error) {
+func (a *inMemory) Anchor(ctx context.Context, sessionID string, root []byte) (*ledgerv1.Anchor, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	receipt := []byte("txl:" + hex.EncodeToString(root))
 	anchor := &ledgerv1.Anchor{
 		Kind:          ledgerv1.Anchor_KIND_TRANSPARENCY_LOG,
 		Root:          root,
-		AnchorReceipt: receipt,
+		AnchorReceipt: []byte("txl:" + hex.EncodeToString(root)),
 		AnchoredAt:    timestamppb.New(a.clock.Now()),
 	}
-	a.entries[sequence] = anchor
+	a.entries[sessionID] = anchor
 	return anchor, nil
 }
 
-func (a *inMemory) Get(ctx context.Context, sequence int64) (*ledgerv1.Anchor, error) {
+func (a *inMemory) Get(ctx context.Context, sessionID string) (*ledgerv1.Anchor, error) {
 	a.mu.RLock()
 	defer a.mu.RUnlock()
-	anchor, ok := a.entries[sequence]
+	anchor, ok := a.entries[sessionID]
 	if !ok {
-		return nil, fmt.Errorf("anchor for sequence %d not found", sequence)
+		return nil, fmt.Errorf("anchor for session %s not found", sessionID)
 	}
 	return anchor, nil
 }

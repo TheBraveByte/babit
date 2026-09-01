@@ -12,16 +12,17 @@ import (
 
 type Capture struct {
 	ledgerv1.UnimplementedCaptureServiceServer
-	sessions ports.SessionStore
-	grants   ports.GrantStore
-	verifier ports.DelegationVerifier
-	notary   ports.Notarizer
-	ids      ports.IDGen
-	clock    ports.Clock
+	sessions   ports.SessionStore
+	grants     ports.GrantStore
+	verifier   ports.DelegationVerifier
+	notary     ports.Notarizer
+	checkpoint ports.Checkpointer
+	ids        ports.IDGen
+	clock      ports.Clock
 }
 
-func NewCapture(sessions ports.SessionStore, grants ports.GrantStore, verifier ports.DelegationVerifier, notary ports.Notarizer, ids ports.IDGen, clock ports.Clock) *Capture {
-	return &Capture{sessions: sessions, grants: grants, verifier: verifier, notary: notary, ids: ids, clock: clock}
+func NewCapture(sessions ports.SessionStore, grants ports.GrantStore, verifier ports.DelegationVerifier, notary ports.Notarizer, checkpoint ports.Checkpointer, ids ports.IDGen, clock ports.Clock) *Capture {
+	return &Capture{sessions: sessions, grants: grants, verifier: verifier, notary: notary, checkpoint: checkpoint, ids: ids, clock: clock}
 }
 
 func (c *Capture) BeginSession(ctx context.Context, req *ledgerv1.BeginSessionRequest) (*ledgerv1.BeginSessionResponse, error) {
@@ -48,6 +49,9 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 	}
 	if err := c.verifier.VerifyChain(chain, c.clock.Now()); err != nil {
 		return nil, status.Errorf(codes.PermissionDenied, "verify chain: %v", err)
+	}
+	if err := c.ensureNotRevoked(ctx, chain); err != nil {
+		return nil, err
 	}
 	leaf := chain[len(chain)-1]
 	if !hasCapability(leaf, req.GetActionType()) {
@@ -82,7 +86,23 @@ func (c *Capture) EndSession(ctx context.Context, req *ledgerv1.EndSessionReques
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "end session: %v", err)
 	}
+	if _, err := c.checkpoint.Checkpoint(ctx, req.GetSessionId()); err != nil {
+		return nil, status.Errorf(codes.Internal, "checkpoint: %v", err)
+	}
 	return &ledgerv1.EndSessionResponse{Session: s}, nil
+}
+
+func (c *Capture) ensureNotRevoked(ctx context.Context, chain []*ledgerv1.Grant) error {
+	for _, g := range chain {
+		revoked, err := c.grants.IsRevoked(ctx, g.GetGrantId())
+		if err != nil {
+			return status.Errorf(codes.Internal, "check revocation: %v", err)
+		}
+		if revoked {
+			return status.Errorf(codes.PermissionDenied, "grant %s revoked", g.GetGrantId())
+		}
+	}
+	return nil
 }
 
 func hasCapability(g *ledgerv1.Grant, capability string) bool {

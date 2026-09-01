@@ -11,9 +11,9 @@ import "solari/ledger/v1/common.proto";
 service NotaryService {
   rpc Notarize(NotarizeRequest) returns (NotarizeResponse);
   rpc GetAnchor(GetAnchorRequest) returns (GetAnchorResponse) {
-    option (google.api.http) = {get: "/v1/anchors/{sequence}"};
+    option (google.api.http) = {get: "/v1/sessions/{session_id}/anchor"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Fetch the external anchor covering a sequence"
+      summary: "Fetch the external anchor for a session"
       tags: "notary"
     };
   }
@@ -28,7 +28,7 @@ message NotarizeResponse {
 }
 
 message GetAnchorRequest {
-  int64 sequence = 1;
+  string session_id = 1;
 }
 
 message GetAnchorResponse {

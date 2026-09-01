@@ -8,8 +8,8 @@ import (
 )
 
 type Anchor interface {
-	Anchor(ctx context.Context, sequence int64, root []byte) (*ledgerv1.Anchor, error)
-	Get(ctx context.Context, sequence int64) (*ledgerv1.Anchor, error)
+	Anchor(ctx context.Context, sessionID string, root []byte) (*ledgerv1.Anchor, error)
+	Get(ctx context.Context, sessionID string) (*ledgerv1.Anchor, error)
 }
 
 type Solari interface {
