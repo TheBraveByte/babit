@@ -2,104 +2,94 @@ import { useState } from "react";
 import { IconCheck, IconCopy } from "@/lib/icons";
 
 const CODE_EXAMPLES = {
-  typescript: `import { BabitClient } from "@babit/sdk";
+  curl: `# 1. Record what an agent just did — one authenticated POST.
+curl -X POST https://api.babit.dev/v1/sessions/ses_019284/actions \\
+  -H "Authorization: Bearer $BABIT_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "grant_id": "BAL-417849",
+    "action_type": "approve_payout",
+    "resource": "https://claims.internal/CLM-48102",
+    "value_cents": 420000
+  }'
 
-// Initialize client with your notary ingestion token
-const babit = new BabitClient({
-  apiKey: process.env.BABIT_API_KEY,
-  endpoint: "https://api.babit.dev",
-});
+# 2. Anyone can verify the result — no account needed.
+curl -X POST https://api.babit.dev/v1/proofs:verify \\
+  -H "Content-Type: application/json" \\
+  -d @proof.json
+# -> {"valid":true,"signature_valid":true,"chain_intact":true,"anchored":true}
 
-// 1. Open an authenticated execution session bound to a root grant
-const session = await babit.sessions.begin({
-  grantId: "BAL-ROOT-100200",
-  principal: "usr_alice",
-  surface: "SURFACE_BROWSER",
-});
+# Fetch the public key to check it yourself, offline.
+curl https://api.babit.dev/v1/notary/public-key`,
 
-// 2. Capture and notarize consequential agent action at point of effect
-const receipt = await session.recordAction({
-  action: "approve_payout",
-  agentId: "claims-agent",
-  resource: "https://internal.bank.io/claims/48102",
-  payload: {
-    claim_id: "CLM-48102",
-    amount_usd: 4200.0,
-    approved_by: "claims-agent",
+  typescript: `// Record what an agent just did — a single authenticated POST.
+const res = await fetch(
+  "https://api.babit.dev/v1/sessions/ses_019284/actions",
+  {
+    method: "POST",
+    headers: {
+      Authorization: \`Bearer \${process.env.BABIT_TOKEN}\`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      grant_id: "BAL-417849",
+      action_type: "approve_payout",
+      resource: "https://claims.internal/CLM-48102",
+      value_cents: 420000,
+    }),
   },
-});
+);
 
-console.log("Sealed receipt:", receipt.id);
-console.log("Merkle root:", receipt.merkleRoot);
-console.log("Ed25519 signature:", receipt.notarySignature);`,
+const { event } = await res.json();
+console.log("Sealed event:", event.id);`,
 
-  python: `from babit import BabitClient
+  python: `import os, requests
 
-# Initialize client
-client = BabitClient(api_key="babit_live_secret_...")
-
-# 1. Open session bound to risk supervisor grant
-session = client.sessions.begin(
-    grant_id="BAL-ROOT-100200",
-    principal="usr_alice",
-    surface="SURFACE_SANDBOX",
+# Record what an agent just did.
+res = requests.post(
+    "https://api.babit.dev/v1/sessions/ses_019284/actions",
+    headers={"Authorization": f"Bearer {os.environ['BABIT_TOKEN']}"},
+    json={
+        "grant_id": "BAL-417849",
+        "action_type": "approve_payout",
+        "resource": "https://claims.internal/CLM-48102",
+        "value_cents": 420000,
+    },
 )
 
-# 2. Notarize action
-receipt = session.record_action(
-    action="approve_payout",
-    agent_id="claims-agent",
-    resource="https://internal.bank.io/claims/48102",
-    payload={"claim_id": "CLM-48102", "amount_usd": 4200.00}
-)
-
-print(f"Receipt ID: {receipt.id}")
-print(f"Verified: {receipt.is_valid()}")`,
+event = res.json()["event"]
+print("Sealed event:", event["id"])`,
 
   go: `package main
 
 import (
-    "context"
+    "bytes"
     "fmt"
-    "github.com/thebravebyte/babit/pkg/client"
+    "net/http"
+    "os"
 )
 
 func main() {
-    ctx := context.Background()
-    c, _ := client.NewClient("https://api.babit.dev", client.WithAPIKey("babit_live_..."))
+    body := bytes.NewBufferString(\`{
+      "grant_id": "BAL-417849",
+      "action_type": "approve_payout",
+      "resource": "https://claims.internal/CLM-48102",
+      "value_cents": 420000
+    }\`)
 
-    // Record action event directly into notary ledger
-    receipt, err := c.RecordAction(ctx, &client.RecordActionRequest{
-        SessionID: "ses_019284",
-        Action:    "approve_payout",
-        AgentID:   "claims-agent",
-        Resource:  "https://internal.bank.io/claims/48102",
-        Payload:   map[string]interface{}{"amount_usd": 4200.00},
-    })
-    if err != nil {
-        panic(err)
-    }
+    req, _ := http.NewRequest("POST",
+        "https://api.babit.dev/v1/sessions/ses_019284/actions", body)
+    req.Header.Set("Authorization", "Bearer "+os.Getenv("BABIT_TOKEN"))
+    req.Header.Set("Content-Type", "application/json")
 
-    fmt.Printf("Sealed event hash: %s\\n", receipt.EventHash)
+    res, _ := http.DefaultClient.Do(req)
+    defer res.Body.Close()
+    fmt.Println("status:", res.Status)
 }`,
-
-  curl: `# Record and seal an autonomous action via REST API
-curl -X POST https://api.babit.dev/v1/sessions/ses_019284/actions \\
-  -H "Authorization: Bearer babit_live_token_..." \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "action": "approve_payout",
-    "agent_id": "claims-agent",
-    "resource": "https://internal.bank.io/claims/48102",
-    "payload": {
-      "claim_id": "CLM-48102",
-      "amount_usd": 4200.00
-    }
-  }'`,
 };
 
 export function SectionBuiltForEngineers() {
-  const [activeLang, setActiveLang] = useState<"typescript" | "python" | "go" | "curl">("typescript");
+  const [activeLang, setActiveLang] = useState<"curl" | "typescript" | "python" | "go">("curl");
   const [copied, setCopied] = useState(false);
 
   const copyCode = () => {
@@ -114,17 +104,17 @@ export function SectionBuiltForEngineers() {
         {/* Section Header */}
         <div className="max-w-3xl space-y-4">
           <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-            ENGINEER-FIRST INTEGRATION
+            For developers
           </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
             style={{ color: "var(--fg)" }}
           >
-            Built for engineers.
+            Wire it in with a few HTTP calls.
           </h2>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            Integrate Babit into your agent orchestrators with a few lines of code. Native SDKs for TypeScript,
-            Python, and Go with automatic Ed25519 signing and offline verification.
+            babit is a plain REST and gRPC API. Record what an agent did with one call, and anyone can
+            verify the receipt with another. No SDK required.
           </p>
         </div>
 
@@ -146,11 +136,11 @@ export function SectionBuiltForEngineers() {
           >
             {/* Language tabs */}
             <div className="flex items-center gap-1">
-              {(["typescript", "python", "go", "curl"] as const).map((lang) => (
+              {(["curl", "typescript", "python", "go"] as const).map((lang) => (
                 <button
                   key={lang}
                   onClick={() => setActiveLang(lang)}
-                  className="px-3 py-1.5 rounded-babit-sm text-xs font-mono font-medium capitalize transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-babit-sm text-xs font-mono font-medium transition-colors cursor-pointer"
                   style={{
                     backgroundColor: activeLang === lang ? "#202626" : "transparent",
                     color: activeLang === lang ? "#F5F6F4" : "#8A9490",
@@ -188,8 +178,32 @@ export function SectionBuiltForEngineers() {
             }}
           >
             <span>POST /v1/sessions/{'{session_id}'}/actions</span>
-            <span>gRPC & REST OpenAPI 3.1</span>
+            <span>REST + gRPC · OpenAPI</span>
           </div>
+        </div>
+
+        {/* Real endpoints — honest surface */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 font-mono text-[12px]">
+          {[
+            { m: "POST", p: "/v1/auth/signup" },
+            { m: "POST", p: "/v1/auth/login" },
+            { m: "GET", p: "/v1/auth/me" },
+            { m: "POST", p: "/v1/grants:root" },
+            { m: "POST", p: "/v1/grants" },
+            { m: "POST", p: "/v1/sessions" },
+            { m: "POST", p: "/v1/sessions/{id}/actions" },
+            { m: "POST", p: "/v1/proofs:verify" },
+            { m: "GET", p: "/v1/notary/public-key" },
+          ].map((e) => (
+            <div
+              key={e.p}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-babit"
+              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
+            >
+              <span className="font-semibold shrink-0" style={{ color: "var(--muted)" }}>{e.m}</span>
+              <span style={{ color: "var(--fg)" }}>{e.p}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

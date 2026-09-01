@@ -1,21 +1,23 @@
 import { useState } from "react";
 import { IconCheck, IconRefresh } from "@/lib/icons";
 
+interface CliOutput {
+  sig: string;
+  chain: string;
+  auth: string;
+  duration: string;
+}
+
+const RESULT: CliOutput = {
+  sig: "signature matches babit's public key",
+  chain: "record is unchanged",
+  auth: "stayed within what was allowed",
+  duration: "0.9ms",
+};
+
 export function SectionOfflineEvidence() {
   const [running, setRunning] = useState(false);
-  const [output, setOutput] = useState<{
-    stage: string;
-    sig: string;
-    chain: string;
-    auth: string;
-    duration: string;
-  } | null>({
-    stage: "Verified offline against local public key notary.pub",
-    sig: "Ed25519 signature valid (fingerprint: 0x9f81a829)",
-    chain: "Hash chain sequence #8294 unbroken",
-    auth: "Authority grant BAL-ROOT-100200 intact",
-    duration: "1.1ms",
-  });
+  const [output, setOutput] = useState<CliOutput | null>(RESULT);
 
   const runCli = () => {
     setRunning(true);
@@ -23,13 +25,7 @@ export function SectionOfflineEvidence() {
 
     setTimeout(() => {
       setRunning(false);
-      setOutput({
-        stage: "Verified offline against local public key notary.pub",
-        sig: "Ed25519 signature valid (fingerprint: 0x9f81a829)",
-        chain: "Hash chain sequence #8294 unbroken",
-        auth: "Authority grant BAL-ROOT-100200 intact",
-        duration: "0.9ms",
-      });
+      setOutput(RESULT);
     }, 400);
   };
 
@@ -39,7 +35,7 @@ export function SectionOfflineEvidence() {
         {/* Header */}
         <div className="max-w-3xl space-y-4">
           <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-            ZERO VENDOR LOCK-IN
+            Works without us
           </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
@@ -48,55 +44,46 @@ export function SectionOfflineEvidence() {
             Evidence that stands on its own.
           </h2>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            Receipts and inclusion proofs are completely self-contained. Anyone can verify evidence offline using standard
-            cryptographic libraries or our open-source CLI without making network calls to Babit servers.
+            A receipt carries everything needed to check it. Anyone can confirm it's genuine offline, with a
+            standard crypto library or our open verifier, without ever calling babit.
           </p>
         </div>
 
         {/* 3 Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div
-            className="p-6 rounded-babit space-y-2 shadow-xs"
-            style={{
-              backgroundColor: "var(--surface)",
-              border: "1px solid var(--border)",
-            }}
+            className="p-6 rounded-babit-lg space-y-2 shadow-xs"
+            style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
           >
-            <span className="text-[10px] uppercase font-bold" style={{ color: "var(--muted)" }}>STEP 01</span>
-            <h3 className="text-sm font-semibold font-sans" style={{ color: "var(--fg)" }}>Export Receipt</h3>
-            <p className="font-sans leading-relaxed text-xs" style={{ color: "var(--muted)" }}>
-              Download portable JSON receipt from console, API, or automated webhook ingestion.
+            <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--muted)" }}>Step 1</span>
+            <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>Save the receipt</h3>
+            <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>
+              Download the receipt as a plain file from the console or the API.
             </p>
           </div>
 
           <div
-            className="p-6 rounded-babit space-y-2 shadow-xs"
-            style={{
-              backgroundColor: "var(--surface)",
-              border: "1px solid var(--border)",
-            }}
+            className="p-6 rounded-babit-lg space-y-2 shadow-xs"
+            style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
           >
-            <span className="text-[10px] uppercase font-bold" style={{ color: "var(--muted)" }}>STEP 02</span>
-            <h3 className="text-sm font-semibold font-sans" style={{ color: "var(--fg)" }}>Fetch Notary PubKey</h3>
-            <p className="font-sans leading-relaxed text-xs" style={{ color: "var(--muted)" }}>
-              Cache the notary public key offline in your CI/CD pipeline, audit environment, or air-gapped vault.
+            <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--muted)" }}>Step 2</span>
+            <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>Get the public key</h3>
+            <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>
+              Fetch babit's public key once and keep it wherever you need it, even offline.
             </p>
           </div>
 
           <div
-            className="p-6 rounded-babit space-y-2 shadow-xs"
-            style={{
-              backgroundColor: "var(--surface)",
-              border: "1.5px solid var(--fg)",
-            }}
+            className="p-6 rounded-babit-lg space-y-2 shadow-xs"
+            style={{ backgroundColor: "var(--surface)", border: "1.5px solid var(--fg)" }}
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] uppercase font-bold text-emerald-700">STEP 03</span>
-              <span className="text-[10px] text-emerald-700 font-bold">VERIFIED</span>
+              <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--color-verified)" }}>Step 3</span>
+              <span className="text-[10px] font-mono font-semibold" style={{ color: "var(--color-verified)" }}>Verified</span>
             </div>
-            <h3 className="text-sm font-semibold font-sans" style={{ color: "var(--fg)" }}>Verify Deterministically</h3>
-            <p className="font-sans leading-relaxed text-xs" style={{ color: "var(--muted)" }}>
-              Run standalone verification in Go, Python, Rust, or via the <code className="text-xs font-mono">babit verify</code> CLI.
+            <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>Check it anywhere</h3>
+            <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>
+              Confirm the receipt is genuine and unchanged with the open <code className="text-xs font-mono">babit verify</code> tool.
             </p>
           </div>
         </div>
@@ -130,15 +117,15 @@ export function SectionOfflineEvidence() {
               className="text-[11px] text-[#A2B0AC] hover:text-[#F5F6F4] flex items-center gap-1 cursor-pointer"
             >
               <IconRefresh className={`w-3 h-3 ${running ? "animate-spin" : ""}`} />
-              <span>Run CLI command</span>
+              <span>Run it</span>
             </button>
           </div>
 
           {/* Terminal Output */}
           <div className="p-5 space-y-2 text-[#F5F6F4]">
-            <div className="text-[#8A9490]">$ babit verify receipt_BAL_778812.json --public-key notary.pub</div>
+            <div className="text-[#8A9490]">$ babit verify rcpt_BAL_778812.json --public-key notary.pub</div>
 
-            {running && <div className="text-amber-400">Executing offline cryptographic verification...</div>}
+            {running && <div className="text-amber-400">Checking the receipt offline…</div>}
 
             {output && (
               <div className="space-y-1.5 pt-1 animate-fade-in">
@@ -155,7 +142,7 @@ export function SectionOfflineEvidence() {
                   <span>{output.auth}</span>
                 </div>
                 <div className="pt-2 text-[11px] text-[#737D79] border-t border-[#1C2020]">
-                  ✓ Verified offline in {output.duration}. Zero outbound network connections.
+                  Checked offline in {output.duration}. No network calls to babit.
                 </div>
               </div>
             )}
