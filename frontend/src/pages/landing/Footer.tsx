@@ -1,5 +1,6 @@
 import { BabitLogo } from "@/lib/icons";
 import { Link } from "@/lib/router";
+import { docsUrl } from "@/lib/links";
 
 export function Footer() {
   return (
@@ -68,7 +69,7 @@ export function Footer() {
             <ul className="space-y-2" style={{ color: "var(--muted)" }}>
               <li><a href="#developers" className="hover:text-[var(--fg)] transition-colors">API reference</a></li>
               <li>
-                <a href="/docs" target="_blank" rel="noreferrer" className="hover:text-[var(--fg)] transition-colors">
+                <a href={docsUrl} target="_blank" rel="noreferrer" className="hover:text-[var(--fg)] transition-colors">
                   Documentation ↗
                 </a>
               </li>

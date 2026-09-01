@@ -1,4 +1,5 @@
 import { useRouter } from "@/lib/router";
+import { docsUrl } from "@/lib/links";
 
 export function FinalCTA() {
   const { navigate } = useRouter();
@@ -30,7 +31,7 @@ export function FinalCTA() {
           </button>
 
           <a
-            href="/docs"
+            href={docsUrl}
             target="_blank"
             rel="noreferrer"
             className="px-6 py-3 text-[15px] font-medium bg-transparent text-[#F5F6F4] border border-[#242826] rounded-babit hover:bg-[#151817] transition-all shadow-2xs cursor-pointer inline-flex items-center gap-1.5"
