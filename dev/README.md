@@ -20,5 +20,10 @@ cp http-client.env.json.example http-client.env.json
 ```
 
 `http-client.env.json` is gitignored so local secrets never reach the repo. Set `apiKey`
-there only if `nald` was started with `NAL_API_KEY` (this is babit's gateway auth, not the
-Solari key).
+there only if the server was started with `NAL_API_KEY` (this is babit's gateway auth, not
+the Solari key).
+
+Environments:
+- `dev` — the local gateway (`make run` + `make gateway`).
+- `render` — the deployed instance. Select it in the HTTP Client and run the same steps
+  against the live service.
