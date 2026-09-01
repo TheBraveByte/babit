@@ -1,42 +1,43 @@
 import { useRouter } from "@/lib/router";
-import { IconArrowRight, IconShieldCheck } from "@/lib/icons";
 
 export function FinalCTA() {
   const { navigate } = useRouter();
 
   return (
-    <section className="py-24 sm:py-32 bg-white relative overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-xs font-mono text-neutral-800">
-          <IconShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          <span>Production Ready Infrastructure</span>
+    <section className="py-28 sm:py-36 bg-[#090A0A] text-[#F5F6F4] relative overflow-hidden">
+      {/* Background Variant C: Subtle Evidence Grid */}
+      <div className="absolute inset-0 bg-grid-subtle opacity-30 pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-babit-sm bg-[#151817] border border-[#242826] text-xs font-mono text-[#929894] uppercase tracking-wider">
+          <span>PRODUCTION-READY ACCOUNTABILITY</span>
         </div>
 
-        <h2 className="text-3xl sm:text-5xl font-semibold tracking-tight text-neutral-900 leading-[1.15]">
-          Make autonomous actions <br className="hidden sm:inline" />
-          <span className="text-neutral-500">accountable.</span>
+        <h2 className="text-4xl sm:text-5xl lg:text-[56px] font-semibold tracking-tight text-[#F5F6F4] leading-[1.1]">
+          Make autonomous actions accountable.
         </h2>
 
-        <p className="text-sm sm:text-base text-neutral-600 max-w-xl mx-auto leading-relaxed">
-          Build trust into every consequential action your agents take. Deploy in minutes with our
-          high-performance Go backend and TypeScript SDKs.
+        <p className="text-base sm:text-lg text-[#929894] max-w-xl mx-auto leading-relaxed">
+          Give every consequential action a clear chain of authority and verifiable evidence.
         </p>
 
         <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
           <button
             onClick={() => navigate("/signup")}
-            className="px-6 py-3 text-sm font-medium bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 text-[15px] font-medium bg-[#F5F6F4] text-[#090A0A] rounded-babit hover:bg-white transition-all shadow-2xs cursor-pointer"
           >
-            <span>Get started</span>
-            <IconArrowRight className="w-4 h-4 text-neutral-400" />
+            Get started
           </button>
 
-          <button
-            onClick={() => navigate("/login")}
-            className="px-6 py-3 text-sm font-medium bg-white text-neutral-800 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-all shadow-xs cursor-pointer"
+          <a
+            href="/docs"
+            target="_blank"
+            rel="noreferrer"
+            className="px-6 py-3 text-[15px] font-medium bg-transparent text-[#F5F6F4] border border-[#242826] rounded-babit hover:bg-[#151817] transition-all shadow-2xs cursor-pointer inline-flex items-center gap-1.5"
           >
-            <span>Sign in to console</span>
-          </button>
+            <span>Read the docs</span>
+            <span className="text-[#929894]">↗</span>
+          </a>
         </div>
       </div>
     </section>
