@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	"github.com/babit/nal/internal/ports"
@@ -72,7 +73,7 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 		PreStateHash:  req.GetPreStateHash(),
 		PostStateHash: req.GetPostStateHash(),
 		RecordingRef:  req.GetRecordingRef(),
-		OccurredAt:    timestamppb.New(c.clock.Now()),
+		OccurredAt:    timestamppb.New(c.clock.Now().Truncate(time.Microsecond)),
 	}
 	sealed, err := c.notary.Notarize(ctx, draft)
 	if err != nil {
