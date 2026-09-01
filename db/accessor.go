@@ -38,8 +38,11 @@ func Init(ctx context.Context, dsn string) error {
 	return nil
 }
 
+const migrationLockKey = 4242424242
+
 func Migrate(dsn string) error {
-	pool, err := pgxpool.New(context.Background(), dsn)
+	ctx := context.Background()
+	pool, err := pgxpool.New(ctx, dsn)
 	if err != nil {
 		return fmt.Errorf("open migration pool: %w", err)
 	}
@@ -47,6 +50,16 @@ func Migrate(dsn string) error {
 
 	sqldb := stdlib.OpenDBFromPool(pool)
 	defer sqldb.Close()
+
+	conn, err := sqldb.Conn(ctx)
+	if err != nil {
+		return fmt.Errorf("acquire migration conn: %w", err)
+	}
+	defer conn.Close()
+	if _, err := conn.ExecContext(ctx, "SELECT pg_advisory_lock($1)", migrationLockKey); err != nil {
+		return fmt.Errorf("acquire migration lock: %w", err)
+	}
+	defer conn.ExecContext(ctx, "SELECT pg_advisory_unlock($1)", migrationLockKey)
 
 	goose.SetBaseFS(embedMigrations)
 	if err := goose.SetDialect("postgres"); err != nil {
