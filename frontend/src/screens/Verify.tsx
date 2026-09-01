@@ -182,8 +182,7 @@ export function Verify() {
             </div>
           )}
 
-          <div className="pt-3 border-t border-[#F0F0ED] flex items-center justify-between text-[#6B6B6B] text-[11px]">
-            <span>Deterministic verification runtime: 1.4ms</span>
+          <div className="pt-3 border-t border-[#F0F0ED] flex items-center justify-end text-[#6B6B6B] text-[11px]">
             <span className="flex items-center gap-1 font-sans">
               <IconCheck className="w-3.5 h-3.5 text-emerald-700" />
               <span>Independent verification complete</span>
