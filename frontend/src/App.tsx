@@ -13,6 +13,7 @@ import { Overview } from "@/pages/dashboard/Overview";
 import { Activity } from "@/pages/dashboard/Activity";
 import { Agents } from "@/pages/dashboard/Agents";
 import { Delegations } from "@/pages/dashboard/Delegations";
+import { Sessions } from "@/pages/dashboard/Sessions";
 import { Receipts } from "@/pages/dashboard/Receipts";
 import { Verify } from "@/screens/Verify";
 import { Settings } from "@/pages/dashboard/Settings";
@@ -53,6 +54,7 @@ export function App() {
         {activeTab === "activity" && <Activity />}
         {activeTab === "agents" && <Agents onNavigate={handleTabChange} />}
         {activeTab === "delegations" && <Delegations />}
+        {activeTab === "sessions" && <Sessions />}
         {activeTab === "receipts" && <Receipts />}
         {activeTab === "verify" && <Verify />}
         {activeTab === "settings" && <Settings />}
