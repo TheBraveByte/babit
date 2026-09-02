@@ -91,7 +91,6 @@ message CreateApiKeyRequest {
 }
 message CreateApiKeyResponse {
   ApiKey key = 1;
-  // Full secret, shown exactly once. Store it now; babit keeps only a hash.
   string secret = 2;
 }
 
