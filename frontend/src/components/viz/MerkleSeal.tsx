@@ -235,7 +235,8 @@ export function MerkleSeal({ className = "" }: { className?: string }) {
     };
 
     raf = requestAnimationFrame(draw);
-    const ro = new ResizeObserver(() => resize());
+    // Reduced-motion draws once; repaint after a resize clears the bitmap.
+    const ro = new ResizeObserver(() => { resize(); if (reduced) draw(0); });
     ro.observe(canvas);
 
     return () => {
