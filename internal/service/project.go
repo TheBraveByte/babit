@@ -16,8 +16,6 @@ import (
 
 const apiKeyPrefix = "bak_live"
 
-// Project service ------------------------------------------------------------
-
 type ProjectSvc struct {
 	ledgerv1.UnimplementedProjectServiceServer
 	projects ports.ProjectStore
@@ -59,7 +57,6 @@ func (s *ProjectSvc) ListProjects(ctx context.Context, _ *ledgerv1.ListProjectsR
 	return &ledgerv1.ListProjectsResponse{Projects: out}, nil
 }
 
-// API key service ------------------------------------------------------------
 
 type APIKeySvc struct {
 	ledgerv1.UnimplementedApiKeyServiceServer

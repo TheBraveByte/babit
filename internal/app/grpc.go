@@ -140,9 +140,7 @@ func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
 	}
 }
 
-// dbAPIKeyInterceptor resolves a per-project API key (x-api-key: bak_live_...) to its
-// owning user and injects it into the context, so REST/curl callers authenticate the
-// same way a signed-in user does. Absent or unknown keys pass through untouched.
+
 func dbAPIKeyInterceptor(keys ports.APIKeyStore) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 		if md, ok := metadata.FromIncomingContext(ctx); ok {
