@@ -89,7 +89,7 @@ export function SectionOfflineEvidence() {
                 top: "42%",
                 right: "-16%",
                 transform: "translateY(-50%)",
-                opacity: 0.45,
+                opacity: 0.7,
                 maskImage: "radial-gradient(circle at center, black 55%, transparent 78%)",
                 WebkitMaskImage: "radial-gradient(circle at center, black 55%, transparent 78%)",
               }}
