@@ -56,13 +56,6 @@ export function SectionOfflineEvidence() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
         {/* Header */}
         <div className="max-w-3xl space-y-4 animate-float-up">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-            style={{ color: "var(--muted)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-            <span>Works without us</span>
-          </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
             style={{ color: "var(--fg)" }}
@@ -70,8 +63,7 @@ export function SectionOfflineEvidence() {
             Evidence that stands on its own.
           </h2>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            A receipt carries everything needed to check it. Anyone can confirm it's genuine offline, with a
-            standard crypto library or our open verifier, without ever calling babit.
+            A receipt carries everything needed to check it, offline, without ever calling babit.
           </p>
         </div>
 

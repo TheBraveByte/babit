@@ -16,14 +16,6 @@ export function FinalCTA() {
             <div className="h-px accent-hairline" />
 
             <div className="px-6 py-14 sm:px-14 sm:py-20 text-center space-y-6">
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-                style={{ color: "var(--muted)" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-                <span>Get started</span>
-              </div>
-
               <h2 className="text-4xl sm:text-5xl lg:text-[56px] font-semibold tracking-[-0.03em] leading-[1.1]" style={{ color: "var(--fg)" }}>
                 Know what your agents did, and prove it.
               </h2>

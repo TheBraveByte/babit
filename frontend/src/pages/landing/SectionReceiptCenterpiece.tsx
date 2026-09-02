@@ -31,13 +31,6 @@ export function SectionReceiptCenterpiece() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
         {/* Header */}
         <div className="max-w-3xl space-y-4 animate-float-up">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-            style={{ color: "var(--muted)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-            <span>The receipt</span>
-          </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
             style={{ color: "var(--fg)" }}
@@ -45,8 +38,7 @@ export function SectionReceiptCenterpiece() {
             Every action leaves a receipt you can read.
           </h2>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            Each receipt reads like a plain summary: what happened, who did it, who allowed it, and when.
-            The proof that it's genuine sits quietly underneath.
+            What happened, who did it, who allowed it, and when. The proof sits quietly underneath.
           </p>
         </div>
 
