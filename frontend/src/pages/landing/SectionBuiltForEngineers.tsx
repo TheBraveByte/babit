@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IconCheck, IconCopy } from "@/lib/icons";
 
 const CODE_EXAMPLES = {
-  curl: `# 1. Record what an agent just did — one authenticated POST.
+  curl: `# 1. Record what an agent just did, one authenticated POST.
 curl -X POST https://api.babit.dev/v1/sessions/ses_019284/actions \\
   -H "Authorization: Bearer $BABIT_TOKEN" \\
   -H "Content-Type: application/json" \\
@@ -13,7 +13,7 @@ curl -X POST https://api.babit.dev/v1/sessions/ses_019284/actions \\
     "value_cents": 420000
   }'
 
-# 2. Anyone can verify the result — no account needed.
+# 2. Anyone can verify the result, no account needed.
 curl -X POST https://api.babit.dev/v1/proofs:verify \\
   -H "Content-Type: application/json" \\
   -d @proof.json
@@ -22,7 +22,7 @@ curl -X POST https://api.babit.dev/v1/proofs:verify \\
 # Fetch the public key to check it yourself, offline.
 curl https://api.babit.dev/v1/notary/public-key`,
 
-  typescript: `// Record what an agent just did — a single authenticated POST.
+  typescript: `// Record what an agent just did, a single authenticated POST.
 const res = await fetch(
   "https://api.babit.dev/v1/sessions/ses_019284/actions",
   {
@@ -192,7 +192,7 @@ export function SectionBuiltForEngineers() {
           </div>
         </div>
 
-        {/* Real endpoints — honest surface */}
+        {/* Real endpoints,honest surface */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 font-mono text-[12px]">
           {[
             { m: "POST", p: "/v1/auth/signup" },

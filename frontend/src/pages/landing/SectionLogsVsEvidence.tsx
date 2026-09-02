@@ -59,13 +59,13 @@ export function SectionLogsVsEvidence() {
                 border: "1px solid var(--border)",
               }}
             >
-              <div>2026-09-01 14:32:08 — worker-pool-4: executing payout</div>
+              <div>2026-09-01 14:32:08  worker-pool-4: executing payout</div>
               <div style={{ color: logTampered ? "var(--color-failed)" : "var(--fg)" }}>
                 {logTampered
                   ? '{"action": "approve_payout", "amount": 0.00, "status": "no_action"}'
                   : '{"action": "approve_payout", "amount": 4200.00, "claim": "CLM-48102"}'}
               </div>
-              <div>2026-09-01 14:32:08 — worker-pool-4: request completed (200 OK)</div>
+              <div>2026-09-01 14:32:08  worker-pool-4: request completed (200 OK)</div>
             </div>
 
             <div className="space-y-2 pt-2 text-[13px]" style={{ color: "var(--muted)" }}>

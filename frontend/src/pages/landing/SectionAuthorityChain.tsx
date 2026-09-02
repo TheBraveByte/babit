@@ -80,7 +80,7 @@ export function SectionAuthorityChain() {
             </h2>
             <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
               A person authorizes an agent, which can hand a narrower slice of the job to a sub-agent.
-              babit keeps the whole signed chain, so you can always see who allowed what — and revoking
+              babit keeps the whole signed chain, so you can always see who allowed what, and revoking
               a grant instantly greys out everything below it.
             </p>
 
@@ -102,7 +102,7 @@ export function SectionAuthorityChain() {
                   </li>
                   <li className="flex gap-2">
                     <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "var(--brand-accent)" }} />
-                    <span>Each edge carries a <span style={{ color: "var(--fg)" }}>parent signature</span> — proof the grant above authorized the one below.</span>
+                    <span>Each edge carries a <span style={{ color: "var(--fg)" }}>parent signature</span>, proof the grant above authorized the one below.</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "var(--color-failed)" }} />

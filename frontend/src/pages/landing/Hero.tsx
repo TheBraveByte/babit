@@ -6,9 +6,9 @@ import { docsUrl } from "@/lib/links";
 import { EvidenceLedger } from "@/components/viz/EvidenceLedger";
 
 const PRESETS = [
-  { name: "Payout", action: "Approved a $4,200 insurance payout", agent: "claims-agent", principal: "Alice — Risk Supervisor", grantId: "BAL-DEL-8921", resource: "claims/48102", amount: 4200.0 },
-  { name: "Deploy", action: "Deployed the payments service to production", agent: "infra-orchestrator", principal: "Marcus — SecOps Lead", grantId: "BAL-ROOT-5501", resource: "prod-cluster/payment-svc:v2.4", amount: 0 },
-  { name: "Export", action: "Exported 5,000 audit records", agent: "compliance-bot", principal: "Elena — Data Protection Officer", grantId: "BAL-DEL-1029", resource: "vault/audit_log", amount: 0 },
+  { name: "Payout", action: "Approved a $4,200 insurance payout", agent: "claims-agent", principal: "Alice, Risk Supervisor", grantId: "BAL-DEL-8921", resource: "claims/48102", amount: 4200.0 },
+  { name: "Deploy", action: "Deployed the payments service to production", agent: "infra-orchestrator", principal: "Marcus, SecOps Lead", grantId: "BAL-ROOT-5501", resource: "prod-cluster/payment-svc:v2.4", amount: 0 },
+  { name: "Export", action: "Exported 5,000 audit records", agent: "compliance-bot", principal: "Elena, Data Protection Officer", grantId: "BAL-DEL-1029", resource: "vault/audit_log", amount: 0 },
 ];
 
 export function Hero() {
@@ -98,7 +98,7 @@ export function Hero() {
             </div>
           </div>
 
-          {/* ── Right: live evidence receipt — the product surface ───────── */}
+          {/* ── Right: live evidence receipt,the product surface ───────── */}
           <div className="relative" style={{ perspective: "1600px" }}>
             <div className="ambient-glow animate-glow-pulse" style={{ inset: "-14% 2% 18% 6%" }} />
             <div className="ambient-glow" style={{ inset: "22% -8% -12% 30%", opacity: 0.28 }} />
