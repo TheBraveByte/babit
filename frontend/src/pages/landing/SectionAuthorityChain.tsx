@@ -64,25 +64,27 @@ export function SectionAuthorityChain() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left — Heading + description */}
-          <div className="space-y-5 animate-float-up">
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-              style={{ color: "var(--muted)" }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-              <span>Chain of authority</span>
+          <div className="space-y-8 animate-float-up">
+            <div className="space-y-4">
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
+                style={{ color: "var(--muted)" }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
+                <span>Chain of authority</span>
+              </div>
+              <h2
+                className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
+                style={{ color: "var(--fg)" }}
+              >
+                Every action traces back to a person.
+              </h2>
+              <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
+                A person authorizes an agent, which can hand a narrower slice of the job to a sub-agent.
+                babit keeps the whole signed chain, so you can always see who allowed what, and revoking
+                a grant instantly greys out everything below it.
+              </p>
             </div>
-            <h2
-              className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
-              style={{ color: "var(--fg)" }}
-            >
-              Every action traces back to a person.
-            </h2>
-            <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-              A person authorizes an agent, which can hand a narrower slice of the job to a sub-agent.
-              babit keeps the whole signed chain, so you can always see who allowed what, and revoking
-              a grant instantly greys out everything below it.
-            </p>
 
             <div className="glass rounded-babit-lg overflow-hidden">
               <div className="h-px accent-hairline" />

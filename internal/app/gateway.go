@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/babit/nal/config"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
@@ -20,10 +21,19 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 			MarshalOptions:   protojson.MarshalOptions{UseProtoNames: true, EmitUnpopulated: true},
 			UnmarshalOptions: protojson.UnmarshalOptions{DiscardUnknown: true},
 		}),
+		// Forward the per-project API key header to gRPC (Authorization passes by default).
+		runtime.WithIncomingHeaderMatcher(func(key string) (string, bool) {
+			if strings.EqualFold(key, "x-api-key") {
+				return "x-api-key", true
+			}
+			return runtime.DefaultHeaderMatcher(key)
+		}),
 	)
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	registrars := []gwRegistrar{
 		ledgerv1.RegisterAuthServiceHandlerFromEndpoint,
+		ledgerv1.RegisterProjectServiceHandlerFromEndpoint,
+		ledgerv1.RegisterApiKeyServiceHandlerFromEndpoint,
 		ledgerv1.RegisterDelegationServiceHandlerFromEndpoint,
 		ledgerv1.RegisterCaptureServiceHandlerFromEndpoint,
 		ledgerv1.RegisterNotaryServiceHandlerFromEndpoint,

@@ -42,7 +42,7 @@ export function SectionVerifyRecord() {
     <section id="security" className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
       <div className="absolute inset-0 grid-fade pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
         {/* Header */}
         <div className="max-w-3xl space-y-4 animate-float-up">
           <div
