@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { IconCheck, IconRefresh } from "@/lib/icons";
-import { AnchorGlobe } from "@/components/viz/AnchorGlobe";
+
+const AnchorGlobe = lazy(() =>
+  import("@/components/viz/AnchorGlobe").then((m) => ({ default: m.AnchorGlobe })),
+);
 
 interface CliOutput {
   sig: string;
@@ -92,7 +95,9 @@ export function SectionOfflineEvidence() {
               }}
             >
               <div className="ambient-glow" style={{ inset: "8%" }} />
-              <AnchorGlobe size={440} className="relative" />
+              <Suspense fallback={null}>
+                <AnchorGlobe size={440} className="relative" />
+              </Suspense>
             </div>
 
             <div className="relative space-y-1.5 mb-5">

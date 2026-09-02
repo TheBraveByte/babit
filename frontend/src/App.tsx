@@ -1,79 +1,82 @@
+import { lazy, Suspense, type ReactNode } from "react";
 import type { DashboardTab } from "@/pages/dashboard/DashboardLayout";
 import { useRouter } from "@/lib/router";
 
-// Pages
+// Eager: landing + auth are the entry surfaces, kept in the initial bundle.
 import { Landing } from "@/pages/Landing";
 import { Login } from "@/pages/auth/Login";
 import { Signup } from "@/pages/auth/Signup";
 import { ForgotPassword } from "@/pages/auth/ForgotPassword";
-import { ApiReference } from "@/pages/ApiReference";
-
-// Dashboard
 import { DashboardLayout } from "@/pages/dashboard/DashboardLayout";
-import { Overview } from "@/pages/dashboard/Overview";
-import { Activity } from "@/pages/dashboard/Activity";
-import { Agents } from "@/pages/dashboard/Agents";
-import { Delegations } from "@/pages/dashboard/Delegations";
-import { Sessions } from "@/pages/dashboard/Sessions";
-import { Receipts } from "@/pages/dashboard/Receipts";
-import { Verify } from "@/screens/Verify";
-import { Settings } from "@/pages/dashboard/Settings";
-import { Projects } from "@/pages/dashboard/Projects";
-import { ApiKeys } from "@/pages/dashboard/ApiKeys";
-import { Analytics } from "@/pages/dashboard/Analytics";
+
+// Lazy: heavy or route-gated screens are code-split out of the initial load
+// (Scalar reference, react-flow graphs, recharts analytics, etc.).
+const ApiReference = lazy(() => import("@/pages/ApiReference").then((m) => ({ default: m.ApiReference })));
+const Overview = lazy(() => import("@/pages/dashboard/Overview").then((m) => ({ default: m.Overview })));
+const Analytics = lazy(() => import("@/pages/dashboard/Analytics").then((m) => ({ default: m.Analytics })));
+const Activity = lazy(() => import("@/pages/dashboard/Activity").then((m) => ({ default: m.Activity })));
+const Agents = lazy(() => import("@/pages/dashboard/Agents").then((m) => ({ default: m.Agents })));
+const Delegations = lazy(() => import("@/pages/dashboard/Delegations").then((m) => ({ default: m.Delegations })));
+const Sessions = lazy(() => import("@/pages/dashboard/Sessions").then((m) => ({ default: m.Sessions })));
+const Receipts = lazy(() => import("@/pages/dashboard/Receipts").then((m) => ({ default: m.Receipts })));
+const Verify = lazy(() => import("@/screens/Verify").then((m) => ({ default: m.Verify })));
+const Projects = lazy(() => import("@/pages/dashboard/Projects").then((m) => ({ default: m.Projects })));
+const ApiKeys = lazy(() => import("@/pages/dashboard/ApiKeys").then((m) => ({ default: m.ApiKeys })));
+const Settings = lazy(() => import("@/pages/dashboard/Settings").then((m) => ({ default: m.Settings })));
+
+function Loading() {
+  return (
+    <div className="min-h-[40vh] flex items-center justify-center">
+      <div
+        className="w-5 h-5 rounded-full animate-spin"
+        style={{ border: "2px solid var(--border)", borderTopColor: "var(--brand-accent)" }}
+      />
+    </div>
+  );
+}
+
+function Boundary({ children }: { children: ReactNode }) {
+  return <Suspense fallback={<Loading />}>{children}</Suspense>;
+}
 
 export function App() {
   const { path, navigate } = useRouter();
 
-  // Root route is Marketing Landing Page
-  if (path === "/" || path === "") {
-    return <Landing />;
-  }
-
-  // Authentication routes
-  if (path === "/login") {
-    return <Login />;
-  }
-
-  if (path === "/signup") {
-    return <Signup />;
-  }
-
-  if (path === "/forgot-password") {
-    return <ForgotPassword />;
-  }
-
-  // Public API reference generated from openapi.v3.json
+  if (path === "/" || path === "") return <Landing />;
+  if (path === "/login") return <Login />;
+  if (path === "/signup") return <Signup />;
+  if (path === "/forgot-password") return <ForgotPassword />;
   if (path === "/api" || path === "/docs/api") {
-    return <ApiReference />;
+    return (
+      <Boundary>
+        <ApiReference />
+      </Boundary>
+    );
   }
 
-  // Dashboard routes: /dashboard, /dashboard/overview, /dashboard/activity, /dashboard/agents, /dashboard/delegations, /dashboard/receipts, /dashboard/verify, /dashboard/settings
   if (path.startsWith("/dashboard")) {
     const parts = path.split("/");
     const activeTab = (parts[2] as DashboardTab) || "overview";
-
-    const handleTabChange = (tab: DashboardTab) => {
-      navigate(`/dashboard/${tab}`);
-    };
+    const handleTabChange = (tab: DashboardTab) => navigate(`/dashboard/${tab}`);
 
     return (
       <DashboardLayout activeTab={activeTab} onTabChange={handleTabChange}>
-        {activeTab === "overview" && <Overview onNavigate={handleTabChange} />}
-        {activeTab === "analytics" && <Analytics />}
-        {activeTab === "activity" && <Activity />}
-        {activeTab === "agents" && <Agents onNavigate={handleTabChange} />}
-        {activeTab === "delegations" && <Delegations />}
-        {activeTab === "sessions" && <Sessions />}
-        {activeTab === "receipts" && <Receipts />}
-        {activeTab === "verify" && <Verify />}
-        {activeTab === "projects" && <Projects />}
-        {activeTab === "apikeys" && <ApiKeys />}
-        {activeTab === "settings" && <Settings />}
+        <Boundary>
+          {activeTab === "overview" && <Overview onNavigate={handleTabChange} />}
+          {activeTab === "analytics" && <Analytics />}
+          {activeTab === "activity" && <Activity />}
+          {activeTab === "agents" && <Agents onNavigate={handleTabChange} />}
+          {activeTab === "delegations" && <Delegations />}
+          {activeTab === "sessions" && <Sessions />}
+          {activeTab === "receipts" && <Receipts />}
+          {activeTab === "verify" && <Verify />}
+          {activeTab === "projects" && <Projects />}
+          {activeTab === "apikeys" && <ApiKeys />}
+          {activeTab === "settings" && <Settings />}
+        </Boundary>
       </DashboardLayout>
     );
   }
 
-  // Fallback to landing
   return <Landing />;
 }

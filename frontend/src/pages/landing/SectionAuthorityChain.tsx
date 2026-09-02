@@ -1,5 +1,10 @@
+import { lazy, Suspense } from "react";
 import type { Node, Edge } from "@xyflow/react";
-import { AuthorityGraph, type GrantNodeData } from "../../components/viz/AuthorityGraph";
+import type { GrantNodeData } from "../../components/viz/AuthorityGraph";
+
+const AuthorityGraph = lazy(() =>
+  import("../../components/viz/AuthorityGraph").then((m) => ({ default: m.AuthorityGraph })),
+);
 
 // Curated, truthful example of babit's signed delegation DAG (Grant model):
 // a human principal issues a root grant, delegates scoped authority to an agent,
@@ -119,7 +124,9 @@ export function SectionAuthorityChain() {
           <div className="relative animate-float-up" style={{ animationDelay: "120ms" }}>
             <div className="ambient-glow" style={{ inset: "8% 6% 8% 6%", opacity: 0.28 }} />
             <div className="glass rounded-babit-lg overflow-hidden relative z-10">
-              <AuthorityGraph nodes={NODES} edges={EDGES} height={420} />
+              <Suspense fallback={<div style={{ height: 420 }} />}>
+                <AuthorityGraph nodes={NODES} edges={EDGES} height={420} />
+              </Suspense>
             </div>
           </div>
         </div>
