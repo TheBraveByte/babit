@@ -57,7 +57,7 @@ export function Field({
       </div>
       {children}
       {error && (
-        <span className="text-xs text-red-600 flex items-center gap-1">
+        <span className="text-xs flex items-center gap-1" style={{ color: "var(--color-failed)" }}>
           <IconAlertCircle className="w-3 h-3" />{error}
         </span>
       )}
@@ -200,27 +200,35 @@ export function StatusPill({
 }) {
   const displayLabel = label ?? status ?? (ok ? "VERIFIED" : "FAILED");
 
-  let cls = "";
-  let dotCls = "bg-gray-400";
+  // Token-driven tints via color-mix so both light and dark render correctly.
+  let color = "var(--muted)";
+  let tint = 0;
 
   if (ok === true || status === "VERIFIED" || status === "ACTIVE") {
-    cls = "bg-emerald-50 text-emerald-800 border-emerald-200";
-    dotCls = "bg-emerald-500";
+    color = "var(--color-verified)";
+    tint = 1;
   } else if (ok === false || status === "FAILED" || status === "REVOKED") {
-    cls = "bg-red-50 text-red-800 border-red-200";
-    dotCls = "bg-red-500";
+    color = "var(--color-failed)";
+    tint = 1;
   } else if (status === "PENDING") {
-    cls = "bg-amber-50 text-amber-800 border-amber-200";
-    dotCls = "bg-amber-500";
-  } else {
-    cls = "bg-[var(--secondary)] text-[var(--muted)] border-[var(--border)]";
+    color = "var(--color-pending)";
+    tint = 1;
   }
+
+  const style = tint
+    ? {
+        color,
+        backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)`,
+        borderColor: `color-mix(in srgb, ${color} 32%, transparent)`,
+      }
+    : { color: "var(--muted)", backgroundColor: "var(--secondary)", borderColor: "var(--border)" };
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-mono font-medium tracking-tight ${cls}`}
+      className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-mono font-medium tracking-tight"
+      style={style}
     >
-      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotCls}`} />
+      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: tint ? color : "var(--muted)" }} />
       {displayLabel}
     </span>
   );
@@ -281,8 +289,15 @@ export function Json({ data }: { data: unknown }) {
 /* ─── Error ─────────────────────────────────────────────────────────────────── */
 export function Error({ message }: { message: string }) {
   return (
-    <div className="rounded-babit bg-red-50 border border-red-200 p-3 flex items-start gap-2 text-xs font-mono text-red-700">
-      <IconAlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
+    <div
+      className="rounded-babit p-3 flex items-start gap-2 text-xs font-mono"
+      style={{
+        color: "var(--color-failed)",
+        backgroundColor: "color-mix(in srgb, var(--color-failed) 10%, transparent)",
+        border: "1px solid color-mix(in srgb, var(--color-failed) 30%, transparent)",
+      }}
+    >
+      <IconAlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
       <span>{message}</span>
     </div>
   );
