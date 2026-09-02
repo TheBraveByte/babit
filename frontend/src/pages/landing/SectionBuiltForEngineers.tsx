@@ -107,13 +107,6 @@ export function SectionBuiltForEngineers() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl space-y-4 animate-float-up">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-            style={{ color: "var(--muted)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-            <span>For developers</span>
-          </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
             style={{ color: "var(--fg)" }}
@@ -121,8 +114,7 @@ export function SectionBuiltForEngineers() {
             Wire it in with a few HTTP calls.
           </h2>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            babit is a plain REST and gRPC API. Record what an agent did with one call, and anyone can
-            verify the receipt with another. No SDK required.
+            Record an action with one call. Verify the receipt with another. REST and gRPC, no SDK required.
           </p>
         </div>
 
@@ -209,8 +201,7 @@ export function SectionBuiltForEngineers() {
               Every endpoint, documented.
             </h3>
             <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-              Auth, grants, sessions, events, and verification, generated from the live spec with
-              request and response examples you can run.
+              Auth, grants, sessions, events, and verification, with request and response examples you can run.
             </p>
           </div>
           <div className="mt-auto">

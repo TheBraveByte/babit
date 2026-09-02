@@ -85,7 +85,10 @@ func withCORS(h http.Handler) http.Handler {
 			if ok {
 				w.Header().Set("Access-Control-Allow-Origin", origin)
 				w.Header().Set("Vary", "Origin")
-				w.Header().Set("Access-Control-Allow-Credentials", "true")
+				// Credentials are only safe with an explicit allowlist, never with reflect-all.
+				if !allowAll {
+					w.Header().Set("Access-Control-Allow-Credentials", "true")
+				}
 			}
 		}
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")

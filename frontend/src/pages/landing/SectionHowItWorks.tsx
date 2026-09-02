@@ -23,7 +23,7 @@ const STEPS = [
     label: "Verification",
     Icon: IconShieldCheck,
     title: "Anyone can check it.",
-    body: "Anyone can confirm the record is real and unchanged on their own, without taking babit's word for it.",
+    body: "Anyone can confirm the record is real and unchanged, without taking babit's word for it.",
   },
 ];
 
@@ -35,13 +35,6 @@ export function SectionHowItWorks() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
         <div className="max-w-3xl space-y-4 animate-float-up">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-            style={{ color: "var(--muted)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-            <span>How it works</span>
-          </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
             style={{ color: "var(--fg)" }}
@@ -49,8 +42,7 @@ export function SectionHowItWorks() {
             From permission to proof.
           </h2>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            When an agent acts on its own, babit ties what it did to the person who allowed it, and turns
-            that into evidence anyone can check.
+            babit ties what an agent did to the person who allowed it, then turns it into evidence anyone can check.
           </p>
         </div>
 
@@ -65,8 +57,7 @@ export function SectionHowItWorks() {
               One thread, from the moment someone says yes.
             </h3>
             <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-              Each action an agent takes stays tied to the person who allowed it. babit carries that link
-              through every step below, so what comes out the other end is evidence, not just a log.
+              The link to who allowed it follows every step, so the result is evidence, not just a log.
             </p>
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {STEPS.map((s, i) => (

@@ -125,14 +125,15 @@ func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
 		if want == "" {
 			return handler(ctx, req)
 		}
+		// A per-project key (bak_*) that dbAPIKeyInterceptor already resolved to a user
+		// passes the coarse gate; an unresolved/garbage bak_ key does not.
+		if coreauth.UserID(ctx) != "" {
+			return handler(ctx, req)
+		}
 		md, ok := metadata.FromIncomingContext(ctx)
 		got := ""
 		if ok && len(md.Get("x-api-key")) > 0 {
 			got = md.Get("x-api-key")[0]
-		}
-		// Per-project keys (bak_*) are authenticated by dbAPIKeyInterceptor; let them through.
-		if strings.HasPrefix(got, "bak_") {
-			return handler(ctx, req)
 		}
 		if got != want {
 			return nil, status.Error(codes.Unauthenticated, "missing or invalid x-api-key")
