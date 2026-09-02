@@ -64,7 +64,7 @@ export function Footer() {
               Developers
             </span>
             <ul className="space-y-2" style={{ color: "var(--muted)" }}>
-              <li><a href="#developers" className="hover:text-[var(--fg)] transition-colors">API reference</a></li>
+              <li><Link to="/api" className="hover:text-[var(--fg)] transition-colors">API reference</Link></li>
               <li>
                 <a href={docsUrl} target="_blank" rel="noreferrer" className="hover:text-[var(--fg)] transition-colors">
                   Documentation ↗

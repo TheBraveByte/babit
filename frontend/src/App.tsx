@@ -6,6 +6,7 @@ import { Landing } from "@/pages/Landing";
 import { Login } from "@/pages/auth/Login";
 import { Signup } from "@/pages/auth/Signup";
 import { ForgotPassword } from "@/pages/auth/ForgotPassword";
+import { ApiReference } from "@/pages/ApiReference";
 
 // Dashboard
 import { DashboardLayout } from "@/pages/dashboard/DashboardLayout";
@@ -37,6 +38,11 @@ export function App() {
 
   if (path === "/forgot-password") {
     return <ForgotPassword />;
+  }
+
+  // Public API reference generated from openapi.v3.json
+  if (path === "/api" || path === "/docs/api") {
+    return <ApiReference />;
   }
 
   // Dashboard routes: /dashboard, /dashboard/overview, /dashboard/activity, /dashboard/agents, /dashboard/delegations, /dashboard/receipts, /dashboard/verify, /dashboard/settings

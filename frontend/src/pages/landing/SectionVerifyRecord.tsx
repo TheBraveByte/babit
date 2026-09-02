@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { IconCheck, IconRefresh } from "@/lib/icons";
+import { MerkleSeal } from "@/components/viz/MerkleSeal";
 
 export function SectionVerifyRecord() {
   const [tampered, setTampered] = useState(false);
@@ -61,6 +62,24 @@ export function SectionVerifyRecord() {
             You don't have to take babit's word for it. Anyone can check a receipt is genuine and unchanged,
             on their own. Try changing this one and run the check.
           </p>
+        </div>
+
+        {/* Merkle inclusion-proof visual — leaves (content_hash) hash up to a single
+            merkle_root that is anchored to a transparency log; a tamper is shown propagating
+            up the path until the root no longer matches. Supports the verifier below. */}
+        <div className="max-w-2xl mx-auto relative animate-float-up" style={{ animationDelay: "90ms" }}>
+          <div className="glass rounded-babit-lg p-4 sm:p-5 relative overflow-hidden">
+            <div className="h-px accent-hairline absolute inset-x-0 top-0" />
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
+                Inclusion proof
+              </span>
+              <span className="text-[11px] font-mono" style={{ color: "var(--muted)" }}>
+                content_hash → merkle_root → anchor
+              </span>
+            </div>
+            <MerkleSeal className="w-full h-[180px]" />
+          </div>
         </div>
 
         {/* Verification Interactive Box */}
