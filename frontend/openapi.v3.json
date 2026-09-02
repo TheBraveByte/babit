@@ -1,0 +1,1763 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Babit",
+        "description": "Babit Notarized Action Ledger. A tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/v1/analytics/overview": {
+            "get": {
+                "summary": "Aggregate activity across the ledger (events, sessions, grants)",
+                "operationId": "AnalyticsService_GetOverview",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1GetOverviewResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ]
+            }
+        },
+        "/v1/auth/login": {
+            "post": {
+                "summary": "Authenticate and return a session token",
+                "operationId": "AuthService_Login",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/auth/me": {
+            "get": {
+                "summary": "Return the current user and organization branding",
+                "operationId": "AuthService_Me",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1MeResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Update your profile details",
+                "operationId": "AuthService_UpdateProfile",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1UpdateProfileResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1UpdateProfileRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/auth/signup": {
+            "post": {
+                "summary": "Create an account and return a session token",
+                "operationId": "AuthService_Signup",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1SignupResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1SignupRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/events/{event_id}": {
+            "get": {
+                "summary": "Read a sealed action event",
+                "operationId": "LedgerService_GetEvent",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1GetEventResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "event_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        },
+        "/v1/events/{event_id}:proof": {
+            "get": {
+                "summary": "Build an offline-verifiable inclusion proof",
+                "operationId": "LedgerService_GetInclusionProof",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1GetInclusionProofResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "event_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        },
+        "/v1/grants": {
+            "post": {
+                "summary": "Delegate scoped authority to an agent or sub-agent",
+                "operationId": "DelegationService_Delegate",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1DelegateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1DelegateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/grants/{grant_id}/revoke": {
+            "post": {
+                "summary": "Revoke a grant and its descendants",
+                "operationId": "DelegationService_Revoke",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1RevokeResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "grant_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DelegationServiceRevokeBody"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/grants/{grant_id}:verify": {
+            "get": {
+                "summary": "Verify a delegation chain back to its root",
+                "operationId": "DelegationService_VerifyChain",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1VerifyChainResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "grant_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        },
+        "/v1/grants:root": {
+            "post": {
+                "summary": "Issue a root grant for a human principal",
+                "operationId": "DelegationService_IssueRootGrant",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1IssueRootGrantResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1IssueRootGrantRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/keys/{key_id}/revoke": {
+            "post": {
+                "summary": "Revoke an API key",
+                "operationId": "ApiKeyService_RevokeApiKey",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1RevokeApiKeyResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "key_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApiKeyServiceRevokeApiKeyBody"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/notary/public-key": {
+            "get": {
+                "summary": "Fetch the notary public key for offline verification",
+                "operationId": "NotaryService_GetPublicKey",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1GetPublicKeyResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/projects": {
+            "get": {
+                "summary": "List your projects",
+                "operationId": "ProjectService_ListProjects",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1ListProjectsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a project to group API keys",
+                "operationId": "ProjectService_CreateProject",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1CreateProjectResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1CreateProjectRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/projects/{project_id}/keys": {
+            "get": {
+                "summary": "List API keys in a project (masked)",
+                "operationId": "ApiKeyService_ListApiKeys",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1ListApiKeysResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Create an API key in a project (the secret is returned once)",
+                "operationId": "ApiKeyService_CreateApiKey",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1CreateApiKeyResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApiKeyServiceCreateApiKeyBody"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/proofs:verify": {
+            "post": {
+                "summary": "Verify chain, signature, anchor and authority of a proof",
+                "operationId": "VerifyService_VerifyProof",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1VerifyProofResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1VerifyProofRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/sessions": {
+            "post": {
+                "summary": "Open a capture session bound to a root grant",
+                "operationId": "CaptureService_BeginSession",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1BeginSessionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/v1BeginSessionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/sessions/{session_id}/actions": {
+            "post": {
+                "summary": "Record and notarize one executed action",
+                "operationId": "CaptureService_RecordAction",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1RecordActionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CaptureServiceRecordActionBody"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/sessions/{session_id}/anchor": {
+            "get": {
+                "summary": "Fetch the external anchor for a session",
+                "operationId": "NotaryService_GetAnchor",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1GetAnchorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        },
+        "/v1/sessions/{session_id}/end": {
+            "post": {
+                "summary": "Close a capture session",
+                "operationId": "CaptureService_EndSession",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1EndSessionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CaptureServiceEndSessionBody"
+                            }
+                        }
+                    },
+                    "required": true
+                }
+            }
+        },
+        "/v1/sessions/{session_id}:replay": {
+            "get": {
+                "summary": "Stream a deterministic session replay",
+                "operationId": "ReplayService_GetReplay",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.(streaming responses)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/components/schemas/v1GetReplayResponse"
+                                        },
+                                        "error": {
+                                            "$ref": "#/components/schemas/rpcStatus"
+                                        }
+                                    },
+                                    "title": "Stream result of v1GetReplayResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AnchorKind": {
+                "type": "string",
+                "enum": [
+                    "KIND_UNSPECIFIED",
+                    "KIND_RFC3161_TSA",
+                    "KIND_TRANSPARENCY_LOG",
+                    "KIND_PUBLIC_CHAIN"
+                ],
+                "default": "KIND_UNSPECIFIED"
+            },
+            "ApiKeyServiceCreateApiKeyBody": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApiKeyServiceRevokeApiKeyBody": {
+                "type": "object"
+            },
+            "CaptureServiceEndSessionBody": {
+                "type": "object"
+            },
+            "CaptureServiceRecordActionBody": {
+                "type": "object",
+                "example": {
+                    "grant_id": "BAL-417849",
+                    "action_type": "browser.click",
+                    "resource": "https://shop.example.com/cart",
+                    "recording_ref": "slr://session/demo"
+                },
+                "properties": {
+                    "grant_id": {
+                        "type": "string"
+                    },
+                    "action_type": {
+                        "type": "string"
+                    },
+                    "action_payload": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "pre_state_hash": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "post_state_hash": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "recording_ref": {
+                        "type": "string"
+                    },
+                    "resource": {
+                        "type": "string"
+                    },
+                    "value_cents": {
+                        "type": "string",
+                        "format": "int64"
+                    }
+                }
+            },
+            "DelegationServiceRevokeBody": {
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "type": "string"
+                    }
+                }
+            },
+            "protobufAny": {
+                "type": "object",
+                "properties": {
+                    "@type": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": {}
+            },
+            "rpcStatus": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/protobufAny"
+                        }
+                    }
+                }
+            },
+            "v1AccountType": {
+                "type": "string",
+                "enum": [
+                    "ACCOUNT_TYPE_UNSPECIFIED",
+                    "ACCOUNT_TYPE_PERSONAL",
+                    "ACCOUNT_TYPE_ORGANIZATION"
+                ],
+                "default": "ACCOUNT_TYPE_UNSPECIFIED"
+            },
+            "v1ActionEvent": {
+                "type": "object",
+                "example": {
+                    "event_id": "BAL-778812",
+                    "session_id": "BAL-4a1055",
+                    "sequence": 7,
+                    "surface": "SURFACE_BROWSER",
+                    "action_type": "browser.click",
+                    "grant_id": "BAL-417849",
+                    "recording_ref": "slr://session/demo",
+                    "occurred_at": "2026-09-01T12:03:11Z"
+                },
+                "properties": {
+                    "event_id": {
+                        "type": "string"
+                    },
+                    "session_id": {
+                        "type": "string"
+                    },
+                    "sequence": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "surface": {
+                        "$ref": "#/components/schemas/v1Surface"
+                    },
+                    "action_type": {
+                        "type": "string"
+                    },
+                    "action_payload": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "grant_id": {
+                        "type": "string"
+                    },
+                    "pre_state_hash": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "post_state_hash": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "recording_ref": {
+                        "type": "string"
+                    },
+                    "occurred_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "content_hash": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "prev_hash": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "notary_signature": {
+                        "type": "string",
+                        "format": "byte"
+                    }
+                }
+            },
+            "v1Anchor": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "$ref": "#/components/schemas/AnchorKind"
+                    },
+                    "root": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "anchor_receipt": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "anchored_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "v1ApiKey": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "project_id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "prefix": {
+                        "type": "string"
+                    },
+                    "last4": {
+                        "type": "string"
+                    },
+                    "revoked": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "v1BeginSessionRequest": {
+                "type": "object",
+                "example": {
+                    "root_grant_id": "BAL-417849",
+                    "surface": "SURFACE_BROWSER"
+                },
+                "properties": {
+                    "root_grant_id": {
+                        "type": "string"
+                    },
+                    "surface": {
+                        "$ref": "#/components/schemas/v1Surface"
+                    }
+                }
+            },
+            "v1BeginSessionResponse": {
+                "type": "object",
+                "properties": {
+                    "session": {
+                        "$ref": "#/components/schemas/v1Session"
+                    }
+                }
+            },
+            "v1Branding": {
+                "type": "object",
+                "properties": {
+                    "company_name": {
+                        "type": "string"
+                    },
+                    "logo_url": {
+                        "type": "string"
+                    },
+                    "brand_color": {
+                        "type": "string"
+                    }
+                }
+            },
+            "v1CreateApiKeyResponse": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "$ref": "#/components/schemas/v1ApiKey"
+                    },
+                    "secret": {
+                        "type": "string"
+                    }
+                }
+            },
+            "v1CreateProjectRequest": {
+                "type": "object",
+                "example": {
+                    "name": "Production"
+                },
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "v1CreateProjectResponse": {
+                "type": "object",
+                "properties": {
+                    "project": {
+                        "$ref": "#/components/schemas/v1Project"
+                    }
+                }
+            },
+            "v1DayCount": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "string",
+                        "format": "int64"
+                    }
+                }
+            },
+            "v1DelegateRequest": {
+                "type": "object",
+                "example": {
+                    "parent_grant_id": "BAL-417849",
+                    "subject_id": "agt_shopper",
+                    "capabilities": [
+                        "browser.click",
+                        "browser.type"
+                    ],
+                    "scope": {
+                        "resource_globs": [
+                            "https://shop.example.com/*"
+                        ],
+                        "max_value_cents": 50000,
+                        "max_depth": 2
+                    }
+                },
+                "properties": {
+                    "parent_grant_id": {
+                        "type": "string"
+                    },
+                    "subject_id": {
+                        "type": "string"
+                    },
+                    "capabilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "scope": {
+                        "$ref": "#/components/schemas/v1Scope"
+                    }
+                }
+            },
+            "v1DelegateResponse": {
+                "type": "object",
+                "properties": {
+                    "grant": {
+                        "$ref": "#/components/schemas/v1Grant"
+                    }
+                }
+            },
+            "v1EndSessionResponse": {
+                "type": "object",
+                "properties": {
+                    "session": {
+                        "$ref": "#/components/schemas/v1Session"
+                    }
+                }
+            },
+            "v1GetAnchorResponse": {
+                "type": "object",
+                "properties": {
+                    "anchor": {
+                        "$ref": "#/components/schemas/v1Anchor"
+                    }
+                }
+            },
+            "v1GetEventResponse": {
+                "type": "object",
+                "properties": {
+                    "event": {
+                        "$ref": "#/components/schemas/v1ActionEvent"
+                    }
+                }
+            },
+            "v1GetInclusionProofResponse": {
+                "type": "object",
+                "properties": {
+                    "proof": {
+                        "$ref": "#/components/schemas/v1Proof"
+                    }
+                }
+            },
+            "v1GetOverviewResponse": {
+                "type": "object",
+                "properties": {
+                    "total_events": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "total_sessions": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "total_grants": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "revoked_grants": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "by_surface": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1SurfaceCount"
+                        }
+                    },
+                    "over_time": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1DayCount"
+                        }
+                    }
+                }
+            },
+            "v1GetPublicKeyResponse": {
+                "type": "object",
+                "properties": {
+                    "key_id": {
+                        "type": "string"
+                    },
+                    "public_key": {
+                        "type": "string",
+                        "format": "byte"
+                    }
+                }
+            },
+            "v1GetReplayResponse": {
+                "type": "object",
+                "properties": {
+                    "event": {
+                        "$ref": "#/components/schemas/v1ActionEvent"
+                    },
+                    "frame": {
+                        "type": "string",
+                        "format": "byte"
+                    }
+                }
+            },
+            "v1Grant": {
+                "type": "object",
+                "example": {
+                    "grant_id": "BAL-417849",
+                    "parent_grant_id": "BAL-100200",
+                    "principal_id": "usr_alice",
+                    "subject_id": "agt_shopper",
+                    "capabilities": [
+                        "browser.click",
+                        "browser.type"
+                    ],
+                    "scope": {
+                        "resource_globs": [
+                            "https://shop.example.com/*"
+                        ],
+                        "max_value_cents": 50000,
+                        "max_depth": 2
+                    },
+                    "expires_at": "2026-09-01T18:00:00Z"
+                },
+                "properties": {
+                    "grant_id": {
+                        "type": "string"
+                    },
+                    "parent_grant_id": {
+                        "type": "string"
+                    },
+                    "principal_id": {
+                        "type": "string"
+                    },
+                    "subject_id": {
+                        "type": "string"
+                    },
+                    "capabilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "scope": {
+                        "$ref": "#/components/schemas/v1Scope"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "parent_signature": {
+                        "type": "string",
+                        "format": "byte"
+                    }
+                }
+            },
+            "v1IssueRootGrantRequest": {
+                "type": "object",
+                "example": {
+                    "principal_id": "usr_alice",
+                    "scope": {
+                        "max_depth": 3
+                    }
+                },
+                "properties": {
+                    "principal_id": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "$ref": "#/components/schemas/v1Scope"
+                    }
+                }
+            },
+            "v1IssueRootGrantResponse": {
+                "type": "object",
+                "properties": {
+                    "grant": {
+                        "$ref": "#/components/schemas/v1Grant"
+                    }
+                }
+            },
+            "v1ListApiKeysResponse": {
+                "type": "object",
+                "properties": {
+                    "keys": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1ApiKey"
+                        }
+                    }
+                }
+            },
+            "v1ListProjectsResponse": {
+                "type": "object",
+                "properties": {
+                    "projects": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1Project"
+                        }
+                    }
+                }
+            },
+            "v1LoginRequest": {
+                "type": "object",
+                "example": {
+                    "email": "alice@acme.com",
+                    "password": "correct-horse"
+                },
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "v1LoginResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/v1User"
+                    }
+                }
+            },
+            "v1MeResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/v1User"
+                    },
+                    "branding": {
+                        "$ref": "#/components/schemas/v1Branding"
+                    }
+                }
+            },
+            "v1Project": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "active_keys": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "v1Proof": {
+                "type": "object",
+                "properties": {
+                    "event": {
+                        "$ref": "#/components/schemas/v1ActionEvent"
+                    },
+                    "merkle_path": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "byte"
+                        }
+                    },
+                    "merkle_root": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "anchor": {
+                        "$ref": "#/components/schemas/v1Anchor"
+                    },
+                    "delegation_chain": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1Grant"
+                        }
+                    }
+                }
+            },
+            "v1RecordActionResponse": {
+                "type": "object",
+                "properties": {
+                    "event": {
+                        "$ref": "#/components/schemas/v1ActionEvent"
+                    }
+                }
+            },
+            "v1RevokeApiKeyResponse": {
+                "type": "object",
+                "properties": {
+                    "revoked": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "v1RevokeResponse": {
+                "type": "object",
+                "properties": {
+                    "revoked": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "v1Scope": {
+                "type": "object",
+                "properties": {
+                    "resource_globs": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "max_value_cents": {
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    "max_depth": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "v1Session": {
+                "type": "object",
+                "properties": {
+                    "session_id": {
+                        "type": "string"
+                    },
+                    "root_grant_id": {
+                        "type": "string"
+                    },
+                    "surface": {
+                        "$ref": "#/components/schemas/v1Surface"
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ended_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "event_count": {
+                        "type": "string",
+                        "format": "int64"
+                    }
+                }
+            },
+            "v1SignupRequest": {
+                "type": "object",
+                "example": {
+                    "email": "alice@acme.com",
+                    "password": "correct-horse",
+                    "account_type": "ACCOUNT_TYPE_ORGANIZATION",
+                    "org_name": "Acme",
+                    "org_domain": "acme.com",
+                    "industry": "software"
+                },
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "account_type": {
+                        "$ref": "#/components/schemas/v1AccountType"
+                    },
+                    "org_name": {
+                        "type": "string"
+                    },
+                    "org_domain": {
+                        "type": "string"
+                    },
+                    "industry": {
+                        "type": "string"
+                    }
+                }
+            },
+            "v1SignupResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/v1User"
+                    }
+                }
+            },
+            "v1Surface": {
+                "type": "string",
+                "enum": [
+                    "SURFACE_UNSPECIFIED",
+                    "SURFACE_BROWSER",
+                    "SURFACE_SANDBOX",
+                    "SURFACE_DESKTOP"
+                ],
+                "default": "SURFACE_UNSPECIFIED"
+            },
+            "v1SurfaceCount": {
+                "type": "object",
+                "properties": {
+                    "surface": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "string",
+                        "format": "int64"
+                    }
+                }
+            },
+            "v1UpdateProfileRequest": {
+                "type": "object",
+                "properties": {
+                    "org_name": {
+                        "type": "string"
+                    },
+                    "org_domain": {
+                        "type": "string"
+                    },
+                    "industry": {
+                        "type": "string"
+                    }
+                }
+            },
+            "v1UpdateProfileResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/v1User"
+                    }
+                }
+            },
+            "v1User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "account_type": {
+                        "$ref": "#/components/schemas/v1AccountType"
+                    },
+                    "org_name": {
+                        "type": "string"
+                    },
+                    "org_domain": {
+                        "type": "string"
+                    },
+                    "industry": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "v1VerifyChainResponse": {
+                "type": "object",
+                "properties": {
+                    "valid": {
+                        "type": "boolean"
+                    },
+                    "chain": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1Grant"
+                        }
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                }
+            },
+            "v1VerifyProofRequest": {
+                "type": "object",
+                "properties": {
+                    "proof": {
+                        "$ref": "#/components/schemas/v1Proof"
+                    }
+                }
+            },
+            "v1VerifyProofResponse": {
+                "type": "object",
+                "example": {
+                    "valid": true,
+                    "chain_intact": true,
+                    "signature_valid": true,
+                    "anchored": true,
+                    "authority_valid": true,
+                    "reason": ""
+                },
+                "properties": {
+                    "valid": {
+                        "type": "boolean"
+                    },
+                    "chain_intact": {
+                        "type": "boolean"
+                    },
+                    "signature_valid": {
+                        "type": "boolean"
+                    },
+                    "anchored": {
+                        "type": "boolean"
+                    },
+                    "authority_valid": {
+                        "type": "boolean"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
