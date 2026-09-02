@@ -5,10 +5,10 @@ export function SectionLogsVsEvidence() {
   const [logTampered, setLogTampered] = useState(false);
 
   return (
-    <section className="mesh-bg py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)" }}>
+    <section className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
       <div className="absolute inset-0 grid-fade pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
         {/* Header */}
         <div className="max-w-3xl space-y-4 animate-float-up">
           <div
@@ -83,7 +83,7 @@ export function SectionLogsVsEvidence() {
           {/* Right: babit evidence */}
           <div className="relative">
             <div className="ambient-glow animate-glow-pulse" style={{ inset: "-12% 4% 14% 4%" }} />
-            <div className="glass rounded-babit-lg p-6 pt-7 space-y-4 relative overflow-hidden animate-float-up" style={{ animationDelay: "120ms" }}>
+            <div className="glass rounded-babit-lg p-6 space-y-4 relative overflow-hidden animate-float-up" style={{ animationDelay: "120ms" }}>
             <div className="h-px accent-hairline absolute inset-x-0 top-0" />
             <div className="flex items-center justify-between pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
               <span className="text-xs uppercase font-semibold tracking-wider" style={{ color: "var(--fg)" }}>

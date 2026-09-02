@@ -8,6 +8,18 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type ApiKey struct {
+	ID        pgtype.UUID
+	ProjectID pgtype.UUID
+	UserID    pgtype.UUID
+	Name      string
+	Prefix    string
+	Last4     string
+	KeyHash   string
+	CreatedAt pgtype.Timestamptz
+	RevokedAt pgtype.Timestamptz
+}
+
 type Event struct {
 	EventID         string
 	SessionID       string
@@ -38,6 +50,13 @@ type Grant struct {
 	ExpiresAt       pgtype.Timestamptz
 	ParentSignature []byte
 	Uuid            pgtype.UUID
+}
+
+type Project struct {
+	ID        pgtype.UUID
+	UserID    pgtype.UUID
+	Name      string
+	CreatedAt pgtype.Timestamptz
 }
 
 type Revocation struct {

@@ -275,6 +275,42 @@
         ]
       }
     },
+    "/v1/keys/{key_id}/revoke": {
+      "post": {
+        "summary": "Revoke an API key",
+        "operationId": "ApiKeyService_RevokeApiKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RevokeApiKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ApiKeyServiceRevokeApiKeyBody"
+            }
+          }
+        ]
+      }
+    },
     "/v1/notary/public-key": {
       "get": {
         "summary": "Fetch the notary public key for offline verification",
@@ -293,6 +329,116 @@
             }
           }
         }
+      }
+    },
+    "/v1/projects": {
+      "get": {
+        "summary": "List your projects",
+        "operationId": "ProjectService_ListProjects",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListProjectsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a project to group API keys",
+        "operationId": "ProjectService_CreateProject",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateProjectResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateProjectRequest"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/keys": {
+      "get": {
+        "summary": "List API keys in a project (masked)",
+        "operationId": "ApiKeyService_ListApiKeys",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListApiKeysResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create an API key in a project (the secret is returned once)",
+        "operationId": "ApiKeyService_CreateApiKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateApiKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ApiKeyServiceCreateApiKeyBody"
+            }
+          }
+        ]
       }
     },
     "/v1/proofs:verify": {
@@ -504,6 +650,17 @@
       ],
       "default": "KIND_UNSPECIFIED"
     },
+    "ApiKeyServiceCreateApiKeyBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "ApiKeyServiceRevokeApiKeyBody": {
+      "type": "object"
+    },
     "CaptureServiceEndSessionBody": {
       "type": "object"
     },
@@ -676,6 +833,33 @@
         }
       }
     },
+    "v1ApiKey": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "last4": {
+          "type": "string"
+        },
+        "revoked": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "v1BeginSessionRequest": {
       "type": "object",
       "example": {
@@ -710,6 +894,37 @@
         },
         "brand_color": {
           "type": "string"
+        }
+      }
+    },
+    "v1CreateApiKeyResponse": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/v1ApiKey"
+        },
+        "secret": {
+          "type": "string",
+          "description": "Full secret, shown exactly once. Store it now; babit keeps only a hash."
+        }
+      }
+    },
+    "v1CreateProjectRequest": {
+      "type": "object",
+      "example": {
+        "name": "Production"
+      },
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateProjectResponse": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "#/definitions/v1Project"
         }
       }
     },
@@ -889,6 +1104,30 @@
         }
       }
     },
+    "v1ListApiKeysResponse": {
+      "type": "object",
+      "properties": {
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ApiKey"
+          }
+        }
+      }
+    },
+    "v1ListProjectsResponse": {
+      "type": "object",
+      "properties": {
+        "projects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Project"
+          }
+        }
+      }
+    },
     "v1LoginRequest": {
       "type": "object",
       "example": {
@@ -926,6 +1165,25 @@
         }
       }
     },
+    "v1Project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active_keys": {
+          "type": "string",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "v1Proof": {
       "type": "object",
       "properties": {
@@ -960,6 +1218,14 @@
       "properties": {
         "event": {
           "$ref": "#/definitions/v1ActionEvent"
+        }
+      }
+    },
+    "v1RevokeApiKeyResponse": {
+      "type": "object",
+      "properties": {
+        "revoked": {
+          "type": "boolean"
         }
       }
     },

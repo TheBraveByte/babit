@@ -157,6 +157,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/keys/{key_id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke an API key */
+        post: operations["ApiKeyService_RevokeApiKey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/notary/public-key": {
         parameters: {
             query?: never;
@@ -168,6 +185,42 @@ export interface paths {
         get: operations["NotaryService_GetPublicKey"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List your projects */
+        get: operations["ProjectService_ListProjects"];
+        put?: never;
+        /** Create a project to group API keys */
+        post: operations["ProjectService_CreateProject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/projects/{project_id}/keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List API keys in a project (masked) */
+        get: operations["ApiKeyService_ListApiKeys"];
+        put?: never;
+        /** Create an API key in a project (the secret is returned once) */
+        post: operations["ApiKeyService_CreateApiKey"];
         delete?: never;
         options?: never;
         head?: never;
@@ -285,6 +338,10 @@ export interface components {
          * @enum {string}
          */
         AnchorKind: "KIND_UNSPECIFIED" | "KIND_RFC3161_TSA" | "KIND_TRANSPARENCY_LOG" | "KIND_PUBLIC_CHAIN";
+        ApiKeyServiceCreateApiKeyBody: {
+            name?: string;
+        };
+        ApiKeyServiceRevokeApiKeyBody: Record<string, never>;
         CaptureServiceEndSessionBody: Record<string, never>;
         /**
          * @example {
@@ -372,6 +429,16 @@ export interface components {
             /** Format: date-time */
             anchored_at?: string;
         };
+        v1ApiKey: {
+            id?: string;
+            project_id?: string;
+            name?: string;
+            prefix?: string;
+            last4?: string;
+            revoked?: boolean;
+            /** Format: date-time */
+            created_at?: string;
+        };
         /**
          * @example {
          *       "root_grant_id": "BAL-417849",
@@ -389,6 +456,22 @@ export interface components {
             company_name?: string;
             logo_url?: string;
             brand_color?: string;
+        };
+        v1CreateApiKeyResponse: {
+            key?: components["schemas"]["v1ApiKey"];
+            /** @description Full secret, shown exactly once. Store it now; babit keeps only a hash. */
+            secret?: string;
+        };
+        /**
+         * @example {
+         *       "name": "Production"
+         *     }
+         */
+        v1CreateProjectRequest: {
+            name?: string;
+        };
+        v1CreateProjectResponse: {
+            project?: components["schemas"]["v1Project"];
         };
         /**
          * @example {
@@ -485,6 +568,12 @@ export interface components {
         v1IssueRootGrantResponse: {
             grant?: components["schemas"]["v1Grant"];
         };
+        v1ListApiKeysResponse: {
+            keys?: components["schemas"]["v1ApiKey"][];
+        };
+        v1ListProjectsResponse: {
+            projects?: components["schemas"]["v1Project"][];
+        };
         /**
          * @example {
          *       "email": "alice@acme.com",
@@ -503,6 +592,14 @@ export interface components {
             user?: components["schemas"]["v1User"];
             branding?: components["schemas"]["v1Branding"];
         };
+        v1Project: {
+            id?: string;
+            name?: string;
+            /** Format: int64 */
+            active_keys?: string;
+            /** Format: date-time */
+            created_at?: string;
+        };
         v1Proof: {
             event?: components["schemas"]["v1ActionEvent"];
             merkle_path?: string[];
@@ -513,6 +610,9 @@ export interface components {
         };
         v1RecordActionResponse: {
             event?: components["schemas"]["v1ActionEvent"];
+        };
+        v1RevokeApiKeyResponse: {
+            revoked?: boolean;
         };
         v1RevokeResponse: {
             revoked?: boolean;
@@ -896,6 +996,41 @@ export interface operations {
             };
         };
     };
+    ApiKeyService_RevokeApiKey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApiKeyServiceRevokeApiKeyBody"];
+            };
+        };
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1RevokeApiKeyResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
     NotaryService_GetPublicKey: {
         parameters: {
             query?: never;
@@ -912,6 +1047,134 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["v1GetPublicKeyResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    ProjectService_ListProjects: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1ListProjectsResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    ProjectService_CreateProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["v1CreateProjectRequest"];
+            };
+        };
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1CreateProjectResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    ApiKeyService_ListApiKeys: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1ListApiKeysResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    ApiKeyService_CreateApiKey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApiKeyServiceCreateApiKeyBody"];
+            };
+        };
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1CreateApiKeyResponse"];
                 };
             };
             /** @description An unexpected error response. */

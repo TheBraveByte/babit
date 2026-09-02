@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"log"
@@ -51,11 +52,14 @@ func NewGRPCServer(ctx context.Context, cfg *config.Config) (*grpc.Server, error
 	notaryCore := service.NewNotaryCore(st.Events(), sealer, tree, anc)
 
 	srv := grpc.NewServer(grpc.ChainUnaryInterceptor(
+		dbAPIKeyInterceptor(st.ApiKeys()),
 		apiKeyInterceptor(cfg.APIKey),
 		jwtInterceptor(cfg.JWTSecret),
 		errs.UnaryInterceptor(),
 	))
 	ledgerv1.RegisterAuthServiceServer(srv, service.NewAuth(st.Users(), brands, cfg.JWTSecret, 24*time.Hour))
+	ledgerv1.RegisterProjectServiceServer(srv, service.NewProjectService(st.Projects()))
+	ledgerv1.RegisterApiKeyServiceServer(srv, service.NewAPIKeyService(st.ApiKeys(), st.Projects()))
 	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), signer, verifier, idgen, clk))
 	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer))
 	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), verifier, notaryCore, notaryCore, idgen, clk))
@@ -121,8 +125,36 @@ func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
 			return handler(ctx, req)
 		}
 		md, ok := metadata.FromIncomingContext(ctx)
-		if !ok || len(md.Get("x-api-key")) == 0 || md.Get("x-api-key")[0] != want {
+		got := ""
+		if ok && len(md.Get("x-api-key")) > 0 {
+			got = md.Get("x-api-key")[0]
+		}
+		// Per-project keys (bak_*) are authenticated by dbAPIKeyInterceptor; let them through.
+		if strings.HasPrefix(got, "bak_") {
+			return handler(ctx, req)
+		}
+		if got != want {
 			return nil, status.Error(codes.Unauthenticated, "missing or invalid x-api-key")
+		}
+		return handler(ctx, req)
+	}
+}
+
+// dbAPIKeyInterceptor resolves a per-project API key (x-api-key: bak_live_...) to its
+// owning user and injects it into the context, so REST/curl callers authenticate the
+// same way a signed-in user does. Absent or unknown keys pass through untouched.
+func dbAPIKeyInterceptor(keys ports.APIKeyStore) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+		if md, ok := metadata.FromIncomingContext(ctx); ok {
+			if vals := md.Get("x-api-key"); len(vals) > 0 {
+				k := strings.TrimSpace(vals[0])
+				if strings.HasPrefix(k, "bak_") {
+					sum := sha256.Sum256([]byte(k))
+					if rec, err := keys.GetByHash(ctx, hex.EncodeToString(sum[:])); err == nil && rec != nil {
+						ctx = coreauth.WithUserID(ctx, rec.UserID)
+					}
+				}
+			}
 		}
 		return handler(ctx, req)
 	}

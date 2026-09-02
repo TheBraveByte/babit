@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message Project {
+  string id = 1;
+  string name = 2;
+  int64 active_keys = 3;
+  google.protobuf.Timestamp created_at = 4;
+}
+
+message ApiKey {
+  string id = 1;
+  string project_id = 2;
+  string name = 3;
+  string prefix = 4;
+  string last4 = 5;
+  bool revoked = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+service ProjectService {
+  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse) {
+    option (google.api.http) = {
+      post: "/v1/projects"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create a project to group API keys"
+    };
+  }
+  rpc ListProjects(ListProjectsRequest) returns (ListProjectsResponse) {
+    option (google.api.http) = {get: "/v1/projects"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List your projects"
+    };
+  }
+}
+
+service ApiKeyService {
+  rpc CreateApiKey(CreateApiKeyRequest) returns (CreateApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/projects/{project_id}/keys"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create an API key in a project (the secret is returned once)"
+    };
+  }
+  rpc ListApiKeys(ListApiKeysRequest) returns (ListApiKeysResponse) {
+    option (google.api.http) = {get: "/v1/projects/{project_id}/keys"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List API keys in a project (masked)"
+    };
+  }
+  rpc RevokeApiKey(RevokeApiKeyRequest) returns (RevokeApiKeyResponse) {
+    option (google.api.http) = {
+      post: "/v1/keys/{key_id}/revoke"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Revoke an API key"
+    };
+  }
+}
+
+message CreateProjectRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    example: "{\"name\":\"Production\"}"
+  };
+  string name = 1;
+}
+message CreateProjectResponse {
+  Project project = 1;
+}
+
+message ListProjectsRequest {}
+message ListProjectsResponse {
+  repeated Project projects = 1;
+}
+
+message CreateApiKeyRequest {
+  string project_id = 1;
+  string name = 2;
+}
+message CreateApiKeyResponse {
+  ApiKey key = 1;
+  // Full secret, shown exactly once. Store it now; babit keeps only a hash.
+  string secret = 2;
+}
+
+message ListApiKeysRequest {
+  string project_id = 1;
+}
+message ListApiKeysResponse {
+  repeated ApiKey keys = 1;
+}
+
+message RevokeApiKeyRequest {
+  string key_id = 1;
+}
+message RevokeApiKeyResponse {
+  bool revoked = 1;
+}
