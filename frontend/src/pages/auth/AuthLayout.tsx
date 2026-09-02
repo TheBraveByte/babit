@@ -14,17 +14,10 @@ export function AuthLayout({
   footer?: ReactNode;
 }) {
   return (
-    <div
-      className="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
-      style={{ backgroundColor: "var(--bg)" }}
-    >
-      {/* Background — Variant A: Clean with barely-visible dot grid */}
-      <div className="absolute inset-0 bg-dot-subtle opacity-40 pointer-events-none" />
-      {/* Subtle gradient fade at top and bottom */}
-      <div
-        className="absolute inset-x-0 top-0 h-32 pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, var(--bg), transparent)" }}
-      />
+    <div className="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden mesh-bg">
+      {/* Faded engineering grid + a single ambient glow behind the card */}
+      <div className="absolute inset-0 grid-fade pointer-events-none" />
+      <div className="ambient-glow animate-glow-pulse" style={{ inset: "auto", top: "18%", left: "50%", width: "440px", height: "440px", transform: "translateX(-50%)" }} />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-[400px] relative z-10">
         {/* Brand logo + wordmark */}
@@ -55,15 +48,10 @@ export function AuthLayout({
       </div>
 
       {/* Form card */}
-      <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-[400px] relative z-10">
-        <div
-          className="py-7 px-6 sm:px-8 rounded-babit-lg shadow-xs"
-          style={{
-            backgroundColor: "var(--surface)",
-            border: "1px solid var(--border)",
-          }}
-        >
-          {children}
+      <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-[400px] relative z-10 animate-float-up">
+        <div className="glass rounded-babit-lg overflow-hidden">
+          <div className="h-px accent-hairline" />
+          <div className="py-7 px-6 sm:px-8">{children}</div>
         </div>
 
         {footer && (

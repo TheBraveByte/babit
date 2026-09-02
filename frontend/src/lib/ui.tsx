@@ -133,7 +133,7 @@ export function Button({
     secondary: "bg-[var(--surface)] text-[var(--fg)] border border-[var(--border)] hover:bg-[var(--secondary)] shadow-xs",
     danger:    "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-xs",
     ghost:     "bg-transparent text-[var(--muted)] hover:bg-[var(--secondary)] hover:text-[var(--fg)]",
-    brand:     "bg-[var(--brand-accent)] text-white hover:opacity-90 active:opacity-80 shadow-xs",
+    brand:     "bg-[var(--brand-accent)] text-white hover:opacity-90 active:opacity-80 shadow-[0_8px_24px_-12px_var(--brand-accent)]",
   };
 
   return (

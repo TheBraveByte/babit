@@ -80,7 +80,7 @@ export function ForgotPassword() {
 
           <Button
             type="submit"
-            variant="primary"
+            variant="brand"
             size="md"
             loading={loading}
             className="w-full justify-center mt-2"
