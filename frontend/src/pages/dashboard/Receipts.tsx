@@ -42,7 +42,6 @@ export function Receipts() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Inclusion Proofs"
         title="Receipts"
         description="Retrieve the sealed inclusion proof for a recorded action: event hash, Merkle root, anchor, and delegation chain."
       />
@@ -52,7 +51,7 @@ export function Receipts() {
           <div className="h-px accent-hairline -mx-5 -mt-5" />
 
           <form onSubmit={lookup} className="space-y-3">
-            <Field label="Event ID" hint="lookups are by id — no bulk listing endpoint">
+            <Field label="Event ID" hint="lookups are by id, no bulk listing endpoint">
               <div className="flex flex-col sm:flex-row gap-2">
                 <TextInput
                   value={eventId}

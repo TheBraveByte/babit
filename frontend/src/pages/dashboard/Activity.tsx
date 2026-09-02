@@ -48,7 +48,6 @@ export function Activity() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Console"
         title="Activity"
         description="Inspect a recorded action event by ID. Babit has no aggregate activity feed endpoint yet, so events are looked up individually."
       />

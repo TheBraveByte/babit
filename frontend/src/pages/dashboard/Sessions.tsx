@@ -106,7 +106,7 @@ function AnchorPanel() {
         <div className="h-px accent-hairline -mx-5 -mt-5" />
 
         <form onSubmit={run} className="space-y-3">
-          <Field label="Session ID" hint="inspected individually — no listing endpoint">
+          <Field label="Session ID" hint="inspected individually, no listing endpoint">
             <div className="flex flex-col sm:flex-row gap-2">
               <TextInput value={sessionId} onChange={(e) => setSessionId(e.target.value)} placeholder="e.g. BAL-4a1055" className="flex-1" />
               <Button type="submit" variant="primary" size="md" loading={loading} disabled={!sessionId.trim()}>

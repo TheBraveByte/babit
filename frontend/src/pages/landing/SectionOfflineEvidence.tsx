@@ -76,7 +76,6 @@ export function SectionOfflineEvidence() {
         {/* 3 Steps */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="glass-subtle p-6 rounded-babit-lg space-y-2 animate-float-up">
-            <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--muted)" }}>Step 1</span>
             <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>Save the receipt</h3>
             <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>
               Download the receipt as a plain file from the console or the API.
@@ -84,7 +83,6 @@ export function SectionOfflineEvidence() {
           </div>
 
           <div className="glass-subtle p-6 rounded-babit-lg space-y-2 animate-float-up" style={{ animationDelay: "90ms" }}>
-            <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--muted)" }}>Step 2</span>
             <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>Get the public key</h3>
             <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>
               Fetch babit's public key once and keep it wherever you need it, even offline.
@@ -93,8 +91,7 @@ export function SectionOfflineEvidence() {
 
           <div className="glass p-6 pt-7 rounded-babit-lg space-y-2 relative overflow-hidden animate-float-up" style={{ animationDelay: "180ms" }}>
             <div className="h-px accent-hairline absolute inset-x-0 top-0" />
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--color-verified)" }}>Step 3</span>
+            <div className="flex items-center justify-end">
               <span className="text-[10px] font-mono font-semibold" style={{ color: "var(--color-verified)" }}>Verified</span>
             </div>
             <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>Check it anywhere</h3>

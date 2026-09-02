@@ -35,7 +35,6 @@ export function Delegations() {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        eyebrow="Authority"
         title="Delegations"
         description="Issue and verify capability grants. Authority attenuates monotonically from a root principal down each signed delegation."
       />
