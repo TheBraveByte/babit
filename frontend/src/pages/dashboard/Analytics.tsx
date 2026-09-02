@@ -242,6 +242,37 @@ function DelegationBar({ active, revoked }: { active: number; revoked: number })
   );
 }
 
+function ComparisonBars({
+  rows,
+}: {
+  rows: { label: string; value: number; color?: string; note?: string }[];
+}) {
+  const sorted = [...rows].sort((a, b) => b.value - a.value);
+  const max = Math.max(1, ...sorted.map((r) => r.value));
+  return (
+    <div className="flex flex-col gap-3 py-1">
+      {sorted.map((r) => {
+        const pct = (r.value / max) * 100;
+        return (
+          <div key={r.label} className="space-y-1.5">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs font-medium" style={{ color: "var(--fg)" }}>{r.label}</span>
+              <span className="text-xs font-mono tnum" style={{ color: "var(--muted)" }}>{fmt(r.value)}</span>
+            </div>
+            <div className="relative h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: "var(--secondary)" }}>
+              <div
+                className="absolute inset-y-0 left-0 rounded-full"
+                style={{ width: `${Math.max(pct, r.value > 0 ? 3 : 0)}%`, backgroundColor: r.color ?? "var(--brand-accent)" }}
+              />
+            </div>
+            {r.note ? <p className="text-[11px]" style={{ color: "var(--muted)" }}>{r.note}</p> : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ─── Layout primitives ─────────────────────────────────────────────────────── */
 
 function Panel({ title, subtitle, icon, flagship = false, children }: { title: string; subtitle?: string; icon?: ReactNode; flagship?: boolean; children: ReactNode }) {
@@ -452,6 +483,11 @@ export function Analytics() {
   const hasSurfaceData = surfaceRows.some((r) => r.count > 0);
 
   const notes = buildNotes(data);
+  const compareRows = [
+    { label: "Action events", value: totalEvents, color: "var(--brand-accent)", note: "Recorded notarized actions" },
+    { label: "Sessions", value: totalSessions, color: "var(--color-verified)", note: "Distinct agent sessions" },
+    { label: "Active grants", value: activeGrants, color: "var(--fg)", note: "Current delegation authority" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -479,6 +515,10 @@ export function Analytics() {
           {totalGrants > 0 ? <DelegationBar active={activeGrants} revoked={revokedGrants} /> : <EmptyChart />}
         </Panel>
       </div>
+
+      <Panel title="Key comparisons" subtitle="How core activity dimensions stack up" icon={<IconBarChart className="w-4 h-4" />}>
+        {(totalEvents + totalSessions + activeGrants) > 0 ? <ComparisonBars rows={compareRows} /> : <EmptyChart height={140} />}
+      </Panel>
 
       {/* Plain-language takeaways, derived only from real numbers */}
       <Card>

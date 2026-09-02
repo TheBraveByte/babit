@@ -18,7 +18,7 @@ export function AuthLayout({
 }) {
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-2">
-      <main className="relative flex flex-col justify-center overflow-hidden mesh-bg min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <main className="relative flex flex-col justify-center overflow-hidden mesh-bg min-h-screen lg:min-h-0 py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 grid-fade pointer-events-none" />
         <div
           className="ambient-glow animate-glow-pulse"
@@ -27,7 +27,7 @@ export function AuthLayout({
 
         <div className="relative z-10 w-full sm:mx-auto sm:max-w-[400px]">
           {/* Brand logo + wordmark */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6 sm:mb-8">
             <Link
               to="/"
               className="flex items-center gap-2.5 transition-opacity hover:opacity-75"
@@ -38,7 +38,7 @@ export function AuthLayout({
             </Link>
           </div>
 
-          <div className="text-center mb-6 space-y-1">
+          <div className="text-center mb-5 sm:mb-6 space-y-1">
             <h1 className="text-[22px] font-semibold tracking-tight" style={{ color: "var(--fg)" }}>
               {title}
             </h1>
@@ -54,7 +54,7 @@ export function AuthLayout({
         <div className="mt-2 relative z-10 w-full sm:mx-auto sm:max-w-[400px] animate-float-up">
           <div className="glass rounded-babit-lg overflow-hidden">
             <div className="h-px accent-hairline" />
-            <div className="py-7 px-6 sm:px-8">{children}</div>
+            <div className="py-6 sm:py-7 px-5 sm:px-8">{children}</div>
           </div>
 
           {footer && (
@@ -79,7 +79,7 @@ export function AuthLayout({
  */
 function AuthVisual() {
   return (
-    <aside className="dark relative hidden lg:flex flex-col justify-center overflow-hidden mesh-bg px-12 xl:px-16">
+    <aside className="dark relative flex flex-col justify-center overflow-hidden mesh-bg px-5 py-10 sm:px-8 sm:py-12 lg:px-12 xl:px-16 min-h-[380px] sm:min-h-[460px] lg:min-h-screen">
       <div className="absolute inset-0 grid-fade pointer-events-none" />
       <div
         className="ambient-glow animate-glow-pulse"
@@ -88,7 +88,7 @@ function AuthVisual() {
 
       {/* The append-only evidence chain, drifting quietly along the base */}
       <div
-        className="absolute inset-x-0 bottom-0 h-32 opacity-40 pointer-events-none"
+        className="absolute inset-x-0 bottom-0 h-28 sm:h-32 opacity-30 sm:opacity-40 pointer-events-none"
         style={{
           maskImage: "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
           WebkitMaskImage: "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
@@ -97,8 +97,8 @@ function AuthVisual() {
         <EvidenceLedger className="w-full h-full" />
       </div>
 
-      <div className="relative z-10 w-full max-w-md mx-auto space-y-8">
-        <div className="space-y-4">
+      <div className="relative z-10 w-full max-w-md mx-auto space-y-5 sm:space-y-8">
+        <div className="space-y-3 sm:space-y-4">
           <div
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
             style={{ color: "var(--muted)" }}
@@ -107,17 +107,19 @@ function AuthVisual() {
             <span>Evidence for what agents do</span>
           </div>
 
-          <h2 className="text-[32px] font-semibold tracking-[-0.02em] leading-[1.1]" style={{ color: "var(--fg)" }}>
+          <h2 className="text-[26px] sm:text-[32px] font-semibold tracking-[-0.02em] leading-[1.1]" style={{ color: "var(--fg)" }}>
             Proof for what your agents do.
           </h2>
 
-          <p className="text-[15px] leading-relaxed" style={{ color: "var(--muted)" }}>
+          <p className="text-[14px] sm:text-[15px] leading-relaxed" style={{ color: "var(--muted)" }}>
             babit binds every action an agent takes to the authority that permitted it, then seals
             it as evidence anyone can verify.
           </p>
         </div>
 
-        <ReceiptShowcase />
+        <div className="hidden sm:block">
+          <ReceiptShowcase />
+        </div>
 
         <div className="flex items-center gap-2 text-[13px]" style={{ color: "var(--muted)" }}>
           <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-4 h-4" /></span>
