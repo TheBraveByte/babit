@@ -1,15 +1,30 @@
 import { useEffect, useState } from "react";
-import { PageHeader, Card, Copyable } from "@/lib/ui";
-import { IconShieldCheck, IconGitBranch, IconFileText, IconArrowRight, IconFolder } from "@/lib/icons";
+import { PageHeader, Card, Copyable, MetricCard } from "@/lib/ui";
+import { IconShieldCheck, IconGitBranch, IconFileText, IconArrowRight, IconFolder, IconActivity, IconLayers } from "@/lib/icons";
 import type { DashboardTab } from "./DashboardLayout";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/api/client";
+import type { components } from "@/api/schema";
+
+type Overview = components["schemas"]["v1GetOverviewResponse"];
+const n = (v: unknown) => { const x = Number(v ?? 0); return Number.isFinite(x) ? x : 0; };
 
 export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => void }) {
-  const { user, branding } = useAuth();
+  const { user, branding, isAuthenticated } = useAuth();
   const [keyId, setKeyId] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [keyError, setKeyError] = useState(false);
+  const [stats, setStats] = useState<Overview | null>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    let active = true;
+    (async () => {
+      const res = await api.GET("/v1/analytics/overview", { params: { query: { days: 14 } } });
+      if (active && !res.error) setStats(res.data ?? null);
+    })();
+    return () => { active = false; };
+  }, [isAuthenticated]);
 
   useEffect(() => {
     let active = true;
@@ -60,6 +75,25 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
           Manage in Settings
         </button>
       </p>
+
+      {/* At a glance — real per-account activity */}
+      {isAuthenticated && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <MetricCard label="Actions notarized" value={n(stats?.total_events).toLocaleString()} icon={<IconActivity className="w-4 h-4" />} />
+          <MetricCard label="Sessions" value={n(stats?.total_sessions).toLocaleString()} icon={<IconLayers className="w-4 h-4" />} />
+          <MetricCard label="Active grants" value={Math.max(0, n(stats?.total_grants) - n(stats?.revoked_grants)).toLocaleString()} icon={<IconGitBranch className="w-4 h-4" />} />
+          <button
+            onClick={() => onNavigate("analytics")}
+            className="text-left rounded-babit-lg p-5 shadow-xs transition-colors cursor-pointer hover:bg-[var(--secondary)] flex flex-col justify-between"
+            style={{ border: "1px solid var(--border)", backgroundColor: "var(--surface)" }}
+          >
+            <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted)" }}>Analytics</span>
+            <span className="mt-3 text-sm font-semibold inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
+              View charts <IconArrowRight className="w-3.5 h-3.5" />
+            </span>
+          </button>
+        </div>
+      )}
 
       {/* Notary key — real data, flagship card */}
       <Card
