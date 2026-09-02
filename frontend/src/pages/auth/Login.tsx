@@ -40,7 +40,7 @@ export function Login() {
       footer={
         <p>
           Don't have an account?{" "}
-          <Link to="/signup" className="font-medium text-neutral-900 hover:underline">
+          <Link to="/signup" className="font-medium hover:underline" style={{ color: "var(--fg)" }}>
             Create workspace
           </Link>
         </p>
@@ -63,7 +63,7 @@ export function Login() {
         <Field
           label="Password"
           hint={
-            <Link to="/forgot-password" className="hover:text-neutral-900 transition-colors">
+            <Link to="/forgot-password" className="transition-colors hover:opacity-80" style={{ color: "var(--muted)" }}>
               Forgot password?
             </Link>
           }

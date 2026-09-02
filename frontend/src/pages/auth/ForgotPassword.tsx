@@ -42,9 +42,12 @@ export function ForgotPassword() {
     >
       {sent ? (
         <div className="space-y-4 text-center font-sans">
-          <div className="p-4 rounded-babit bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs space-y-2">
+          <div
+            className="p-4 rounded-babit text-xs space-y-2"
+            style={{ backgroundColor: "var(--color-verified-bg)", border: "1px solid var(--color-verified-border)", color: "var(--color-verified)" }}
+          >
             <div className="flex items-center justify-center gap-1.5 font-bold">
-              <IconCheck className="w-4 h-4 text-emerald-700" />
+              <IconCheck className="w-4 h-4" />
               <span>Recovery link sent</span>
             </div>
             <p className="text-[11px] leading-relaxed">

@@ -90,7 +90,7 @@ export function Signup() {
       footer={
         <p>
           Already have an account?{" "}
-          <Link to="/login" className="font-medium text-neutral-900 hover:underline">
+          <Link to="/login" className="font-medium hover:underline" style={{ color: "var(--fg)" }}>
             Sign in
           </Link>
         </p>
@@ -101,43 +101,22 @@ export function Signup() {
 
         {/* Account Type Selector */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-neutral-700">Account structure</label>
+          <label className="text-xs font-medium" style={{ color: "var(--fg)" }}>Account structure</label>
           <div className="grid grid-cols-2 gap-2.5">
-            <button
-              type="button"
+            <AccountTypeCard
+              selected={accountType === "ACCOUNT_TYPE_ORGANIZATION"}
               onClick={() => setAccountType("ACCOUNT_TYPE_ORGANIZATION")}
-              className={`p-3 rounded-lg border text-left flex flex-col gap-1 transition-all cursor-pointer ${
-                accountType === "ACCOUNT_TYPE_ORGANIZATION"
-                  ? "border-neutral-900 bg-neutral-900 text-white shadow-xs"
-                  : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300"
-              }`}
-            >
-              <div className="flex items-center gap-1.5">
-                <IconBuilding className="w-4 h-4" />
-                <span className="text-xs font-semibold">Organization</span>
-              </div>
-              <span className={`text-[11px] leading-tight ${accountType === "ACCOUNT_TYPE_ORGANIZATION" ? "text-neutral-300" : "text-neutral-400"}`}>
-                Multi-agent teams & brand domain
-              </span>
-            </button>
-
-            <button
-              type="button"
+              icon={<IconBuilding className="w-4 h-4" />}
+              label="Organization"
+              description="Multi-agent teams & brand domain"
+            />
+            <AccountTypeCard
+              selected={accountType === "ACCOUNT_TYPE_PERSONAL"}
               onClick={() => setAccountType("ACCOUNT_TYPE_PERSONAL")}
-              className={`p-3 rounded-lg border text-left flex flex-col gap-1 transition-all cursor-pointer ${
-                accountType === "ACCOUNT_TYPE_PERSONAL"
-                  ? "border-neutral-900 bg-neutral-900 text-white shadow-xs"
-                  : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300"
-              }`}
-            >
-              <div className="flex items-center gap-1.5">
-                <IconUser className="w-4 h-4" />
-                <span className="text-xs font-semibold">Personal</span>
-              </div>
-              <span className={`text-[11px] leading-tight ${accountType === "ACCOUNT_TYPE_PERSONAL" ? "text-neutral-300" : "text-neutral-400"}`}>
-                Individual developer or researcher
-              </span>
-            </button>
+              icon={<IconUser className="w-4 h-4" />}
+              label="Personal"
+              description="Individual developer or researcher"
+            />
           </div>
         </div>
 
@@ -178,8 +157,11 @@ export function Signup() {
         </Field>
 
         {accountType === "ACCOUNT_TYPE_ORGANIZATION" && (
-          <div className="pt-2 border-t border-neutral-100 space-y-3 animate-fade-in">
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-md border border-emerald-200">
+          <div className="pt-2 space-y-3 animate-fade-in" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+            <div
+              className="flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded-md"
+              style={{ color: "var(--brand-accent)", backgroundColor: "var(--brand-accent-subtle)", border: "1px solid var(--brand-accent-border)" }}
+            >
               <IconSparkles className="w-3.5 h-3.5 shrink-0" />
               <span>Domain auto-branding: we'll match your logo & brand palette in real time.</span>
             </div>
@@ -230,5 +212,40 @@ export function Signup() {
         </Button>
       </form>
     </AuthLayout>
+  );
+}
+
+function AccountTypeCard({
+  selected,
+  onClick,
+  icon,
+  label,
+  description,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+  description: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="p-3 rounded-babit border text-left flex flex-col gap-1 transition-all cursor-pointer shadow-xs"
+      style={
+        selected
+          ? { borderColor: "var(--fg)", backgroundColor: "var(--fg)", color: "var(--surface)" }
+          : { borderColor: "var(--border)", backgroundColor: "var(--surface)", color: "var(--fg)" }
+      }
+    >
+      <div className="flex items-center gap-1.5">
+        {icon}
+        <span className="text-xs font-semibold">{label}</span>
+      </div>
+      <span className="text-[11px] leading-tight" style={{ color: selected ? "var(--surface)" : "var(--muted)", opacity: selected ? 0.7 : 1 }}>
+        {description}
+      </span>
+    </button>
   );
 }

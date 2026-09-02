@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { BabitLogo, IconActivity, IconShieldCheck, IconGitBranch, IconCpu, IconSettings, IconLogOut, IconFileText, IconSearch, IconLayers, IconBarChart, IconFolder, IconKey } from "@/lib/icons";
+import { BabitLogo, IconActivity, IconShieldCheck, IconGitBranch, IconCpu, IconSettings, IconLogOut, IconFileText, IconSearch, IconLayers, IconBarChart, IconFolder, IconKey, IconUser, IconChevronRight } from "@/lib/icons";
 import { useAuth } from "@/lib/auth";
 import { useRouter, Link } from "@/lib/router";
 import { CommandPalette } from "@/lib/CommandPalette";
@@ -45,6 +45,8 @@ const secondaryNav: NavItem[] = [
   { key: "settings", label: "Settings", icon: <IconSettings className="w-4 h-4" /> },
 ];
 
+const SIDEBAR_STORAGE_KEY = "babit-sidebar-collapsed";
+
 export function DashboardLayout({
   activeTab,
   onTabChange,
@@ -58,6 +60,10 @@ export function DashboardLayout({
   const { navigate } = useRouter();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(SIDEBAR_STORAGE_KEY) === "true";
+  });
 
   // Listen for Cmd+K / Ctrl+K
   useEffect(() => {
@@ -71,61 +77,139 @@ export function DashboardLayout({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Persist the collapsed rail preference across sessions
+  useEffect(() => {
+    window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(collapsed));
+  }, [collapsed]);
+
   const orgName = branding?.company_name || user?.org_name || (user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal Workspace");
   const logoUrl = branding?.logo_url;
 
+  const allNav = [...mainNav, ...devNav, ...secondaryNav];
+  const currentLabel = allNav.find((n) => n.key === activeTab)?.label ?? activeTab;
+  const avatarInitial = (user?.email || orgName || "").charAt(0).toUpperCase();
+
+  const avatar = (sizeClass: string) =>
+    logoUrl ? (
+      <img
+        src={logoUrl}
+        alt={orgName}
+        className={`${sizeClass} rounded-full object-cover border border-[color:var(--border)] shrink-0`}
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = "none";
+        }}
+      />
+    ) : (
+      <div className={`${sizeClass} rounded-full flex items-center justify-center shrink-0 bg-[var(--secondary)] border border-[color:var(--border)] text-[color:var(--fg)]`}>
+        {avatarInitial ? (
+          <span className="font-mono text-xs font-bold">{avatarInitial}</span>
+        ) : (
+          <IconUser className="w-3.5 h-3.5" />
+        )}
+      </div>
+    );
+
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-[15rem_1fr] relative font-sans" style={{ backgroundColor: "var(--bg)", color: "var(--fg)" }}>
+    <div
+      className={`min-h-screen grid grid-cols-1 ${collapsed ? "md:grid-cols-[4rem_1fr]" : "md:grid-cols-[15rem_1fr]"} relative font-sans transition-[grid-template-columns] duration-200 ease-in-out`}
+      style={{ backgroundColor: "var(--bg)", color: "var(--fg)" }}
+    >
       {/* Command Palette */}
       <CommandPalette open={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col justify-between min-h-screen sticky top-0 h-screen overflow-y-auto" style={{ backgroundColor: "var(--surface)", borderRight: "1px solid var(--border)" }}>
+      <aside className="hidden md:flex flex-col justify-between min-h-screen sticky top-0 h-screen overflow-y-auto overflow-x-hidden" style={{ backgroundColor: "var(--surface)", borderRight: "1px solid var(--border)" }}>
         <div>
-          {/* Brand Header */}
-          <div className="p-4 border-b border-[color:var(--border)] flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2.5">
-              {logoUrl ? (
-                <img
-                  src={logoUrl}
-                  alt={orgName}
-                  className="w-6 h-6 object-contain rounded border border-[color:var(--border)] p-0.5 bg-[var(--surface)] shrink-0"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
-                />
-              ) : (
-                <BabitLogo className="w-5 h-5 text-[color:var(--fg)]" />
-              )}
-              <div className="truncate">
-                <span className="font-mono text-sm font-semibold tracking-tight text-[color:var(--fg)] block truncate">
-                  {orgName}
-                </span>
-                <span className="text-[11px] font-mono text-[color:var(--muted)] block -mt-0.5">
-                  babit console
-                </span>
-              </div>
-            </Link>
-          </div>
+          {/* Brand Header + collapse toggle */}
+          {collapsed ? (
+            <div className="p-3 border-b border-[color:var(--border)] flex flex-col items-center gap-2">
+              <Link to="/" title={orgName} className="flex items-center justify-center">
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt={orgName}
+                    className="w-6 h-6 object-contain rounded border border-[color:var(--border)] p-0.5 bg-[var(--surface)]"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <BabitLogo className="w-5 h-5 text-[color:var(--fg)]" />
+                )}
+              </Link>
+              <button
+                onClick={() => setCollapsed(false)}
+                title="Expand sidebar"
+                aria-label="Expand sidebar"
+                className="p-1.5 rounded-babit-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:bg-[var(--secondary)] border border-transparent hover:border-[color:var(--border)] transition-colors cursor-pointer"
+              >
+                <IconChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="p-4 border-b border-[color:var(--border)] flex items-center justify-between gap-2">
+              <Link to="/" className="flex items-center gap-2.5 min-w-0">
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt={orgName}
+                    className="w-6 h-6 object-contain rounded border border-[color:var(--border)] p-0.5 bg-[var(--surface)] shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <BabitLogo className="w-5 h-5 text-[color:var(--fg)] shrink-0" />
+                )}
+                <div className="truncate">
+                  <span className="font-mono text-sm font-semibold tracking-tight text-[color:var(--fg)] block truncate">
+                    {orgName}
+                  </span>
+                  <span className="text-[11px] font-mono text-[color:var(--muted)] block -mt-0.5">
+                    babit console
+                  </span>
+                </div>
+              </Link>
+              <button
+                onClick={() => setCollapsed(true)}
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
+                className="p-1.5 rounded-babit-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:bg-[var(--secondary)] border border-transparent hover:border-[color:var(--border)] transition-colors cursor-pointer shrink-0"
+              >
+                <IconChevronRight className="w-4 h-4 rotate-180" />
+              </button>
+            </div>
+          )}
 
           {/* Quick Search bar */}
-          <div className="px-3 pt-3">
-            <button
-              onClick={() => setCommandPaletteOpen(true)}
-              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-babit-sm bg-[var(--secondary)] border border-[color:var(--border)] text-xs text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:border-[color:var(--muted)] transition-colors cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <IconSearch className="w-3.5 h-3.5" />
-                <span>Search...</span>
-              </div>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-[var(--surface)] rounded border border-[color:var(--border)]">
-                ⌘K
-              </kbd>
-            </button>
+          <div className={collapsed ? "px-2 pt-3 flex justify-center" : "px-3 pt-3"}>
+            {collapsed ? (
+              <button
+                onClick={() => setCommandPaletteOpen(true)}
+                title="Search (⌘K)"
+                aria-label="Search"
+                className="p-2 rounded-babit-sm bg-[var(--secondary)] border border-[color:var(--border)] text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:border-[color:var(--muted)] transition-colors cursor-pointer"
+              >
+                <IconSearch className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                onClick={() => setCommandPaletteOpen(true)}
+                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-babit-sm bg-[var(--secondary)] border border-[color:var(--border)] text-xs text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:border-[color:var(--muted)] transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <IconSearch className="w-3.5 h-3.5" />
+                  <span>Search...</span>
+                </div>
+                <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-[var(--surface)] rounded border border-[color:var(--border)]">
+                  ⌘K
+                </kbd>
+              </button>
+            )}
           </div>
 
           {/* Navigation — grouped by spacing + hairline, no shouty labels */}
-          <div className="p-3 space-y-3">
+          <div className={collapsed ? "p-2 space-y-3" : "p-3 space-y-3"}>
             {[mainNav, devNav, secondaryNav].map((group, gi) => (
               <nav
                 key={gi}
@@ -141,7 +225,8 @@ export function DashboardLayout({
                         onTabChange(n.key);
                         navigate(`/dashboard/${n.key}`);
                       }}
-                      className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-babit text-[14px] font-medium transition-all cursor-pointer"
+                      title={collapsed ? n.label : undefined}
+                      className={`w-full flex items-center rounded-babit text-[14px] font-medium transition-all cursor-pointer ${collapsed ? "justify-center px-0 py-2" : "gap-2.5 px-2.5 py-2"}`}
                       style={isActive ? {
                         backgroundColor: "var(--brand-accent)",
                         color: "white",
@@ -151,7 +236,7 @@ export function DashboardLayout({
                       }}
                     >
                       <span>{n.icon}</span>
-                      <span>{n.label}</span>
+                      {!collapsed && <span>{n.label}</span>}
                     </button>
                   );
                 })}
@@ -161,48 +246,72 @@ export function DashboardLayout({
         </div>
 
         {/* User Account Footer */}
-        <div className="p-3 border-t border-[color:var(--border)] bg-[var(--secondary)]">
-          <div className="p-2.5 rounded-babit bg-[var(--surface)] border border-[color:var(--border)] space-y-2">
-            <div className="flex items-center gap-2.5 truncate">
-              <div className="w-6 h-6 rounded bg-[var(--fg)] text-[var(--surface)] flex items-center justify-center font-mono text-xs font-bold shrink-0">
-                {user?.email?.charAt(0).toUpperCase() || "U"}
+        {collapsed ? (
+          <div className="p-2 border-t border-[color:var(--border)] bg-[var(--secondary)] flex flex-col items-center gap-2">
+            <div title={user?.email || "admin@babit.dev"}>{avatar("w-7 h-7")}</div>
+            <a
+              href={docsUrl}
+              target="_blank"
+              rel="noreferrer"
+              title="Docs"
+              className="p-1.5 rounded-babit-sm text-[color:var(--muted)] hover:text-[color:var(--fg)] hover:bg-[var(--surface)] transition-colors"
+            >
+              <IconFileText className="w-4 h-4" />
+            </a>
+            <button
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+              title="Sign out"
+              aria-label="Sign out"
+              className="p-1.5 rounded-babit-sm text-red-600 hover:text-red-700 hover:bg-[var(--surface)] transition-colors cursor-pointer"
+            >
+              <IconLogOut className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="p-3 border-t border-[color:var(--border)] bg-[var(--secondary)]">
+            <div className="p-2.5 rounded-babit bg-[var(--surface)] border border-[color:var(--border)] space-y-2">
+              <div className="flex items-center gap-2.5 truncate">
+                {avatar("w-7 h-7")}
+                <div className="truncate">
+                  <span className="text-xs font-medium text-[color:var(--fg)] block truncate">
+                    {user?.email || "admin@babit.dev"}
+                  </span>
+                </div>
               </div>
-              <div className="truncate">
-                <span className="text-xs font-medium text-[color:var(--fg)] block truncate">
-                  {user?.email || "admin@babit.dev"}
-                </span>
-              </div>
-            </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-[color:var(--border-subtle)] text-[11px]">
-              <a
-                href={docsUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[color:var(--muted)] hover:text-[color:var(--fg)] font-mono"
-              >
-                Docs ↗
-              </a>
-              <button
-                onClick={() => {
-                  logout();
-                  navigate("/login");
-                }}
-                className="text-red-600 hover:text-red-700 font-medium flex items-center gap-1 cursor-pointer text-xs"
-              >
-                <IconLogOut className="w-3 h-3" />
-                <span>Sign out</span>
-              </button>
+              <div className="flex items-center justify-between pt-2 border-t border-[color:var(--border-subtle)] text-[11px]">
+                <a
+                  href={docsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[color:var(--muted)] hover:text-[color:var(--fg)] font-mono"
+                >
+                  Docs ↗
+                </a>
+                <button
+                  onClick={() => {
+                    logout();
+                    navigate("/login");
+                  }}
+                  className="text-red-600 hover:text-red-700 font-medium flex items-center gap-1 cursor-pointer text-xs"
+                >
+                  <IconLogOut className="w-3 h-3" />
+                  <span>Sign out</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </aside>
 
       {/* Main Content Area */}
       <div className="flex flex-col min-w-0">
         {/* Header Bar */}
         <header className="h-14 px-6 border-b border-[color:var(--border)] glass-subtle sticky top-0 z-30 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
               className="md:hidden p-1 text-[color:var(--fg)]"
@@ -213,15 +322,12 @@ export function DashboardLayout({
               </svg>
             </button>
 
-            <div className="flex items-center gap-2 font-mono text-xs">
-              <span className="font-semibold text-[color:var(--fg)] capitalize">
-                {activeTab}
-              </span>
-              <span className="text-[color:var(--border)]">/</span>
-              <span className="text-[color:var(--muted)]">
-                {orgName}
-              </span>
-            </div>
+            {/* Breadcrumb: workspace then current page */}
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 font-mono text-xs min-w-0">
+              <span className="text-[color:var(--muted)] truncate">{orgName}</span>
+              <IconChevronRight className="w-3 h-3 text-[color:var(--muted)] shrink-0" />
+              <span className="font-medium text-[color:var(--fg)] truncate">{currentLabel}</span>
+            </nav>
           </div>
 
           <div className="flex items-center gap-3">

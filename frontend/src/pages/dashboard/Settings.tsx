@@ -1,10 +1,26 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { Copyable, PageHeader } from "@/lib/ui";
-import { IconShieldCheck, IconKey, IconBuilding } from "@/lib/icons";
-import { api } from "@/api/client";
+import { Copyable, PageHeader, Field, TextInput, Select, Button, Error } from "@/lib/ui";
+import { IconShieldCheck, IconKey, IconBuilding, IconCheck } from "@/lib/icons";
+import { api, errText } from "@/api/client";
 
 type Section = "general" | "workspace" | "notary";
+
+const INDUSTRIES = [
+  "Technology & Software",
+  "Financial Services & Banking",
+  "Healthcare & Life Sciences",
+  "Insurance",
+  "Enterprise Software & SaaS",
+  "AI & Autonomous Infrastructure",
+  "Government & Defense",
+  "Legal & Compliance",
+  "Manufacturing & Logistics",
+  "Retail & E-Commerce",
+  "Energy & Utilities",
+  "Consulting & Professional Services",
+  "Other",
+];
 
 function ReadonlyRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
@@ -27,11 +43,48 @@ function SectionHead({ title, description, icon }: { title: string; description:
 }
 
 export function Settings() {
-  const { user, branding } = useAuth();
+  const { user, branding, refreshMe } = useAuth();
   const [section, setSection] = useState<Section>("general");
   const [keyId, setKeyId] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [keyError, setKeyError] = useState(false);
+
+  const [orgName, setOrgName] = useState("");
+  const [orgDomain, setOrgDomain] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Pre-fill from the authenticated profile whenever it changes.
+  useEffect(() => {
+    setOrgName(user?.org_name ?? "");
+    setOrgDomain(user?.org_domain ?? "");
+    setIndustry(user?.industry ?? "");
+  }, [user?.org_name, user?.org_domain, user?.industry]);
+
+  const accountType = user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal";
+
+  async function save() {
+    setSaving(true);
+    setSaved(false);
+    setSaveError(null);
+    try {
+      const res = await api.PATCH("/v1/auth/me", {
+        body: { org_name: orgName, org_domain: orgDomain, industry },
+      });
+      if (res.error) {
+        setSaveError(errText(res.error));
+      } else {
+        await refreshMe();
+        setSaved(true);
+      }
+    } catch (e) {
+      setSaveError(errText(e));
+    } finally {
+      setSaving(false);
+    }
+  }
 
   useEffect(() => {
     if (section !== "notary" || publicKey) return;
@@ -96,13 +149,71 @@ export function Settings() {
             <>
               <SectionHead
                 title="Account"
-                description={<>Profile returned by <span className="font-mono">/v1/auth/me</span>.</>}
+                description="Update the organization details on your profile. Email and account type are fixed."
               />
+
               <ReadonlyRow label="Email" value={user?.email || "—"} mono />
-              <ReadonlyRow label="User ID" value={user?.id || "—"} mono />
-              <ReadonlyRow label="Account type" value={user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal"} />
-              {user?.industry && <ReadonlyRow label="Industry" value={user.industry} />}
-              {user?.created_at && <ReadonlyRow label="Created" value={user.created_at} mono />}
+              <ReadonlyRow label="Account type" value={accountType} />
+
+              <form
+                className="grid gap-4 pt-2"
+                onSubmit={(e) => { e.preventDefault(); void save(); }}
+              >
+                <Field label="Organization name" hint="Optional">
+                  <TextInput
+                    value={orgName}
+                    onChange={(e) => { setOrgName(e.target.value); setSaved(false); }}
+                    placeholder="Acme Inc."
+                    autoComplete="organization"
+                  />
+                </Field>
+
+                <Field label="Domain" hint="Optional">
+                  <TextInput
+                    value={orgDomain}
+                    onChange={(e) => { setOrgDomain(e.target.value); setSaved(false); }}
+                    placeholder="acme.com"
+                    autoComplete="url"
+                  />
+                </Field>
+
+                <Field label="Industry" hint="Optional">
+                  <Select
+                    value={industry}
+                    onChange={(e) => { setIndustry(e.target.value); setSaved(false); }}
+                  >
+                    <option value="">Not set</option>
+                    {industry && !INDUSTRIES.includes(industry) && (
+                      <option value={industry}>{industry}</option>
+                    )}
+                    {INDUSTRIES.map((ind) => (
+                      <option key={ind} value={ind}>{ind}</option>
+                    ))}
+                  </Select>
+                </Field>
+
+                {saveError && <Error message={saveError} />}
+
+                {saved && (
+                  <div
+                    className="rounded-babit p-3 flex items-center gap-2 text-xs"
+                    style={{
+                      color: "var(--color-verified)",
+                      backgroundColor: "color-mix(in srgb, var(--color-verified) 10%, transparent)",
+                      border: "1px solid color-mix(in srgb, var(--color-verified) 30%, transparent)",
+                    }}
+                  >
+                    <IconCheck className="w-4 h-4 shrink-0" />
+                    <span>Profile saved.</span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3 pt-1">
+                  <Button type="submit" variant="brand" loading={saving} disabled={saving}>
+                    Save changes
+                  </Button>
+                </div>
+              </form>
             </>
           )}
 
