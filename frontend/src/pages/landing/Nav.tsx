@@ -35,9 +35,9 @@ export function Nav() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
         scrolled
-          ? "bg-[var(--bg)]/90 backdrop-blur-md border-b border-[color:var(--border)] py-3.5"
+          ? "glass-subtle border-b border-[color:var(--border)] py-3.5"
           : "bg-transparent py-5"
       }`}
     >
@@ -69,7 +69,8 @@ export function Nav() {
           {isAuthenticated ? (
             <button
               onClick={() => navigate("/dashboard")}
-              className="px-4 py-2 text-[14px] font-medium bg-[var(--fg)] text-[var(--surface)] rounded-babit hover:opacity-90 transition-all cursor-pointer shadow-2xs"
+              className="px-4 py-2 text-[14px] font-medium text-white rounded-babit hover:opacity-90 transition-all cursor-pointer"
+              style={{ backgroundColor: "var(--brand-accent)", boxShadow: "0 8px 22px -12px var(--brand-accent)" }}
             >
               Console →
             </button>
@@ -83,7 +84,8 @@ export function Nav() {
               </button>
               <button
                 onClick={() => navigate("/signup")}
-                className="px-4 py-2 text-[14px] font-medium bg-[var(--fg)] text-[var(--surface)] rounded-babit hover:opacity-90 transition-all cursor-pointer shadow-2xs"
+                className="px-4 py-2 text-[14px] font-medium text-white rounded-babit hover:opacity-90 transition-all cursor-pointer"
+                style={{ backgroundColor: "var(--brand-accent)", boxShadow: "0 8px 22px -12px var(--brand-accent)" }}
               >
                 Get started
               </button>
