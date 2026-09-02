@@ -45,13 +45,6 @@ export function SectionSurfaces() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
         {/* Header */}
         <div className="max-w-3xl space-y-4 animate-float-up">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-            style={{ color: "var(--muted)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-            <span>Where it runs</span>
-          </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
             style={{ color: "var(--fg)" }}
@@ -59,8 +52,7 @@ export function SectionSurfaces() {
             Wherever the agent acts, babit records it.
           </h2>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            Agents work in different places. babit records what they do on each one, and you reach it the
-            same way every time (one HTTP call from any language).
+            Browser, sandbox, or desktop, you reach it the same way every time.
           </p>
         </div>
 
@@ -147,8 +139,7 @@ export function SectionSurfaces() {
                 The receipt outlives the surface.
               </h3>
               <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-                Whether the action happened in a browser, a sandbox, or a desktop app, the record checks out
-                the same way. Post a proof to verify, or fetch the public key and check it yourself.
+                However the action happened, the record checks out the same way. Post a proof, or fetch the public key and check it yourself.
               </p>
             </div>
             <div className="grid gap-2 font-mono text-[12px]">

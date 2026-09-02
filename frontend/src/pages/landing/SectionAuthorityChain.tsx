@@ -71,13 +71,6 @@ export function SectionAuthorityChain() {
           {/* Left — Heading + description */}
           <div className="space-y-8 animate-float-up">
             <div className="space-y-4">
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-                style={{ color: "var(--muted)" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-                <span>Chain of authority</span>
-              </div>
               <h2
                 className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
                 style={{ color: "var(--fg)" }}
@@ -85,9 +78,7 @@ export function SectionAuthorityChain() {
                 Every action traces back to a person.
               </h2>
               <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-                A person authorizes an agent, which can hand a narrower slice of the job to a sub-agent.
-                babit keeps the whole signed chain, so you can always see who allowed what, and revoking
-                a grant instantly greys out everything below it.
+                A person authorizes an agent, which can hand a narrower slice to a sub-agent. Revoke a grant and everything below it greys out.
               </p>
             </div>
 
