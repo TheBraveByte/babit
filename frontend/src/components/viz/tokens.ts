@@ -14,6 +14,7 @@ export function vizPalette() {
     surface: readToken("--surface", "#FFFFFF"),
     accent: readToken("--brand-accent", "#0D9488"),
     verified: readToken("--color-verified", "#059669"),
+    failed: readToken("--color-failed", "#DC2626"),
   };
 }
 

@@ -1,66 +1,68 @@
-import { useState } from "react";
+import type { Node, Edge } from "@xyflow/react";
+import { AuthorityGraph, type GrantNodeData } from "../../components/viz/AuthorityGraph";
 
-interface Node {
-  id: string;
-  label: string;
-  sublabel: string;
-  type: "human" | "agent" | "action";
-}
-
-const NODES: Node[] = [
-  { id: "human",    label: "Alice, Risk Supervisor", sublabel: "A person, the authority",           type: "human" },
-  { id: "orchestr", label: "claims-agent",           sublabel: "The agent she gave permission to",   type: "agent" },
-  { id: "executor", label: "payout-agent",           sublabel: "A second agent it handed part of the job to", type: "agent" },
-  { id: "action",   label: "Approved a $4,200 payout", sublabel: "What actually happened",           type: "action" },
+// Curated, truthful example of babit's signed delegation DAG (Grant model):
+// a human principal issues a root grant, delegates scoped authority to an agent,
+// which sub-delegates to two sub-agents — one live, one revoked (greyed subtree).
+const NODES: Node<GrantNodeData>[] = [
+  {
+    id: "principal",
+    type: "grant",
+    position: { x: 150, y: 0 },
+    data: {
+      role: "principal",
+      subject: "Alice, Risk Supervisor",
+      scope: "claims/* · ≤ $5,000",
+    },
+  },
+  {
+    id: "agent",
+    type: "grant",
+    position: { x: 150, y: 150 },
+    data: {
+      role: "agent",
+      subject: "claims-agent",
+      capabilities: ["approve.payout", "read.claim"],
+      scope: "claims/48102 · ≤ $4,200",
+    },
+  },
+  {
+    id: "doc-fetcher",
+    type: "grant",
+    position: { x: -40, y: 320 },
+    data: {
+      role: "subagent",
+      subject: "doc-fetcher",
+      capabilities: ["read.claim"],
+      scope: "claims/48102",
+    },
+  },
+  {
+    id: "batch-exporter",
+    type: "grant",
+    position: { x: 320, y: 320 },
+    data: {
+      role: "subagent",
+      subject: "batch-exporter",
+      capabilities: ["read.claim"],
+      scope: "claims/48102",
+      revoked: true,
+    },
+  },
 ];
 
-const GRANT_IDS = [
-  "BAL-ROOT-100200",
-  "BAL-DEL-417849",
-  "BAL-DEL-8921",
+const EDGES: Edge[] = [
+  { id: "e-root", source: "principal", target: "agent" },
+  { id: "e-doc", source: "agent", target: "doc-fetcher" },
+  { id: "e-exp", source: "agent", target: "batch-exporter", data: { revoked: true } },
 ];
-
-const DETAIL_MAP: Record<string, { from: string; to: string; grantId: string; scope: string; cap: string }> = {
-  human: {
-    from: "Nobody above her",
-    to: "claims-agent",
-    grantId: "BAL-ROOT-100200",
-    scope: "Handle claims",
-    cap: "Up to $50,000",
-  },
-  orchestr: {
-    from: "Alice",
-    to: "payout-agent",
-    grantId: "BAL-DEL-417849",
-    scope: "Approve payouts only",
-    cap: "Up to $5,000",
-  },
-  executor: {
-    from: "claims-agent",
-    to: "This payout",
-    grantId: "BAL-DEL-8921",
-    scope: "Approve payout on claim CLM-48102",
-    cap: "$4,200 (within the limit)",
-  },
-  action: {
-    from: "payout-agent",
-    to: "The claims system",
-    grantId: "BAL-DEL-8921",
-    scope: "Recorded the moment it happened",
-    cap: "Sealed as receipt rcpt_BAL_778812",
-  },
-};
 
 export function SectionAuthorityChain() {
-  const [activeNode, setActiveNode] = useState<string>("human");
-
-  const detail = DETAIL_MAP[activeNode];
-
   return (
     <section className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
       <div className="absolute inset-0 grid-fade pointer-events-none" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left — Heading + description */}
           <div className="space-y-5 animate-float-up">
             <div
@@ -77,131 +79,46 @@ export function SectionAuthorityChain() {
               Every action traces back to a person.
             </h2>
             <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-              A person authorized an agent, which handed part of the job to another agent. babit keeps the
-              whole chain, so you can always see who allowed what. Select any step to see the exact permission.
+              A person authorizes an agent, which can hand a narrower slice of the job to a sub-agent.
+              babit keeps the whole signed chain, so you can always see who allowed what — and revoking
+              a grant instantly greys out everything below it.
             </p>
 
-            {/* Detail inspector panel */}
-            <div className="glass rounded-babit-lg overflow-hidden transition-all">
+            <div className="glass rounded-babit-lg overflow-hidden">
               <div className="h-px accent-hairline" />
               <div className="p-5 space-y-3 text-xs">
-              <div className="flex items-center justify-between pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-                <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: "var(--muted)" }}>
-                  Permission
-                </span>
-                <span className="font-mono font-semibold" style={{ color: "var(--fg)" }}>
-                  {detail.grantId}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Who allowed it</span>
-                  <span style={{ color: "var(--fg)" }}>{detail.from}</span>
+                <div className="flex items-center justify-between pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                  <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: "var(--muted)" }}>
+                    How to read it
+                  </span>
+                  <span className="font-mono font-semibold" style={{ color: "var(--fg)" }}>
+                    signed delegation
+                  </span>
                 </div>
-                <div>
-                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Allowed to act on</span>
-                  <span style={{ color: "var(--fg)" }}>{detail.to}</span>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>What they can do</span>
-                  <span style={{ color: "var(--fg)" }}>{detail.scope}</span>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Limit</span>
-                  <span style={{ color: "var(--fg)" }}>{detail.cap}</span>
-                </div>
-              </div>
-              <div className="pt-1.5 text-[10px]" style={{ color: "var(--muted)" }}>
-                Each hand-off can only narrow what's allowed, never widen it.
-              </div>
+                <ul className="space-y-2" style={{ color: "var(--muted)" }}>
+                  <li className="flex gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "var(--brand-accent)" }} />
+                    <span>Each node is a <span style={{ color: "var(--fg)" }}>grant</span>: a subject, its capabilities, and its scope (resources and value limit).</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "var(--brand-accent)" }} />
+                    <span>Each edge carries a <span style={{ color: "var(--fg)" }}>parent signature</span> — proof the grant above authorized the one below.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "var(--color-failed)" }} />
+                    <span>A hand-off can only narrow authority, never widen it. Revoke a grant and its whole subtree goes dark.</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
 
-          {/* Right — Chain visualization */}
-          <div className="flex flex-col items-center gap-0 relative animate-float-up" style={{ animationDelay: "120ms" }}>
+          {/* Right — Real interactive delegation DAG */}
+          <div className="relative animate-float-up" style={{ animationDelay: "120ms" }}>
             <div className="ambient-glow" style={{ inset: "8% 6% 8% 6%", opacity: 0.28 }} />
-            {NODES.map((node, idx) => {
-              const isActive = activeNode === node.id;
-              const isAboveActive = NODES.findIndex((n) => n.id === activeNode) > idx;
-
-              return (
-                <div key={node.id} className="flex flex-col items-center w-full max-w-xs relative z-10">
-                  {/* Node button */}
-                  <button
-                    onClick={() => setActiveNode(node.id)}
-                    className={`w-full p-4 rounded-babit-md transition-all cursor-pointer text-left ${isActive ? "" : "glass-subtle"}`}
-                    style={{
-                      backgroundColor: isActive ? "var(--fg)" : undefined,
-                      border: isActive ? "1.5px solid var(--fg)" : undefined,
-                      color: isActive ? "var(--surface)" : "var(--fg)",
-                      boxShadow: isActive ? "0 10px 30px -12px rgba(0,0,0,0.28)" : "none",
-                      transform: isActive ? "scale(1.02)" : "scale(1)",
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      {/* Node type label */}
-                      <div
-                        className="w-9 h-9 rounded-babit-sm flex items-center justify-center text-[10px] font-semibold uppercase shrink-0"
-                        style={{
-                          backgroundColor: isActive ? "rgba(255,255,255,0.12)" : "var(--secondary)",
-                          color: isActive ? "var(--surface)" : "var(--muted)",
-                        }}
-                      >
-                        {node.type === "human" ? "Person" : node.type === "action" ? "Act" : "Agent"}
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold">{node.label}</div>
-                        <div
-                          className="text-[11px] mt-0.5"
-                          style={{ color: isActive ? "rgba(255,255,255,0.6)" : "var(--muted)" }}
-                        >
-                          {node.sublabel}
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* SVG Connector line between nodes */}
-                  {idx < NODES.length - 1 && (
-                    <div className="flex flex-col items-center py-1 w-full relative" style={{ height: "40px" }}>
-                      <svg width="2" height="40" className="overflow-visible">
-                        {/* Base static line */}
-                        <line
-                          x1="1" y1="0" x2="1" y2="40"
-                          stroke="var(--border)"
-                          strokeWidth="1.5"
-                        />
-                        {/* Animated active line */}
-                        {(isActive || isAboveActive) && (
-                          <line
-                            x1="1" y1="0" x2="1" y2="40"
-                            stroke="var(--brand-accent)"
-                            strokeWidth="2"
-                            strokeDasharray="40"
-                            className="animate-stroke-draw"
-                          />
-                        )}
-                      </svg>
-
-                      {/* "authorized" label on connector */}
-                      {idx < GRANT_IDS.length && (
-                        <span
-                          className="absolute right-0 text-[10px] font-mono px-1.5 py-0.5 rounded-babit-sm top-2"
-                          style={{
-                            color: isActive || isAboveActive ? "var(--brand-accent)" : "var(--muted)",
-                            backgroundColor: "var(--secondary)",
-                            border: "1px solid var(--border)",
-                          }}
-                        >
-                          authorized
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            <div className="glass rounded-babit-lg overflow-hidden relative z-10">
+              <AuthorityGraph nodes={NODES} edges={EDGES} height={420} />
+            </div>
           </div>
         </div>
       </div>

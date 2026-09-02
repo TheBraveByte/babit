@@ -61,6 +61,12 @@ export function Nav() {
               {item.label}
             </button>
           ))}
+          <Link
+            to="/api"
+            className="text-[14px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors"
+          >
+            API
+          </Link>
         </nav>
 
         {/* Auth CTA */}
@@ -121,6 +127,13 @@ export function Nav() {
               {item.label}
             </button>
           ))}
+          <Link
+            to="/api"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block w-full text-left py-2.5 text-[14px] text-[color:var(--fg)] font-medium"
+          >
+            API
+          </Link>
           <div className="pt-3 border-t border-[color:var(--border-subtle)] flex flex-col gap-2">
             <button
               onClick={() => {

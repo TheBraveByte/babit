@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { IconCheck, IconRefresh } from "@/lib/icons";
+import { AnchorGlobe } from "@/components/viz/AnchorGlobe";
 
 interface CliOutput {
   sig: string;
@@ -32,6 +33,23 @@ export function SectionOfflineEvidence() {
   return (
     <section className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
       <div className="absolute inset-0 grid-fade pointer-events-none" />
+
+      {/* Ambient globe: the sealed root is published to a public transparency log / chain,
+          so a receipt is verifiable anywhere. Decorative, restrained, never dominant. */}
+      <div
+        className="absolute pointer-events-none hidden lg:block"
+        style={{
+          top: "50%",
+          right: "-6%",
+          transform: "translateY(-50%)",
+          opacity: 0.5,
+          maskImage: "radial-gradient(circle at center, black 55%, transparent 78%)",
+          WebkitMaskImage: "radial-gradient(circle at center, black 55%, transparent 78%)",
+        }}
+      >
+        <div className="ambient-glow" style={{ inset: "10%" }} />
+        <AnchorGlobe size={560} className="relative" />
+      </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}

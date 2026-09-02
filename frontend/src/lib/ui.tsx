@@ -1,6 +1,41 @@
 import { useState, type ReactNode } from "react";
 import { IconCopy, IconCheck, IconAlertCircle } from "./icons";
 
+/* ─── PageHeader (dashboard) ────────────────────────────────────────────────── */
+export function PageHeader({
+  title,
+  description,
+  eyebrow,
+  action,
+}: {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  action?: ReactNode;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 flex-wrap">
+      <div className="space-y-1 animate-float-up">
+        {eyebrow && (
+          <span
+            className="text-[11px] font-mono uppercase tracking-[0.14em] block"
+            style={{ color: "var(--muted)" }}
+          >
+            {eyebrow}
+          </span>
+        )}
+        <h1 className="text-2xl font-semibold tracking-[-0.02em]" style={{ color: "var(--fg)" }}>
+          {title}
+        </h1>
+        {description && (
+          <p className="text-sm max-w-2xl" style={{ color: "var(--muted)" }}>{description}</p>
+        )}
+      </div>
+      {action && <div className="shrink-0">{action}</div>}
+    </div>
+  );
+}
+
 /* ─── Card ─────────────────────────────────────────────────────────────────── */
 export function Card({
   title,
