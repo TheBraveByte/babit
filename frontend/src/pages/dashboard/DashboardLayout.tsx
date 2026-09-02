@@ -82,7 +82,10 @@ export function DashboardLayout({
     window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(collapsed));
   }, [collapsed]);
 
-  const orgName = branding?.company_name || user?.org_name || (user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal Workspace");
+  const orgName =
+    branding?.company_name ||
+    user?.org_name ||
+    (user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : user?.email?.split("@")[0] || "babit");
   const logoUrl = branding?.logo_url;
 
   const allNav = [...mainNav, ...devNav, ...secondaryNav];
@@ -134,7 +137,7 @@ export function DashboardLayout({
                     }}
                   />
                 ) : (
-                  <BabitLogo className="w-5 h-5 text-[color:var(--fg)]" />
+                  <BabitLogo className="w-7 h-7 text-[color:var(--fg)]" />
                 )}
               </Link>
               <button
@@ -159,7 +162,7 @@ export function DashboardLayout({
                     }}
                   />
                 ) : (
-                  <BabitLogo className="w-5 h-5 text-[color:var(--fg)] shrink-0" />
+                  <BabitLogo className="w-7 h-7 text-[color:var(--fg)] shrink-0" />
                 )}
                 <div className="truncate">
                   <span className="font-mono text-sm font-semibold tracking-tight text-[color:var(--fg)] block truncate">

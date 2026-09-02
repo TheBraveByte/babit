@@ -44,8 +44,8 @@ export function Nav() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5">
-          <BabitLogo className="w-5 h-5 text-[color:var(--fg)]" />
-          <span className="font-semibold text-[15px] tracking-tight font-mono text-[color:var(--fg)]">
+          <BabitLogo className="w-7 h-7 text-[color:var(--fg)]" />
+          <span className="font-semibold text-[17px] tracking-tight font-mono text-[color:var(--fg)]">
             babit
           </span>
         </Link>
