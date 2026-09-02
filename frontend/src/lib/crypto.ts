@@ -1,8 +1,3 @@
-/**
- * Client-side cryptographic helper utilities using the native Web Crypto API.
- * Performs real SHA-256 digests and deterministic Merkle tree derivations in the browser.
- */
-
 export async function sha256Hex(data: string | Uint8Array): Promise<string> {
   const buffer = typeof data === "string" ? new TextEncoder().encode(data) : data;
   const digest = await crypto.subtle.digest("SHA-256", buffer as unknown as ArrayBuffer);
