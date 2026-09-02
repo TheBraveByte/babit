@@ -60,7 +60,6 @@ export function Settings() {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        eyebrow="Console"
         title="Settings"
         description="Your account profile and the notary key backing your evidence. Fields reflect what the Babit API returns and are read-only where no write endpoint exists."
       />
@@ -152,7 +151,7 @@ export function Settings() {
               <SectionHead
                 icon={<IconKey className="w-4 h-4" />}
                 title="Notary public key"
-                description="Ed25519 public key used to verify notary signatures on action events."
+                description="The public key used to verify notary signatures on action events."
               />
               {publicKey ? (
                 <div className="space-y-3 font-mono text-xs">
@@ -164,7 +163,7 @@ export function Settings() {
                 </div>
               ) : (
                 <p className="text-xs font-mono" style={{ color: "var(--muted)" }}>
-                  {keyError ? "Notary key unavailable — the ledger service may be offline." : "Loading notary key…"}
+                  {keyError ? "Notary key unavailable, the ledger service may be unreachable." : "Loading notary key…"}
                 </p>
               )}
             </>

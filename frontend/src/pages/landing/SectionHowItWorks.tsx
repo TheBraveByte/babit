@@ -2,32 +2,32 @@ import { IconUser, IconActivity, IconLock, IconShieldCheck } from "@/lib/icons";
 
 const STEPS = [
   {
-    n: "01",
     label: "Authority",
     Icon: IconUser,
     title: "A person gives permission.",
     body: "Someone allows an agent to do one specific thing, and only that thing.",
+    span: "lg:col-span-2",
   },
   {
-    n: "02",
     label: "Action",
     Icon: IconActivity,
     title: "The agent acts.",
     body: "It does the work: clicks in a browser, runs code, or moves money.",
+    span: "lg:col-span-1",
   },
   {
-    n: "03",
     label: "Evidence",
     Icon: IconLock,
     title: "babit records and seals it.",
     body: "It writes down what happened and who allowed it, then seals the record so it cannot be changed later.",
+    span: "lg:col-span-1",
   },
   {
-    n: "04",
     label: "Verification",
     Icon: IconShieldCheck,
     title: "Anyone can check it.",
     body: "Anyone can confirm the record is real and unchanged on their own, without taking babit's word for it.",
+    span: "lg:col-span-2",
   },
 ];
 
@@ -49,7 +49,7 @@ export function SectionHowItWorks() {
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
             style={{ color: "var(--fg)" }}
           >
-            Four steps, from permission to proof.
+            From permission to proof.
           </h2>
           <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
             When an agent acts on its own, babit ties what it did to the person who allowed it, and turns
@@ -57,26 +57,21 @@ export function SectionHowItWorks() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-5">
           {STEPS.map((step, idx) => {
             const isLast = idx === STEPS.length - 1;
             return (
               <div
-                key={step.n}
-                className={`relative rounded-babit-lg p-6 space-y-4 h-full overflow-hidden animate-float-up ${isLast ? "glass" : "glass-subtle"}`}
+                key={step.label}
+                className={`relative rounded-babit-lg p-6 space-y-4 h-full overflow-hidden animate-float-up ${step.span} ${isLast ? "glass" : "glass-subtle"}`}
                 style={{ animationDelay: `${idx * 90}ms` }}
               >
                 {isLast && <div className="h-px accent-hairline absolute inset-x-0 top-0" />}
-                <div className="flex items-center justify-between">
-                  <div
-                    className="w-9 h-9 rounded-babit flex items-center justify-center"
-                    style={{ backgroundColor: "var(--secondary)", color: "var(--fg)" }}
-                  >
-                    <step.Icon className="w-4 h-4" />
-                  </div>
-                  <span className="text-xs font-mono" style={{ color: "var(--muted)" }}>
-                    {step.n}
-                  </span>
+                <div
+                  className="w-9 h-9 rounded-babit flex items-center justify-center"
+                  style={{ backgroundColor: "var(--secondary)", color: "var(--fg)" }}
+                >
+                  <step.Icon className="w-4 h-4" />
                 </div>
                 <div className="space-y-1.5">
                   <span className="text-xs font-mono uppercase tracking-wider" style={{ color: isLast ? "var(--brand-accent)" : "var(--muted)" }}>

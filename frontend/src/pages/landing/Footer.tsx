@@ -23,20 +23,8 @@ export function Footer() {
               </span>
             </div>
             <p className="text-xs leading-relaxed max-w-xs" style={{ color: "var(--muted)" }}>
-              A tamper-proof receipt for what your agents do.
+              A sealed receipt for what your agents do, one anyone can verify.
             </p>
-            {/* Operational status — no fake percentages */}
-            <div
-              className="inline-flex items-center gap-2 text-[11px] font-mono px-2.5 py-1 rounded-babit-sm"
-              style={{
-                color: "var(--color-verified)",
-                backgroundColor: "var(--color-verified-bg)",
-                border: "1px solid var(--color-verified-border)",
-              }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-subtle shrink-0" />
-              <span>All systems operational</span>
-            </div>
           </div>
 
           {/* Product */}
