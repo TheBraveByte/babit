@@ -56,22 +56,12 @@ export function Hero() {
 
           {/* ── Left: message ─────────────────────────────────────────── */}
           <div className="max-w-xl animate-float-up">
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-              style={{ color: "var(--muted)" }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-              <span>Evidence for what agents do</span>
-            </div>
-
-            <h1 className="mt-6 text-[44px] sm:text-6xl lg:text-[64px] font-semibold tracking-[-0.03em] leading-[1.02]" style={{ color: "var(--fg)" }}>
+            <h1 className="text-[44px] sm:text-6xl lg:text-[64px] font-semibold tracking-[-0.03em] leading-[1.02]" style={{ color: "var(--fg)" }}>
               Proof for autonomous action.
             </h1>
 
             <p className="mt-6 text-lg sm:text-[19px] leading-relaxed" style={{ color: "var(--muted)" }}>
-              babit binds every action an agent takes to the authority that permitted it, then
-              seals it as evidence anyone can verify. A permanent, checkable record of what your
-              autonomous software does.
+              Every action an agent takes, tied to who allowed it and sealed as evidence anyone can verify.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
