@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { PageHeader, Card, MetricCard, Copyable } from "@/lib/ui";
-import { IconShieldCheck, IconGitBranch, IconFileText, IconArrowRight, IconKey } from "@/lib/icons";
+import { PageHeader, Card, Copyable } from "@/lib/ui";
+import { IconShieldCheck, IconGitBranch, IconFileText, IconArrowRight, IconKey, IconFolder } from "@/lib/icons";
 import type { DashboardTab } from "./DashboardLayout";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/api/client";
@@ -31,27 +31,35 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
   }, []);
 
   const accountType = user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal";
-  const workspace = branding?.company_name || user?.org_name || "Personal workspace";
+  const workspace = branding?.company_name || user?.org_name || "your workspace";
 
   const quickActions: { tab: DashboardTab; title: string; desc: string; icon: React.ReactNode }[] = [
     { tab: "verify", title: "Verify evidence", desc: "Check a receipt or proof independently.", icon: <IconShieldCheck className="w-4 h-4 text-emerald-700" /> },
     { tab: "delegations", title: "Grants", desc: "Issue, delegate, verify and revoke authority.", icon: <IconGitBranch className="w-4 h-4" /> },
     { tab: "receipts", title: "Receipts", desc: "Fetch the sealed proof for an action.", icon: <IconFileText className="w-4 h-4" /> },
+    { tab: "projects", title: "Projects", desc: "Organize the actions you are tracking.", icon: <IconFolder className="w-4 h-4" /> },
   ];
 
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Overview"
+        title={`Welcome to ${workspace}`}
         description="Proof for autonomous actions. Everything here is retrieved directly from the Babit ledger."
       />
 
-      {/* Workspace summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <MetricCard label="Workspace" value={workspace} sublabel="Signed-in workspace" />
-        <MetricCard label="Account type" value={accountType} sublabel="From your Babit profile" />
-        <MetricCard label="Signed in as" value={user?.email || "—"} sublabel="Authenticated identity" />
-      </div>
+      {/* Account summary, full details live in Settings */}
+      <p className="text-xs" style={{ color: "var(--muted)" }}>
+        Signed in as{" "}
+        <span style={{ color: "var(--fg)" }}>{user?.email || "your account"}</span>
+        {" · "}{accountType}.{" "}
+        <button
+          onClick={() => onNavigate("settings")}
+          className="underline underline-offset-2 cursor-pointer"
+          style={{ color: "var(--fg)" }}
+        >
+          Manage in Settings
+        </button>
+      </p>
 
       {/* Notary key — real data, flagship card */}
       <Card
@@ -86,7 +94,7 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
       {/* Quick actions */}
       <div className="space-y-3">
         <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Get started</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {quickActions.map((a) => (
             <button
               key={a.tab}
@@ -111,7 +119,7 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
       >
         <span className="mt-0.5 shrink-0" style={{ color: "var(--muted)" }}><IconKey className="w-3.5 h-3.5" /></span>
         <p className="text-xs" style={{ color: "var(--muted)" }}>
-          Babit does not yet expose aggregate metrics or a listing API, so this console retrieves ledger records individually by ID.
+          Babit does not yet expose aggregate metrics or a listing API, so this console retrieves ledger records one at a time by ID.
         </p>
       </div>
     </div>
