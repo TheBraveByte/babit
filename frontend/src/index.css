@@ -1,10 +1,10 @@
 @import "tailwindcss";
-@import "@fontsource-variable/geist";
+@import "@fontsource-variable/sora";
 @import "@fontsource-variable/geist-mono";
 
 /* ─── Typography ───────────────────────────────────────────────────────────── */
 @theme {
-  --font-sans: "Geist Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Sora Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", "Cascadia Code", monospace;
 }
 
