@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
-import { Button, Error, StatusPill, TextArea, TextInput } from "@/lib/ui";
-import { IconCheck, IconShieldCheck } from "@/lib/icons";
+import { PageHeader, Card, Button, Error, StatusPill, TextArea, TextInput, Field } from "@/lib/ui";
+import { IconCheck, IconShieldCheck, IconShieldAlert } from "@/lib/icons";
 
 type Proof = components["schemas"]["v1Proof"];
 type VResp = components["schemas"]["v1VerifyProofResponse"];
@@ -69,127 +69,147 @@ export function Verify() {
   };
 
   return (
-    <div className="space-y-8 font-sans">
-      <div>
-        <h1 className="text-2xl sm:text-[32px] font-semibold text-[#111111] tracking-tight leading-tight">
-          Verify Evidence
-        </h1>
-        <p className="text-sm sm:text-[15px] text-[#6B6B6B] mt-1">
-          Independently verify a Babit receipt and check cryptographic proofs.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Independent Verification"
+        title="Verify Evidence"
+        description="Don't trust us. Verify it yourself. Recompute a Babit receipt's cryptographic proofs locally against the notary key and external anchor."
+      />
 
-      {/* Main Verification Input Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Option A: Drop / Paste Receipt */}
-        <div className="bg-[#FFFFFF] border border-[#E8E8E5] rounded-babit-lg p-6 shadow-xs space-y-4 font-mono text-xs">
-          <div className="flex items-center justify-between pb-3 border-b border-[#F0F0ED]">
-            <span className="text-xs uppercase font-semibold text-[#111111]">
-              1. Verify Raw Receipt JSON
-            </span>
-            <label className="text-[11px] text-[#6B6B6B] hover:text-[#111111] cursor-pointer underline">
-              Upload JSON file
-              <input type="file" accept=".json" onChange={handleFileUpload} className="hidden" />
-            </label>
-          </div>
-
-          <TextArea
-            value={receipt}
-            onChange={(e) => setReceipt(e.target.value)}
-            placeholder='Paste receipt or proof JSON here: {"event": { ... }, "merkle_root": "..."}'
-            className="h-32 text-xs"
-          />
-
-          <Button
-            variant="primary"
-            size="md"
-            loading={loading}
-            disabled={!receipt.trim()}
-            onClick={verifyPasted}
-            className="w-full justify-center"
-          >
-            <IconShieldCheck className="w-4 h-4" />
-            <span>Verify Receipt</span>
-          </Button>
-        </div>
-
-        {/* Option B: Verify by Event ID */}
-        <div className="bg-[#FFFFFF] border border-[#E8E8E5] rounded-babit-lg p-6 shadow-xs space-y-4 font-mono text-xs flex flex-col justify-between">
+        <Card className="animate-float-up">
           <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F0F0ED]">
-              <span className="text-xs uppercase font-semibold text-[#111111]">
-                2. Verify by Event ID
+            <div className="h-px accent-hairline -mx-5 -mt-5" />
+
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono uppercase tracking-wider font-semibold" style={{ color: "var(--fg)" }}>
+                1 · Verify Raw Receipt JSON
               </span>
-              <span className="text-[11px] text-[#6B6B6B]">QUERY LEDGER</span>
+              <label className="text-[11px] cursor-pointer underline underline-offset-2 transition-colors" style={{ color: "var(--muted)" }}>
+                Upload JSON file
+                <input type="file" accept=".json" onChange={handleFileUpload} className="hidden" />
+              </label>
             </div>
 
-            <TextInput
-              value={eventId}
-              onChange={(e) => setEventId(e.target.value)}
-              placeholder="e.g. BAL-778812"
-              className="text-xs"
+            <TextArea
+              value={receipt}
+              onChange={(e) => setReceipt(e.target.value)}
+              placeholder='Paste receipt or proof JSON here: {"event": { ... }, "merkle_root": "..."}'
+              className="h-32 text-xs"
             />
-          </div>
 
-          <Button
-            variant="secondary"
-            size="md"
-            loading={loading}
-            disabled={!eventId.trim()}
-            onClick={() => void fetchAndVerify()}
-            className="w-full justify-center"
-          >
-            <span>Fetch Proof & Verify</span>
-          </Button>
-        </div>
+            <Button
+              variant="primary"
+              size="md"
+              loading={loading}
+              disabled={!receipt.trim()}
+              onClick={verifyPasted}
+              className="w-full justify-center"
+            >
+              <IconShieldCheck className="w-4 h-4" />
+              <span>Verify Receipt</span>
+            </Button>
+          </div>
+        </Card>
+
+        {/* Option B: Verify by Event ID */}
+        <Card>
+          <div className="flex flex-col justify-between h-full space-y-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono uppercase tracking-wider font-semibold" style={{ color: "var(--fg)" }}>
+                  2 · Verify by Event ID
+                </span>
+                <span className="text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Query ledger</span>
+              </div>
+
+              <Field label="Event ID">
+                <TextInput
+                  value={eventId}
+                  onChange={(e) => setEventId(e.target.value)}
+                  placeholder="e.g. BAL-778812"
+                />
+              </Field>
+            </div>
+
+            <Button
+              variant="secondary"
+              size="md"
+              loading={loading}
+              disabled={!eventId.trim()}
+              onClick={() => void fetchAndVerify()}
+              className="w-full justify-center"
+            >
+              <span>Fetch Proof &amp; Verify</span>
+            </Button>
+          </div>
+        </Card>
       </div>
 
       {error && <Error message={error} />}
 
-      {/* Verification Results Panel */}
-      {result && (
-        <div className="bg-[#FFFFFF] border border-[#E8E8E5] rounded-babit-lg p-6 sm:p-8 space-y-6 shadow-xs font-mono text-xs">
-          <div className="flex items-center justify-between pb-4 border-b border-[#F0F0ED]">
-            <span className="text-xs font-semibold text-[#111111] uppercase">
-              VERIFICATION REPORT
-            </span>
-            <span
-              className={`px-3 py-1 rounded-babit-sm font-bold text-xs ${
-                result.valid
-                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                  : "bg-red-50 text-red-800 border border-red-200"
-              }`}
-            >
-              {result.valid ? "VERIFIED: ALL CHECKS PASSED" : "VERIFICATION FAILED"}
-            </span>
-          </div>
+      {/* Verification Report */}
+      {result && <VerificationReport result={result} />}
+    </div>
+  );
+}
 
-          <div className="space-y-3">
-            {checks.map((c) => (
-              <div key={c.key} className="p-3 rounded-babit bg-[#F7F7F5] border border-[#E8E8E5] flex items-center justify-between">
-                <div>
-                  <span className="font-semibold text-[#111111]">{c.label}</span>
-                  <span className="text-[#6B6B6B] ml-2 font-sans text-xs">({c.desc})</span>
-                </div>
-                <StatusPill ok={result[c.key] === true} label={result[c.key] ? "VALID" : "FAILED"} />
-              </div>
-            ))}
-          </div>
+function VerificationReport({ result }: { result: VResp }) {
+  const verdictColor = result.valid ? "var(--color-verified)" : "var(--color-failed)";
 
-          {result.reason && (
-            <div className="p-3 rounded-babit bg-red-50 border border-red-200 text-red-800 text-xs">
-              <strong>Failure reason:</strong> {result.reason}
+  return (
+    <Card title="Verification Report" subtitle="Recomputed independently — no trust in Babit required.">
+      <div className="space-y-5">
+        {/* Verdict banner */}
+        <div
+          className="rounded-babit p-4 flex items-center gap-3"
+          style={{
+            color: verdictColor,
+            backgroundColor: `color-mix(in srgb, ${verdictColor} 10%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${verdictColor} 30%, transparent)`,
+          }}
+        >
+          {result.valid ? <IconShieldCheck className="w-5 h-5 shrink-0" /> : <IconShieldAlert className="w-5 h-5 shrink-0" />}
+          <div>
+            <div className="text-sm font-semibold">
+              {result.valid ? "Verified — all checks passed" : "Verification failed"}
             </div>
-          )}
-
-          <div className="pt-3 border-t border-[#F0F0ED] flex items-center justify-end text-[#6B6B6B] text-[11px]">
-            <span className="flex items-center gap-1 font-sans">
-              <IconCheck className="w-3.5 h-3.5 text-emerald-700" />
-              <span>Independent verification complete</span>
-            </span>
+            <div className="text-[11px] font-mono" style={{ color: "var(--muted)" }}>
+              {result.valid
+                ? "This receipt is cryptographically sound."
+                : "One or more cryptographic checks did not pass."}
+            </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Checklist */}
+        <div className="space-y-2.5">
+          {checks.map((c) => {
+            const ok = result[c.key] === true;
+            return (
+              <div
+                key={c.key}
+                className="p-3.5 rounded-babit flex items-center justify-between gap-4"
+                style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
+              >
+                <div className="min-w-0">
+                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>{c.label}</span>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{c.desc}</p>
+                </div>
+                <StatusPill ok={ok} label={ok ? "VALID" : "FAILED"} />
+              </div>
+            );
+          })}
+        </div>
+
+        {result.reason && <Error message={`Failure reason: ${result.reason}`} />}
+
+        <div className="pt-3 flex items-center justify-end gap-1.5 text-[11px]" style={{ borderTop: "1px solid var(--border-subtle)", color: "var(--muted)" }}>
+          <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span>
+          <span>Independent verification complete</span>
+        </div>
+      </div>
+    </Card>
   );
 }

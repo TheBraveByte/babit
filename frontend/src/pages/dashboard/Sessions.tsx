@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StatusPill, Copyable, MonospaceHash, Button, Field, TextInput, Select, Error, EmptyState } from "@/lib/ui";
+import { PageHeader, Card, StatusPill, Copyable, MonospaceHash, Button, Field, TextInput, Select, Error, EmptyState } from "@/lib/ui";
 import { IconLayers, IconCheck, IconPlay } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
@@ -15,15 +15,12 @@ export function Sessions() {
   const [mode, setMode] = useState<Mode>("anchor");
 
   return (
-    <div className="space-y-6 font-sans">
-      <div>
-        <h1 className="text-2xl sm:text-[32px] font-semibold tracking-tight leading-tight" style={{ color: "var(--fg)" }}>
-          Sessions
-        </h1>
-        <p className="text-sm sm:text-[15px] mt-1" style={{ color: "var(--muted)" }}>
-          Capture sessions bind executed actions to a root grant and seal them under an external anchor. Inspect a session by ID or drive its lifecycle.
-        </p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Capture Sessions"
+        title="Sessions"
+        description="Capture sessions bind executed actions to a root grant and seal them under an external anchor. Inspect a session by ID or drive its lifecycle."
+      />
 
       <div
         className="inline-flex items-center gap-1 p-1 rounded-babit"
@@ -53,23 +50,26 @@ export function Sessions() {
   );
 }
 
-function Panel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="rounded-babit-lg p-6 shadow-xs space-y-5"
-      style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
-    >
-      {children}
-    </div>
-  );
-}
-
 const ANCHOR_KIND_LABEL: Record<string, string> = {
   KIND_UNSPECIFIED: "Unspecified",
   KIND_RFC3161_TSA: "RFC 3161 TSA",
   KIND_TRANSPARENCY_LOG: "Transparency Log",
   KIND_PUBLIC_CHAIN: "Public Chain",
 };
+
+/** Label + value pair for mono metadata rows. */
+function Meta({ label, children, mono = true }: { label: string; children: React.ReactNode; mono?: boolean }) {
+  return (
+    <div>
+      <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>
+        {label}
+      </span>
+      <div className={mono ? "font-mono text-xs tnum" : "text-xs"} style={{ color: "var(--fg)" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 function AnchorPanel() {
   const [sessionId, setSessionId] = useState("");
@@ -102,69 +102,58 @@ function AnchorPanel() {
   const hasAnchor = anchor && (anchor.kind || anchor.root || anchor.anchor_receipt || anchor.anchored_at);
 
   return (
-    <Panel>
-      <form onSubmit={run} className="space-y-3">
-        <label className="text-xs font-medium" style={{ color: "var(--fg)" }}>Fetch the external anchor sealing a capture session</label>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <TextInput value={sessionId} onChange={(e) => setSessionId(e.target.value)} placeholder="e.g. BAL-4a1055" className="flex-1" />
-          <Button type="submit" variant="primary" size="md" loading={loading} disabled={!sessionId.trim()}>
-            <IconLayers className="w-4 h-4" />
-            <span>Fetch Anchor</span>
-          </Button>
-        </div>
-      </form>
+    <Card className="animate-float-up">
+      <div className="space-y-5">
+        <div className="h-px accent-hairline -mx-5 -mt-5" />
 
-      {error && <Error message={error} />}
-
-      {searched && !error && hasAnchor && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-            <span className="text-xs font-semibold uppercase" style={{ color: "var(--fg)" }}>External Anchor</span>
-            <StatusPill ok label="ANCHORED" />
-          </div>
-          <div className="font-mono text-xs space-y-3">
-            <div>
-              <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Kind</span>
-              <span style={{ color: "var(--fg)" }}>{ANCHOR_KIND_LABEL[anchor!.kind ?? ""] ?? anchor!.kind ?? "—"}</span>
+        <form onSubmit={run} className="space-y-3">
+          <Field label="Session ID" hint="inspected individually — no listing endpoint">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <TextInput value={sessionId} onChange={(e) => setSessionId(e.target.value)} placeholder="e.g. BAL-4a1055" className="flex-1" />
+              <Button type="submit" variant="primary" size="md" loading={loading} disabled={!sessionId.trim()}>
+                <IconLayers className="w-4 h-4" />
+                <span>Fetch Anchor</span>
+              </Button>
             </div>
-            {anchor!.anchored_at && (
-              <div>
-                <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Anchored At</span>
-                <span className="tnum" style={{ color: "var(--fg)" }}>{anchor!.anchored_at}</span>
-              </div>
-            )}
-            {anchor!.root && (
-              <div>
-                <span className="text-[10px] uppercase block mb-1" style={{ color: "var(--muted)" }}>Root</span>
-                <MonospaceHash hash={anchor!.root} />
-              </div>
-            )}
-            {anchor!.anchor_receipt && (
-              <div>
-                <span className="text-[10px] uppercase block mb-1" style={{ color: "var(--muted)" }}>Anchor Receipt</span>
-                <MonospaceHash hash={anchor!.anchor_receipt} />
-              </div>
-            )}
+          </Field>
+        </form>
+
+        {error && <Error message={error} />}
+
+        {searched && !error && hasAnchor && (
+          <div className="space-y-4 pt-1">
+            <div className="flex items-center justify-between pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--fg)" }}>External Anchor</span>
+              <StatusPill ok label="ANCHORED" />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Meta label="Kind" mono={false}>
+                <span className="font-medium">{ANCHOR_KIND_LABEL[anchor!.kind ?? ""] ?? anchor!.kind ?? "—"}</span>
+              </Meta>
+              {anchor!.anchored_at && <Meta label="Anchored At">{anchor!.anchored_at}</Meta>}
+            </div>
+            {anchor!.root && <Meta label="Root"><MonospaceHash hash={anchor!.root} /></Meta>}
+            {anchor!.anchor_receipt && <Meta label="Anchor Receipt"><MonospaceHash hash={anchor!.anchor_receipt} /></Meta>}
           </div>
-        </div>
-      )}
+        )}
 
-      {searched && !error && !hasAnchor && (
-        <EmptyState
-          title="No anchor yet"
-          description="This session has no external anchor. Anchors are sealed after a session is closed and its actions are batched, so an open or empty session returns nothing."
-          icon={<IconLayers className="w-5 h-5" />}
-        />
-      )}
+        {searched && !error && !hasAnchor && (
+          <EmptyState
+            title="No anchor yet"
+            description="This session has no external anchor. Anchors are sealed after a session is closed and its actions are batched, so an open or empty session returns nothing."
+            icon={<IconLayers className="w-5 h-5" />}
+          />
+        )}
 
-      {!searched && !error && (
-        <EmptyState
-          title="No session loaded"
-          description="Enter a session ID to fetch its external anchor. There is no session listing endpoint, so sessions are inspected individually by ID."
-          icon={<IconLayers className="w-5 h-5" />}
-        />
-      )}
-    </Panel>
+        {!searched && !error && (
+          <EmptyState
+            title="No session loaded"
+            description="Enter a session ID to fetch its external anchor. There is no session listing endpoint, so sessions are inspected individually by ID."
+            icon={<IconLayers className="w-5 h-5" />}
+          />
+        )}
+      </div>
+    </Card>
   );
 }
 
@@ -262,94 +251,88 @@ function LifecyclePanel() {
 
   return (
     <div className="space-y-5">
-      <Panel>
-        <form onSubmit={begin} className="space-y-4">
-          <div className="pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+      <Card className="animate-float-up">
+        <div className="space-y-5">
+          <div className="h-px accent-hairline -mx-5 -mt-5" />
+
+          <div>
             <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Begin Session</h2>
             <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>Open a capture session bound to a root grant and surface.</p>
           </div>
-          <Field label="Root Grant ID">
-            <TextInput value={rootGrantId} onChange={(e) => setRootGrantId(e.target.value)} placeholder="e.g. BAL-417849" required />
-          </Field>
-          <Field label="Surface">
-            <Select value={surface} onChange={(e) => setSurface(e.target.value as Surface)}>
-              {SURFACES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-            </Select>
-          </Field>
-          <Button type="submit" variant="primary" size="md" loading={beginLoading} disabled={!rootGrantId.trim()}>
-            <IconPlay className="w-4 h-4" />
-            <span>Begin Session</span>
-          </Button>
-        </form>
 
-        {beginError && <Error message={beginError} />}
-
-        {session && (
-          <div className="space-y-3 pt-2" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <IconCheck className="w-3.5 h-3.5 text-emerald-700" />
-                <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>Session {ended ? "closed" : "open"}</span>
-              </div>
-              <StatusPill status={ended ? "REVOKED" : "ACTIVE"} label={ended ? "CLOSED" : "OPEN"} />
-            </div>
-            <div className="font-mono text-xs">
-              <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Session ID</span>
-              <Copyable value={session.session_id || "—"} />
-            </div>
-          </div>
-        )}
-      </Panel>
-
-      {session && !ended && (
-        <Panel>
-          <form onSubmit={recordAction} className="space-y-4">
-            <div className="pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-              <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Record Action</h2>
-              <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>Notarize one executed action within this session.</p>
-            </div>
-            <Field label="Action Type">
-              <TextInput value={actionType} onChange={(e) => setActionType(e.target.value)} placeholder="e.g. browser.click" required />
+          <form onSubmit={begin} className="space-y-4">
+            <Field label="Root Grant ID">
+              <TextInput value={rootGrantId} onChange={(e) => setRootGrantId(e.target.value)} placeholder="e.g. BAL-417849" required />
             </Field>
-            <Field label="Resource" hint="optional">
-              <TextInput value={resource} onChange={(e) => setResource(e.target.value)} placeholder="https://shop.example.com/cart" />
+            <Field label="Surface">
+              <Select value={surface} onChange={(e) => setSurface(e.target.value as Surface)}>
+                {SURFACES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+              </Select>
             </Field>
-            <Field label="Grant ID" hint="optional">
-              <TextInput value={grantId} onChange={(e) => setGrantId(e.target.value)} placeholder="e.g. BAL-417849" />
-            </Field>
-            <Button type="submit" variant="primary" size="md" loading={actionLoading} disabled={!actionType.trim()}>
-              Record &amp; Notarize
+            <Button type="submit" variant="primary" size="md" loading={beginLoading} disabled={!rootGrantId.trim()}>
+              <IconPlay className="w-4 h-4" />
+              <span>Begin Session</span>
             </Button>
           </form>
 
-          {actionError && <Error message={actionError} />}
+          {beginError && <Error message={beginError} />}
 
-          {lastEvent && (
-            <div className="space-y-2 pt-2 font-mono text-xs" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-              <div className="flex items-center gap-2">
-                <IconCheck className="w-3.5 h-3.5 text-emerald-700" />
-                <span className="font-semibold" style={{ color: "var(--fg)" }}>Action recorded</span>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Event ID</span>
-                <Copyable value={lastEvent.event_id || "—"} />
-              </div>
-              {lastEvent.sequence !== undefined && (
-                <div>
-                  <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Sequence</span>
-                  <span className="tnum" style={{ color: "var(--fg)" }}>{lastEvent.sequence}</span>
+          {session && (
+            <div className="space-y-3 pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span>
+                  <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>Session {ended ? "closed" : "open"}</span>
                 </div>
-              )}
+                <StatusPill status={ended ? "REVOKED" : "ACTIVE"} label={ended ? "CLOSED" : "OPEN"} />
+              </div>
+              <Meta label="Session ID"><Copyable value={session.session_id || "—"} /></Meta>
             </div>
           )}
+        </div>
+      </Card>
 
-          <div className="pt-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-            <Button type="button" variant="danger" size="md" loading={endLoading} onClick={end}>
-              End Session
-            </Button>
-            {endError && <div className="mt-3"><Error message={endError} /></div>}
+      {session && !ended && (
+        <Card title="Record Action" subtitle="Notarize one executed action within this session.">
+          <div className="space-y-5">
+            <form onSubmit={recordAction} className="space-y-4">
+              <Field label="Action Type">
+                <TextInput value={actionType} onChange={(e) => setActionType(e.target.value)} placeholder="e.g. browser.click" required />
+              </Field>
+              <Field label="Resource" hint="optional">
+                <TextInput value={resource} onChange={(e) => setResource(e.target.value)} placeholder="https://shop.example.com/cart" />
+              </Field>
+              <Field label="Grant ID" hint="optional">
+                <TextInput value={grantId} onChange={(e) => setGrantId(e.target.value)} placeholder="e.g. BAL-417849" />
+              </Field>
+              <Button type="submit" variant="primary" size="md" loading={actionLoading} disabled={!actionType.trim()}>
+                Record &amp; Notarize
+              </Button>
+            </form>
+
+            {actionError && <Error message={actionError} />}
+
+            {lastEvent && (
+              <div className="space-y-3 pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+                <div className="flex items-center gap-2">
+                  <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span>
+                  <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>Action recorded</span>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Meta label="Event ID"><Copyable value={lastEvent.event_id || "—"} /></Meta>
+                  {lastEvent.sequence !== undefined && <Meta label="Sequence">{lastEvent.sequence}</Meta>}
+                </div>
+              </div>
+            )}
+
+            <div className="pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+              <Button type="button" variant="danger" size="md" loading={endLoading} onClick={end}>
+                End Session
+              </Button>
+              {endError && <div className="mt-3"><Error message={endError} /></div>}
+            </div>
           </div>
-        </Panel>
+        </Card>
       )}
     </div>
   );
