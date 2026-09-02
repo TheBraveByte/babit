@@ -176,7 +176,14 @@ function VerifyChainPanel() {
             </>
           )}
           {result.reason && (
-            <div className="p-3 rounded-babit bg-red-50 border border-red-200 text-red-800 text-xs font-mono">
+            <div
+              className="p-3 rounded-babit text-xs font-mono"
+              style={{
+                color: "var(--color-failed)",
+                backgroundColor: "color-mix(in srgb, var(--color-failed) 10%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--color-failed) 30%, transparent)",
+              }}
+            >
               <strong>Reason:</strong> {result.reason}
             </div>
           )}
@@ -387,7 +394,7 @@ function IssuedGrant({ grant }: { grant: Grant }) {
   return (
     <div className="space-y-3 pt-2" style={{ borderTop: "1px solid var(--border-subtle)" }}>
       <div className="flex items-center gap-2">
-        <IconCheck className="w-3.5 h-3.5 text-emerald-700" />
+        <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span>
         <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>Grant issued</span>
       </div>
       <div className="font-mono text-xs space-y-2">

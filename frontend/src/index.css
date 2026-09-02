@@ -50,6 +50,17 @@
   --brand-accent-hover:  #2DD4BF;
   --brand-accent-subtle: rgba(20, 184, 166, 0.12);
   --brand-accent-border: rgba(20, 184, 166, 0.28);
+
+  /* Semantic state colors — brighter foregrounds + translucent tints for dark surfaces */
+  --color-verified: #34D399;
+  --color-verified-bg: color-mix(in srgb, #34D399 15%, transparent);
+  --color-verified-border: color-mix(in srgb, #34D399 34%, transparent);
+  --color-failed: #F87171;
+  --color-failed-bg: color-mix(in srgb, #F87171 15%, transparent);
+  --color-failed-border: color-mix(in srgb, #F87171 34%, transparent);
+  --color-pending: #FBBF24;
+  --color-pending-bg: color-mix(in srgb, #FBBF24 15%, transparent);
+  --color-pending-border: color-mix(in srgb, #FBBF24 34%, transparent);
 }
 
 /* ─── Base Styles ──────────────────────────────────────────────────────────── */

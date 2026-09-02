@@ -138,7 +138,9 @@ export function EvidenceLedger({ className = "" }: { className?: string }) {
     };
 
     raf = requestAnimationFrame(draw);
-    const ro = new ResizeObserver(() => resize());
+    // In reduced-motion mode the rAF loop stops after one frame, but a resize
+    // clears the bitmap — repaint the static frame so the canvas never goes blank.
+    const ro = new ResizeObserver(() => { resize(); if (reduced) draw(0); });
     ro.observe(canvas);
 
     return () => {

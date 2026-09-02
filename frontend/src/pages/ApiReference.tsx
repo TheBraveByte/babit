@@ -120,25 +120,47 @@ function slug(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+const HTTP_METHODS = new Set(["get", "post", "put", "patch", "delete", "head", "options"]);
+
+function endpointsForPath(path: string, methods: Record<string, any>): Endpoint[] {
+  const out: Endpoint[] = [];
+  for (const [method, op] of Object.entries<any>(methods)) {
+    if (!HTTP_METHODS.has(method.toLowerCase())) continue; // skip parameters/$ref/summary siblings
+    out.push({
+      id: op.operationId || `${method}-${slug(path)}`,
+      method: method.toUpperCase(),
+      path,
+      summary: op.summary || "",
+      op,
+    });
+  }
+  return out;
+}
+
 function buildGroups() {
-  const paths = spec.paths || {};
-  return GROUPS.map((g) => {
+  const entries = Object.entries<any>(spec.paths || {});
+  const matched = new Set<string>();
+  const groups = GROUPS.map((g) => {
     const endpoints: Endpoint[] = [];
-    for (const [path, methods] of Object.entries<any>(paths)) {
+    for (const [path, methods] of entries) {
       if (!g.match(path)) continue;
-      for (const [method, op] of Object.entries<any>(methods)) {
-        endpoints.push({
-          id: op.operationId || `${method}-${slug(path)}`,
-          method: method.toUpperCase(),
-          path,
-          summary: op.summary || "",
-          op,
-        });
-      }
+      matched.add(path);
+      endpoints.push(...endpointsForPath(path, methods));
     }
     endpoints.sort((a, b) => a.path.localeCompare(b.path));
     return { title: g.title, id: slug(g.title), endpoints };
-  }).filter((g) => g.endpoints.length > 0);
+  });
+  // Catch-all so no real endpoint is silently hidden (keeps "never drifts" honest).
+  const other: Endpoint[] = [];
+  for (const [path, methods] of entries) {
+    if (matched.has(path)) continue;
+    other.push(...endpointsForPath(path, methods));
+  }
+  if (other.length) {
+    other.sort((a, b) => a.path.localeCompare(b.path));
+    groups.push({ title: "Other", id: "other", endpoints: other });
+  }
+  return groups.filter((g) => g.endpoints.length > 0);
 }
 
 /* ─── UI atoms ──────────────────────────────────────────────────────────────── */
@@ -263,7 +285,7 @@ function EndpointBlock({ ep }: { ep: Endpoint }) {
           {respExample != null && (
             <div>
               <h4 className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--muted)" }}>
-                Response
+                Response example
               </h4>
               <Json data={respExample} />
             </div>
