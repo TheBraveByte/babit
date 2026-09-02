@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/babit/nal/config"
@@ -56,5 +57,44 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 	})
 	root.HandleFunc("/openapi.json", openapiHandler(cfg.OpenAPIPath))
 	root.Handle("/docs", scalarHandler())
-	return root, nil
+	return withCORS(root), nil
+}
+
+
+func withCORS(h http.Handler) http.Handler {
+	allowed := os.Getenv("CORS_ALLOWED_ORIGINS")
+	if allowed == "" {
+		allowed = "*"
+	}
+	list := strings.Split(allowed, ",")
+	for i := range list {
+		list[i] = strings.TrimSpace(list[i])
+	}
+	allowAll := allowed == "*"
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		if origin != "" {
+			ok := allowAll
+			for _, o := range list {
+				if o == origin {
+					ok = true
+					break
+				}
+			}
+			if ok {
+				w.Header().Set("Access-Control-Allow-Origin", origin)
+				w.Header().Set("Vary", "Origin")
+				w.Header().Set("Access-Control-Allow-Credentials", "true")
+			}
+		}
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, x-api-key")
+		w.Header().Set("Access-Control-Max-Age", "600")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		h.ServeHTTP(w, r)
+	})
 }
