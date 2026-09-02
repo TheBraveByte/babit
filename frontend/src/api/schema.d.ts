@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/v1/analytics/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Aggregate activity across the ledger (events, sessions, grants) */
+        get: operations["AnalyticsService_GetOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/login": {
         parameters: {
             query?: never;
@@ -35,7 +52,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Update your profile details */
+        patch: operations["AuthService_UpdateProfile"];
         trace?: never;
     };
     "/v1/auth/signup": {
@@ -459,7 +477,6 @@ export interface components {
         };
         v1CreateApiKeyResponse: {
             key?: components["schemas"]["v1ApiKey"];
-            /** @description Full secret, shown exactly once. Store it now; babit keeps only a hash. */
             secret?: string;
         };
         /**
@@ -472,6 +489,11 @@ export interface components {
         };
         v1CreateProjectResponse: {
             project?: components["schemas"]["v1Project"];
+        };
+        v1DayCount: {
+            date?: string;
+            /** Format: int64 */
+            count?: string;
         };
         /**
          * @example {
@@ -510,6 +532,18 @@ export interface components {
         };
         v1GetInclusionProofResponse: {
             proof?: components["schemas"]["v1Proof"];
+        };
+        v1GetOverviewResponse: {
+            /** Format: int64 */
+            total_events?: string;
+            /** Format: int64 */
+            total_sessions?: string;
+            /** Format: int64 */
+            total_grants?: string;
+            /** Format: int64 */
+            revoked_grants?: string;
+            by_surface?: components["schemas"]["v1SurfaceCount"][];
+            over_time?: components["schemas"]["v1DayCount"][];
         };
         v1GetPublicKeyResponse: {
             key_id?: string;
@@ -662,6 +696,19 @@ export interface components {
          * @enum {string}
          */
         v1Surface: "SURFACE_UNSPECIFIED" | "SURFACE_BROWSER" | "SURFACE_SANDBOX" | "SURFACE_DESKTOP";
+        v1SurfaceCount: {
+            surface?: string;
+            /** Format: int64 */
+            count?: string;
+        };
+        v1UpdateProfileRequest: {
+            org_name?: string;
+            org_domain?: string;
+            industry?: string;
+        };
+        v1UpdateProfileResponse: {
+            user?: components["schemas"]["v1User"];
+        };
         v1User: {
             id?: string;
             email?: string;
@@ -707,6 +754,37 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    AnalyticsService_GetOverview: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1GetOverviewResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
     AuthService_Login: {
         parameters: {
             query?: never;
@@ -756,6 +834,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["v1MeResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    AuthService_UpdateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["v1UpdateProfileRequest"];
+            };
+        };
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1UpdateProfileResponse"];
                 };
             };
             /** @description An unexpected error response. */

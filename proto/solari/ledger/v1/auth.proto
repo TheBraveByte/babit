@@ -55,6 +55,15 @@ service AuthService {
       summary: "Return the current user and organization branding"
     };
   }
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {
+    option (google.api.http) = {
+      patch: "/v1/auth/me"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update your profile details"
+    };
+  }
 }
 
 message SignupRequest {
@@ -92,4 +101,14 @@ message MeRequest {}
 message MeResponse {
   User user = 1;
   Branding branding = 2;
+}
+
+message UpdateProfileRequest {
+  string org_name = 1;
+  string org_domain = 2;
+  string industry = 3;
+}
+
+message UpdateProfileResponse {
+  User user = 1;
 }

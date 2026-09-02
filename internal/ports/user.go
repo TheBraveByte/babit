@@ -23,6 +23,7 @@ type UserStore interface {
 	Create(ctx context.Context, u *User) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	GetByID(ctx context.Context, id string) (*User, error)
+	Update(ctx context.Context, id, orgName, orgDomain, industry string) (*User, error)
 }
 
 type Branding struct {

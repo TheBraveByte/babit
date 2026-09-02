@@ -405,10 +405,9 @@ func (x *CreateApiKeyRequest) GetName() string {
 }
 
 type CreateApiKeyResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	Key   *ApiKey                `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	// Full secret, shown exactly once. Store it now; babit keeps only a hash.
-	Secret        string `protobuf:"bytes,2,opt,name=secret,proto3" json:"secret,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Key           *ApiKey                `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Secret        string                 `protobuf:"bytes,2,opt,name=secret,proto3" json:"secret,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }

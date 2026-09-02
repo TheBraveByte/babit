@@ -60,6 +60,7 @@ func NewGRPCServer(ctx context.Context, cfg *config.Config) (*grpc.Server, error
 	ledgerv1.RegisterAuthServiceServer(srv, service.NewAuth(st.Users(), brands, cfg.JWTSecret, 24*time.Hour))
 	ledgerv1.RegisterProjectServiceServer(srv, service.NewProjectService(st.Projects()))
 	ledgerv1.RegisterApiKeyServiceServer(srv, service.NewAPIKeyService(st.ApiKeys(), st.Projects()))
+	ledgerv1.RegisterAnalyticsServiceServer(srv, service.NewAnalyticsService(st.Analytics()))
 	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), signer, verifier, idgen, clk))
 	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer))
 	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), verifier, notaryCore, notaryCore, idgen, clk))

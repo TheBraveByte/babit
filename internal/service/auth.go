@@ -85,6 +85,18 @@ func (a *Auth) Me(ctx context.Context, _ *ledgerv1.MeRequest) (*ledgerv1.MeRespo
 	}, nil
 }
 
+func (a *Auth) UpdateProfile(ctx context.Context, req *ledgerv1.UpdateProfileRequest) (*ledgerv1.UpdateProfileResponse, error) {
+	uid := auth.UserID(ctx)
+	if uid == "" {
+		return nil, errs.New(errs.Unauthenticated, "not authenticated")
+	}
+	u, err := a.users.Update(ctx, uid, req.GetOrgName(), req.GetOrgDomain(), req.GetIndustry())
+	if err != nil {
+		return nil, err
+	}
+	return &ledgerv1.UpdateProfileResponse{User: toProtoUser(u)}, nil
+}
+
 func (a *Auth) applyBranding(ctx context.Context, u *ports.User) {
 	domain := u.OrgDomain
 	if domain == "" {

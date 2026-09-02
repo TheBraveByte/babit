@@ -15,6 +15,35 @@
     "application/json"
   ],
   "paths": {
+    "/v1/analytics/overview": {
+      "get": {
+        "summary": "Aggregate activity across the ledger (events, sessions, grants)",
+        "operationId": "AnalyticsService_GetOverview",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetOverviewResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ]
+      }
+    },
     "/v1/auth/login": {
       "post": {
         "summary": "Authenticate and return a session token",
@@ -63,6 +92,34 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Update your profile details",
+        "operationId": "AuthService_UpdateProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProfileRequest"
+            }
+          }
+        ]
       }
     },
     "/v1/auth/signup": {
@@ -904,8 +961,7 @@
           "$ref": "#/definitions/v1ApiKey"
         },
         "secret": {
-          "type": "string",
-          "description": "Full secret, shown exactly once. Store it now; babit keeps only a hash."
+          "type": "string"
         }
       }
     },
@@ -925,6 +981,18 @@
       "properties": {
         "project": {
           "$ref": "#/definitions/v1Project"
+        }
+      }
+    },
+    "v1DayCount": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string"
+        },
+        "count": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -1000,6 +1068,41 @@
       "properties": {
         "proof": {
           "$ref": "#/definitions/v1Proof"
+        }
+      }
+    },
+    "v1GetOverviewResponse": {
+      "type": "object",
+      "properties": {
+        "total_events": {
+          "type": "string",
+          "format": "int64"
+        },
+        "total_sessions": {
+          "type": "string",
+          "format": "int64"
+        },
+        "total_grants": {
+          "type": "string",
+          "format": "int64"
+        },
+        "revoked_grants": {
+          "type": "string",
+          "format": "int64"
+        },
+        "by_surface": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SurfaceCount"
+          }
+        },
+        "over_time": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1DayCount"
+          }
         }
       }
     },
@@ -1333,6 +1436,40 @@
         "SURFACE_DESKTOP"
       ],
       "default": "SURFACE_UNSPECIFIED"
+    },
+    "v1SurfaceCount": {
+      "type": "object",
+      "properties": {
+        "surface": {
+          "type": "string"
+        },
+        "count": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1UpdateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "org_name": {
+          "type": "string"
+        },
+        "org_domain": {
+          "type": "string"
+        },
+        "industry": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      }
     },
     "v1User": {
       "type": "object",

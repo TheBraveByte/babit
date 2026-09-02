@@ -34,6 +34,7 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 		ledgerv1.RegisterAuthServiceHandlerFromEndpoint,
 		ledgerv1.RegisterProjectServiceHandlerFromEndpoint,
 		ledgerv1.RegisterApiKeyServiceHandlerFromEndpoint,
+		ledgerv1.RegisterAnalyticsServiceHandlerFromEndpoint,
 		ledgerv1.RegisterDelegationServiceHandlerFromEndpoint,
 		ledgerv1.RegisterCaptureServiceHandlerFromEndpoint,
 		ledgerv1.RegisterNotaryServiceHandlerFromEndpoint,
