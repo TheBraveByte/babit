@@ -25,12 +25,18 @@ export function SectionReceiptCenterpiece() {
   };
 
   return (
-    <section className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section className="mesh-bg py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)" }}>
+      <div className="absolute inset-0 grid-fade pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}
-        <div className="max-w-3xl space-y-4">
-          <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-            The receipt
+        <div className="max-w-3xl space-y-4 animate-float-up">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
+            style={{ color: "var(--muted)" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
+            <span>The receipt</span>
           </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
@@ -45,21 +51,16 @@ export function SectionReceiptCenterpiece() {
         </div>
 
         {/* Centerpiece Receipt Card */}
-        <div
-          className="max-w-3xl mx-auto rounded-babit-lg shadow-sm overflow-hidden"
-          style={{
-            backgroundColor: "var(--surface)",
-            border: "1.5px solid var(--fg)",
-          }}
-        >
-          {/* Top Bar */}
-          <div
-            className="px-6 py-4 flex flex-wrap items-center justify-between gap-3"
-            style={{
-              borderBottom: "1px solid var(--border-subtle)",
-              backgroundColor: "var(--secondary)",
-            }}
-          >
+        <div className="max-w-3xl mx-auto relative animate-float-up" style={{ animationDelay: "120ms" }}>
+          <div className="ambient-glow animate-glow-pulse" style={{ inset: "-10% 5% 15% 5%" }} />
+
+          <div className="glass rounded-babit-lg overflow-hidden relative">
+            <div className="h-px accent-hairline" />
+            {/* Top Bar */}
+            <div
+              className="px-6 py-4 flex flex-wrap items-center justify-between gap-3"
+              style={{ borderBottom: "1px solid var(--border-subtle)" }}
+            >
             <div className="flex items-center gap-2.5">
               <span className="font-mono font-semibold text-sm" style={{ color: "var(--fg)" }}>
                 {receiptData.receipt_id}
@@ -120,13 +121,7 @@ export function SectionReceiptCenterpiece() {
             </div>
 
             {/* Authority note */}
-            <div
-              className="p-4 rounded-babit space-y-1"
-              style={{
-                backgroundColor: "var(--secondary)",
-                border: "1px solid var(--border)",
-              }}
-            >
+            <div className="p-4 rounded-babit space-y-1 glass-subtle">
               <div className="flex flex-wrap items-center justify-between gap-2 text-[13px]">
                 <span className="font-medium" style={{ color: "var(--fg)" }}>
                   Alice authorized claims-agent, which authorized this payout.
@@ -189,6 +184,7 @@ export function SectionReceiptCenterpiece() {
               </div>
               <span>Anyone can check it, no account needed</span>
             </div>
+          </div>
           </div>
         </div>
       </div>

@@ -33,11 +33,17 @@ const STEPS = [
 
 export function SectionHowItWorks() {
   return (
-    <section id="how" className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
-        <div className="max-w-3xl space-y-4">
-          <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-            How it works
+    <section id="how" className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+      <div className="absolute inset-0 grid-fade pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
+        <div className="max-w-3xl space-y-4 animate-float-up">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
+            style={{ color: "var(--muted)" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
+            <span>How it works</span>
           </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
@@ -57,12 +63,10 @@ export function SectionHowItWorks() {
             return (
               <div
                 key={step.n}
-                className="relative rounded-babit-lg p-6 space-y-4 shadow-xs h-full"
-                style={{
-                  backgroundColor: "var(--surface)",
-                  border: isLast ? "1.5px solid var(--fg)" : "1px solid var(--border)",
-                }}
+                className={`relative rounded-babit-lg p-6 space-y-4 h-full overflow-hidden animate-float-up ${isLast ? "glass" : "glass-subtle"}`}
+                style={{ animationDelay: `${idx * 90}ms` }}
               >
+                {isLast && <div className="h-px accent-hairline absolute inset-x-0 top-0" />}
                 <div className="flex items-center justify-between">
                   <div
                     className="w-9 h-9 rounded-babit flex items-center justify-center"
@@ -75,7 +79,7 @@ export function SectionHowItWorks() {
                   </span>
                 </div>
                 <div className="space-y-1.5">
-                  <span className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
+                  <span className="text-xs font-mono uppercase tracking-wider" style={{ color: isLast ? "var(--brand-accent)" : "var(--muted)" }}>
                     {step.label}
                   </span>
                   <h3 className="text-[17px] font-semibold leading-snug" style={{ color: "var(--fg)" }}>

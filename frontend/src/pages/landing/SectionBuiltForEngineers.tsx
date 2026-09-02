@@ -99,12 +99,18 @@ export function SectionBuiltForEngineers() {
   };
 
   return (
-    <section id="developers" className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section id="developers" className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+      <div className="absolute inset-0 grid-fade pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Section Header */}
-        <div className="max-w-3xl space-y-4">
-          <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-            For developers
+        <div className="max-w-3xl space-y-4 animate-float-up">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
+            style={{ color: "var(--muted)" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
+            <span>For developers</span>
           </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
@@ -119,13 +125,16 @@ export function SectionBuiltForEngineers() {
         </div>
 
         {/* Code Playground Box */}
-        <div
-          className="rounded-babit-lg overflow-hidden shadow-sm"
-          style={{
-            backgroundColor: "#0A0C0C",
-            border: "1px solid #222626",
-          }}
-        >
+        <div className="relative animate-float-up" style={{ animationDelay: "120ms" }}>
+          <div className="ambient-glow" style={{ inset: "-8% 8% 12% 8%", opacity: 0.22 }} />
+          <div
+            className="rounded-babit-lg overflow-hidden relative"
+            style={{
+              backgroundColor: "#0A0C0C",
+              border: "1px solid #222626",
+              boxShadow: "0 30px 70px -24px rgba(0,0,0,0.5)",
+            }}
+          >
           {/* Header tabs bar */}
           <div
             className="px-4 py-3 flex items-center justify-between"
@@ -180,6 +189,7 @@ export function SectionBuiltForEngineers() {
             <span>POST /v1/sessions/{'{session_id}'}/actions</span>
             <span>REST + gRPC · OpenAPI</span>
           </div>
+          </div>
         </div>
 
         {/* Real endpoints — honest surface */}
@@ -197,8 +207,7 @@ export function SectionBuiltForEngineers() {
           ].map((e) => (
             <div
               key={e.p}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-babit"
-              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-babit glass-subtle"
             >
               <span className="font-semibold shrink-0" style={{ color: "var(--muted)" }}>{e.m}</span>
               <span style={{ color: "var(--fg)" }}>{e.p}</span>
