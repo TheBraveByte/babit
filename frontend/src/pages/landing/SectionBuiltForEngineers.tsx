@@ -100,6 +100,7 @@ export function SectionBuiltForEngineers() {
 
   return (
     <section id="developers" className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+      <div className="absolute inset-0 mesh-bg pointer-events-none" />
       <div className="absolute inset-0 grid-fade pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
@@ -124,11 +125,13 @@ export function SectionBuiltForEngineers() {
           </p>
         </div>
 
-        {/* Code Playground Box */}
-        <div className="relative animate-float-up" style={{ animationDelay: "120ms" }}>
+        {/* Bento grid: code playground dominant, endpoints supporting */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Dominant tile: code playground */}
+        <div className="relative animate-float-up lg:col-span-2" style={{ animationDelay: "120ms" }}>
           <div className="ambient-glow" style={{ inset: "-8% 8% 12% 8%", opacity: 0.22 }} />
           <div
-            className="rounded-babit-lg overflow-hidden relative"
+            className="rounded-babit-lg overflow-hidden relative h-full"
             style={{
               backgroundColor: "#0A0C0C",
               border: "1px solid #222626",
@@ -192,27 +195,42 @@ export function SectionBuiltForEngineers() {
           </div>
         </div>
 
-        {/* Real endpoints,honest surface */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 font-mono text-[12px]">
-          {[
-            { m: "POST", p: "/v1/auth/signup" },
-            { m: "POST", p: "/v1/auth/login" },
-            { m: "GET", p: "/v1/auth/me" },
-            { m: "POST", p: "/v1/grants:root" },
-            { m: "POST", p: "/v1/grants" },
-            { m: "POST", p: "/v1/sessions" },
-            { m: "POST", p: "/v1/sessions/{id}/actions" },
-            { m: "POST", p: "/v1/proofs:verify" },
-            { m: "GET", p: "/v1/notary/public-key" },
-          ].map((e) => (
-            <div
-              key={e.p}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-babit glass-subtle"
-            >
-              <span className="font-semibold shrink-0" style={{ color: "var(--muted)" }}>{e.m}</span>
-              <span style={{ color: "var(--fg)" }}>{e.p}</span>
-            </div>
-          ))}
+        {/* Supporting tile: the API surface */}
+        <div
+          className="rounded-babit-lg p-6 h-full glass-subtle animate-float-up flex flex-col"
+          style={{ animationDelay: "200ms" }}
+        >
+          <div className="space-y-1.5 mb-4">
+            <span className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--brand-accent)" }}>
+              The API surface
+            </span>
+            <h3 className="text-[17px] font-semibold leading-snug" style={{ color: "var(--fg)" }}>
+              Real endpoints, nothing hidden.
+            </h3>
+          </div>
+          <div className="grid gap-2 font-mono text-[12px]">
+            {[
+              { m: "POST", p: "/v1/auth/signup" },
+              { m: "POST", p: "/v1/auth/login" },
+              { m: "GET", p: "/v1/auth/me" },
+              { m: "POST", p: "/v1/grants:root" },
+              { m: "POST", p: "/v1/grants" },
+              { m: "POST", p: "/v1/sessions" },
+              { m: "POST", p: "/v1/sessions/{id}/actions" },
+              { m: "POST", p: "/v1/proofs:verify" },
+              { m: "GET", p: "/v1/notary/public-key" },
+            ].map((e) => (
+              <div
+                key={e.p}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-babit"
+                style={{ backgroundColor: "var(--secondary)" }}
+              >
+                <span className="font-semibold shrink-0" style={{ color: "var(--muted)" }}>{e.m}</span>
+                <span style={{ color: "var(--fg)" }}>{e.p}</span>
+              </div>
+            ))}
+          </div>
+        </div>
         </div>
       </div>
     </section>

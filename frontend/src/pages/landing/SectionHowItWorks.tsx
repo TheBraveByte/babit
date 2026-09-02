@@ -30,6 +30,7 @@ const STEPS = [
 export function SectionHowItWorks() {
   return (
     <section id="how" className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+      <div className="absolute inset-0 mesh-bg pointer-events-none" />
       <div className="absolute inset-0 grid-fade pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
