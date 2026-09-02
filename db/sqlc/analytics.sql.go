@@ -11,72 +11,88 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const countEvents = `-- name: CountEvents :one
-SELECT count(*) FROM events
+const countEventsByUser = `-- name: CountEventsByUser :one
+
+SELECT count(*)
+FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
 `
 
-func (q *Queries) CountEvents(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, countEvents)
+// All analytics are scoped to a single owner ($1 = user_id). Events and revocations
+// are owned transitively through their session / grant.
+func (q *Queries) CountEventsByUser(ctx context.Context, userID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countEventsByUser, userID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
-const countGrants = `-- name: CountGrants :one
-SELECT count(*) FROM grants
+const countGrantsByUser = `-- name: CountGrantsByUser :one
+SELECT count(*) FROM grants WHERE user_id = $1
 `
 
-func (q *Queries) CountGrants(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, countGrants)
+func (q *Queries) CountGrantsByUser(ctx context.Context, userID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countGrantsByUser, userID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
-const countRevocations = `-- name: CountRevocations :one
-SELECT count(*) FROM revocations
+const countRevocationsByUser = `-- name: CountRevocationsByUser :one
+SELECT count(*)
+FROM revocations r
+JOIN grants g ON r.grant_id = g.grant_id
+WHERE g.user_id = $1
 `
 
-func (q *Queries) CountRevocations(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, countRevocations)
+func (q *Queries) CountRevocationsByUser(ctx context.Context, userID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countRevocationsByUser, userID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
-const countSessions = `-- name: CountSessions :one
-SELECT count(*) FROM sessions
+const countSessionsByUser = `-- name: CountSessionsByUser :one
+SELECT count(*) FROM sessions WHERE user_id = $1
 `
 
-func (q *Queries) CountSessions(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, countSessions)
+func (q *Queries) CountSessionsByUser(ctx context.Context, userID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countSessionsByUser, userID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
-const eventsByDay = `-- name: EventsByDay :many
-SELECT date_trunc('day', occurred_at)::timestamptz AS day, count(*) AS n
-FROM events
-WHERE occurred_at >= now() - make_interval(days => $1::int)
+const eventsByDayForUser = `-- name: EventsByDayForUser :many
+SELECT date_trunc('day', e.occurred_at)::timestamptz AS day, count(*) AS n
+FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
+  AND e.occurred_at >= now() - make_interval(days => $2::int)
 GROUP BY day
 ORDER BY day
 `
 
-type EventsByDayRow struct {
+type EventsByDayForUserParams struct {
+	UserID  pgtype.UUID
+	Column2 int32
+}
+
+type EventsByDayForUserRow struct {
 	Day pgtype.Timestamptz
 	N   int64
 }
 
-func (q *Queries) EventsByDay(ctx context.Context, dollar_1 int32) ([]EventsByDayRow, error) {
-	rows, err := q.db.Query(ctx, eventsByDay, dollar_1)
+func (q *Queries) EventsByDayForUser(ctx context.Context, arg EventsByDayForUserParams) ([]EventsByDayForUserRow, error) {
+	rows, err := q.db.Query(ctx, eventsByDayForUser, arg.UserID, arg.Column2)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []EventsByDayRow{}
+	items := []EventsByDayForUserRow{}
 	for rows.Next() {
-		var i EventsByDayRow
+		var i EventsByDayForUserRow
 		if err := rows.Scan(&i.Day, &i.N); err != nil {
 			return nil, err
 		}
@@ -88,24 +104,29 @@ func (q *Queries) EventsByDay(ctx context.Context, dollar_1 int32) ([]EventsByDa
 	return items, nil
 }
 
-const eventsBySurface = `-- name: EventsBySurface :many
-SELECT surface, count(*) AS n FROM events GROUP BY surface ORDER BY surface
+const eventsBySurfaceForUser = `-- name: EventsBySurfaceForUser :many
+SELECT e.surface, count(*) AS n
+FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
+GROUP BY e.surface
+ORDER BY e.surface
 `
 
-type EventsBySurfaceRow struct {
+type EventsBySurfaceForUserRow struct {
 	Surface int32
 	N       int64
 }
 
-func (q *Queries) EventsBySurface(ctx context.Context) ([]EventsBySurfaceRow, error) {
-	rows, err := q.db.Query(ctx, eventsBySurface)
+func (q *Queries) EventsBySurfaceForUser(ctx context.Context, userID pgtype.UUID) ([]EventsBySurfaceForUserRow, error) {
+	rows, err := q.db.Query(ctx, eventsBySurfaceForUser, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []EventsBySurfaceRow{}
+	items := []EventsBySurfaceForUserRow{}
 	for rows.Next() {
-		var i EventsBySurfaceRow
+		var i EventsBySurfaceForUserRow
 		if err := rows.Scan(&i.Surface, &i.N); err != nil {
 			return nil, err
 		}

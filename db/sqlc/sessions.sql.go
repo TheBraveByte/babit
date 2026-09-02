@@ -13,9 +13,9 @@ import (
 
 const createSession = `-- name: CreateSession :exec
 INSERT INTO sessions (
-    session_id, root_grant_id, surface, started_at, ended_at, event_count
+    session_id, root_grant_id, surface, started_at, ended_at, event_count, user_id
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7
 )
 `
 
@@ -26,6 +26,7 @@ type CreateSessionParams struct {
 	StartedAt   pgtype.Timestamptz
 	EndedAt     pgtype.Timestamptz
 	EventCount  int64
+	UserID      pgtype.UUID
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) error {
@@ -36,6 +37,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) er
 		arg.StartedAt,
 		arg.EndedAt,
 		arg.EventCount,
+		arg.UserID,
 	)
 	return err
 }
@@ -44,7 +46,7 @@ const endSession = `-- name: EndSession :one
 UPDATE sessions
 SET ended_at = $2
 WHERE session_id = $1
-RETURNING session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid
+RETURNING session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id
 `
 
 type EndSessionParams struct {
@@ -63,12 +65,13 @@ func (q *Queries) EndSession(ctx context.Context, arg EndSessionParams) (Session
 		&i.EndedAt,
 		&i.EventCount,
 		&i.Uuid,
+		&i.UserID,
 	)
 	return i, err
 }
 
 const getSession = `-- name: GetSession :one
-SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid FROM sessions WHERE session_id = $1
+SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id FROM sessions WHERE session_id = $1
 `
 
 func (q *Queries) GetSession(ctx context.Context, sessionID string) (Session, error) {
@@ -82,6 +85,7 @@ func (q *Queries) GetSession(ctx context.Context, sessionID string) (Session, er
 		&i.EndedAt,
 		&i.EventCount,
 		&i.Uuid,
+		&i.UserID,
 	)
 	return i, err
 }

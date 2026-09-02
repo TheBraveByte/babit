@@ -21,6 +21,7 @@ func (s *sessionStore) Create(ctx context.Context, session *ledgerv1.Session) er
 		StartedAt:   toTimestamptz(session.StartedAt),
 		EndedAt:     toTimestamptz(session.EndedAt),
 		EventCount:  session.EventCount,
+		UserID:      ctxUserUUID(ctx),
 	}); err != nil {
 		return opErr(err, "create session")
 	}

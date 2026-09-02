@@ -36,6 +36,7 @@ func (s *grantStore) Put(ctx context.Context, grant *ledgerv1.Grant) error {
 		MaxDepth:        scope.MaxDepth,
 		ExpiresAt:       toTimestamptz(grant.ExpiresAt),
 		ParentSignature: grant.ParentSignature,
+		UserID:          ctxUserUUID(ctx),
 	}); err != nil {
 		return opErr(err, "put grant")
 	}

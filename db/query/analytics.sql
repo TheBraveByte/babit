@@ -1,21 +1,34 @@
--- name: CountEvents :one
-SELECT count(*) FROM events;
+-- name: CountEventsByUser :one
+SELECT count(*)
+FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1;
 
--- name: CountSessions :one
-SELECT count(*) FROM sessions;
+-- name: CountSessionsByUser :one
+SELECT count(*) FROM sessions WHERE user_id = $1;
 
--- name: CountGrants :one
-SELECT count(*) FROM grants;
+-- name: CountGrantsByUser :one
+SELECT count(*) FROM grants WHERE user_id = $1;
 
--- name: CountRevocations :one
-SELECT count(*) FROM revocations;
+-- name: CountRevocationsByUser :one
+SELECT count(*)
+FROM revocations r
+JOIN grants g ON r.grant_id = g.grant_id
+WHERE g.user_id = $1;
 
--- name: EventsBySurface :many
-SELECT surface, count(*) AS n FROM events GROUP BY surface ORDER BY surface;
+-- name: EventsBySurfaceForUser :many
+SELECT e.surface, count(*) AS n
+FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
+GROUP BY e.surface
+ORDER BY e.surface;
 
--- name: EventsByDay :many
-SELECT date_trunc('day', occurred_at)::timestamptz AS day, count(*) AS n
-FROM events
-WHERE occurred_at >= now() - make_interval(days => $1::int)
+-- name: EventsByDayForUser :many
+SELECT date_trunc('day', e.occurred_at)::timestamptz AS day, count(*) AS n
+FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
+  AND e.occurred_at >= now() - make_interval(days => $2::int)
 GROUP BY day
 ORDER BY day;

@@ -1,9 +1,9 @@
 -- name: PutGrant :exec
 INSERT INTO grants (
     grant_id, parent_grant_id, principal_id, subject_id, capabilities,
-    resource_globs, max_value_cents, max_depth, expires_at, parent_signature
+    resource_globs, max_value_cents, max_depth, expires_at, parent_signature, user_id
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 )
 ON CONFLICT (grant_id) DO UPDATE SET
     parent_grant_id = EXCLUDED.parent_grant_id,
@@ -14,7 +14,8 @@ ON CONFLICT (grant_id) DO UPDATE SET
     max_value_cents = EXCLUDED.max_value_cents,
     max_depth = EXCLUDED.max_depth,
     expires_at = EXCLUDED.expires_at,
-    parent_signature = EXCLUDED.parent_signature;
+    parent_signature = EXCLUDED.parent_signature,
+    user_id = COALESCE(grants.user_id, EXCLUDED.user_id);
 
 -- name: GetGrant :one
 SELECT * FROM grants WHERE grant_id = $1;

@@ -1,8 +1,8 @@
 -- name: CreateSession :exec
 INSERT INTO sessions (
-    session_id, root_grant_id, surface, started_at, ended_at, event_count
+    session_id, root_grant_id, surface, started_at, ended_at, event_count, user_id
 ) VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7
 );
 
 -- name: GetSession :one
