@@ -15,32 +15,34 @@ func (s *Store) Analytics() ports.AnalyticsStore {
 	return &analyticsStore{q: s.q}
 }
 
+// Overview returns aggregates scoped to the authenticated user (from ctx).
 func (s *analyticsStore) Overview(ctx context.Context, days int32) (*ports.Overview, error) {
 	if days <= 0 {
 		days = 14
 	}
+	uid := ctxUserUUID(ctx)
 	o := &ports.Overview{}
 	var err error
-	if o.TotalEvents, err = s.q.CountEvents(ctx); err != nil {
+	if o.TotalEvents, err = s.q.CountEventsByUser(ctx, uid); err != nil {
 		return nil, opErr(err, "count events")
 	}
-	if o.TotalSessions, err = s.q.CountSessions(ctx); err != nil {
+	if o.TotalSessions, err = s.q.CountSessionsByUser(ctx, uid); err != nil {
 		return nil, opErr(err, "count sessions")
 	}
-	if o.TotalGrants, err = s.q.CountGrants(ctx); err != nil {
+	if o.TotalGrants, err = s.q.CountGrantsByUser(ctx, uid); err != nil {
 		return nil, opErr(err, "count grants")
 	}
-	if o.RevokedGrants, err = s.q.CountRevocations(ctx); err != nil {
+	if o.RevokedGrants, err = s.q.CountRevocationsByUser(ctx, uid); err != nil {
 		return nil, opErr(err, "count revocations")
 	}
-	surfaces, err := s.q.EventsBySurface(ctx)
+	surfaces, err := s.q.EventsBySurfaceForUser(ctx, uid)
 	if err != nil {
 		return nil, opErr(err, "events by surface")
 	}
 	for _, r := range surfaces {
 		o.BySurface = append(o.BySurface, ports.SurfaceCount{Surface: r.Surface, Count: r.N})
 	}
-	daily, err := s.q.EventsByDay(ctx, days)
+	daily, err := s.q.EventsByDayForUser(ctx, storedb.EventsByDayForUserParams{UserID: uid, Column2: days})
 	if err != nil {
 		return nil, opErr(err, "events by day")
 	}

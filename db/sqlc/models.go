@@ -50,6 +50,7 @@ type Grant struct {
 	ExpiresAt       pgtype.Timestamptz
 	ParentSignature []byte
 	Uuid            pgtype.UUID
+	UserID          pgtype.UUID
 }
 
 type Project struct {
@@ -73,6 +74,7 @@ type Session struct {
 	EndedAt     pgtype.Timestamptz
 	EventCount  int64
 	Uuid        pgtype.UUID
+	UserID      pgtype.UUID
 }
 
 type User struct {

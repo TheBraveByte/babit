@@ -1,15 +1,25 @@
 package store
 
 import (
+	"context"
 	"errors"
 
 	storedb "github.com/babit/nal/db/sqlc"
+	coreauth "github.com/babit/nal/internal/core/auth"
 	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
+
+func ctxUserUUID(ctx context.Context) pgtype.UUID {
+	var id pgtype.UUID
+	if uid := coreauth.UserID(ctx); uid != "" {
+		_ = id.Scan(uid)
+	}
+	return id
+}
 
 func lookupErr(err error, entity, id string) error {
 	if errors.Is(err, pgx.ErrNoRows) {
