@@ -69,9 +69,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         `${branding.brand_color}33` // ~20% opacity
       );
     } else {
-      document.documentElement.style.setProperty("--brand-accent", "#0f172a");
-      document.documentElement.style.setProperty("--brand-accent-subtle", "rgba(15, 23, 42, 0.06)");
-      document.documentElement.style.setProperty("--brand-accent-border", "rgba(15, 23, 42, 0.15)");
+      // No org branding: clear inline overrides so the theme-aware token
+      // (teal, defined per light/dark in index.css) applies.
+      document.documentElement.style.removeProperty("--brand-accent");
+      document.documentElement.style.removeProperty("--brand-accent-subtle");
+      document.documentElement.style.removeProperty("--brand-accent-border");
     }
   }, [branding]);
 
