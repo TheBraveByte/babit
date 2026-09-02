@@ -238,7 +238,7 @@ export function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex flex-col min-w-0">
         {/* Header Bar */}
-        <header className="h-14 px-6 border-b border-[color:var(--border)] bg-[var(--surface)]/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between gap-4">
+        <header className="h-14 px-6 border-b border-[color:var(--border)] glass-subtle sticky top-0 z-30 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
@@ -264,8 +264,11 @@ export function DashboardLayout({
           <div className="flex items-center gap-3">
             {notaryOnline !== null && (
               notaryOnline ? (
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <div
+                  className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded border font-medium"
+                  style={{ color: "var(--color-verified)", backgroundColor: "var(--color-verified-bg)", borderColor: "var(--color-verified-border)" }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-verified)" }} />
                   <span>NOTARY ONLINE</span>
                 </div>
               ) : (
