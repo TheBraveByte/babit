@@ -553,6 +553,110 @@ func (x *MeResponse) GetBranding() *Branding {
 	return nil
 }
 
+type UpdateProfileRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	OrgName       string                 `protobuf:"bytes,1,opt,name=org_name,json=orgName,proto3" json:"org_name,omitempty"`
+	OrgDomain     string                 `protobuf:"bytes,2,opt,name=org_domain,json=orgDomain,proto3" json:"org_domain,omitempty"`
+	Industry      string                 `protobuf:"bytes,3,opt,name=industry,proto3" json:"industry,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateProfileRequest) Reset() {
+	*x = UpdateProfileRequest{}
+	mi := &file_solari_ledger_v1_auth_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateProfileRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateProfileRequest) ProtoMessage() {}
+
+func (x *UpdateProfileRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_auth_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateProfileRequest.ProtoReflect.Descriptor instead.
+func (*UpdateProfileRequest) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_auth_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateProfileRequest) GetOrgName() string {
+	if x != nil {
+		return x.OrgName
+	}
+	return ""
+}
+
+func (x *UpdateProfileRequest) GetOrgDomain() string {
+	if x != nil {
+		return x.OrgDomain
+	}
+	return ""
+}
+
+func (x *UpdateProfileRequest) GetIndustry() string {
+	if x != nil {
+		return x.Industry
+	}
+	return ""
+}
+
+type UpdateProfileResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateProfileResponse) Reset() {
+	*x = UpdateProfileResponse{}
+	mi := &file_solari_ledger_v1_auth_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateProfileResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateProfileResponse) ProtoMessage() {}
+
+func (x *UpdateProfileResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_auth_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateProfileResponse.ProtoReflect.Descriptor instead.
+func (*UpdateProfileResponse) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_auth_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UpdateProfileResponse) GetUser() *User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
 var File_solari_ledger_v1_auth_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_auth_proto_rawDesc = "" +
@@ -594,15 +698,23 @@ const file_solari_ledger_v1_auth_proto_rawDesc = "" +
 	"\n" +
 	"MeResponse\x12*\n" +
 	"\x04user\x18\x01 \x01(\v2\x16.solari.ledger.v1.UserR\x04user\x126\n" +
-	"\bbranding\x18\x02 \x01(\v2\x1a.solari.ledger.v1.BrandingR\bbranding*e\n" +
+	"\bbranding\x18\x02 \x01(\v2\x1a.solari.ledger.v1.BrandingR\bbranding\"l\n" +
+	"\x14UpdateProfileRequest\x12\x19\n" +
+	"\borg_name\x18\x01 \x01(\tR\aorgName\x12\x1d\n" +
+	"\n" +
+	"org_domain\x18\x02 \x01(\tR\torgDomain\x12\x1a\n" +
+	"\bindustry\x18\x03 \x01(\tR\bindustry\"C\n" +
+	"\x15UpdateProfileResponse\x12*\n" +
+	"\x04user\x18\x01 \x01(\v2\x16.solari.ledger.v1.UserR\x04user*e\n" +
 	"\vAccountType\x12\x1c\n" +
 	"\x18ACCOUNT_TYPE_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15ACCOUNT_TYPE_PERSONAL\x10\x01\x12\x1d\n" +
-	"\x19ACCOUNT_TYPE_ORGANIZATION\x10\x022\xc7\x03\n" +
+	"\x19ACCOUNT_TYPE_ORGANIZATION\x10\x022\xe2\x04\n" +
 	"\vAuthService\x12\x98\x01\n" +
 	"\x06Signup\x12\x1f.solari.ledger.v1.SignupRequest\x1a .solari.ledger.v1.SignupResponse\"K\x92A.\x12,Create an account and return a session token\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/auth/signup\x12\x8f\x01\n" +
 	"\x05Login\x12\x1e.solari.ledger.v1.LoginRequest\x1a\x1f.solari.ledger.v1.LoginResponse\"E\x92A)\x12'Authenticate and return a session token\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/v1/auth/login\x12\x8a\x01\n" +
-	"\x02Me\x12\x1b.solari.ledger.v1.MeRequest\x1a\x1c.solari.ledger.v1.MeResponse\"I\x92A3\x121Return the current user and organization branding\x82\xd3\xe4\x93\x02\r\x12\v/v1/auth/meB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\x02Me\x12\x1b.solari.ledger.v1.MeRequest\x1a\x1c.solari.ledger.v1.MeResponse\"I\x92A3\x121Return the current user and organization branding\x82\xd3\xe4\x93\x02\r\x12\v/v1/auth/me\x12\x98\x01\n" +
+	"\rUpdateProfile\x12&.solari.ledger.v1.UpdateProfileRequest\x1a'.solari.ledger.v1.UpdateProfileResponse\"6\x92A\x1d\x12\x1bUpdate your profile details\x82\xd3\xe4\x93\x02\x10:\x01*2\v/v1/auth/meB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_auth_proto_rawDescOnce sync.Once
@@ -617,7 +729,7 @@ func file_solari_ledger_v1_auth_proto_rawDescGZIP() []byte {
 }
 
 var file_solari_ledger_v1_auth_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_solari_ledger_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_solari_ledger_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_solari_ledger_v1_auth_proto_goTypes = []any{
 	(AccountType)(0),              // 0: solari.ledger.v1.AccountType
 	(*User)(nil),                  // 1: solari.ledger.v1.User
@@ -628,27 +740,32 @@ var file_solari_ledger_v1_auth_proto_goTypes = []any{
 	(*LoginResponse)(nil),         // 6: solari.ledger.v1.LoginResponse
 	(*MeRequest)(nil),             // 7: solari.ledger.v1.MeRequest
 	(*MeResponse)(nil),            // 8: solari.ledger.v1.MeResponse
-	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
+	(*UpdateProfileRequest)(nil),  // 9: solari.ledger.v1.UpdateProfileRequest
+	(*UpdateProfileResponse)(nil), // 10: solari.ledger.v1.UpdateProfileResponse
+	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
 }
 var file_solari_ledger_v1_auth_proto_depIdxs = []int32{
 	0,  // 0: solari.ledger.v1.User.account_type:type_name -> solari.ledger.v1.AccountType
-	9,  // 1: solari.ledger.v1.User.created_at:type_name -> google.protobuf.Timestamp
+	11, // 1: solari.ledger.v1.User.created_at:type_name -> google.protobuf.Timestamp
 	0,  // 2: solari.ledger.v1.SignupRequest.account_type:type_name -> solari.ledger.v1.AccountType
 	1,  // 3: solari.ledger.v1.SignupResponse.user:type_name -> solari.ledger.v1.User
 	1,  // 4: solari.ledger.v1.LoginResponse.user:type_name -> solari.ledger.v1.User
 	1,  // 5: solari.ledger.v1.MeResponse.user:type_name -> solari.ledger.v1.User
 	2,  // 6: solari.ledger.v1.MeResponse.branding:type_name -> solari.ledger.v1.Branding
-	3,  // 7: solari.ledger.v1.AuthService.Signup:input_type -> solari.ledger.v1.SignupRequest
-	4,  // 8: solari.ledger.v1.AuthService.Login:input_type -> solari.ledger.v1.LoginRequest
-	7,  // 9: solari.ledger.v1.AuthService.Me:input_type -> solari.ledger.v1.MeRequest
-	5,  // 10: solari.ledger.v1.AuthService.Signup:output_type -> solari.ledger.v1.SignupResponse
-	6,  // 11: solari.ledger.v1.AuthService.Login:output_type -> solari.ledger.v1.LoginResponse
-	8,  // 12: solari.ledger.v1.AuthService.Me:output_type -> solari.ledger.v1.MeResponse
-	10, // [10:13] is the sub-list for method output_type
-	7,  // [7:10] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	1,  // 7: solari.ledger.v1.UpdateProfileResponse.user:type_name -> solari.ledger.v1.User
+	3,  // 8: solari.ledger.v1.AuthService.Signup:input_type -> solari.ledger.v1.SignupRequest
+	4,  // 9: solari.ledger.v1.AuthService.Login:input_type -> solari.ledger.v1.LoginRequest
+	7,  // 10: solari.ledger.v1.AuthService.Me:input_type -> solari.ledger.v1.MeRequest
+	9,  // 11: solari.ledger.v1.AuthService.UpdateProfile:input_type -> solari.ledger.v1.UpdateProfileRequest
+	5,  // 12: solari.ledger.v1.AuthService.Signup:output_type -> solari.ledger.v1.SignupResponse
+	6,  // 13: solari.ledger.v1.AuthService.Login:output_type -> solari.ledger.v1.LoginResponse
+	8,  // 14: solari.ledger.v1.AuthService.Me:output_type -> solari.ledger.v1.MeResponse
+	10, // 15: solari.ledger.v1.AuthService.UpdateProfile:output_type -> solari.ledger.v1.UpdateProfileResponse
+	12, // [12:16] is the sub-list for method output_type
+	8,  // [8:12] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_solari_ledger_v1_auth_proto_init() }
@@ -662,7 +779,7 @@ func file_solari_ledger_v1_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_solari_ledger_v1_auth_proto_rawDesc), len(file_solari_ledger_v1_auth_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

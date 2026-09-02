@@ -105,3 +105,41 @@ func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	)
 	return i, err
 }
+
+const updateUser = `-- name: UpdateUser :one
+UPDATE users
+SET org_name = $2, org_domain = $3, industry = $4
+WHERE id = $1
+RETURNING id, email, password_hash, account_type, org_name, org_domain, industry, brand_company, brand_logo_url, brand_color, created_at
+`
+
+type UpdateUserParams struct {
+	ID        pgtype.UUID
+	OrgName   string
+	OrgDomain string
+	Industry  string
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUser,
+		arg.ID,
+		arg.OrgName,
+		arg.OrgDomain,
+		arg.Industry,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.PasswordHash,
+		&i.AccountType,
+		&i.OrgName,
+		&i.OrgDomain,
+		&i.Industry,
+		&i.BrandCompany,
+		&i.BrandLogoUrl,
+		&i.BrandColor,
+		&i.CreatedAt,
+	)
+	return i, err
+}

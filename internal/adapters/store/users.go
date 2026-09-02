@@ -61,6 +61,23 @@ func (s *userStore) GetByID(ctx context.Context, id string) (*ports.User, error)
 	return userFromRow(row), nil
 }
 
+func (s *userStore) Update(ctx context.Context, id, orgName, orgDomain, industry string) (*ports.User, error) {
+	uid, err := parseUUID(id)
+	if err != nil {
+		return nil, err
+	}
+	row, err := s.q.UpdateUser(ctx, storedb.UpdateUserParams{
+		ID:        uid,
+		OrgName:   orgName,
+		OrgDomain: orgDomain,
+		Industry:  industry,
+	})
+	if err != nil {
+		return nil, lookupErr(err, "user", id)
+	}
+	return userFromRow(row), nil
+}
+
 func userFromRow(r storedb.User) *ports.User {
 	return &ports.User{
 		ID:           uuidString(r.ID),

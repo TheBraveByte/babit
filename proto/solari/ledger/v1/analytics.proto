@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package solari.ledger.v1;
+
+option go_package = "github.com/babit/nal/gen/solari/ledger/v1;ledgerv1";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message SurfaceCount {
+  string surface = 1;
+  int64 count = 2;
+}
+
+message DayCount {
+  string date = 1;
+  int64 count = 2;
+}
+
+message GetOverviewRequest {
+  int32 days = 1;
+}
+
+message GetOverviewResponse {
+  int64 total_events = 1;
+  int64 total_sessions = 2;
+  int64 total_grants = 3;
+  int64 revoked_grants = 4;
+  repeated SurfaceCount by_surface = 5;
+  repeated DayCount over_time = 6;
+}
+
+service AnalyticsService {
+  rpc GetOverview(GetOverviewRequest) returns (GetOverviewResponse) {
+    option (google.api.http) = {get: "/v1/analytics/overview"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Aggregate activity across the ledger (events, sessions, grants)"
+    };
+  }
+}

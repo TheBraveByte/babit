@@ -10,3 +10,9 @@ SELECT * FROM users WHERE email = $1;
 
 -- name: GetUserByID :one
 SELECT * FROM users WHERE id = $1;
+
+-- name: UpdateUser :one
+UPDATE users
+SET org_name = $2, org_domain = $3, industry = $4
+WHERE id = $1
+RETURNING *;
