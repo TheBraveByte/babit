@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { IconCheck, IconCopy } from "@/lib/icons";
+import { IconCheck, IconCopy, IconArrowUpRight } from "@/lib/icons";
+import { Link } from "@/lib/router";
 
 const CODE_EXAMPLES = {
   curl: `# 1. Record what an agent just did, one authenticated POST.
@@ -205,30 +206,22 @@ export function SectionBuiltForEngineers() {
               The API surface
             </span>
             <h3 className="text-[17px] font-semibold leading-snug" style={{ color: "var(--fg)" }}>
-              Real endpoints, nothing hidden.
+              Every endpoint, documented.
             </h3>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+              Auth, grants, sessions, events, and verification, generated from the live spec with
+              request and response examples you can run.
+            </p>
           </div>
-          <div className="grid gap-2 font-mono text-[12px]">
-            {[
-              { m: "POST", p: "/v1/auth/signup" },
-              { m: "POST", p: "/v1/auth/login" },
-              { m: "GET", p: "/v1/auth/me" },
-              { m: "POST", p: "/v1/grants:root" },
-              { m: "POST", p: "/v1/grants" },
-              { m: "POST", p: "/v1/sessions" },
-              { m: "POST", p: "/v1/sessions/{id}/actions" },
-              { m: "POST", p: "/v1/proofs:verify" },
-              { m: "GET", p: "/v1/notary/public-key" },
-            ].map((e) => (
-              <div
-                key={e.p}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-babit"
-                style={{ backgroundColor: "var(--secondary)" }}
-              >
-                <span className="font-semibold shrink-0" style={{ color: "var(--muted)" }}>{e.m}</span>
-                <span style={{ color: "var(--fg)" }}>{e.p}</span>
-              </div>
-            ))}
+          <div className="mt-auto">
+            <Link
+              to="/api"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-babit transition-all hover:opacity-90"
+              style={{ backgroundColor: "var(--brand-accent)", color: "#fff", boxShadow: "0 10px 30px -12px var(--brand-accent)" }}
+            >
+              <span>Open the API reference</span>
+              <IconArrowUpRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
         </div>
