@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PageHeader, Card, Copyable } from "@/lib/ui";
-import { IconShieldCheck, IconGitBranch, IconFileText, IconArrowRight, IconKey, IconFolder } from "@/lib/icons";
+import { IconShieldCheck, IconGitBranch, IconFileText, IconArrowRight, IconFolder } from "@/lib/icons";
 import type { DashboardTab } from "./DashboardLayout";
 import { useAuth } from "@/lib/auth";
 import { api } from "@/api/client";
@@ -34,14 +34,14 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
   const workspace = branding?.company_name || user?.org_name || "your workspace";
 
   const quickActions: { tab: DashboardTab; title: string; desc: string; icon: React.ReactNode }[] = [
-    { tab: "verify", title: "Verify evidence", desc: "Check a receipt or proof independently.", icon: <IconShieldCheck className="w-4 h-4 text-emerald-700" /> },
-    { tab: "delegations", title: "Grants", desc: "Issue, delegate, verify and revoke authority.", icon: <IconGitBranch className="w-4 h-4" /> },
-    { tab: "receipts", title: "Receipts", desc: "Fetch the sealed proof for an action.", icon: <IconFileText className="w-4 h-4" /> },
-    { tab: "projects", title: "Projects", desc: "Organize the actions you are tracking.", icon: <IconFolder className="w-4 h-4" /> },
+    { tab: "verify", title: "Verify evidence", desc: "Validate receipts and proofs.", icon: <IconShieldCheck className="w-4 h-4 text-emerald-700" /> },
+    { tab: "receipts", title: "Receipts", desc: "Fetch sealed proof by action ID.", icon: <IconFileText className="w-4 h-4" /> },
+    { tab: "projects", title: "Projects", desc: "Track work tied to ledger actions.", icon: <IconFolder className="w-4 h-4" /> },
+    { tab: "settings", title: "Settings", desc: "Edit account and workspace details.", icon: <IconGitBranch className="w-4 h-4" /> },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
         title={`Welcome to ${workspace}`}
         description="Proof for autonomous actions. Everything here is retrieved directly from the Babit ledger."
@@ -113,15 +113,9 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
         </div>
       </div>
 
-      <div
-        className="rounded-babit-lg px-4 py-3 flex items-start gap-2.5"
-        style={{ border: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}
-      >
-        <span className="mt-0.5 shrink-0" style={{ color: "var(--muted)" }}><IconKey className="w-3.5 h-3.5" /></span>
-        <p className="text-xs" style={{ color: "var(--muted)" }}>
-          Babit does not yet expose aggregate metrics or a listing API, so this console retrieves ledger records one at a time by ID.
-        </p>
-      </div>
+      <p className="text-[11px]" style={{ color: "var(--muted)" }}>
+        Need profile changes? Use Settings. Need grants? Open the Delegations tab.
+      </p>
     </div>
   );
 }
