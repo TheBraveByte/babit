@@ -144,7 +144,76 @@ button:focus-visible {
   position: relative;
 }
 
+/* ─── Elevated surfaces: glass + glow + depth ───────────────────────────────── */
+
+.glass {
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid color-mix(in srgb, var(--fg) 9%, transparent);
+  box-shadow:
+    0 1px 0 0 color-mix(in srgb, #fff 55%, transparent) inset,
+    0 24px 60px -20px color-mix(in srgb, var(--fg) 26%, transparent),
+    0 8px 24px -12px color-mix(in srgb, var(--fg) 18%, transparent);
+}
+.dark .glass {
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  border: 1px solid color-mix(in srgb, #fff 8%, transparent);
+  box-shadow:
+    0 1px 0 0 color-mix(in srgb, #fff 9%, transparent) inset,
+    0 30px 70px -20px rgba(0, 0, 0, 0.7);
+}
+
+.glass-subtle {
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.ambient-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(72px);
+  opacity: 0.5;
+  pointer-events: none;
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--brand-accent) 55%, transparent), transparent 70%);
+}
+.dark .ambient-glow { opacity: 0.34; }
+
+.mesh-bg {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(60% 50% at 50% -8%, color-mix(in srgb, var(--brand-accent) 12%, transparent), transparent 60%),
+    radial-gradient(40% 40% at 92% 6%, color-mix(in srgb, var(--brand-accent) 7%, transparent), transparent 60%),
+    radial-gradient(45% 45% at 6% 30%, color-mix(in srgb, var(--fg) 4%, transparent), transparent 60%);
+}
+
+.grid-fade {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--fg) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--fg) 5%, transparent) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(ellipse 72% 60% at 50% 38%, #000 28%, transparent 78%);
+  mask-image: radial-gradient(ellipse 72% 60% at 50% 38%, #000 28%, transparent 78%);
+}
+
+.accent-hairline {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--brand-accent) 60%, transparent), transparent);
+}
+
 /* ─── Animations ────────────────────────────────────────────────────────────── */
+
+@keyframes floatUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.42; transform: scale(1); }
+  50%      { opacity: 0.6;  transform: scale(1.06); }
+}
+.animate-float-up   { animation: floatUp 640ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-glow-pulse { animation: glowPulse 6s ease-in-out infinite; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
