@@ -18,3 +18,4 @@ tmp/
 # local http-client config may hold secrets; keep only the template
 dev/http-client.env.json
 dev/http-client.private.env.json
+/research/
