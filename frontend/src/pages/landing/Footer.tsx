@@ -5,13 +5,10 @@ import { docsUrl } from "@/lib/links";
 export function Footer() {
   return (
     <footer
-      style={{
-        borderTop: "1px solid var(--border)",
-        backgroundColor: "var(--bg)",
-        color: "var(--muted)",
-      }}
-      className="text-xs font-sans"
+      style={{ backgroundColor: "var(--bg)", color: "var(--muted)" }}
+      className="text-xs font-sans relative"
     >
+      <div className="h-px accent-hairline" />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Logo & Tagline */}
