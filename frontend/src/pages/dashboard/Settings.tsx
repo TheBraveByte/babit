@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { Copyable } from "@/lib/ui";
+import { Copyable, PageHeader } from "@/lib/ui";
 import { IconShieldCheck, IconKey, IconBuilding } from "@/lib/icons";
 import { api } from "@/api/client";
 
@@ -8,9 +8,20 @@ type Section = "general" | "workspace" | "notary";
 
 function ReadonlyRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
       <span className="text-[11px] font-medium" style={{ color: "var(--muted)" }}>{label}</span>
-      <span className={`sm:col-span-2 text-xs ${mono ? "font-mono" : ""}`} style={{ color: "var(--fg)" }}>{value}</span>
+      <span className={`sm:col-span-2 text-xs break-all ${mono ? "font-mono tnum" : ""}`} style={{ color: "var(--fg)" }}>{value}</span>
+    </div>
+  );
+}
+
+function SectionHead({ title, description, icon }: { title: string; description: React.ReactNode; icon?: React.ReactNode }) {
+  return (
+    <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+      <h2 className="text-base font-semibold flex items-center gap-1.5" style={{ color: "var(--fg)" }}>
+        {icon}{title}
+      </h2>
+      <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{description}</p>
     </div>
   );
 }
@@ -47,36 +58,36 @@ export function Settings() {
   ];
 
   return (
-    <div className="space-y-8 font-sans">
-      <div>
-        <h1 className="text-2xl sm:text-[32px] font-semibold tracking-tight leading-tight" style={{ color: "var(--fg)" }}>
-          Settings
-        </h1>
-        <p className="text-sm sm:text-[15px] mt-1" style={{ color: "var(--muted)" }}>
-          Your account profile and the notary key backing your evidence. Fields reflect what the Babit API returns.
-        </p>
-      </div>
+    <div className="space-y-6 font-sans">
+      <PageHeader
+        eyebrow="Console"
+        title="Settings"
+        description="Your account profile and the notary key backing your evidence. Fields reflect what the Babit API returns and are read-only where no write endpoint exists."
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-        <div
-          className="md:col-span-4 rounded-babit-lg p-2 shadow-xs space-y-0.5 font-mono text-xs"
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+        <nav
+          className="md:col-span-4 rounded-babit-lg p-2 shadow-xs space-y-0.5 animate-float-up"
           style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
         >
-          {sections.map((s) => (
-            <button
-              key={s.key}
-              onClick={() => setSection(s.key)}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-babit font-medium text-left transition-colors cursor-pointer"
-              style={{
-                backgroundColor: section === s.key ? "var(--fg)" : "transparent",
-                color: section === s.key ? "var(--surface)" : "var(--muted)",
-              }}
-            >
-              {s.icon}
-              <span>{s.label}</span>
-            </button>
-          ))}
-        </div>
+          {sections.map((s) => {
+            const active = section === s.key;
+            return (
+              <button
+                key={s.key}
+                onClick={() => setSection(s.key)}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-babit text-xs font-medium text-left transition-colors cursor-pointer"
+                style={{
+                  backgroundColor: active ? "var(--fg)" : "transparent",
+                  color: active ? "var(--surface)" : "var(--muted)",
+                }}
+              >
+                {s.icon}
+                <span>{s.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
         <div
           className="md:col-span-8 rounded-babit-lg p-6 sm:p-8 shadow-xs space-y-4"
@@ -84,10 +95,10 @@ export function Settings() {
         >
           {section === "general" && (
             <>
-              <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-                <h2 className="text-base font-semibold" style={{ color: "var(--fg)" }}>Account</h2>
-                <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>Profile returned by <span className="font-mono">/v1/auth/me</span>.</p>
-              </div>
+              <SectionHead
+                title="Account"
+                description={<>Profile returned by <span className="font-mono">/v1/auth/me</span>.</>}
+              />
               <ReadonlyRow label="Email" value={user?.email || "—"} mono />
               <ReadonlyRow label="User ID" value={user?.id || "—"} mono />
               <ReadonlyRow label="Account type" value={user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal"} />
@@ -98,12 +109,10 @@ export function Settings() {
 
           {section === "workspace" && (
             <>
-              <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-                <h2 className="text-base font-semibold" style={{ color: "var(--fg)" }}>Workspace &amp; Branding</h2>
-                <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
-                  Branding is resolved from your organization domain and applied to this console at runtime.
-                </p>
-              </div>
+              <SectionHead
+                title="Workspace & Branding"
+                description="Branding is resolved from your organization domain and applied to this console at runtime."
+              />
               <ReadonlyRow label="Organization" value={user?.org_name || "—"} />
               <ReadonlyRow label="Domain" value={user?.org_domain || "—"} mono />
               {branding ? (
@@ -140,14 +149,11 @@ export function Settings() {
 
           {section === "notary" && (
             <>
-              <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-                <h2 className="text-base font-semibold flex items-center gap-1.5" style={{ color: "var(--fg)" }}>
-                  <IconKey className="w-4 h-4" /> Notary public key
-                </h2>
-                <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
-                  Ed25519 public key used to verify notary signatures on action events.
-                </p>
-              </div>
+              <SectionHead
+                icon={<IconKey className="w-4 h-4" />}
+                title="Notary public key"
+                description="Ed25519 public key used to verify notary signatures on action events."
+              />
               {publicKey ? (
                 <div className="space-y-3 font-mono text-xs">
                   {keyId && <ReadonlyRow label="Key ID" value={keyId} mono />}

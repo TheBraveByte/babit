@@ -1,21 +1,48 @@
-import { StatusPill, MonospaceHash, Button, Json } from "@/lib/ui";
-import { IconCheck, IconShieldCheck } from "@/lib/icons";
+import { Card, StatusPill, MonospaceHash, Button, Json } from "@/lib/ui";
+import { IconShieldCheck } from "@/lib/icons";
 import type { components } from "@/api/schema";
+import type { ReactNode } from "react";
 
 type Proof = components["schemas"]["v1Proof"];
 
-/** Truncate a base64/byte string for display; full value copyable via MonospaceHash. */
-function ByteRow({ label, value }: { label: string; value?: string }) {
+/** Label / value row — Stripe transaction-detail style. Values are mono + tnum. */
+function Row({ label, value, mono = true }: { label: string; value?: ReactNode; mono?: boolean }) {
+  const empty = value === undefined || value === null || value === "";
   return (
-    <div>
-      <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>
+    <div
+      className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 py-2.5"
+      style={{ borderBottom: "1px solid var(--border-subtle)" }}
+    >
+      <span className="text-[11px] font-medium" style={{ color: "var(--muted)" }}>
         {label}
       </span>
-      {value ? (
-        <MonospaceHash hash={value} />
-      ) : (
-        <span className="text-[11px]" style={{ color: "var(--muted)" }}>—</span>
-      )}
+      <span
+        className={`sm:col-span-2 text-xs break-all ${mono ? "font-mono tnum" : ""}`}
+        style={{ color: empty ? "var(--muted)" : "var(--fg)" }}
+      >
+        {empty ? "—" : value}
+      </span>
+    </div>
+  );
+}
+
+/** Hash row — full value copyable via MonospaceHash, honest dash when absent. */
+function HashRow({ label, value }: { label: string; value?: string }) {
+  return (
+    <div
+      className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 py-2.5"
+      style={{ borderBottom: "1px solid var(--border-subtle)" }}
+    >
+      <span className="text-[11px] font-medium" style={{ color: "var(--muted)" }}>
+        {label}
+      </span>
+      <span className="sm:col-span-2">
+        {value ? (
+          <MonospaceHash hash={value} />
+        ) : (
+          <span className="text-xs font-mono" style={{ color: "var(--muted)" }}>—</span>
+        )}
+      </span>
     </div>
   );
 }
@@ -29,6 +56,7 @@ export function ReceiptDetail({
 }) {
   const event = proof.event ?? {};
   const chain = proof.delegation_chain ?? [];
+  const merklePath = proof.merkle_path ?? [];
 
   const downloadJSON = () => {
     const blob = new Blob([JSON.stringify(proof, null, 2)], { type: "application/json" });
@@ -42,182 +70,158 @@ export function ReceiptDetail({
     URL.revokeObjectURL(url);
   };
 
+  const summary = event.action_type
+    ? `${event.action_type}${event.surface ? ` · ${event.surface}` : ""}`
+    : "Sealed action event";
+
   return (
-    <div className="space-y-8 font-sans">
-      {/* Header */}
-      <div
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5"
-        style={{ borderBottom: "1px solid var(--border)" }}
-      >
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="px-3 py-1.5 text-xs font-medium rounded-babit-sm transition-colors cursor-pointer"
-            style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--fg)" }}
-          >
-            ← Back
-          </button>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold font-mono tracking-tight tnum" style={{ color: "var(--fg)" }}>
-              {event.event_id || "Receipt"}
-            </h1>
+    <div className="space-y-6 font-sans">
+      {/* Flagship hero */}
+      <div className="relative rounded-babit-lg overflow-hidden glass animate-float-up">
+        <div className="h-px accent-hairline" />
+        <div className="p-6 space-y-5">
+          <div className="flex items-center justify-between gap-3">
+            <Button variant="ghost" size="sm" onClick={onBack}>
+              ← Back
+            </Button>
+            <Button variant="secondary" size="sm" onClick={downloadJSON}>
+              Download JSON
+            </Button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-1.5">
+              <span
+                className="text-[11px] font-mono uppercase tracking-[0.14em] block"
+                style={{ color: "var(--muted)" }}
+              >
+                Receipt
+              </span>
+              <h1
+                className="text-2xl font-semibold font-mono tracking-[-0.02em] tnum break-all"
+                style={{ color: "var(--fg)" }}
+              >
+                {event.event_id || "Receipt"}
+              </h1>
+              <p className="text-sm font-mono" style={{ color: "var(--muted)" }}>
+                {summary}
+              </p>
+            </div>
             <StatusPill status="VERIFIED" label="SEALED" />
           </div>
         </div>
-
-        <Button variant="secondary" size="sm" onClick={downloadJSON}>
-          Download JSON
-        </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left: action + authority */}
-        <div className="lg:col-span-7 space-y-6">
-          <div
-            className="rounded-babit-lg p-6 shadow-xs space-y-5 font-mono text-xs"
-            style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
-          >
-            <div className="flex items-center justify-between pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-              <span className="text-xs font-semibold uppercase" style={{ color: "var(--fg)" }}>Action &amp; Execution</span>
-              <span className="text-emerald-700 font-bold text-[11px] flex items-center gap-1">
-                <IconCheck className="w-3.5 h-3.5" /> Captured at effect
-              </span>
-            </div>
+      {/* Action */}
+      <Card title="Action" subtitle="What the agent did, captured at effect.">
+        <div className="-mt-1">
+          <Row label="Action type" value={event.action_type} mono={false} />
+          <Row label="Surface" value={event.surface} mono={false} />
+          <Row label="Session" value={event.session_id} />
+          <Row label="Sequence" value={event.sequence} />
+          <Row label="Grant" value={event.grant_id} />
+          <Row label="Occurred at" value={event.occurred_at} />
+          <Row label="Recording reference" value={event.recording_ref} />
+        </div>
+      </Card>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Action Type</span>
-                <span className="text-sm font-semibold" style={{ color: "var(--fg)" }}>{event.action_type || "—"}</span>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Surface</span>
-                <span className="text-sm font-semibold" style={{ color: "var(--fg)" }}>{event.surface || "—"}</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Session</span>
-                <span style={{ color: "var(--fg)" }}>{event.session_id || "—"}</span>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Sequence</span>
-                <span className="tnum" style={{ color: "var(--fg)" }}>{event.sequence ?? "—"}</span>
-              </div>
-            </div>
-
-            <div>
-              <span className="text-[10px] uppercase block mb-1" style={{ color: "var(--muted)" }}>Recording Reference</span>
-              <span
-                className="px-2 py-1.5 rounded-babit-sm block break-all font-mono"
-                style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)", color: "var(--fg)" }}
+      {/* Authority & delegation */}
+      <Card
+        title="Authority & delegation"
+        subtitle="The chain of grants that authorized this action."
+        action={
+          <span className="text-[11px] font-mono" style={{ color: "var(--muted)" }}>
+            {chain.length} {chain.length === 1 ? "grant" : "grants"}
+          </span>
+        }
+      >
+        {chain.length === 0 ? (
+          <p className="text-xs font-mono" style={{ color: "var(--muted)" }}>
+            No delegation chain included in this proof.
+          </p>
+        ) : (
+          <div className="space-y-2.5">
+            {chain.map((link, idx) => (
+              <div
+                key={link.grant_id || idx}
+                className="p-3.5 rounded-babit flex items-center justify-between gap-3"
+                style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
               >
-                {event.recording_ref || "—"}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Grant</span>
-                <span style={{ color: "var(--fg)" }}>{event.grant_id || "—"}</span>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Occurred At</span>
-                <span className="tnum font-semibold" style={{ color: "var(--fg)" }}>{event.occurred_at || "—"}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Authority lineage */}
-          <div
-            className="rounded-babit-lg p-6 shadow-xs space-y-4 font-mono text-xs"
-            style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
-          >
-            <div className="flex items-center justify-between pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-              <span className="text-xs font-semibold uppercase" style={{ color: "var(--fg)" }}>Authority Lineage</span>
-              <span className="text-[11px]" style={{ color: "var(--muted)" }}>
-                {chain.length} {chain.length === 1 ? "grant" : "grants"}
-              </span>
-            </div>
-
-            {chain.length === 0 ? (
-              <p className="text-[11px]" style={{ color: "var(--muted)" }}>
-                No delegation chain included in this proof.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {chain.map((link, idx) => (
-                  <div
-                    key={link.grant_id || idx}
-                    className="p-3 rounded-babit flex items-center justify-between"
-                    style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
-                  >
-                    <div>
-                      <div className="text-[11px]" style={{ color: "var(--fg)" }}>
-                        <span className="font-semibold">{link.principal_id || "?"}</span> → <span>{link.subject_id || "?"}</span>
-                      </div>
-                      <span className="text-[10px]" style={{ color: "var(--muted)" }}>Grant: {link.grant_id || "—"}</span>
-                    </div>
-                    <span
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-babit-sm"
-                      style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--muted)" }}
-                    >
-                      Depth #{idx + 1}
-                    </span>
+                <div className="min-w-0 space-y-1">
+                  <div className="text-xs font-mono truncate" style={{ color: "var(--fg)" }}>
+                    <span className="font-semibold">{link.principal_id || "?"}</span>
+                    <span style={{ color: "var(--muted)" }}> → </span>
+                    <span>{link.subject_id || "?"}</span>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right: cryptographic seal */}
-        <div className="lg:col-span-5 space-y-6">
-          <div
-            className="rounded-babit-lg p-6 shadow-xs space-y-5 font-mono text-xs"
-            style={{ backgroundColor: "var(--surface)", border: "1.5px solid var(--fg)" }}
-          >
-            <div className="flex items-center justify-between pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-              <span className="text-xs font-semibold uppercase flex items-center gap-1.5" style={{ color: "var(--fg)" }}>
-                <IconShieldCheck className="w-3.5 h-3.5" /> Cryptographic Seal
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              <ByteRow label="Content Hash" value={event.content_hash} />
-              <ByteRow label="Previous Link Hash" value={event.prev_hash} />
-              <ByteRow label="Pre-state Hash" value={event.pre_state_hash} />
-              <ByteRow label="Post-state Hash" value={event.post_state_hash} />
-              <ByteRow label="Merkle Root" value={proof.merkle_root} />
-              <div>
-                <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Notary Signature</span>
-                {event.notary_signature ? (
-                  <span className="text-[11px] break-all block font-mono" style={{ color: "var(--muted)" }}>
-                    {event.notary_signature}
+                  <span className="text-[11px] font-mono" style={{ color: "var(--muted)" }}>
+                    Grant {link.grant_id || "—"}
                   </span>
-                ) : (
-                  <span className="text-[11px]" style={{ color: "var(--muted)" }}>—</span>
-                )}
+                </div>
+                <span
+                  className="shrink-0 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-babit-sm"
+                  style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--muted)" }}
+                >
+                  Depth {idx + 1}
+                </span>
               </div>
-            </div>
-
-            {proof.anchor && (
-              <div className="pt-3 space-y-1" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-                <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>External Anchor</span>
-                <div className="text-[11px]" style={{ color: "var(--fg)" }}>{proof.anchor.kind || "—"}</div>
-                {proof.anchor.anchored_at && (
-                  <div className="text-[11px] tnum" style={{ color: "var(--muted)" }}>{proof.anchor.anchored_at}</div>
-                )}
-              </div>
-            )}
-
-            <div className="pt-3 space-y-2" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-              <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Complete Proof JSON</span>
-              <Json data={proof} />
-            </div>
+            ))}
           </div>
+        )}
+      </Card>
+
+      {/* Execution state */}
+      <Card title="Execution" subtitle="State transition recorded around the action.">
+        <div className="-mt-1">
+          <HashRow label="Pre-state hash" value={event.pre_state_hash} />
+          <HashRow label="Post-state hash" value={event.post_state_hash} />
         </div>
-      </div>
+      </Card>
+
+      {/* Evidence & verification */}
+      <Card
+        title="Evidence & verification"
+        subtitle="Cryptographic seal binding this event into the ledger."
+        action={
+          <span
+            className="inline-flex items-center gap-1.5 text-[11px] font-mono"
+            style={{ color: "var(--color-verified)" }}
+          >
+            <IconShieldCheck className="w-3.5 h-3.5" /> Sealed
+          </span>
+        }
+      >
+        <div className="-mt-1">
+          <HashRow label="Content hash" value={event.content_hash} />
+          <HashRow label="Previous link hash" value={event.prev_hash} />
+          <HashRow label="Merkle root" value={proof.merkle_root} />
+          <HashRow label="Notary signature" value={event.notary_signature} />
+          <Row
+            label="Merkle path"
+            value={
+              merklePath.length > 0
+                ? `${merklePath.length} ${merklePath.length === 1 ? "node" : "nodes"}`
+                : undefined
+            }
+          />
+        </div>
+      </Card>
+
+      {/* External anchor — only when present */}
+      {proof.anchor && (
+        <Card title="External anchor" subtitle="Independent timestamp anchoring the ledger root.">
+          <div className="-mt-1">
+            <Row label="Kind" value={proof.anchor.kind} mono={false} />
+            <Row label="Anchored at" value={proof.anchor.anchored_at} />
+            <HashRow label="Anchored root" value={proof.anchor.root} />
+            <HashRow label="Anchor receipt" value={proof.anchor.anchor_receipt} />
+          </div>
+        </Card>
+      )}
+
+      {/* Technical */}
+      <Card title="Technical" subtitle="Complete proof payload as returned by the API.">
+        <Json data={proof} />
+      </Card>
     </div>
   );
 }

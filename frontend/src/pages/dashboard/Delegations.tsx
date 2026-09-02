@@ -1,11 +1,31 @@
 import { useState } from "react";
-import { StatusPill, Copyable, Button, Field, TextInput, Error, EmptyState } from "@/lib/ui";
+import { StatusPill, Copyable, Button, Field, TextInput, Error, EmptyState, PageHeader } from "@/lib/ui";
 import { IconGitBranch, IconCheck, IconShieldCheck } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
+import { AuthorityGraph, chainToGraph, type GrantRole } from "@/components/viz/AuthorityGraph";
 
 type VerifyChain = components["schemas"]["v1VerifyChainResponse"];
 type Grant = components["schemas"]["v1Grant"];
+
+/** Map a real verified Grant[] chain (root -> leaf) onto the AuthorityGraph. */
+function grantsToGraph(chain: Grant[]) {
+  return chainToGraph(
+    chain.map((g, i) => {
+      const role: GrantRole = i === 0 ? "principal" : i === 1 ? "agent" : "subagent";
+      const scopeParts: string[] = [];
+      const globs = g.scope?.resource_globs;
+      if (globs && globs.length) scopeParts.push(globs.slice(0, 2).join(", "));
+      if (g.scope?.max_value_cents) scopeParts.push(`≤ $${(Number(g.scope.max_value_cents) / 100).toLocaleString()}`);
+      return {
+        role,
+        subject: (i === 0 ? g.principal_id : g.subject_id) || g.subject_id || g.principal_id || "—",
+        capabilities: g.capabilities ?? undefined,
+        scope: scopeParts.join(" · ") || undefined,
+      };
+    }),
+  );
+}
 
 type Mode = "verify" | "issue-root" | "delegate" | "revoke";
 
@@ -14,14 +34,11 @@ export function Delegations() {
 
   return (
     <div className="space-y-6 font-sans">
-      <div>
-        <h1 className="text-2xl sm:text-[32px] font-semibold tracking-tight leading-tight" style={{ color: "var(--fg)" }}>
-          Delegations
-        </h1>
-        <p className="text-sm sm:text-[15px] mt-1" style={{ color: "var(--muted)" }}>
-          Issue and verify capability grants. Authority attenuates monotonically from a root principal down each delegation.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Authority"
+        title="Delegations"
+        description="Issue and verify capability grants. Authority attenuates monotonically from a root principal down each signed delegation."
+      />
 
       <div
         className="inline-flex items-center gap-1 p-1 rounded-babit"
@@ -137,9 +154,26 @@ function VerifyChainPanel() {
           {(result.chain ?? []).length === 0 ? (
             <p className="text-xs font-mono" style={{ color: "var(--muted)" }}>Chain empty.</p>
           ) : (
-            <div className="space-y-2">
-              {result.chain!.map((g, i) => <GrantCard key={g.grant_id || i} grant={g} depth={i + 1} />)}
-            </div>
+            <>
+              {/* Live signed delegation DAG from the verified chain */}
+              <div className="rounded-babit overflow-hidden relative glass">
+                <div className="h-px accent-hairline" />
+                {(() => {
+                  const g = grantsToGraph(result.chain!);
+                  return (
+                    <AuthorityGraph
+                      nodes={g.nodes}
+                      edges={g.edges}
+                      height={Math.min(560, Math.max(240, result.chain!.length * 132))}
+                      interactive
+                    />
+                  );
+                })()}
+              </div>
+              <div className="space-y-2">
+                {result.chain!.map((g, i) => <GrantCard key={g.grant_id || i} grant={g} depth={i + 1} />)}
+              </div>
+            </>
           )}
           {result.reason && (
             <div className="p-3 rounded-babit bg-red-50 border border-red-200 text-red-800 text-xs font-mono">
