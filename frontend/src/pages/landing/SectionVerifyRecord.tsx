@@ -38,12 +38,18 @@ export function SectionVerifyRecord() {
   };
 
   return (
-    <section id="security" className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section id="security" className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+      <div className="absolute inset-0 grid-fade pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}
-        <div className="max-w-3xl space-y-4">
-          <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-            Verify it yourself
+        <div className="max-w-3xl space-y-4 animate-float-up">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
+            style={{ color: "var(--muted)" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
+            <span>Verify it yourself</span>
           </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
@@ -58,13 +64,11 @@ export function SectionVerifyRecord() {
         </div>
 
         {/* Verification Interactive Box */}
-        <div
-          className="max-w-2xl mx-auto rounded-babit-lg p-6 sm:p-8 space-y-6 shadow-xs"
-          style={{
-            backgroundColor: "var(--surface)",
-            border: "1px solid var(--border)",
-          }}
-        >
+        <div className="max-w-2xl mx-auto relative animate-float-up" style={{ animationDelay: "120ms" }}>
+          <div className="ambient-glow animate-glow-pulse" style={{ inset: "-12% 6% 16% 6%" }} />
+
+          <div className="glass rounded-babit-lg p-6 sm:p-8 space-y-6 relative overflow-hidden">
+            <div className="h-px accent-hairline absolute inset-x-0 top-0" />
           {/* Top Controls */}
           <div className="flex flex-wrap items-center justify-between gap-3 pb-4" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
             <div>
@@ -165,6 +169,7 @@ export function SectionVerifyRecord() {
               )}
             </div>
           )}
+          </div>
         </div>
       </div>
     </section>

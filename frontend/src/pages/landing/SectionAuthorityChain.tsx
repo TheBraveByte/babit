@@ -57,13 +57,18 @@ export function SectionAuthorityChain() {
   const detail = DETAIL_MAP[activeNode];
 
   return (
-    <section className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+      <div className="absolute inset-0 grid-fade pointer-events-none" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Left — Heading + description */}
-          <div className="space-y-5">
-            <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-              Chain of authority
+          <div className="space-y-5 animate-float-up">
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
+              style={{ color: "var(--muted)" }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
+              <span>Chain of authority</span>
             </div>
             <h2
               className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
@@ -77,13 +82,9 @@ export function SectionAuthorityChain() {
             </p>
 
             {/* Detail inspector panel */}
-            <div
-              className="rounded-babit-lg p-5 space-y-3 text-xs transition-all"
-              style={{
-                backgroundColor: "var(--surface)",
-                border: "1px solid var(--border)",
-              }}
-            >
+            <div className="glass rounded-babit-lg overflow-hidden transition-all">
+              <div className="h-px accent-hairline" />
+              <div className="p-5 space-y-3 text-xs">
               <div className="flex items-center justify-between pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
                 <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: "var(--muted)" }}>
                   Permission
@@ -113,26 +114,28 @@ export function SectionAuthorityChain() {
               <div className="pt-1.5 text-[10px]" style={{ color: "var(--muted)" }}>
                 Each hand-off can only narrow what's allowed, never widen it.
               </div>
+              </div>
             </div>
           </div>
 
           {/* Right — Chain visualization */}
-          <div className="flex flex-col items-center gap-0 relative">
+          <div className="flex flex-col items-center gap-0 relative animate-float-up" style={{ animationDelay: "120ms" }}>
+            <div className="ambient-glow" style={{ inset: "8% 6% 8% 6%", opacity: 0.28 }} />
             {NODES.map((node, idx) => {
               const isActive = activeNode === node.id;
               const isAboveActive = NODES.findIndex((n) => n.id === activeNode) > idx;
 
               return (
-                <div key={node.id} className="flex flex-col items-center w-full max-w-xs">
+                <div key={node.id} className="flex flex-col items-center w-full max-w-xs relative z-10">
                   {/* Node button */}
                   <button
                     onClick={() => setActiveNode(node.id)}
-                    className="w-full p-4 rounded-babit-md transition-all cursor-pointer text-left"
+                    className={`w-full p-4 rounded-babit-md transition-all cursor-pointer text-left ${isActive ? "" : "glass-subtle"}`}
                     style={{
-                      backgroundColor: isActive ? "var(--fg)" : "var(--surface)",
-                      border: `1.5px solid ${isActive ? "var(--fg)" : "var(--border)"}`,
+                      backgroundColor: isActive ? "var(--fg)" : undefined,
+                      border: isActive ? "1.5px solid var(--fg)" : undefined,
                       color: isActive ? "var(--surface)" : "var(--fg)",
-                      boxShadow: isActive ? "0 4px 12px rgba(0,0,0,0.12)" : "none",
+                      boxShadow: isActive ? "0 10px 30px -12px rgba(0,0,0,0.28)" : "none",
                       transform: isActive ? "scale(1.02)" : "scale(1)",
                     }}
                   >

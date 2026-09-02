@@ -30,12 +30,18 @@ export function SectionOfflineEvidence() {
   };
 
   return (
-    <section className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+      <div className="absolute inset-0 grid-fade pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}
-        <div className="max-w-3xl space-y-4">
-          <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-            Works without us
+        <div className="max-w-3xl space-y-4 animate-float-up">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
+            style={{ color: "var(--muted)" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
+            <span>Works without us</span>
           </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
@@ -51,10 +57,7 @@ export function SectionOfflineEvidence() {
 
         {/* 3 Steps */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div
-            className="p-6 rounded-babit-lg space-y-2 shadow-xs"
-            style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
-          >
+          <div className="glass-subtle p-6 rounded-babit-lg space-y-2 animate-float-up">
             <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--muted)" }}>Step 1</span>
             <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>Save the receipt</h3>
             <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>
@@ -62,10 +65,7 @@ export function SectionOfflineEvidence() {
             </p>
           </div>
 
-          <div
-            className="p-6 rounded-babit-lg space-y-2 shadow-xs"
-            style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
-          >
+          <div className="glass-subtle p-6 rounded-babit-lg space-y-2 animate-float-up" style={{ animationDelay: "90ms" }}>
             <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--muted)" }}>Step 2</span>
             <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>Get the public key</h3>
             <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>
@@ -73,10 +73,8 @@ export function SectionOfflineEvidence() {
             </p>
           </div>
 
-          <div
-            className="p-6 rounded-babit-lg space-y-2 shadow-xs"
-            style={{ backgroundColor: "var(--surface)", border: "1.5px solid var(--fg)" }}
-          >
+          <div className="glass p-6 pt-7 rounded-babit-lg space-y-2 relative overflow-hidden animate-float-up" style={{ animationDelay: "180ms" }}>
+            <div className="h-px accent-hairline absolute inset-x-0 top-0" />
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono uppercase font-semibold tracking-wider" style={{ color: "var(--color-verified)" }}>Step 3</span>
               <span className="text-[10px] font-mono font-semibold" style={{ color: "var(--color-verified)" }}>Verified</span>
@@ -89,13 +87,15 @@ export function SectionOfflineEvidence() {
         </div>
 
         {/* Live Interactive Terminal Simulator */}
-        <div
-          className="max-w-2xl mx-auto rounded-babit-lg overflow-hidden shadow-sm font-mono text-xs"
-          style={{
-            backgroundColor: "#0A0C0C",
-            border: "1px solid #222626",
-          }}
-        >
+        <div className="relative max-w-2xl mx-auto animate-float-up">
+          <div className="ambient-glow animate-glow-pulse" style={{ inset: "-16% 6% 16% 6%" }} />
+          <div
+            className="relative rounded-babit-lg overflow-hidden shadow-sm font-mono text-xs"
+            style={{
+              backgroundColor: "#0A0C0C",
+              border: "1px solid #222626",
+            }}
+          >
           {/* Terminal Window Header */}
           <div
             className="px-4 py-2.5 flex items-center justify-between"
@@ -146,6 +146,7 @@ export function SectionOfflineEvidence() {
                 </div>
               </div>
             )}
+          </div>
           </div>
         </div>
       </div>

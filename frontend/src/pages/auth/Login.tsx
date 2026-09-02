@@ -88,35 +88,17 @@ export function Login() {
           Sign in
         </Button>
 
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-neutral-200" />
-          </div>
-          <div className="relative flex justify-center text-xs">
-            <span className="bg-white px-2 text-neutral-400">or continue with</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
+        <div className="mt-4 pt-4 text-center" style={{ borderTop: "1px solid var(--border-subtle)" }}>
           <button
             type="button"
             onClick={() => {
               setEmail("demo@babit.dev");
               setPassword("demo1234");
             }}
-            className="flex items-center justify-center gap-2 py-2 px-3 border border-neutral-200 rounded-md text-xs font-medium text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
+            className="text-xs font-mono transition-colors cursor-pointer hover:opacity-80"
+            style={{ color: "var(--muted)" }}
           >
-            <span>Google</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setEmail("admin@enterprise.com");
-              setPassword("enterprise1234");
-            }}
-            className="flex items-center justify-center gap-2 py-2 px-3 border border-neutral-200 rounded-md text-xs font-medium text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
-          >
-            <span>GitHub</span>
+            Fill demo credentials
           </button>
         </div>
       </form>

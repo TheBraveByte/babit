@@ -5,12 +5,18 @@ export function SectionLogsVsEvidence() {
   const [logTampered, setLogTampered] = useState(false);
 
   return (
-    <section className="py-24 sm:py-32 border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section className="mesh-bg py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)" }}>
+      <div className="absolute inset-0 grid-fade pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}
-        <div className="max-w-3xl space-y-4">
-          <div className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-            Logs vs evidence
+        <div className="max-w-3xl space-y-4 animate-float-up">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
+            style={{ color: "var(--muted)" }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
+            <span>Logs vs evidence</span>
           </div>
           <h2
             className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
@@ -25,15 +31,9 @@ export function SectionLogsVsEvidence() {
         </div>
 
         {/* Side-by-Side Comparison */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           {/* Left: Ordinary log */}
-          <div
-            className="rounded-babit-lg p-6 space-y-4 shadow-xs"
-            style={{
-              backgroundColor: "var(--surface)",
-              border: "1px solid var(--border)",
-            }}
-          >
+          <div className="glass-subtle rounded-babit-lg p-6 space-y-4 animate-float-up">
             <div className="flex items-center justify-between pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
               <span className="text-xs uppercase font-semibold tracking-wider" style={{ color: "var(--muted)" }}>
                 An ordinary log entry
@@ -81,13 +81,10 @@ export function SectionLogsVsEvidence() {
           </div>
 
           {/* Right: babit evidence */}
-          <div
-            className="rounded-babit-lg p-6 space-y-4 shadow-xs"
-            style={{
-              backgroundColor: "var(--surface)",
-              border: "1.5px solid var(--fg)",
-            }}
-          >
+          <div className="relative">
+            <div className="ambient-glow animate-glow-pulse" style={{ inset: "-12% 4% 14% 4%" }} />
+            <div className="glass rounded-babit-lg p-6 pt-7 space-y-4 relative overflow-hidden animate-float-up" style={{ animationDelay: "120ms" }}>
+            <div className="h-px accent-hairline absolute inset-x-0 top-0" />
             <div className="flex items-center justify-between pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
               <span className="text-xs uppercase font-semibold tracking-wider" style={{ color: "var(--fg)" }}>
                 A babit receipt
@@ -136,6 +133,7 @@ export function SectionLogsVsEvidence() {
                 <span className="font-bold shrink-0" style={{ color: "var(--color-verified)" }}>✓</span>
                 <span>It names who authorized the action, all the way back to a person.</span>
               </div>
+            </div>
             </div>
           </div>
         </div>
