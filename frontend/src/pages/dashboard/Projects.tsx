@@ -321,7 +321,6 @@ export function Projects() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Console"
         title="Projects"
         description="Group your API keys by project so each application or team has its own set of credentials."
         action={
