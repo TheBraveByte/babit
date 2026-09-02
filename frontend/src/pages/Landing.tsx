@@ -1,6 +1,7 @@
 import { Nav } from "./landing/Nav";
 import { Hero } from "./landing/Hero";
 import { SectionHowItWorks } from "./landing/SectionHowItWorks";
+import { SectionSurfaces } from "./landing/SectionSurfaces";
 import { SectionLogsVsEvidence } from "./landing/SectionLogsVsEvidence";
 import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
 import { SectionReceiptCenterpiece } from "./landing/SectionReceiptCenterpiece";
@@ -21,6 +22,9 @@ export function Landing() {
 
         {/* How it works — the four plain steps */}
         <SectionHowItWorks />
+
+        {/* id="surfaces" — where babit records: browser, sandbox, desktop, REST */}
+        <SectionSurfaces />
 
         {/* id="product" — ordinary log vs babit evidence */}
         <div id="product">

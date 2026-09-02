@@ -18,6 +18,9 @@ import { Sessions } from "@/pages/dashboard/Sessions";
 import { Receipts } from "@/pages/dashboard/Receipts";
 import { Verify } from "@/screens/Verify";
 import { Settings } from "@/pages/dashboard/Settings";
+import { Projects } from "@/pages/dashboard/Projects";
+import { ApiKeys } from "@/pages/dashboard/ApiKeys";
+import { Analytics } from "@/pages/dashboard/Analytics";
 
 export function App() {
   const { path, navigate } = useRouter();
@@ -57,12 +60,15 @@ export function App() {
     return (
       <DashboardLayout activeTab={activeTab} onTabChange={handleTabChange}>
         {activeTab === "overview" && <Overview onNavigate={handleTabChange} />}
+        {activeTab === "analytics" && <Analytics />}
         {activeTab === "activity" && <Activity />}
         {activeTab === "agents" && <Agents onNavigate={handleTabChange} />}
         {activeTab === "delegations" && <Delegations />}
         {activeTab === "sessions" && <Sessions />}
         {activeTab === "receipts" && <Receipts />}
         {activeTab === "verify" && <Verify />}
+        {activeTab === "projects" && <Projects />}
+        {activeTab === "apikeys" && <ApiKeys />}
         {activeTab === "settings" && <Settings />}
       </DashboardLayout>
     );

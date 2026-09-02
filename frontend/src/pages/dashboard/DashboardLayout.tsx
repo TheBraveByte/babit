@@ -1,20 +1,22 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { BabitLogo, IconActivity, IconShieldCheck, IconGitBranch, IconCpu, IconSettings, IconLogOut, IconFileText, IconSearch, IconLayers } from "@/lib/icons";
+import { BabitLogo, IconActivity, IconShieldCheck, IconGitBranch, IconCpu, IconSettings, IconLogOut, IconFileText, IconSearch, IconLayers, IconBarChart, IconFolder, IconKey } from "@/lib/icons";
 import { useAuth } from "@/lib/auth";
 import { useRouter, Link } from "@/lib/router";
 import { CommandPalette } from "@/lib/CommandPalette";
 import { ThemeToggle } from "@/lib/ThemeToggle";
 import { docsUrl } from "@/lib/links";
-import { api } from "@/api/client";
 
 export type DashboardTab =
   | "overview"
+  | "analytics"
   | "activity"
   | "agents"
   | "delegations"
   | "sessions"
   | "receipts"
   | "verify"
+  | "projects"
+  | "apikeys"
   | "settings";
 
 interface NavItem {
@@ -25,12 +27,18 @@ interface NavItem {
 
 const mainNav: NavItem[] = [
   { key: "overview", label: "Overview", icon: <IconActivity className="w-4 h-4" /> },
+  { key: "analytics", label: "Analytics", icon: <IconBarChart className="w-4 h-4" /> },
   { key: "activity", label: "Activity", icon: <IconFileText className="w-4 h-4" /> },
   { key: "agents", label: "Agents", icon: <IconCpu className="w-4 h-4" /> },
   { key: "delegations", label: "Delegations", icon: <IconGitBranch className="w-4 h-4" /> },
   { key: "sessions", label: "Sessions", icon: <IconLayers className="w-4 h-4" /> },
   { key: "receipts", label: "Receipts", icon: <IconFileText className="w-4 h-4" /> },
-  { key: "verify", label: "Verification", icon: <IconShieldCheck className="w-4 h-4" /> },
+  { key: "verify", label: "Verify", icon: <IconShieldCheck className="w-4 h-4" /> },
+];
+
+const devNav: NavItem[] = [
+  { key: "projects", label: "Projects", icon: <IconFolder className="w-4 h-4" /> },
+  { key: "apikeys", label: "API keys", icon: <IconKey className="w-4 h-4" /> },
 ];
 
 const secondaryNav: NavItem[] = [
@@ -50,21 +58,6 @@ export function DashboardLayout({
   const { navigate } = useRouter();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
-  const [notaryOnline, setNotaryOnline] = useState<boolean | null>(null);
-
-  // Reflect real notary availability rather than a hard-coded status
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const res = await api.GET("/v1/notary/public-key", {});
-        if (active) setNotaryOnline(!!res.data?.public_key);
-      } catch {
-        if (active) setNotaryOnline(false);
-      }
-    })();
-    return () => { active = false; };
-  }, []);
 
   // Listen for Cmd+K / Ctrl+K
   useEffect(() => {
@@ -131,14 +124,15 @@ export function DashboardLayout({
             </button>
           </div>
 
-          {/* Navigation Items */}
-          <div className="p-3 space-y-6">
-            <div>
-              <span className="px-2.5 text-[10px] font-mono uppercase tracking-wider text-[color:var(--muted)] font-semibold block mb-1.5">
-                OPERATIONAL EVIDENCE
-              </span>
-              <nav className="space-y-0.5">
-                {mainNav.map((n) => {
+          {/* Navigation — grouped by spacing + hairline, no shouty labels */}
+          <div className="p-3 space-y-3">
+            {[mainNav, devNav, secondaryNav].map((group, gi) => (
+              <nav
+                key={gi}
+                className="space-y-0.5"
+                style={gi > 0 ? { borderTop: "1px solid var(--border-subtle)", paddingTop: "0.75rem" } : undefined}
+              >
+                {group.map((n) => {
                   const isActive = activeTab === n.key;
                   return (
                     <button
@@ -162,38 +156,7 @@ export function DashboardLayout({
                   );
                 })}
               </nav>
-            </div>
-
-            <div>
-              <span className="px-2.5 text-[10px] font-mono uppercase tracking-wider text-[color:var(--muted)] font-semibold block mb-1.5">
-                WORKSPACE
-              </span>
-              <nav className="space-y-0.5">
-                {secondaryNav.map((n) => {
-                  const isActive = activeTab === n.key;
-                  return (
-                    <button
-                      key={n.key}
-                      onClick={() => {
-                        onTabChange(n.key);
-                        navigate(`/dashboard/${n.key}`);
-                      }}
-                      className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-babit text-[14px] font-medium transition-all cursor-pointer"
-                      style={isActive ? {
-                        backgroundColor: "var(--brand-accent)",
-                        color: "white",
-                        fontWeight: 600,
-                      } : {
-                        color: "var(--muted)",
-                      }}
-                    >
-                      <span>{n.icon}</span>
-                      <span>{n.label}</span>
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -262,23 +225,6 @@ export function DashboardLayout({
           </div>
 
           <div className="flex items-center gap-3">
-            {notaryOnline !== null && (
-              notaryOnline ? (
-                <div
-                  className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded border font-medium"
-                  style={{ color: "var(--color-verified)", backgroundColor: "var(--color-verified-bg)", borderColor: "var(--color-verified-border)" }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-verified)" }} />
-                  <span>NOTARY ONLINE</span>
-                </div>
-              ) : (
-                <div className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-[color:var(--muted)] bg-[var(--secondary)] px-2.5 py-0.5 rounded border border-[color:var(--border)] font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--muted)]" />
-                  <span>NOTARY OFFLINE</span>
-                </div>
-              )
-            )}
-
             <ThemeToggle className="hover:bg-[var(--secondary)]" />
 
             <Link
@@ -294,7 +240,7 @@ export function DashboardLayout({
         {mobileDrawerOpen && (
           <div className="md:hidden bg-[var(--surface)] border-b border-[color:var(--border)] p-4 space-y-2 animate-fade-in shadow-lg">
             <div className="grid grid-cols-2 gap-2">
-              {mainNav.concat(secondaryNav).map((n) => (
+              {mainNav.concat(devNav, secondaryNav).map((n) => (
                 <button
                   key={n.key}
                   onClick={() => {

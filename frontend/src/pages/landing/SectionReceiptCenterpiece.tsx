@@ -14,7 +14,7 @@ export function SectionReceiptCenterpiece() {
     principal_authorizer: "Alice, Risk Supervisor",
     grant_ticket: "BAL-ROOT-100200",
     event_sha256: "0xd8291a849102c9184a8b7c120934812a849102c9184a8b7c120934812a849102",
-    notary_ed25519: "ed25519:5c82a10934812a849102c9184a8b7c120934812a849102c9184a8b7c12982f1b",
+    signature: "5c82a10934812a849102c9184a8b7c120934812a849102c9184a8b7c12982f1b",
     timestamp: "2026-09-01T14:32:08.492Z",
   };
 
@@ -168,7 +168,7 @@ export function SectionReceiptCenterpiece() {
                     color: "var(--muted)",
                   }}
                 >
-                  {expandedHex ? receiptData.notary_ed25519 : `${receiptData.notary_ed25519.slice(0, 26)}…${receiptData.notary_ed25519.slice(-16)}`}
+                  {expandedHex ? receiptData.signature : `${receiptData.signature.slice(0, 26)}…${receiptData.signature.slice(-16)}`}
                 </div>
               </div>
             </div>

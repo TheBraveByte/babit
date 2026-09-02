@@ -17,7 +17,6 @@ export function Sessions() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Capture Sessions"
         title="Sessions"
         description="Capture sessions bind executed actions to a root grant and seal them under an external anchor. Inspect a session by ID or drive its lifecycle."
       />

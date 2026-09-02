@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PageHeader, Card, MetricCard, StatusPill, Copyable } from "@/lib/ui";
+import { PageHeader, Card, MetricCard, Copyable } from "@/lib/ui";
 import { IconShieldCheck, IconGitBranch, IconFileText, IconArrowRight, IconKey } from "@/lib/icons";
 import type { DashboardTab } from "./DashboardLayout";
 import { useAuth } from "@/lib/auth";
@@ -32,7 +32,6 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
 
   const accountType = user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal";
   const workspace = branding?.company_name || user?.org_name || "Personal workspace";
-  const notaryStatus = publicKey ? "ACTIVE" : keyError ? "FAILED" : "PENDING";
 
   const quickActions: { tab: DashboardTab; title: string; desc: string; icon: React.ReactNode }[] = [
     { tab: "verify", title: "Verify evidence", desc: "Check a receipt or proof independently.", icon: <IconShieldCheck className="w-4 h-4 text-emerald-700" /> },
@@ -43,10 +42,8 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
   return (
     <div className="space-y-8">
       <PageHeader
-        eyebrow="Console"
         title="Overview"
         description="Proof for autonomous actions. Everything here is retrieved directly from the Babit ledger."
-        action={<StatusPill status={notaryStatus} label={`NOTARY ${notaryStatus}`} />}
       />
 
       {/* Workspace summary */}
@@ -60,12 +57,11 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
       <Card
         className="animate-float-up"
         title="Notary public key"
-        subtitle="The Ed25519 key every receipt signature is verified against."
-        action={<StatusPill status={notaryStatus} />}
+        subtitle="The public key every receipt signature is checked against."
       >
         <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
         <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>
-          Use this key to verify evidence offline — signatures on every sealed receipt trace back to it.
+          Use this key to verify evidence offline. Signatures on every sealed receipt trace back to it.
         </p>
         {publicKey ? (
           <div className="grid gap-4 sm:grid-cols-[auto_1fr]">
@@ -82,7 +78,7 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
           </div>
         ) : (
           <p className="text-xs font-mono" style={{ color: "var(--muted)" }}>
-            {keyError ? "Notary key unavailable — the ledger service may be offline." : "Loading notary key…"}
+            {keyError ? "Notary key unavailable, the ledger service may be unreachable." : "Loading notary key…"}
           </p>
         )}
       </Card>

@@ -2,16 +2,16 @@ import { useState } from "react";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { PageHeader, Card, Button, Error, StatusPill, TextArea, TextInput, Field } from "@/lib/ui";
-import { IconCheck, IconShieldCheck, IconShieldAlert } from "@/lib/icons";
+import { IconCheck, IconShieldCheck, IconShieldAlert, IconFileText, IconChevronDown } from "@/lib/icons";
 
 type Proof = components["schemas"]["v1Proof"];
 type VResp = components["schemas"]["v1VerifyProofResponse"];
 
 const checks: { key: keyof VResp; label: string; desc: string }[] = [
-  { key: "signature_valid", label: "Notary Signature", desc: "Ed25519 signature verified against notary public key" },
-  { key: "chain_intact", label: "Hash Chain", desc: "Sequential SHA-256 forward pointers are unbroken" },
-  { key: "authority_valid", label: "Delegation Authority", desc: "Action within granted resource scope and depth limits" },
-  { key: "anchored", label: "External Anchor", desc: "RFC 3161 timestamp attestation verified" },
+  { key: "signature_valid", label: "Notary signature", desc: "Signature matches the notary's public key" },
+  { key: "chain_intact", label: "Hash chain", desc: "Each entry links to the one before it with an unbroken SHA-256 chain" },
+  { key: "authority_valid", label: "Delegation authority", desc: "The action stays within the granted resource scope and depth limits" },
+  { key: "anchored", label: "External anchor", desc: "An independent timestamp confirms when the receipt was recorded" },
 ];
 
 export function Verify() {
@@ -20,6 +20,9 @@ export function Verify() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<VResp | null>(null);
+  const [showPaste, setShowPaste] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   async function verifyProof(proof: Proof) {
     setLoading(true);
@@ -46,10 +49,10 @@ export function Verify() {
     await verifyProof(res.data.proof);
   }
 
-  function verifyPasted() {
+  function verifyPasted(text: string = receipt) {
     setError(null);
     try {
-      const parsed = JSON.parse(receipt) as { proof?: Proof };
+      const parsed = JSON.parse(text) as { proof?: Proof };
       const proof = (parsed.proof ?? parsed) as Proof;
       void verifyProof(proof);
     } catch {
@@ -57,95 +60,157 @@ export function Verify() {
     }
   }
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  function handleFile(file: File) {
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target?.result as string;
       setReceipt(content);
+      setFileName(file.name);
+      verifyPasted(content);
     };
     reader.readAsText(file);
-  };
+  }
 
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Independent Verification"
-        title="Verify Evidence"
-        description="Don't trust us. Verify it yourself. Recompute a Babit receipt's cryptographic proofs locally against the notary key and external anchor."
+        title="Verify a receipt"
+        description="Don't trust us. Verify it yourself. Recompute a receipt's cryptographic proofs against the notary's public key and its external anchor, right here in your browser."
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Option A: Drop / Paste Receipt */}
-        <Card className="animate-float-up">
-          <div className="space-y-4">
-            <div className="h-px accent-hairline -mx-5 -mt-5" />
+      {/* Primary: verify by event ID */}
+      <Card className="animate-float-up">
+        <div className="space-y-5">
+          <div className="h-px accent-hairline -mx-5 -mt-5" />
 
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-mono uppercase tracking-wider font-semibold" style={{ color: "var(--fg)" }}>
-                1 · Verify Raw Receipt JSON
-              </span>
-              <label className="text-[11px] cursor-pointer underline underline-offset-2 transition-colors" style={{ color: "var(--muted)" }}>
-                Upload JSON file
-                <input type="file" accept=".json" onChange={handleFileUpload} className="hidden" />
-              </label>
+          <div className="space-y-1">
+            <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Verify by event ID</h2>
+            <p className="text-xs" style={{ color: "var(--muted)" }}>
+              Enter an event ID and we'll pull its proof from the ledger and check it for you.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+            <div className="flex-1">
+              <Field label="Event ID">
+                <TextInput
+                  value={eventId}
+                  onChange={(e) => setEventId(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && eventId.trim()) void fetchAndVerify(); }}
+                  placeholder="e.g. BAL-778812"
+                />
+              </Field>
             </div>
+            <Button
+              variant="primary"
+              size="md"
+              loading={loading}
+              disabled={!eventId.trim()}
+              onClick={() => void fetchAndVerify()}
+              className="justify-center sm:w-auto"
+            >
+              <IconShieldCheck className="w-4 h-4" />
+              <span>Verify</span>
+            </Button>
+          </div>
+        </div>
+      </Card>
 
+      {/* Secondary: upload a receipt file */}
+      <Card>
+        <div className="space-y-4">
+          <div className="space-y-1">
+            <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Upload a receipt file</h2>
+            <p className="text-xs" style={{ color: "var(--muted)" }}>
+              Have a receipt saved as a file? Drop it here to verify it locally.
+            </p>
+          </div>
+
+          <label
+            onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+            onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragActive(false);
+              const f = e.dataTransfer.files?.[0];
+              if (f) handleFile(f);
+            }}
+            className="block cursor-pointer border-2 border-dashed rounded-babit-lg px-6 py-10 text-center transition-colors"
+            style={{
+              borderColor: dragActive ? "var(--brand-accent)" : "var(--border)",
+              backgroundColor: dragActive
+                ? "color-mix(in srgb, var(--brand-accent) 8%, transparent)"
+                : "var(--secondary)",
+            }}
+          >
+            <input
+              type="file"
+              accept=".json,application/json"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleFile(f);
+              }}
+            />
+            <div
+              className="mx-auto w-10 h-10 rounded-full flex items-center justify-center mb-3"
+              style={{ backgroundColor: "var(--border)", color: "var(--muted)" }}
+            >
+              <IconFileText className="w-5 h-5" />
+            </div>
+            <div className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+              {fileName ? fileName : "Drop a .json receipt here"}
+            </div>
+            <div className="text-xs mt-1" style={{ color: "var(--muted)" }}>
+              or click to choose a file
+            </div>
+          </label>
+        </div>
+      </Card>
+
+      {/* Advanced: paste receipt JSON */}
+      <Card>
+        <button
+          type="button"
+          onClick={() => setShowPaste((v) => !v)}
+          className="w-full flex items-center justify-between gap-3 text-left cursor-pointer"
+        >
+          <div className="space-y-0.5">
+            <span className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Paste receipt JSON</span>
+            <p className="text-xs" style={{ color: "var(--muted)" }}>
+              For advanced use. Paste the raw receipt or proof JSON directly.
+            </p>
+          </div>
+          <span
+            className="shrink-0 transition-transform"
+            style={{ color: "var(--muted)", transform: showPaste ? "rotate(180deg)" : "none", display: "inline-flex" }}
+          >
+            <IconChevronDown className="w-4 h-4" />
+          </span>
+        </button>
+
+        {showPaste && (
+          <div className="mt-4 space-y-4">
             <TextArea
               value={receipt}
               onChange={(e) => setReceipt(e.target.value)}
               placeholder='Paste receipt or proof JSON here: {"event": { ... }, "merkle_root": "..."}'
               className="h-32 text-xs"
             />
-
-            <Button
-              variant="primary"
-              size="md"
-              loading={loading}
-              disabled={!receipt.trim()}
-              onClick={verifyPasted}
-              className="w-full justify-center"
-            >
-              <IconShieldCheck className="w-4 h-4" />
-              <span>Verify Receipt</span>
-            </Button>
-          </div>
-        </Card>
-
-        {/* Option B: Verify by Event ID */}
-        <Card>
-          <div className="flex flex-col justify-between h-full space-y-4">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono uppercase tracking-wider font-semibold" style={{ color: "var(--fg)" }}>
-                  2 · Verify by Event ID
-                </span>
-                <span className="text-[11px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Query ledger</span>
-              </div>
-
-              <Field label="Event ID">
-                <TextInput
-                  value={eventId}
-                  onChange={(e) => setEventId(e.target.value)}
-                  placeholder="e.g. BAL-778812"
-                />
-              </Field>
-            </div>
-
             <Button
               variant="secondary"
               size="md"
               loading={loading}
-              disabled={!eventId.trim()}
-              onClick={() => void fetchAndVerify()}
+              disabled={!receipt.trim()}
+              onClick={() => verifyPasted()}
               className="w-full justify-center"
             >
-              <span>Fetch Proof &amp; Verify</span>
+              <IconShieldCheck className="w-4 h-4" />
+              <span>Verify pasted receipt</span>
             </Button>
           </div>
-        </Card>
-      </div>
+        )}
+      </Card>
 
       {error && <Error message={error} />}
 
@@ -159,7 +224,7 @@ function VerificationReport({ result }: { result: VResp }) {
   const verdictColor = result.valid ? "var(--color-verified)" : "var(--color-failed)";
 
   return (
-    <Card title="Verification Report" subtitle="Recomputed independently — no trust in Babit required.">
+    <Card title="Verification report" subtitle="Recomputed independently, so no trust in Babit is required.">
       <div className="space-y-5">
         {/* Verdict banner */}
         <div
@@ -173,7 +238,7 @@ function VerificationReport({ result }: { result: VResp }) {
           {result.valid ? <IconShieldCheck className="w-5 h-5 shrink-0" /> : <IconShieldAlert className="w-5 h-5 shrink-0" />}
           <div>
             <div className="text-sm font-semibold">
-              {result.valid ? "Verified — all checks passed" : "Verification failed"}
+              {result.valid ? "Verified. All checks passed." : "Verification failed"}
             </div>
             <div className="text-[11px] font-mono" style={{ color: "var(--muted)" }}>
               {result.valid

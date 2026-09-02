@@ -61,7 +61,7 @@ export function Hero() {
               style={{ color: "var(--muted)" }}
             >
               <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-              <span>Agent accountability infrastructure</span>
+              <span>Evidence for what agents do</span>
             </div>
 
             <h1 className="mt-6 text-[44px] sm:text-6xl lg:text-[64px] font-semibold tracking-[-0.03em] leading-[1.02]" style={{ color: "var(--fg)" }}>
@@ -69,8 +69,8 @@ export function Hero() {
             </h1>
 
             <p className="mt-6 text-lg sm:text-[19px] leading-relaxed" style={{ color: "var(--muted)" }}>
-              babit binds every action an agent takes to the authority that permitted it, and
-              seals it as independently verifiable evidence — a system of record for what your
+              babit binds every action an agent takes to the authority that permitted it, then
+              seals it as evidence anyone can verify. A permanent, checkable record of what your
               autonomous software does.
             </p>
 
@@ -94,7 +94,7 @@ export function Hero() {
 
             <div className="mt-8 flex items-center gap-2 text-[13px]" style={{ color: "var(--muted)" }}>
               <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-4 h-4" /></span>
-              <span>Every receipt is verifiable independently — no trust in babit required.</span>
+              <span>Every receipt is verifiable independently. No trust in babit required.</span>
             </div>
           </div>
 
