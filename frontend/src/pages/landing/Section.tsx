@@ -76,7 +76,7 @@ export function LandingCard({
       style={{
         backgroundColor: "var(--surface)",
         border: "1px solid var(--border-subtle)",
-        borderRadius: "6px",
+        borderRadius: "4px",
         boxShadow: emphasis === "raised" ? "0 1px 2px 0 color-mix(in srgb, var(--fg) 3%, transparent)" : "none",
       }}
     >
@@ -105,7 +105,7 @@ export function CardGrid({
       className={`grid grid-cols-1 sm:grid-cols-2 ${colClass} ${className}`}
       style={{
         border: "1px solid var(--border-subtle)",
-        borderRadius: "6px",
+        borderRadius: "4px",
         overflow: "hidden",
       }}
     >
