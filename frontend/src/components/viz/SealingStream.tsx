@@ -2,18 +2,17 @@ import { useEffect, useRef } from "react";
 import { vizPalette, prefersReducedMotion } from "./tokens";
 
 /**
- * SealingStream — a live canvas that depicts babit's core loop in real time:
+ * SealingStream — a cinematic, calm canvas depicting babit's core loop:
  *
  *   agent action → content hash → notary signature → appended to chain
  *
- * Actions drift downward from the top. As each crosses the "seal line" (a
- * horizontal teal beam at the vertical midpoint), its hash is computed and
- * a notary-seal pulse fires. Below the beam, the action carries a verified
- * checkmark and descends into a growing chain of sealed hash blocks that
- * scrolls slowly along the bottom.
- *
- * The visualization is deterministic (no Math.random) and honours
- * prefers-reduced-motion (renders a static sealed frame).
+ * Design principles (studied from Linear, Cloudflare, Stripe):
+ * - Calm, infrastructural motion — slow drift, never twitchy
+ * - The seal beam is a real visual moment — a horizontal light beam with glow
+ * - Color transitions: muted gray (unsealed) → teal flash (sealing) → verified green (sealed)
+ * - Connected chain blocks with visible hash links
+ * - Deterministic, no Math.random — stable and SSR-safe
+ * - Honours prefers-reduced-motion (renders a static sealed frame)
  */
 
 const HEX = "0123456789abcdef";
@@ -28,36 +27,43 @@ function shortHash(seed: number): string {
   return out;
 }
 
-// Realistic agent actions — these mirror the actual API action types and
-// resources that babit records, not invented scenarios.
+// Realistic agent actions mirroring actual API action types
 const ACTIONS = [
-  { agent: "claims-agent",     action: "approve_payout",   resource: "claims/CLM-48102",  value: "$4,200" },
-  { agent: "checkout-agent",   action: "browser.click",    resource: "bestbuy.com/cart",   value: "$349" },
-  { agent: "support-agent",    action: "browser.type",     resource: "zendesk/ticket/8841", value: "—" },
-  { agent: "data-agent",       action: "browser.navigate", resource: "internal-db/query",  value: "—" },
-  { agent: "claims-agent",     action: "browser.submit",   resource: "claims/CLM-48102",  value: "$4,200" },
-  { agent: "checkout-agent",   action: "browser.click",    resource: "bestbuy.com/checkout", value: "$349" },
-  { agent: "audit-agent",      action: "browser.scroll",   resource: "reports/Q3-summary", value: "—" },
-  { agent: "support-agent",    action: "browser.submit",   resource: "zendesk/ticket/8841", value: "—" },
+  { agent: "claims-agent",    action: "approve_payout",  resource: "claims/CLM-48102",   value: "$4,200" },
+  { agent: "checkout-agent",  action: "browser.click",   resource: "bestbuy.com/cart",    value: "$349" },
+  { agent: "support-agent",   action: "browser.type",    resource: "zendesk/ticket/8841", value: "—" },
+  { agent: "data-agent",      action: "browser.navigate",resource: "internal-db/query",   value: "—" },
+  { agent: "claims-agent",    action: "browser.submit",  resource: "claims/CLM-48102",   value: "$4,200" },
+  { agent: "checkout-agent",  action: "browser.click",   resource: "bestbuy.com/checkout",value: "$349" },
+  { agent: "audit-agent",     action: "browser.scroll",  resource: "reports/Q3-summary",  value: "—" },
+  { agent: "support-agent",   action: "browser.submit",  resource: "zendesk/ticket/8841", value: "—" },
 ];
 
-const ACTION_INTERVAL = 2.4; // seconds between new actions
-const DRIFT_SPEED = 38;      // px/sec downward
-const CHAIN_BLOCK_W = 58;
-const CHAIN_BLOCK_H = 26;
-const CHAIN_SPEED = 16;      // px/sec leftward scroll
+const SPAWN_INTERVAL = 3.2;   // seconds between new actions — calm, not rushed
+const DRIFT_SPEED = 32;       // px/sec downward — slow, deliberate
+const CARD_W = 280;
+const CARD_H = 56;
+const CHAIN_BLOCK_W = 64;
+const CHAIN_BLOCK_H = 28;
+const CHAIN_SPEED = 14;       // px/sec leftward — very slow
+const SEAL_BEAM_HEIGHT = 3;   // px — the beam itself
 
 interface StreamAction {
-  index: number;
   agent: string;
   action: string;
   resource: string;
   value: string;
-  y: number;          // current vertical position (px from top)
-  sealed: boolean;    // has crossed the seal line
-  sealPulse: number;  // 0..1, decays after sealing
+  y: number;
+  sealed: boolean;
+  sealFlash: number;   // 0..1, decays after sealing — controls teal glow
   hash: string;
-  seq: number;        // sequence number in the chain
+  seq: number;
+}
+
+interface ChainBlock {
+  hash: string;
+  seq: number;
+  x: number;
 }
 
 export function SealingStream({ className = "" }: { className?: string }) {
@@ -74,12 +80,11 @@ export function SealingStream({ className = "" }: { className?: string }) {
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let startTs = 0;
-    let lastSpawn = 0;
+    let lastSpawn = -SPAWN_INTERVAL; // spawn first action immediately
     let seqCounter = 42;
     const reduced = prefersReducedMotion();
     const actions: StreamAction[] = [];
-    const chainBlocks: { hash: string; seq: number; x: number }[] = [];
-    let chainOffset = 0;
+    const chainBlocks: ChainBlock[] = [];
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
@@ -93,92 +98,96 @@ export function SealingStream({ className = "" }: { className?: string }) {
     resize();
 
     const spawnAction = (t: number) => {
-      const a = ACTIONS[Math.floor(t / ACTION_INTERVAL) % ACTIONS.length];
+      const a = ACTIONS[Math.floor(t / SPAWN_INTERVAL) % ACTIONS.length];
       seqCounter++;
       actions.push({
-        index: actions.length,
         agent: a.agent,
         action: a.action,
         resource: a.resource,
         value: a.value,
-        y: -20,
+        y: -CARD_H,
         sealed: false,
-        sealPulse: 0,
+        sealFlash: 0,
         hash: shortHash(seqCounter),
         seq: seqCounter,
       });
     };
 
-    // Pre-seed a few actions and chain blocks so the first frame isn't empty
+    // Pre-seed chain blocks so the first frame isn't empty
+    for (let i = 0; i < 12; i++) {
+      chainBlocks.push({
+        hash: shortHash(42 + i),
+        seq: 42 + i,
+        x: width - i * (CHAIN_BLOCK_W + 6),
+      });
+    }
+
+    // Pre-seed a few sealed actions for reduced-motion mode
     if (reduced) {
+      const _sealLineY = height * 0.52;
       for (let i = 0; i < 3; i++) {
         seqCounter++;
         actions.push({
-          index: i,
           ...ACTIONS[i],
           agent: ACTIONS[i].agent,
           action: ACTIONS[i].action,
           resource: ACTIONS[i].resource,
           value: ACTIONS[i].value,
-          y: 40 + i * 80,
+          y: _sealLineY + 40 + i * 70,
           sealed: true,
-          sealPulse: 0,
+          sealFlash: 0,
           hash: shortHash(seqCounter),
           seq: seqCounter,
         });
       }
-    }
-    for (let i = 0; i < 8; i++) {
-      chainBlocks.push({
-        hash: shortHash(42 + i),
-        seq: 42 + i,
-        x: width - i * (CHAIN_BLOCK_W + 8),
-      });
     }
 
     const draw = (ts: number) => {
       if (!startTs) startTs = ts;
       const t = (ts - startTs) / 1000;
       const p = vizPalette();
-      const sealLineY = height * 0.48;
+      const sealLineY = height * 0.52;
+      const chainY = height - CHAIN_BLOCK_H - 32;
 
       ctx.clearRect(0, 0, width, height);
 
-      // ── Background: subtle dot grid ──────────────────────────────
+      // ── Background: very subtle dot grid ─────────────────────────
       ctx.fillStyle = p.muted;
-      ctx.globalAlpha = 0.08;
-      const dotGap = 28;
+      ctx.globalAlpha = 0.06;
+      const dotGap = 32;
       for (let x = dotGap / 2; x < width; x += dotGap) {
         for (let y = dotGap / 2; y < height; y += dotGap) {
           ctx.beginPath();
-          ctx.arc(x, y, 0.8, 0, Math.PI * 2);
+          ctx.arc(x, y, 0.7, 0, Math.PI * 2);
           ctx.fill();
         }
       }
       ctx.globalAlpha = 1;
 
-      // ── Seal line: a horizontal teal beam ────────────────────────
-      const beamGrad = ctx.createLinearGradient(0, sealLineY - 1, 0, sealLineY + 1);
-      beamGrad.addColorStop(0, "transparent");
-      beamGrad.addColorStop(0.5, p.accent);
-      beamGrad.addColorStop(1, "transparent");
-      ctx.fillStyle = beamGrad;
-      ctx.globalAlpha = 0.25;
-      ctx.fillRect(0, sealLineY - 1, width, 2);
+      // ── Seal beam: a horizontal light beam with glow ─────────────
+      // Wide glow halo
+      const beamGlow = ctx.createLinearGradient(0, sealLineY - 60, 0, sealLineY + 60);
+      beamGlow.addColorStop(0, "transparent");
+      beamGlow.addColorStop(0.5, p.accent);
+      beamGlow.addColorStop(1, "transparent");
+      ctx.fillStyle = beamGlow;
+      ctx.globalAlpha = 0.05;
+      ctx.fillRect(0, sealLineY - 60, width, 120);
       ctx.globalAlpha = 1;
 
-      // Seal line glow
-      const glowGrad = ctx.createLinearGradient(0, sealLineY - 40, 0, sealLineY + 40);
-      glowGrad.addColorStop(0, "transparent");
-      glowGrad.addColorStop(0.5, p.accent);
-      glowGrad.addColorStop(1, "transparent");
-      ctx.fillStyle = glowGrad;
-      ctx.globalAlpha = 0.06;
-      ctx.fillRect(0, sealLineY - 40, width, 80);
+      // The beam itself — a bright line with gradient
+      const beamGrad = ctx.createLinearGradient(0, 0, width, 0);
+      beamGrad.addColorStop(0, "transparent");
+      beamGrad.addColorStop(0.15, p.accent);
+      beamGrad.addColorStop(0.85, p.accent);
+      beamGrad.addColorStop(1, "transparent");
+      ctx.fillStyle = beamGrad;
+      ctx.globalAlpha = 0.35;
+      ctx.fillRect(0, sealLineY - SEAL_BEAM_HEIGHT / 2, width, SEAL_BEAM_HEIGHT);
       ctx.globalAlpha = 1;
 
       // ── Spawn new actions ────────────────────────────────────────
-      if (!reduced && t - lastSpawn > ACTION_INTERVAL) {
+      if (!reduced && t - lastSpawn > SPAWN_INTERVAL) {
         spawnAction(t);
         lastSpawn = t;
       }
@@ -187,13 +196,13 @@ export function SealingStream({ className = "" }: { className?: string }) {
       for (let i = actions.length - 1; i >= 0; i--) {
         const a = actions[i];
         if (!reduced) {
-          a.y += DRIFT_SPEED / 60; // approx per-frame at 60fps
+          a.y += DRIFT_SPEED / 60;
         }
 
         // Check if crossing the seal line
         if (!a.sealed && a.y >= sealLineY) {
           a.sealed = true;
-          a.sealPulse = 1;
+          a.sealFlash = 1;
           // Add to chain
           chainBlocks.push({
             hash: a.hash,
@@ -202,59 +211,68 @@ export function SealingStream({ className = "" }: { className?: string }) {
           });
         }
 
-        // Decay seal pulse
-        if (a.sealPulse > 0 && !reduced) {
-          a.sealPulse = Math.max(0, a.sealPulse - 0.02);
+        // Decay seal flash
+        if (a.sealFlash > 0 && !reduced) {
+          a.sealFlash = Math.max(0, a.sealFlash - 0.012);
         }
 
         // Remove if below the chain area
-        const chainY = height - CHAIN_BLOCK_H - 24;
-        if (a.y > chainY + 10) {
+        if (a.y > chainY - 10) {
           actions.splice(i, 1);
           continue;
         }
 
-        drawActionCard(ctx, a, p, sealLineY, width);
+        drawActionCard(ctx, a, p, width);
       }
 
-      // ── Update + draw chain blocks ───────────────────────────────
+      // ── Update + draw chain ──────────────────────────────────────
       if (!reduced) {
-        chainOffset += CHAIN_SPEED / 60;
         for (const b of chainBlocks) {
           b.x -= CHAIN_SPEED / 60;
         }
       }
-      // Remove off-screen blocks
       for (let i = chainBlocks.length - 1; i >= 0; i--) {
         if (chainBlocks[i].x < -CHAIN_BLOCK_W) {
           chainBlocks.splice(i, 1);
         }
       }
 
-      // Draw chain spine
-      const chainY = height - CHAIN_BLOCK_H - 24;
+      // Draw chain spine — a solid line connecting all blocks
       ctx.strokeStyle = p.border;
       ctx.lineWidth = 1;
-      ctx.globalAlpha = 0.4;
+      ctx.globalAlpha = 0.3;
       ctx.beginPath();
       ctx.moveTo(0, chainY + CHAIN_BLOCK_H / 2);
       ctx.lineTo(width, chainY + CHAIN_BLOCK_H / 2);
       ctx.stroke();
       ctx.globalAlpha = 1;
 
-      // Draw chain blocks
-      for (const b of chainBlocks) {
+      // Draw chain blocks with connecting links
+      for (let i = 0; i < chainBlocks.length; i++) {
+        const b = chainBlocks[i];
+        const next = chainBlocks[i + 1];
         drawChainBlock(ctx, b, p, chainY);
+        // Draw link to next block
+        if (next && next.x > b.x + CHAIN_BLOCK_W) {
+          ctx.strokeStyle = p.border;
+          ctx.globalAlpha = 0.2;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(b.x + CHAIN_BLOCK_W, chainY + CHAIN_BLOCK_H / 2);
+          ctx.lineTo(next.x, chainY + CHAIN_BLOCK_H / 2);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
       }
 
-      // ── Labels ───────────────────────────────────────────────────
-      ctx.font = "9px ui-monospace, 'Geist Mono Variable', monospace";
+      // ── Stage labels ─────────────────────────────────────────────
+      ctx.font = "10px ui-monospace, 'Geist Mono Variable', monospace";
       ctx.fillStyle = p.muted;
-      ctx.globalAlpha = 0.5;
+      ctx.globalAlpha = 0.4;
       ctx.textBaseline = "alphabetic";
-      ctx.fillText("agent actions", 12, 18);
-      ctx.fillText("notary seal", 12, sealLineY - 6);
-      ctx.fillText("evidence chain", 12, chainY - 6);
+      ctx.fillText("agent actions", 16, 22);
+      ctx.fillText("notary seal", 16, sealLineY - 10);
+      ctx.fillText("evidence chain", 16, chainY - 10);
       ctx.globalAlpha = 1;
 
       if (!reduced) raf = requestAnimationFrame(draw);
@@ -277,79 +295,103 @@ function drawActionCard(
   ctx: CanvasRenderingContext2D,
   a: StreamAction,
   p: { fg: string; muted: string; border: string; surface: string; accent: string; verified: string },
-  _sealLineY: number,
   width: number,
 ) {
-  const cardW = Math.min(220, width - 32);
-  const cardH = 44;
+  const cardW = Math.min(CARD_W, width - 32);
+  const cardH = CARD_H;
   const x = (width - cardW) / 2;
   const y = a.y - cardH / 2;
 
+  // Card shadow when sealed (subtle depth)
+  if (a.sealed) {
+    ctx.fillStyle = "rgba(0,0,0,0.12)";
+    ctx.globalAlpha = 0.4;
+    roundRect(ctx, x, y + 2, cardW, cardH, 10);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
   // Card background
-  roundRect(ctx, x, y, cardW, cardH, 8);
+  roundRect(ctx, x, y, cardW, cardH, 10);
   ctx.fillStyle = p.surface;
-  ctx.globalAlpha = 0.9;
+  ctx.globalAlpha = a.sealed ? 0.95 : 0.8;
   ctx.fill();
   ctx.globalAlpha = 1;
 
-  // Border — teal when sealing, normal otherwise
-  ctx.lineWidth = 1;
-  if (a.sealPulse > 0) {
+  // Border — transitions from muted → teal flash → verified
+  if (a.sealFlash > 0.1) {
+    // Sealing: teal border with glow
     ctx.strokeStyle = p.accent;
-    ctx.globalAlpha = a.sealPulse;
+    ctx.globalAlpha = a.sealFlash;
     ctx.lineWidth = 1.5;
-  } else if (a.sealed) {
-    ctx.strokeStyle = p.border;
-  } else {
-    ctx.strokeStyle = p.border;
-  }
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-
-  // Seal pulse ring
-  if (a.sealPulse > 0.1) {
+    ctx.stroke();
+    // Outer glow ring
     ctx.beginPath();
-    roundRect(ctx, x - 2, y - 2, cardW + 4, cardH + 4, 10);
+    roundRect(ctx, x - 3, y - 3, cardW + 6, cardH + 6, 13);
     ctx.strokeStyle = p.accent;
-    ctx.globalAlpha = a.sealPulse * 0.4;
-    ctx.lineWidth = 2;
+    ctx.globalAlpha = a.sealFlash * 0.25;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  } else if (a.sealed) {
+    // Sealed: subtle verified tint
+    ctx.strokeStyle = p.border;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  } else {
+    // Unsealed: muted
+    ctx.strokeStyle = p.border;
+    ctx.globalAlpha = 0.6;
+    ctx.lineWidth = 1;
     ctx.stroke();
     ctx.globalAlpha = 1;
   }
 
-  // Action name
-  ctx.font = "11px ui-monospace, 'Geist Mono Variable', monospace";
-  ctx.fillStyle = a.sealed ? p.fg : p.muted;
-  ctx.textBaseline = "middle";
-  ctx.fillText(a.action, x + 12, y + 14);
-
-  // Agent + resource
-  ctx.font = "9px ui-monospace, 'Geist Mono Variable', monospace";
-  ctx.fillStyle = p.muted;
-  ctx.globalAlpha = 0.7;
-  ctx.fillText(`${a.agent} · ${a.resource}`, x + 12, y + 30);
+  // Left accent bar — color indicates state
+  const barColor = a.sealFlash > 0.1 ? p.accent : a.sealed ? p.verified : p.muted;
+  ctx.fillStyle = barColor;
+  ctx.globalAlpha = a.sealed ? 0.8 : 0.4;
+  roundRect(ctx, x, y, 3, cardH, 1.5);
+  ctx.fill();
   ctx.globalAlpha = 1;
 
-  // Status indicator on the right
+  // Action name (mono, prominent)
+  ctx.font = "12px ui-monospace, 'Geist Mono Variable', monospace";
+  ctx.fillStyle = a.sealed ? p.fg : p.muted;
+  ctx.textBaseline = "middle";
+  ctx.fillText(a.action, x + 14, y + 18);
+
+  // Agent + resource (smaller, muted)
+  ctx.font = "10px ui-monospace, 'Geist Mono Variable', monospace";
+  ctx.fillStyle = p.muted;
+  ctx.globalAlpha = 0.6;
+  ctx.fillText(`${a.agent} · ${a.resource}`, x + 14, y + 36);
+  ctx.globalAlpha = 1;
+
+  // Right side: status
   if (a.sealed) {
-    // Hash
-    ctx.font = "9px ui-monospace, 'Geist Mono Variable', monospace";
+    // Hash + seq
+    ctx.font = "10px ui-monospace, 'Geist Mono Variable', monospace";
     ctx.fillStyle = p.verified;
     ctx.textAlign = "right";
-    ctx.fillText(`#${a.seq} ${a.hash}`, x + cardW - 12, y + 14);
+    ctx.fillText(`#${a.seq}`, x + cardW - 14, y + 18);
+    ctx.fillStyle = p.muted;
+    ctx.globalAlpha = 0.7;
+    ctx.fillText(a.hash.slice(0, 8), x + cardW - 14, y + 36);
     ctx.textAlign = "left";
+    ctx.globalAlpha = 1;
 
-    // Checkmark
+    // Verified checkmark dot
     ctx.beginPath();
-    ctx.arc(x + cardW - 14, y + 30, 3, 0, Math.PI * 2);
+    ctx.arc(x + cardW - 14, y + cardH / 2 + 8, 2.5, 0, Math.PI * 2);
     ctx.fillStyle = p.verified;
     ctx.fill();
   } else {
-    // Pending dot
+    // Pending indicator — a small pulsing dot
     ctx.beginPath();
-    ctx.arc(x + cardW - 14, y + cardH / 2, 3, 0, Math.PI * 2);
+    ctx.arc(x + cardW - 14, y + cardH / 2, 2.5, 0, Math.PI * 2);
     ctx.fillStyle = p.muted;
-    ctx.globalAlpha = 0.4;
+    ctx.globalAlpha = 0.3;
     ctx.fill();
     ctx.globalAlpha = 1;
   }
@@ -357,7 +399,7 @@ function drawActionCard(
 
 function drawChainBlock(
   ctx: CanvasRenderingContext2D,
-  b: { hash: string; seq: number; x: number },
+  b: ChainBlock,
   p: { fg: string; muted: string; border: string; surface: string; accent: string; verified: string },
   chainY: number,
 ) {
@@ -366,29 +408,34 @@ function drawChainBlock(
   const x = b.x;
   const y = chainY;
 
+  // Block background
   roundRect(ctx, x, y, w, h, 6);
   ctx.fillStyle = p.surface;
-  ctx.globalAlpha = 0.85;
+  ctx.globalAlpha = 0.8;
   ctx.fill();
   ctx.globalAlpha = 1;
 
+  // Border
   ctx.lineWidth = 1;
   ctx.strokeStyle = p.border;
+  ctx.globalAlpha = 0.5;
   ctx.stroke();
+  ctx.globalAlpha = 1;
 
-  // Seal dot
+  // Seal dot (verified green)
   ctx.beginPath();
-  ctx.arc(x + 9, y + h / 2, 2.5, 0, Math.PI * 2);
+  ctx.arc(x + 10, y + h / 2, 2.5, 0, Math.PI * 2);
   ctx.fillStyle = p.verified;
   ctx.fill();
 
-  // Hash
+  // Hash (truncated)
   ctx.font = "8px ui-monospace, 'Geist Mono Variable', monospace";
   ctx.fillStyle = p.muted;
   ctx.textBaseline = "middle";
-  ctx.fillText(b.hash.slice(0, 6), x + 16, y + h / 2 - 3);
+  ctx.fillText(b.hash.slice(0, 7), x + 18, y + h / 2 - 4);
+  // Seq number
   ctx.fillStyle = p.border;
-  ctx.fillText(`#${b.seq}`, x + 16, y + h / 2 + 6);
+  ctx.fillText(`#${b.seq}`, x + 18, y + h / 2 + 6);
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
