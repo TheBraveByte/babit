@@ -110,6 +110,8 @@ export function Nav() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-1.5 text-[color:var(--fg)]"
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="landing-mobile-menu"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
@@ -125,6 +127,7 @@ export function Nav() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div
+          id="landing-mobile-menu"
           className="md:hidden glass-subtle border-b border-[color:var(--border)] px-6 pt-2 pb-4 space-y-1 animate-fade-in"
           style={{ borderTop: "1px solid var(--border-subtle)" }}
         >

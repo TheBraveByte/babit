@@ -4,6 +4,7 @@ import { useRouter } from "@/lib/router";
 
 // Eager: landing + auth are the entry surfaces, kept in the initial bundle.
 import { Landing } from "@/pages/Landing";
+import { NotFound } from "@/pages/NotFound";
 import { Login } from "@/pages/auth/Login";
 import { Signup } from "@/pages/auth/Signup";
 import { ForgotPassword } from "@/pages/auth/ForgotPassword";
@@ -78,5 +79,5 @@ export function App() {
     );
   }
 
-  return <Landing />;
+  return <NotFound />;
 }

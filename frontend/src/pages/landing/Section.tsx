@@ -72,11 +72,67 @@ export function LandingCard({
 }) {
   return (
     <div
-      className={`rounded-babit-sm h-full transition-colors duration-200 ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
+      className={`h-full transition-colors duration-200 ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
       style={{
         backgroundColor: "var(--surface)",
         border: "1px solid var(--border-subtle)",
+        borderRadius: "6px",
         boxShadow: emphasis === "raised" ? "0 1px 2px 0 color-mix(in srgb, var(--fg) 3%, transparent)" : "none",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * CardGrid — a flush grid where cards share hairline borders (Cloudflare style).
+ * No gap between cards. The outer container has one border; each card adds
+ * only its left and top border so lines are never doubled.
+ */
+export function CardGrid({
+  cols = 3,
+  className = "",
+  children,
+}: {
+  cols?: 2 | 3 | 4;
+  className?: string;
+  children: ReactNode;
+}) {
+  const colClass = cols === 4 ? "lg:grid-cols-4" : cols === 2 ? "lg:grid-cols-2" : "lg:grid-cols-3";
+  return (
+    <div
+      className={`grid grid-cols-1 sm:grid-cols-2 ${colClass} ${className}`}
+      style={{
+        border: "1px solid var(--border-subtle)",
+        borderRadius: "6px",
+        overflow: "hidden",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * FlushCard — a card designed to sit inside CardGrid. No rounded corners,
+ * no individual border. Only a left + top hairline so borders join cleanly.
+ */
+export function FlushCard({
+  className = "",
+  padding = "default",
+  children,
+}: {
+  className?: string;
+  padding?: "default" | "none";
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={`h-full transition-colors duration-200 ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
+      style={{
+        borderLeft: "1px solid var(--border-subtle)",
+        borderTop: "1px solid var(--border-subtle)",
       }}
     >
       {children}

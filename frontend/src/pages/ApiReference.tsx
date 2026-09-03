@@ -7,7 +7,7 @@ import spec from "../../openapi.v3.json";
 
 export function ApiReference() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
+    <div id="main-content" tabIndex={-1} className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <header
         className="h-14 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50 glass-subtle"
         style={{ borderBottom: "1px solid var(--border)" }}

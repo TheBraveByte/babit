@@ -60,6 +60,8 @@ export function DashboardLayout({
   const { navigate } = useRouter();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
+  const [brandLogoError, setBrandLogoError] = useState(false);
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem(SIDEBAR_STORAGE_KEY) === "true";
@@ -93,14 +95,12 @@ export function DashboardLayout({
   const avatarInitial = (user?.email || orgName || "").charAt(0).toUpperCase();
 
   const avatar = (sizeClass: string) =>
-    logoUrl ? (
+    logoUrl && !avatarError ? (
       <img
         src={logoUrl}
         alt={orgName}
         className={`${sizeClass} rounded-full object-cover border border-[color:var(--border)] shrink-0`}
-        onError={(e) => {
-          (e.target as HTMLImageElement).style.display = "none";
-        }}
+        onError={() => setAvatarError(true)}
       />
     ) : (
       <div className={`${sizeClass} rounded-full flex items-center justify-center shrink-0 bg-[var(--secondary)] border border-[color:var(--border)] text-[color:var(--fg)]`}>
@@ -127,14 +127,12 @@ export function DashboardLayout({
           {collapsed ? (
             <div className="p-3 border-b border-[color:var(--border)] flex flex-col items-center gap-2">
               <Link to="/" title={orgName} className="flex items-center justify-center">
-                {logoUrl ? (
+                {logoUrl && !brandLogoError ? (
                   <img
                     src={logoUrl}
                     alt={orgName}
                     className="w-6 h-6 object-contain rounded border border-[color:var(--border)] p-0.5 bg-[var(--surface)]"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
+                    onError={() => setBrandLogoError(true)}
                   />
                 ) : (
                   <BabitLogo className="w-7 h-7 text-[color:var(--fg)]" />
@@ -152,14 +150,12 @@ export function DashboardLayout({
           ) : (
             <div className="p-4 border-b border-[color:var(--border)] flex items-center justify-between gap-2">
               <Link to="/" className="flex items-center gap-2.5 min-w-0">
-                {logoUrl ? (
+                {logoUrl && !brandLogoError ? (
                   <img
                     src={logoUrl}
                     alt={orgName}
                     className="w-6 h-6 object-contain rounded border border-[color:var(--border)] p-0.5 bg-[var(--surface)] shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
+                    onError={() => setBrandLogoError(true)}
                   />
                 ) : (
                   <BabitLogo className="w-7 h-7 text-[color:var(--fg)] shrink-0" />
@@ -321,6 +317,8 @@ export function DashboardLayout({
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
               className="md:hidden p-1 text-[color:var(--fg)]"
               aria-label="Open menu"
+              aria-expanded={mobileDrawerOpen}
+              aria-controls="mobile-nav-drawer"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -349,7 +347,7 @@ export function DashboardLayout({
 
         {/* Mobile Navigation Drawer */}
         {mobileDrawerOpen && (
-          <div className="md:hidden bg-[var(--surface)] border-b border-[color:var(--border)] p-4 space-y-2 animate-fade-in shadow-lg">
+          <div id="mobile-nav-drawer" className="md:hidden bg-[var(--surface)] border-b border-[color:var(--border)] p-4 space-y-2 animate-fade-in shadow-lg">
             <div className="grid grid-cols-2 gap-2">
               {mainNav.concat(devNav, secondaryNav).map((n) => (
                 <button

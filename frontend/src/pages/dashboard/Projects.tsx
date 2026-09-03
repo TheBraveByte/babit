@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { PageHeader, Card, Button, Field, TextInput, EmptyState, StatusPill, Copyable, Error as ErrorBox } from "@/lib/ui";
+import { PageHeader, Card, Button, Field, TextInput, EmptyState, StatusPill, Copyable, Error as ErrorBox, ConfirmDialog } from "@/lib/ui";
 import { IconFolder, IconKey, IconChevronDown, IconClock } from "@/lib/icons";
 import { useAuth } from "@/lib/auth";
 import { api, errText } from "@/api/client";
@@ -117,6 +117,7 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
   const [keyErr, setKeyErr] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [reveal, setReveal] = useState<{ secret: string } | null>(null);
+  const [confirmRevoke, setConfirmRevoke] = useState<string | null>(null);
 
   async function loadKeys() {
     if (!project.id) return;
@@ -181,7 +182,7 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
             </div>
           </div>
         </div>
-        <Button variant="secondary" size="sm" onClick={toggle}>
+        <Button variant="secondary" size="sm" onClick={toggle} aria-expanded={expanded}>
           <IconKey className="w-3.5 h-3.5" />
           <span>Manage keys</span>
           <IconChevronDown className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
@@ -190,6 +191,19 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
 
       {expanded && (
         <div className="mt-4 pt-4 space-y-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+          <ConfirmDialog
+            open={!!confirmRevoke}
+            title="Revoke API key"
+            message="Revoked keys stop working immediately. This cannot be undone."
+            confirmLabel="Revoke key"
+            cancelLabel="Cancel"
+            danger
+            onConfirm={async () => {
+              if (confirmRevoke) await revoke(confirmRevoke);
+              setConfirmRevoke(null);
+            }}
+            onCancel={() => setConfirmRevoke(null)}
+          />
           {reveal && <RevealPanel secret={reveal.secret} onDone={() => setReveal(null)} />}
           {keyErr && <ErrorBox message={keyErr} />}
 
@@ -206,7 +220,7 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
             <p className="text-xs" style={{ color: "var(--muted)" }}>No keys yet. Create one to authenticate API calls for this project.</p>
           ) : (
             <div className="space-y-1.5">
-              {keys.map((k) => <KeyRow key={k.id} apiKey={k} onRevoke={() => k.id && revoke(k.id)} />)}
+              {keys.map((k) => <KeyRow key={k.id} apiKey={k} onRevoke={() => k.id && setConfirmRevoke(k.id)} />)}
             </div>
           )}
         </div>

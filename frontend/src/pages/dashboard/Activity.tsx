@@ -99,8 +99,7 @@ export function Activity() {
                     {events.map((ev, i) => (
                       <tr
                         key={ev.event_id || i}
-                        onClick={() => setSelected(ev)}
-                        className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
+                        className="transition-colors hover:bg-[var(--secondary)]"
                         style={{ borderBottom: i < events.length - 1 ? "1px solid var(--border-subtle)" : undefined }}
                       >
                         <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>{ev.event_id}</td>
@@ -108,9 +107,15 @@ export function Activity() {
                         <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.session_id}</td>
                         <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.occurred_at?.slice(0, 19).replace("T", " ") || "—"}</td>
                         <td className="px-3 py-2.5 text-right">
-                          <span className="text-xs font-medium inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
+                          <button
+                            type="button"
+                            onClick={() => setSelected(ev)}
+                            className="text-xs font-medium inline-flex items-center gap-1 transition-colors hover:opacity-80 cursor-pointer"
+                            style={{ color: "var(--brand-accent)" }}
+                            aria-label={`View event ${ev.event_id ?? i + 1}`}
+                          >
                             <IconSearch className="w-3 h-3" /> View
-                          </span>
+                          </button>
                         </td>
                       </tr>
                     ))}
