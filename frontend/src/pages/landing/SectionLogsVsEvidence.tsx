@@ -7,7 +7,7 @@ export function SectionLogsVsEvidence() {
   const amount = logTampered ? "$9,700" : "$4,200";
 
   return (
-    <Section>
+    <Section id="product">
       <SectionHeader
         eyebrow="Logs vs evidence"
         title="A log can be quietly changed. Evidence can't."

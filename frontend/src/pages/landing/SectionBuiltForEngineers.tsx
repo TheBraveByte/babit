@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { IconCheck, IconCopy, IconArrowUpRight } from "@/lib/icons";
 import { Link } from "@/lib/router";
+import { Section, SectionHeader, LandingCard } from "./Section";
 
 const CODE_EXAMPLES = {
   curl: `# 1. Record what an agent just did, one authenticated POST.
@@ -42,7 +43,7 @@ const res = await fetch(
 );
 
 const { event } = await res.json();
-console.log("Sealed event:", event.id);`,
+console.log("Sealed event:", event.event_id);`,
 
   python: `import os, requests
 
@@ -59,7 +60,7 @@ res = requests.post(
 )
 
 event = res.json()["event"]
-print("Sealed event:", event["id"])`,
+print("Sealed event:", event["event_id"])`,
 
   go: `package main
 
@@ -100,107 +101,91 @@ export function SectionBuiltForEngineers() {
   };
 
   return (
-    <section id="developers" className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="absolute inset-0 mesh-bg pointer-events-none" />
-      <div className="absolute inset-0 grid-fade pointer-events-none" />
+    <Section id="developers">
+      <SectionHeader
+        eyebrow="Built for engineers"
+        title="Wire it in with a few HTTP calls."
+        lead="Record an action with one call. Verify the receipt with another. REST and gRPC, no SDK required."
+      />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
-        {/* Section Header */}
-        <div className="max-w-3xl space-y-4 animate-float-up">
-          <h2
-            className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
-            style={{ color: "var(--fg)" }}
-          >
-            Wire it in with a few HTTP calls.
-          </h2>
-          <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            Record an action with one call. Verify the receipt with another. REST and gRPC, no SDK required.
-          </p>
-        </div>
-
-        {/* Bento grid: code playground dominant, endpoints supporting */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Dominant tile: code playground */}
-        <div className="relative animate-float-up lg:col-span-2" style={{ animationDelay: "120ms" }}>
-          <div className="ambient-glow" style={{ inset: "-8% 8% 12% 8%", opacity: 0.22 }} />
+        <div className="lg:col-span-2">
           <div
-            className="rounded-babit-lg overflow-hidden relative h-full"
+            className="rounded-babit-lg overflow-hidden h-full"
             style={{
               backgroundColor: "#0A0C0C",
               border: "1px solid #222626",
               boxShadow: "0 30px 70px -24px rgba(0,0,0,0.5)",
             }}
           >
-          {/* Header tabs bar */}
-          <div
-            className="px-4 py-3 flex items-center justify-between"
-            style={{
-              backgroundColor: "#111414",
-              borderBottom: "1px solid #222626",
-            }}
-          >
-            {/* Language tabs */}
-            <div className="flex items-center gap-1">
-              {(["curl", "typescript", "python", "go"] as const).map((lang) => (
-                <button
-                  key={lang}
-                  onClick={() => setActiveLang(lang)}
-                  className="px-3 py-1.5 rounded-babit-sm text-xs font-mono font-medium transition-colors cursor-pointer"
-                  style={{
-                    backgroundColor: activeLang === lang ? "#202626" : "transparent",
-                    color: activeLang === lang ? "#F5F6F4" : "#8A9490",
-                  }}
-                >
-                  {lang === "curl" ? "cURL" : lang === "typescript" ? "TypeScript" : lang === "python" ? "Python" : "Go"}
-                </button>
-              ))}
+            {/* Header tabs bar */}
+            <div
+              className="px-4 py-3 flex items-center justify-between"
+              style={{
+                backgroundColor: "#111414",
+                borderBottom: "1px solid #222626",
+              }}
+            >
+              {/* Language tabs */}
+              <div className="flex items-center gap-1">
+                {(["curl", "typescript", "python", "go"] as const).map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => setActiveLang(lang)}
+                    className="px-3 py-1.5 rounded-babit-sm text-xs font-mono font-medium transition-colors cursor-pointer"
+                    style={{
+                      backgroundColor: activeLang === lang ? "#202626" : "transparent",
+                      color: activeLang === lang ? "#F5F6F4" : "#8A9490",
+                    }}
+                  >
+                    {lang === "curl" ? "cURL" : lang === "typescript" ? "TypeScript" : lang === "python" ? "Python" : "Go"}
+                  </button>
+                ))}
+              </div>
+
+              {/* Copy code button */}
+              <button
+                onClick={copyCode}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-babit-sm text-xs font-mono text-[#8A9490] hover:text-[#F5F6F4] bg-[#1A1F1F] hover:bg-[#252C2C] transition-colors cursor-pointer"
+              >
+                {copied ? <IconCheck className="w-3.5 h-3.5 text-emerald-400" /> : <IconCopy className="w-3.5 h-3.5" />}
+                <span>{copied ? "Copied" : "Copy"}</span>
+              </button>
             </div>
 
-            {/* Copy code button */}
-            <button
-              onClick={copyCode}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-babit-sm text-xs font-mono text-[#8A9490] hover:text-[#F5F6F4] bg-[#1A1F1F] hover:bg-[#252C2C] transition-colors cursor-pointer"
+            {/* Code content */}
+            <div className="p-6 overflow-x-auto font-mono text-xs leading-relaxed text-[#D8E0DC]">
+              <pre tabIndex={0} className="outline-none">
+                <code>{CODE_EXAMPLES[activeLang]}</code>
+              </pre>
+            </div>
+
+            {/* Status bar */}
+            <div
+              className="px-4 py-2 flex items-center justify-between text-[11px] font-mono"
+              style={{
+                backgroundColor: "#0E1111",
+                borderTop: "1px solid #1C2020",
+                color: "#737D79",
+              }}
             >
-              {copied ? <IconCheck className="w-3.5 h-3.5 text-emerald-400" /> : <IconCopy className="w-3.5 h-3.5" />}
-              <span>{copied ? "Copied" : "Copy"}</span>
-            </button>
-          </div>
-
-          {/* Code content */}
-          <div className="p-6 overflow-x-auto font-mono text-xs leading-relaxed text-[#D8E0DC]">
-            <pre tabIndex={0} className="outline-none">
-              <code>{CODE_EXAMPLES[activeLang]}</code>
-            </pre>
-          </div>
-
-          {/* Status bar */}
-          <div
-            className="px-4 py-2 flex items-center justify-between text-[11px] font-mono"
-            style={{
-              backgroundColor: "#0E1111",
-              borderTop: "1px solid #1C2020",
-              color: "#737D79",
-            }}
-          >
-            <span>POST /v1/sessions/{'{session_id}'}/actions</span>
-            <span>REST + gRPC · OpenAPI</span>
-          </div>
+              <span>POST /v1/sessions/{'{session_id}'}/actions</span>
+              <span>REST + gRPC · OpenAPI</span>
+            </div>
           </div>
         </div>
 
         {/* Supporting tile: the API surface */}
-        <div
-          className="rounded-babit-lg p-6 h-full glass-subtle animate-float-up flex flex-col"
-          style={{ animationDelay: "200ms" }}
-        >
+        <LandingCard className="flex flex-col">
           <div className="space-y-1.5 mb-4">
-            <span className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--brand-accent)" }}>
+            <span className="type-eyebrow" style={{ color: "var(--brand-accent)" }}>
               The API surface
             </span>
-            <h3 className="text-[17px] font-semibold leading-snug" style={{ color: "var(--fg)" }}>
+            <h3 className="type-h3" style={{ color: "var(--fg)" }}>
               Every endpoint, documented.
             </h3>
-            <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+            <p className="type-body">
               Auth, grants, sessions, events, and verification, with request and response examples you can run.
             </p>
           </div>
@@ -208,15 +193,14 @@ export function SectionBuiltForEngineers() {
             <Link
               to="/api"
               className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-babit transition-all hover:opacity-90"
-              style={{ backgroundColor: "var(--brand-accent)", color: "#fff", boxShadow: "0 10px 30px -12px var(--brand-accent)" }}
+              style={{ backgroundColor: "var(--brand-accent)", color: "#fff" }}
             >
               <span>Open the API reference</span>
               <IconArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
-        </div>
-        </div>
+        </LandingCard>
       </div>
-    </section>
+    </Section>
   );
 }

@@ -31,9 +31,7 @@ export function Landing() {
         <SectionSurfaces />
 
         {/* id="product" — ordinary log vs babit evidence */}
-        <div id="product">
-          <SectionLogsVsEvidence />
-        </div>
+        <SectionLogsVsEvidence />
 
         {/* Authority chain — person to agent to sub-agent */}
         <SectionAuthorityChain />

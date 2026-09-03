@@ -26,7 +26,7 @@ export function SectionReceiptCenterpiece() {
   };
 
   return (
-    <Section tone="raised">
+    <Section id="receipt" tone="raised">
       <SectionHeader
         eyebrow="The receipt"
         align="center"
