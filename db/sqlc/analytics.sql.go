@@ -12,15 +12,12 @@ import (
 )
 
 const countEventsByUser = `-- name: CountEventsByUser :one
-
 SELECT count(*)
 FROM events e
 JOIN sessions s ON e.session_id = s.session_id
 WHERE s.user_id = $1
 `
 
-// All analytics are scoped to a single owner ($1 = user_id). Events and revocations
-// are owned transitively through their session / grant.
 func (q *Queries) CountEventsByUser(ctx context.Context, userID pgtype.UUID) (int64, error) {
 	row := q.db.QueryRow(ctx, countEventsByUser, userID)
 	var count int64

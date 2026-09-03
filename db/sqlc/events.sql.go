@@ -203,3 +203,52 @@ func (q *Queries) LastEventBySession(ctx context.Context, sessionID string) (Eve
 	)
 	return i, err
 }
+
+const listEventsByUser = `-- name: ListEventsByUser :many
+SELECT e.event_id, e.session_id, e.sequence, e.surface, e.action_type, e.action_payload, e.grant_id, e.pre_state_hash, e.post_state_hash, e.recording_ref, e.occurred_at, e.content_hash, e.prev_hash, e.notary_signature, e.uuid FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
+ORDER BY e.occurred_at DESC
+LIMIT $2
+`
+
+type ListEventsByUserParams struct {
+	UserID pgtype.UUID
+	Limit  int32
+}
+
+func (q *Queries) ListEventsByUser(ctx context.Context, arg ListEventsByUserParams) ([]Event, error) {
+	rows, err := q.db.Query(ctx, listEventsByUser, arg.UserID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Event{}
+	for rows.Next() {
+		var i Event
+		if err := rows.Scan(
+			&i.EventID,
+			&i.SessionID,
+			&i.Sequence,
+			&i.Surface,
+			&i.ActionType,
+			&i.ActionPayload,
+			&i.GrantID,
+			&i.PreStateHash,
+			&i.PostStateHash,
+			&i.RecordingRef,
+			&i.OccurredAt,
+			&i.ContentHash,
+			&i.PrevHash,
+			&i.NotarySignature,
+			&i.Uuid,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

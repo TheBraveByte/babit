@@ -359,6 +359,94 @@ func (x *EndSessionResponse) GetSession() *Session {
 	return nil
 }
 
+type ListSessionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionsRequest) Reset() {
+	*x = ListSessionsRequest{}
+	mi := &file_solari_ledger_v1_capture_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionsRequest) ProtoMessage() {}
+
+func (x *ListSessionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_capture_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionsRequest.ProtoReflect.Descriptor instead.
+func (*ListSessionsRequest) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_capture_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListSessionsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type ListSessionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Sessions      []*Session             `protobuf:"bytes,1,rep,name=sessions,proto3" json:"sessions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionsResponse) Reset() {
+	*x = ListSessionsResponse{}
+	mi := &file_solari_ledger_v1_capture_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionsResponse) ProtoMessage() {}
+
+func (x *ListSessionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_capture_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionsResponse.ProtoReflect.Descriptor instead.
+func (*ListSessionsResponse) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_capture_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ListSessionsResponse) GetSessions() []*Session {
+	if x != nil {
+		return x.Sessions
+	}
+	return nil
+}
+
 var File_solari_ledger_v1_capture_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_capture_proto_rawDesc = "" +
@@ -388,12 +476,17 @@ const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"I\n" +
 	"\x12EndSessionResponse\x123\n" +
-	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession2\x94\x04\n" +
+	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"+\n" +
+	"\x13ListSessionsRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"M\n" +
+	"\x14ListSessionsResponse\x125\n" +
+	"\bsessions\x18\x01 \x03(\v2\x19.solari.ledger.v1.SessionR\bsessions2\xc6\x05\n" +
 	"\x0eCaptureService\x12\xa7\x01\n" +
 	"\fBeginSession\x12%.solari.ledger.v1.BeginSessionRequest\x1a&.solari.ledger.v1.BeginSessionResponse\"H\x92A.\x12,Open a capture session bound to a root grant\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/sessions\x12\xb7\x01\n" +
 	"\fRecordAction\x12%.solari.ledger.v1.RecordActionRequest\x1a&.solari.ledger.v1.RecordActionResponse\"X\x92A)\x12'Record and notarize one executed action\x82\xd3\xe4\x93\x02&:\x01*\"!/v1/sessions/{session_id}/actions\x12\x9d\x01\n" +
 	"\n" +
-	"EndSession\x12#.solari.ledger.v1.EndSessionRequest\x1a$.solari.ledger.v1.EndSessionResponse\"D\x92A\x19\x12\x17Close a capture session\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/sessions/{session_id}/endB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"EndSession\x12#.solari.ledger.v1.EndSessionRequest\x1a$.solari.ledger.v1.EndSessionResponse\"D\x92A\x19\x12\x17Close a capture session\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/sessions/{session_id}/end\x12\xaf\x01\n" +
+	"\fListSessions\x12%.solari.ledger.v1.ListSessionsRequest\x1a&.solari.ledger.v1.ListSessionsResponse\"P\x92A9\x127List recent capture sessions for the authenticated user\x82\xd3\xe4\x93\x02\x0e\x12\f/v1/sessionsB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_capture_proto_rawDescOnce sync.Once
@@ -407,7 +500,7 @@ func file_solari_ledger_v1_capture_proto_rawDescGZIP() []byte {
 	return file_solari_ledger_v1_capture_proto_rawDescData
 }
 
-var file_solari_ledger_v1_capture_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_solari_ledger_v1_capture_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_solari_ledger_v1_capture_proto_goTypes = []any{
 	(*BeginSessionRequest)(nil),  // 0: solari.ledger.v1.BeginSessionRequest
 	(*BeginSessionResponse)(nil), // 1: solari.ledger.v1.BeginSessionResponse
@@ -415,26 +508,31 @@ var file_solari_ledger_v1_capture_proto_goTypes = []any{
 	(*RecordActionResponse)(nil), // 3: solari.ledger.v1.RecordActionResponse
 	(*EndSessionRequest)(nil),    // 4: solari.ledger.v1.EndSessionRequest
 	(*EndSessionResponse)(nil),   // 5: solari.ledger.v1.EndSessionResponse
-	(Surface)(0),                 // 6: solari.ledger.v1.Surface
-	(*Session)(nil),              // 7: solari.ledger.v1.Session
-	(*ActionEvent)(nil),          // 8: solari.ledger.v1.ActionEvent
+	(*ListSessionsRequest)(nil),  // 6: solari.ledger.v1.ListSessionsRequest
+	(*ListSessionsResponse)(nil), // 7: solari.ledger.v1.ListSessionsResponse
+	(Surface)(0),                 // 8: solari.ledger.v1.Surface
+	(*Session)(nil),              // 9: solari.ledger.v1.Session
+	(*ActionEvent)(nil),          // 10: solari.ledger.v1.ActionEvent
 }
 var file_solari_ledger_v1_capture_proto_depIdxs = []int32{
-	6, // 0: solari.ledger.v1.BeginSessionRequest.surface:type_name -> solari.ledger.v1.Surface
-	7, // 1: solari.ledger.v1.BeginSessionResponse.session:type_name -> solari.ledger.v1.Session
-	8, // 2: solari.ledger.v1.RecordActionResponse.event:type_name -> solari.ledger.v1.ActionEvent
-	7, // 3: solari.ledger.v1.EndSessionResponse.session:type_name -> solari.ledger.v1.Session
-	0, // 4: solari.ledger.v1.CaptureService.BeginSession:input_type -> solari.ledger.v1.BeginSessionRequest
-	2, // 5: solari.ledger.v1.CaptureService.RecordAction:input_type -> solari.ledger.v1.RecordActionRequest
-	4, // 6: solari.ledger.v1.CaptureService.EndSession:input_type -> solari.ledger.v1.EndSessionRequest
-	1, // 7: solari.ledger.v1.CaptureService.BeginSession:output_type -> solari.ledger.v1.BeginSessionResponse
-	3, // 8: solari.ledger.v1.CaptureService.RecordAction:output_type -> solari.ledger.v1.RecordActionResponse
-	5, // 9: solari.ledger.v1.CaptureService.EndSession:output_type -> solari.ledger.v1.EndSessionResponse
-	7, // [7:10] is the sub-list for method output_type
-	4, // [4:7] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	8,  // 0: solari.ledger.v1.BeginSessionRequest.surface:type_name -> solari.ledger.v1.Surface
+	9,  // 1: solari.ledger.v1.BeginSessionResponse.session:type_name -> solari.ledger.v1.Session
+	10, // 2: solari.ledger.v1.RecordActionResponse.event:type_name -> solari.ledger.v1.ActionEvent
+	9,  // 3: solari.ledger.v1.EndSessionResponse.session:type_name -> solari.ledger.v1.Session
+	9,  // 4: solari.ledger.v1.ListSessionsResponse.sessions:type_name -> solari.ledger.v1.Session
+	0,  // 5: solari.ledger.v1.CaptureService.BeginSession:input_type -> solari.ledger.v1.BeginSessionRequest
+	2,  // 6: solari.ledger.v1.CaptureService.RecordAction:input_type -> solari.ledger.v1.RecordActionRequest
+	4,  // 7: solari.ledger.v1.CaptureService.EndSession:input_type -> solari.ledger.v1.EndSessionRequest
+	6,  // 8: solari.ledger.v1.CaptureService.ListSessions:input_type -> solari.ledger.v1.ListSessionsRequest
+	1,  // 9: solari.ledger.v1.CaptureService.BeginSession:output_type -> solari.ledger.v1.BeginSessionResponse
+	3,  // 10: solari.ledger.v1.CaptureService.RecordAction:output_type -> solari.ledger.v1.RecordActionResponse
+	5,  // 11: solari.ledger.v1.CaptureService.EndSession:output_type -> solari.ledger.v1.EndSessionResponse
+	7,  // 12: solari.ledger.v1.CaptureService.ListSessions:output_type -> solari.ledger.v1.ListSessionsResponse
+	9,  // [9:13] is the sub-list for method output_type
+	5,  // [5:9] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_solari_ledger_v1_capture_proto_init() }
@@ -449,7 +547,7 @@ func file_solari_ledger_v1_capture_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_solari_ledger_v1_capture_proto_rawDesc), len(file_solari_ledger_v1_capture_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

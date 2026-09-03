@@ -73,6 +73,21 @@ func (s *eventStore) Range(ctx context.Context, fromSeq, toSeq int64) ([]*ledger
 	return out, nil
 }
 
+func (s *eventStore) List(ctx context.Context, limit int32) ([]*ledgerv1.ActionEvent, error) {
+	if limit <= 0 {
+		limit = 50
+	}
+	rows, err := s.q.ListEventsByUser(ctx, storedb.ListEventsByUserParams{UserID: ctxUserUUID(ctx), Limit: limit})
+	if err != nil {
+		return nil, opErr(err, "list events")
+	}
+	out := make([]*ledgerv1.ActionEvent, 0, len(rows))
+	for _, row := range rows {
+		out = append(out, eventFromRow(row))
+	}
+	return out, nil
+}
+
 func eventFromRow(row storedb.Event) *ledgerv1.ActionEvent {
 	return &ledgerv1.ActionEvent{
 		EventId:         row.EventID,

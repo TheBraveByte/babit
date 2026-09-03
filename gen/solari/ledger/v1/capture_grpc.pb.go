@@ -22,6 +22,7 @@ const (
 	CaptureService_BeginSession_FullMethodName = "/solari.ledger.v1.CaptureService/BeginSession"
 	CaptureService_RecordAction_FullMethodName = "/solari.ledger.v1.CaptureService/RecordAction"
 	CaptureService_EndSession_FullMethodName   = "/solari.ledger.v1.CaptureService/EndSession"
+	CaptureService_ListSessions_FullMethodName = "/solari.ledger.v1.CaptureService/ListSessions"
 )
 
 // CaptureServiceClient is the client API for CaptureService service.
@@ -31,6 +32,7 @@ type CaptureServiceClient interface {
 	BeginSession(ctx context.Context, in *BeginSessionRequest, opts ...grpc.CallOption) (*BeginSessionResponse, error)
 	RecordAction(ctx context.Context, in *RecordActionRequest, opts ...grpc.CallOption) (*RecordActionResponse, error)
 	EndSession(ctx context.Context, in *EndSessionRequest, opts ...grpc.CallOption) (*EndSessionResponse, error)
+	ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error)
 }
 
 type captureServiceClient struct {
@@ -71,6 +73,16 @@ func (c *captureServiceClient) EndSession(ctx context.Context, in *EndSessionReq
 	return out, nil
 }
 
+func (c *captureServiceClient) ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSessionsResponse)
+	err := c.cc.Invoke(ctx, CaptureService_ListSessions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CaptureServiceServer is the server API for CaptureService service.
 // All implementations must embed UnimplementedCaptureServiceServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type CaptureServiceServer interface {
 	BeginSession(context.Context, *BeginSessionRequest) (*BeginSessionResponse, error)
 	RecordAction(context.Context, *RecordActionRequest) (*RecordActionResponse, error)
 	EndSession(context.Context, *EndSessionRequest) (*EndSessionResponse, error)
+	ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error)
 	mustEmbedUnimplementedCaptureServiceServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedCaptureServiceServer) RecordAction(context.Context, *RecordAc
 }
 func (UnimplementedCaptureServiceServer) EndSession(context.Context, *EndSessionRequest) (*EndSessionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method EndSession not implemented")
+}
+func (UnimplementedCaptureServiceServer) ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListSessions not implemented")
 }
 func (UnimplementedCaptureServiceServer) mustEmbedUnimplementedCaptureServiceServer() {}
 func (UnimplementedCaptureServiceServer) testEmbeddedByValue()                        {}
@@ -172,6 +188,24 @@ func _CaptureService_EndSession_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CaptureService_ListSessions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSessionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CaptureServiceServer).ListSessions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CaptureService_ListSessions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CaptureServiceServer).ListSessions(ctx, req.(*ListSessionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CaptureService_ServiceDesc is the grpc.ServiceDesc for CaptureService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var CaptureService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EndSession",
 			Handler:    _CaptureService_EndSession_Handler,
+		},
+		{
+			MethodName: "ListSessions",
+			Handler:    _CaptureService_ListSessions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

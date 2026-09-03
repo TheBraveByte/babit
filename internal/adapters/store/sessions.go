@@ -55,6 +55,21 @@ func (s *sessionStore) NextSequence(ctx context.Context, sessionID string) (int6
 	return seq, nil
 }
 
+func (s *sessionStore) List(ctx context.Context, limit int32) ([]*ledgerv1.Session, error) {
+	if limit <= 0 {
+		limit = 50
+	}
+	rows, err := s.q.ListSessionsByUser(ctx, storedb.ListSessionsByUserParams{UserID: ctxUserUUID(ctx), Limit: limit})
+	if err != nil {
+		return nil, opErr(err, "list sessions")
+	}
+	out := make([]*ledgerv1.Session, 0, len(rows))
+	for _, row := range rows {
+		out = append(out, sessionFromRow(row))
+	}
+	return out, nil
+}
+
 func sessionFromRow(row storedb.Session) *ledgerv1.Session {
 	return &ledgerv1.Session{
 		SessionId:   row.SessionID,

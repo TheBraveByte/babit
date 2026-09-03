@@ -42,6 +42,12 @@ service DelegationService {
       summary: "Revoke a grant and its descendants"
     };
   }
+  rpc ListGrants(ListGrantsRequest) returns (ListGrantsResponse) {
+    option (google.api.http) = {get: "/v1/grants"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List recent grants for the authenticated user"
+    };
+  }
 }
 
 message IssueRootGrantRequest {
@@ -87,4 +93,12 @@ message RevokeRequest {
 
 message RevokeResponse {
   bool revoked = 1;
+}
+
+message ListGrantsRequest {
+  int32 limit = 1;
+}
+
+message ListGrantsResponse {
+  repeated Grant grants = 1;
 }

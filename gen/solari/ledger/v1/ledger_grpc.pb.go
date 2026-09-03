@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	LedgerService_GetEvent_FullMethodName          = "/solari.ledger.v1.LedgerService/GetEvent"
 	LedgerService_GetInclusionProof_FullMethodName = "/solari.ledger.v1.LedgerService/GetInclusionProof"
+	LedgerService_ListEvents_FullMethodName        = "/solari.ledger.v1.LedgerService/ListEvents"
 )
 
 // LedgerServiceClient is the client API for LedgerService service.
@@ -29,6 +30,7 @@ const (
 type LedgerServiceClient interface {
 	GetEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*GetEventResponse, error)
 	GetInclusionProof(ctx context.Context, in *GetInclusionProofRequest, opts ...grpc.CallOption) (*GetInclusionProofResponse, error)
+	ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
 }
 
 type ledgerServiceClient struct {
@@ -59,12 +61,23 @@ func (c *ledgerServiceClient) GetInclusionProof(ctx context.Context, in *GetIncl
 	return out, nil
 }
 
+func (c *ledgerServiceClient) ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListEventsResponse)
+	err := c.cc.Invoke(ctx, LedgerService_ListEvents_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LedgerServiceServer is the server API for LedgerService service.
 // All implementations must embed UnimplementedLedgerServiceServer
 // for forward compatibility.
 type LedgerServiceServer interface {
 	GetEvent(context.Context, *GetEventRequest) (*GetEventResponse, error)
 	GetInclusionProof(context.Context, *GetInclusionProofRequest) (*GetInclusionProofResponse, error)
+	ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error)
 	mustEmbedUnimplementedLedgerServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedLedgerServiceServer) GetEvent(context.Context, *GetEventReque
 }
 func (UnimplementedLedgerServiceServer) GetInclusionProof(context.Context, *GetInclusionProofRequest) (*GetInclusionProofResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetInclusionProof not implemented")
+}
+func (UnimplementedLedgerServiceServer) ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListEvents not implemented")
 }
 func (UnimplementedLedgerServiceServer) mustEmbedUnimplementedLedgerServiceServer() {}
 func (UnimplementedLedgerServiceServer) testEmbeddedByValue()                       {}
@@ -138,6 +154,24 @@ func _LedgerService_GetInclusionProof_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LedgerService_ListEvents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListEventsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerServiceServer).ListEvents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LedgerService_ListEvents_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerServiceServer).ListEvents(ctx, req.(*ListEventsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LedgerService_ServiceDesc is the grpc.ServiceDesc for LedgerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var LedgerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetInclusionProof",
 			Handler:    _LedgerService_GetInclusionProof_Handler,
+		},
+		{
+			MethodName: "ListEvents",
+			Handler:    _LedgerService_ListEvents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

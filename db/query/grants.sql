@@ -43,3 +43,11 @@ ON CONFLICT (grant_id) DO UPDATE SET reason = EXCLUDED.reason;
 
 -- name: IsRevoked :one
 SELECT EXISTS (SELECT 1 FROM revocations WHERE grant_id = $1);
+
+-- name: ListGrantsByUser :many
+SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities,
+       resource_globs, max_value_cents, max_depth, expires_at, parent_signature
+FROM grants
+WHERE user_id = $1
+ORDER BY grant_id DESC
+LIMIT $2;

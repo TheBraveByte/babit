@@ -25,3 +25,10 @@ ORDER BY sequence;
 SELECT * FROM events
 WHERE sequence >= $1 AND sequence <= $2
 ORDER BY sequence;
+
+-- name: ListEventsByUser :many
+SELECT e.* FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
+ORDER BY e.occurred_at DESC
+LIMIT $2;

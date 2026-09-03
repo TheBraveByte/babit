@@ -21,6 +21,12 @@ service LedgerService {
       summary: "Build an offline-verifiable inclusion proof"
     };
   }
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse) {
+    option (google.api.http) = {get: "/v1/events"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List recent action events for the authenticated user"
+    };
+  }
 }
 
 message GetEventRequest {
@@ -37,4 +43,12 @@ message GetInclusionProofRequest {
 
 message GetInclusionProofResponse {
   Proof proof = 1;
+}
+
+message ListEventsRequest {
+  int32 limit = 1;
+}
+
+message ListEventsResponse {
+  repeated ActionEvent events = 1;
 }

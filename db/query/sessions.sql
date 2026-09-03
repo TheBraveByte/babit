@@ -19,3 +19,9 @@ UPDATE sessions
 SET event_count = event_count + 1
 WHERE session_id = $1
 RETURNING event_count;
+
+-- name: ListSessionsByUser :many
+SELECT * FROM sessions
+WHERE user_id = $1
+ORDER BY started_at DESC
+LIMIT $2;
