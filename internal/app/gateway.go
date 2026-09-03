@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"os"
 	"strings"
@@ -22,10 +23,12 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 			MarshalOptions:   protojson.MarshalOptions{UseProtoNames: true, EmitUnpopulated: true},
 			UnmarshalOptions: protojson.UnmarshalOptions{DiscardUnknown: true},
 		}),
-		// Forward the per-project API key header to gRPC (Authorization passes by default).
 		runtime.WithIncomingHeaderMatcher(func(key string) (string, bool) {
 			if strings.EqualFold(key, "x-api-key") {
 				return "x-api-key", true
+			}
+			if strings.EqualFold(key, "cookie") {
+				return "cookie", true
 			}
 			return runtime.DefaultHeaderMatcher(key)
 		}),
@@ -50,7 +53,7 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 	}
 
 	root := http.NewServeMux()
-	root.Handle("/", mux)
+	root.Handle("/", withAuthCookies(mux))
 	root.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
@@ -60,6 +63,65 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 	return withCORS(root), nil
 }
 
+func withAuthCookies(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost ||
+			(!strings.HasSuffix(r.URL.Path, "/v1/auth/login") &&
+				!strings.HasSuffix(r.URL.Path, "/v1/auth/signup")) {
+			h.ServeHTTP(w, r)
+			return
+		}
+
+		rw := &bufferedWriter{header: http.Header{}, buf: &strings.Builder{}}
+		h.ServeHTTP(rw, r)
+
+		for k, vs := range rw.header {
+			for _, v := range vs {
+				w.Header().Add(k, v)
+			}
+		}
+
+		var body map[string]any
+		if err := json.Unmarshal([]byte(rw.buf.String()), &body); err == nil {
+			if token, ok := body["token"].(string); ok && token != "" {
+				cookie := &http.Cookie{
+					Name:     "babit_session",
+					Value:    token,
+					Path:     "/",
+					HttpOnly: true,
+					Secure:   r.URL.Scheme == "https" || strings.HasPrefix(r.Host, "localhost") == false,
+					SameSite: http.SameSiteLaxMode,
+					MaxAge:   86400 * 7, // 7 days
+				}
+				http.SetCookie(w, cookie)
+			}
+		}
+
+		w.WriteHeader(rw.status)
+		_, _ = w.Write([]byte(rw.buf.String()))
+	})
+}
+
+type bufferedWriter struct {
+	header http.Header
+	status int
+	buf    *strings.Builder
+}
+
+func (b *bufferedWriter) Header() http.Header {
+	if b.header == nil {
+		b.header = http.Header{}
+	}
+	return b.header
+}
+
+func (b *bufferedWriter) WriteHeader(status int) {
+	b.status = status
+}
+
+func (b *bufferedWriter) Write(p []byte) (int, error) {
+	return b.buf.Write(p)
+}
 
 func withCORS(h http.Handler) http.Handler {
 	allowed := os.Getenv("CORS_ALLOWED_ORIGINS")
@@ -85,7 +147,6 @@ func withCORS(h http.Handler) http.Handler {
 			if ok {
 				w.Header().Set("Access-Control-Allow-Origin", origin)
 				w.Header().Set("Vary", "Origin")
-				// Credentials are only safe with an explicit allowlist, never with reflect-all.
 				if !allowAll {
 					w.Header().Set("Access-Control-Allow-Credentials", "true")
 				}

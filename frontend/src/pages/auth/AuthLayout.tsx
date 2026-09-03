@@ -74,7 +74,7 @@ export function AuthLayout({
 function AuthVisual() {
   const benefits = [
     "Every agent action is recorded with proof",
-    "Anyone can verify what happened — without trusting us",
+    "Anyone can verify what happened without trusting us",
     "Works with any agent, any language, any platform",
   ];
 

@@ -31,7 +31,7 @@ export function ProductPreview() {
             className="ml-3 flex-1 max-w-[320px] px-3 py-1 rounded-babit-sm text-[11px] font-mono"
             style={{ backgroundColor: "var(--bg)", color: "var(--muted)" }}
           >
-            babit — console
+            babit / console
           </div>
         </div>
 
@@ -117,7 +117,7 @@ export function ProductPreview() {
 
       {/* Caption */}
       <p className="mt-6 text-center type-body">
-        The console retrieves everything directly from the ledger — no cached numbers, no approximations.
+        The console reads everything from the ledger. No cached numbers, no approximations.
       </p>
     </Section>
   );

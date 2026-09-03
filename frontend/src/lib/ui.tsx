@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import React, { useState, useRef, useEffect, type ReactNode } from "react";
 import { IconCopy, IconCheck, IconAlertCircle, IconShieldCheck } from "./icons";
 
 /* ─── PageHeader (dashboard) ────────────────────────────────────────────────── */
@@ -78,19 +78,37 @@ export function Field({
   children,
   hint,
   error,
+  id,
 }: {
   label: string;
   children: ReactNode;
   hint?: ReactNode;
   error?: string;
+  id?: string;
 }) {
+  const fieldId = id || `field-${label.toLowerCase().replace(/\s+/g, "-")}`;
+  const errorId = `${fieldId}-error`;
+  const hintId = `${fieldId}-hint`;
+  const describedBy = [error ? errorId : null, hint ? hintId : null].filter(Boolean).join(" ") || undefined;
+
   return (
     <label className="grid gap-1.5">
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium" style={{ color: "var(--fg)" }}>{label}</span>
-        {hint && <span className="text-[11px]" style={{ color: "var(--muted)" }}>{hint}</span>}
+        {hint && <span id={hintId} className="text-[11px]" style={{ color: "var(--muted)" }}>{hint}</span>}
       </div>
-      {children}
+      {error ? (
+        <span id={errorId} aria-live="assertive" className="sr-only">{error}</span>
+      ) : null}
+      {/* Clone the child input to inject aria props */}
+      {(() => {
+        const child = children as React.ReactElement<React.InputHTMLAttributes<HTMLInputElement>>;
+        return React.cloneElement(child, {
+          id: fieldId,
+          "aria-describedby": describedBy,
+          "aria-invalid": error ? true : undefined,
+        });
+      })()}
       {error && (
         <span className="text-xs flex items-center gap-1" style={{ color: "var(--color-failed)" }}>
           <IconAlertCircle className="w-3 h-3" />{error}
@@ -430,11 +448,65 @@ export function ConfirmDialog({
   loading?: boolean;
   danger?: boolean;
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    // Save the element that had focus before the dialog opened
+    previousFocus.current = document.activeElement as HTMLElement;
+
+    // Focus the cancel button (safe default) on open
+    const cancelBtn = dialogRef.current?.querySelector<HTMLButtonElement>("[data-cancel]");
+    cancelBtn?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onCancel();
+        return;
+      }
+      if (e.key === "Tab") {
+        // Trap focus inside the dialog
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusable || focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    // Prevent body scroll while dialog is open
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = prevOverflow;
+      // Return focus to the element that had it before
+      previousFocus.current?.focus();
+    };
+  }, [open, onCancel]);
+
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in-fast">
       <div className="absolute inset-0" style={{ backgroundColor: "color-mix(in srgb, var(--fg) 40%, transparent)", backdropFilter: "blur(4px)" }} onClick={onCancel} />
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-message"
         className="relative rounded-babit-md p-6 max-w-md w-full"
         style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", boxShadow: "0 24px 60px -20px color-mix(in srgb, var(--fg) 20%, transparent)" }}
       >
@@ -448,12 +520,12 @@ export function ConfirmDialog({
             </div>
           )}
           <div>
-            <h3 className="text-base font-semibold" style={{ color: "var(--fg)" }}>{title}</h3>
-            <p className="mt-1 text-sm" style={{ color: "var(--muted)" }}>{message}</p>
+            <h3 id="confirm-dialog-title" className="text-base font-semibold" style={{ color: "var(--fg)" }}>{title}</h3>
+            <p id="confirm-dialog-message" className="mt-1 text-sm" style={{ color: "var(--muted)" }}>{message}</p>
           </div>
         </div>
         <div className="flex items-center justify-end gap-2 mt-6">
-          <Button variant="secondary" size="md" onClick={onCancel} disabled={loading}>
+          <Button data-cancel variant="secondary" size="md" onClick={onCancel} disabled={loading}>
             {cancelLabel}
           </Button>
           <Button variant={danger ? "danger" : "brand"} size="md" onClick={onConfirm} loading={loading}>

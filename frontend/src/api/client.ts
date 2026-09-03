@@ -3,29 +3,32 @@ import type { paths } from "./schema";
 
 const apiKey = import.meta.env.VITE_API_KEY as string | undefined;
 
-let authToken: string | null = typeof window !== "undefined" ? localStorage.getItem("babit_token") : null;
+
+let authToken: string | null = null;
 
 export function setAuthToken(token: string | null) {
   authToken = token;
-  if (token) {
-    localStorage.setItem("babit_token", token);
-  } else {
-    localStorage.removeItem("babit_token");
-  }
+  // No longer persist to localStorage. The httpOnly cookie handles persistence.
 }
 
 export function getAuthToken(): string | null {
-  return authToken || (typeof window !== "undefined" ? localStorage.getItem("babit_token") : null);
+  return authToken;
 }
 
+export function clearSessionCookie() {
+  fetch(`${apiBaseUrl}/v1/auth/logout`, { method: "POST", credentials: "include" }).catch(() => {});
+}
+
+const apiBaseUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:8080";
+
 export const api = createClient<paths>({
-  baseUrl: (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:8080",
+  baseUrl: apiBaseUrl,
   headers: {
     ...(apiKey ? { "x-api-key": apiKey } : {}),
   },
+  credentials: "include",
 });
 
-// Middleware to inject Authorization header dynamically
 api.use({
   async onRequest({ request }) {
     const token = getAuthToken();

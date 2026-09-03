@@ -6,6 +6,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "lint": "biome lint src",
+    "format": "biome format --write src",
+    "check": "biome check src",
     "gen:api": "swagger2openapi ../gen/openapi/ledger.swagger.json -p -o openapi.v3.json && openapi-typescript openapi.v3.json -o src/api/schema.d.ts"
   },
   "dependencies": {
@@ -20,6 +23,7 @@
     "recharts": "^3.10.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.12",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",

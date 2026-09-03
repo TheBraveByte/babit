@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { api, setAuthToken, getAuthToken, errText } from "@/api/client";
+import { api, setAuthToken, getAuthToken, clearSessionCookie, errText } from "@/api/client";
 
 export interface User {
   id?: string;
@@ -50,27 +50,29 @@ const AuthContext = createContext<AuthContextType>({
   refreshMe: async () => {},
 });
 
+function isValidHexColor(s: string): boolean {
+  return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(s);
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setTokenState] = useState<string | null>(getAuthToken);
   const [user, setUser] = useState<User | null>(null);
   const [branding, setBranding] = useState<Branding | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Apply real-time brand colors to CSS variables
   useEffect(() => {
-    if (branding?.brand_color) {
-      document.documentElement.style.setProperty("--brand-accent", branding.brand_color);
+    const color = branding?.brand_color;
+    if (color && isValidHexColor(color)) {
+      document.documentElement.style.setProperty("--brand-accent", color);
       document.documentElement.style.setProperty(
         "--brand-accent-subtle",
-        `${branding.brand_color}14` // ~8% opacity
+        `${color}14`,
       );
       document.documentElement.style.setProperty(
         "--brand-accent-border",
-        `${branding.brand_color}33` // ~20% opacity
+        `${color}33`,
       );
     } else {
-      // No org branding: clear inline overrides so the theme-aware token
-      // (teal, defined per light/dark in index.css) applies.
       document.documentElement.style.removeProperty("--brand-accent");
       document.documentElement.style.removeProperty("--brand-accent-subtle");
       document.documentElement.style.removeProperty("--brand-accent-border");
@@ -78,14 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [branding]);
 
   const refreshMe = async () => {
-    const curToken = getAuthToken();
-    if (!curToken) {
-      setUser(null);
-      setBranding(null);
-      setIsLoading(false);
-      return;
-    }
-
+    // Try with the in-memory token first, then rely on the httpOnly cookie
     try {
       const res = await api.GET("/v1/auth/me", {});
       if (res.data) {
@@ -93,17 +88,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const b = res.data.branding as Branding;
         setUser(u);
         setBranding(b);
-      } else {
-        setAuthToken(null);
-        setTokenState(null);
-        setUser(null);
-        setBranding(null);
+        return;
       }
     } catch {
-      // offline fallback
-    } finally {
-      setIsLoading(false);
     }
+    setAuthToken(null);
+    setTokenState(null);
+    setUser(null);
+    setBranding(null);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -166,6 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    clearSessionCookie();
     setAuthToken(null);
     setTokenState(null);
     setUser(null);
@@ -178,7 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         branding,
         token,
-        isAuthenticated: !!token,
+        isAuthenticated: !!token || !!user,
         isLoading,
         login,
         signup,
