@@ -134,3 +134,46 @@ func (q *Queries) EventsBySurfaceForUser(ctx context.Context, userID pgtype.UUID
 	}
 	return items, nil
 }
+
+const topRecordingRefsForUser = `-- name: TopRecordingRefsForUser :many
+SELECT e.recording_ref AS url, count(*) AS n
+FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
+  AND e.recording_ref <> ''
+  AND e.occurred_at >= now() - make_interval(days => $2::int)
+GROUP BY e.recording_ref
+ORDER BY n DESC
+LIMIT $3
+`
+
+type TopRecordingRefsForUserParams struct {
+	UserID  pgtype.UUID
+	Column2 int32
+	Limit   int32
+}
+
+type TopRecordingRefsForUserRow struct {
+	Url string
+	N   int64
+}
+
+func (q *Queries) TopRecordingRefsForUser(ctx context.Context, arg TopRecordingRefsForUserParams) ([]TopRecordingRefsForUserRow, error) {
+	rows, err := q.db.Query(ctx, topRecordingRefsForUser, arg.UserID, arg.Column2, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []TopRecordingRefsForUserRow{}
+	for rows.Next() {
+		var i TopRecordingRefsForUserRow
+		if err := rows.Scan(&i.Url, &i.N); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

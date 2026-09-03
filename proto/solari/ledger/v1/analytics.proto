@@ -17,6 +17,11 @@ message DayCount {
   int64 count = 2;
 }
 
+message TopLink {
+  string url = 1;
+  int64 count = 2;
+}
+
 message GetOverviewRequest {
   int32 days = 1;
 }
@@ -28,6 +33,7 @@ message GetOverviewResponse {
   int64 revoked_grants = 4;
   repeated SurfaceCount by_surface = 5;
   repeated DayCount over_time = 6;
+  repeated TopLink top_links = 7;
 }
 
 service AnalyticsService {
