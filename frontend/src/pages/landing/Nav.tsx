@@ -20,6 +20,7 @@ export function Nav() {
 
   const navLinks = [
     { label: "How it works", href: "#how" },
+    { label: "Who it's for", href: "#who" },
     { label: "Developers", href: "#developers" },
     { label: "Verify", href: "#security" },
   ];
@@ -37,20 +38,20 @@ export function Nav() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
         scrolled
-          ? "glass-subtle border-b border-[color:var(--border)] py-3.5"
-          : "bg-transparent py-5"
+          ? "glass-subtle border-b border-[color:var(--border)] py-3"
+          : "bg-transparent py-4"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="container-babit flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5">
-          <BabitLogo className="w-7 h-7 text-[color:var(--fg)]" />
-          <span className="font-semibold text-[17px] tracking-tight font-mono text-[color:var(--fg)]">
+          <BabitLogo className="w-[22px] h-[22px] text-[color:var(--fg)]" />
+          <span className="font-medium text-[16px] tracking-tight text-[color:var(--fg)]">
             babit
           </span>
         </Link>
 
-        {/* Desktop Nav - 14-15px typography */}
+        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((item) => (
             <button
@@ -75,8 +76,8 @@ export function Nav() {
           {isAuthenticated ? (
             <button
               onClick={() => navigate("/dashboard")}
-              className="px-4 py-2 text-[14px] font-medium text-white rounded-babit hover:opacity-90 transition-all cursor-pointer"
-              style={{ backgroundColor: "var(--brand-accent)", boxShadow: "0 8px 22px -12px var(--brand-accent)" }}
+              className="px-3.5 py-1.5 text-[14px] font-medium rounded-babit hover:opacity-90 transition-opacity cursor-pointer"
+              style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
             >
               Console →
             </button>
@@ -90,8 +91,8 @@ export function Nav() {
               </button>
               <button
                 onClick={() => navigate("/signup")}
-                className="px-4 py-2 text-[14px] font-medium text-white rounded-babit hover:opacity-90 transition-all cursor-pointer"
-                style={{ backgroundColor: "var(--brand-accent)", boxShadow: "0 8px 22px -12px var(--brand-accent)" }}
+                className="px-3.5 py-1.5 text-[14px] font-medium rounded-babit hover:opacity-90 transition-opacity cursor-pointer"
+                style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
               >
                 Get started
               </button>
@@ -149,7 +150,8 @@ export function Nav() {
                 setMobileMenuOpen(false);
                 navigate("/signup");
               }}
-              className="w-full text-center py-2.5 text-[14px] bg-[var(--fg)] text-[var(--surface)] rounded-babit font-medium"
+              className="w-full text-center py-2.5 text-[14px] rounded-babit font-medium"
+              style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
             >
               Get started
             </button>

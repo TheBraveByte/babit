@@ -1,5 +1,5 @@
 import { IconUser, IconActivity, IconLock, IconShieldCheck, IconArrowRight } from "@/lib/icons";
-
+import { Section, SectionHeader, LandingCard, CardIcon } from "./Section";
 const STEPS = [
   {
     label: "Authority",
@@ -29,34 +29,25 @@ const STEPS = [
 
 export function SectionHowItWorks() {
   return (
-    <section id="how" className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="absolute inset-0 mesh-bg pointer-events-none" />
-      <div className="absolute inset-0 grid-fade pointer-events-none" />
+   <Section id="how">
+      <SectionHeader
+        eyebrow="How it works"
+        title="From permission to proof."
+        lead="babit ties what an agent did to the person who allowed it, then turns it into evidence anyone can check."
+      />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
-        <div className="max-w-3xl space-y-4 animate-float-up">
-          <h2
-            className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
-            style={{ color: "var(--fg)" }}
-          >
-            From permission to proof.
-          </h2>
-          <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            babit ties what an agent did to the person who allowed it, then turns it into evidence anyone can check.
-          </p>
-        </div>
+     <div className="mt-14">
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-5">
           {/* Dominant lead tile: the whole flow */}
-          <div className="relative rounded-babit-lg p-6 space-y-5 h-full overflow-hidden glass animate-float-up sm:col-span-2 lg:col-span-2">
-            <div className="h-px accent-hairline absolute inset-x-0 top-0" />
-            <span className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--brand-accent)" }}>
+          <LandingCard emphasis="raised" className="sm:col-span-2 lg:col-span-2 space-y-5">
+            <span className="type-eyebrow block" style={{ color: "var(--brand-accent)" }}>
               The flow
             </span>
-            <h3 className="text-xl font-semibold leading-snug tracking-tight" style={{ color: "var(--fg)" }}>
-              One thread, from the moment someone says yes.
+            <h3 className="type-h3" style={{ color: "var(--fg)" }}>
+  One thread, from the moment someone says yes.
             </h3>
-            <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+            <p className="type-body">
               The link to who allowed it follows every step, so the result is evidence, not just a log.
             </p>
             <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -74,36 +65,26 @@ export function SectionHowItWorks() {
                 </div>
               ))}
             </div>
-          </div>
+          </LandingCard>
+
 
           {/* Supporting tiles: the four points */}
-          {STEPS.map((step, idx) => (
-            <div
-              key={step.label}
-              className="relative rounded-babit-lg p-6 space-y-4 h-full overflow-hidden glass-subtle animate-float-up"
-              style={{ animationDelay: `${(idx + 1) * 80}ms` }}
-            >
-              <div
-                className="w-9 h-9 rounded-babit flex items-center justify-center"
-                style={{ backgroundColor: "var(--secondary)", color: "var(--fg)" }}
-              >
+           {STEPS.map((step) => (
+            <LandingCard key={step.label} className="space-y-4">
+              <CardIcon>
                 <step.Icon className="w-4 h-4" />
-              </div>
+              </CardIcon>
               <div className="space-y-1.5">
-                <span className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-                  {step.label}
-                </span>
-                <h3 className="text-[17px] font-semibold leading-snug" style={{ color: "var(--fg)" }}>
+                <span className="type-eyebrow block">{step.label}</span>
+                <h3 className="type-h3" style={{ color: "var(--fg)" }}>
                   {step.title}
                 </h3>
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-                {step.body}
-              </p>
-            </div>
+               <p className="type-body">{step.body}</p>
+            </LandingCard>
           ))}
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

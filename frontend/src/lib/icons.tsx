@@ -1,10 +1,15 @@
 export function BabitLogo({ className = "w-5 h-5", brandColor }: { className?: string; brandColor?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="3" width="18" height="18" rx="4" stroke={brandColor || "currentColor"} strokeWidth="2" />
-      <path d="M8 8H16V11C16 12.1046 15.1046 13 14 13H8V8Z" fill={brandColor || "currentColor"} />
-      <path d="M8 13H15C16.1046 13 17 13.8954 17 15C17 16.1046 16.1046 17 15 17H8V13Z" fill={brandColor || "currentColor"} />
-      <circle cx="18" cy="6" r="1.5" fill="#10B981" />
+    const color = brandColor || "currentColor";
+    return (
+      <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M14.4 4.4 12 2 2 12l10 10 10-10-2.4-2.4"
+        stroke={color}
+        strokeWidth="1.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M12 7.6 16.4 12 12 16.4 7.6 12 12 7.6Z" fill={color} />
     </svg>
   );
 }

@@ -8,15 +8,15 @@ export function Footer() {
       style={{ backgroundColor: "var(--bg)", color: "var(--muted)" }}
       className="text-xs font-sans relative"
     >
-      <div className="h-px accent-hairline" />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
+      <div className="h-px" style={{ backgroundColor: "var(--border)" }} />
+      <div className="container-babit py-16 space-y-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Logo & Tagline */}
           <div className="col-span-2 space-y-4">
             <div className="flex items-center gap-2">
               <BabitLogo className="w-5 h-5" brandColor="var(--fg)" />
               <span
-                className="font-semibold text-base tracking-tight font-mono"
+                className="font-medium text-base tracking-tight font-mono"
                 style={{ color: "var(--fg)" }}
               >
                 babit

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import type { Node, Edge } from "@xyflow/react";
 import type { GrantNodeData } from "../../components/viz/AuthorityGraph";
+import { Section, LandingCard } from "./Section";
 
 const AuthorityGraph = lazy(() =>
   import("../../components/viz/AuthorityGraph").then((m) => ({ default: m.AuthorityGraph })),
@@ -8,7 +9,7 @@ const AuthorityGraph = lazy(() =>
 
 // Curated, truthful example of babit's signed delegation DAG (Grant model):
 // a human principal issues a root grant, delegates scoped authority to an agent,
-// which sub-delegates to two sub-agents — one live, one revoked (greyed subtree).
+// which sub-delegates to two sub-agents, one live and one revoked (greyed subtree).
 const NODES: Node<GrantNodeData>[] = [
   {
     id: "principal",
@@ -62,66 +63,86 @@ const EDGES: Edge[] = [
   { id: "e-exp", source: "agent", target: "batch-exporter", data: { revoked: true } },
 ];
 
+const HOW_TO_READ = [
+  {
+    dot: "var(--brand-accent)",
+    text: (
+      <>
+        Each node is a <span style={{ color: "var(--fg)" }}>grant</span>: a subject, its
+        capabilities, and its scope (resources and value limit).
+      </>
+    ),
+  },
+  {
+    dot: "var(--brand-accent)",
+    text: (
+      <>
+        Each edge carries a <span style={{ color: "var(--fg)" }}>parent signature</span>, proof
+        the grant above authorized the one below.
+      </>
+    ),
+  },
+  {
+    dot: "var(--color-failed)",
+    text: (
+      <>
+        A hand-off can only narrow authority, never widen it. Revoke a grant and its whole
+        subtree goes dark.
+      </>
+    ),
+  },
+];
+
 export function SectionAuthorityChain() {
   return (
-    <section className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="absolute inset-0 grid-fade pointer-events-none" />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left — Heading + description */}
-          <div className="space-y-8 animate-float-up">
-            <div className="space-y-4">
-              <h2
-                className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
-                style={{ color: "var(--fg)" }}
+    <Section>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* Left: heading + how to read it */}
+        <div className="space-y-8">
+          <div>
+            <p className="type-eyebrow mb-4">Authority</p>
+            <h2 className="type-h2" style={{ color: "var(--fg)" }}>
+              Every action traces back to a person.
+            </h2>
+            <p className="type-lead mt-5">
+              A person authorizes an agent, which can hand a narrower slice to a sub-agent.
+              Revoke a grant and everything below it greys out.
+            </p>
+          </div>
+
+          <LandingCard padding="none">
+            <div className="p-5 space-y-3 text-xs">
+              <div
+                className="flex items-center justify-between pb-2"
+                style={{ borderBottom: "1px solid var(--border-subtle)" }}
               >
-                Every action traces back to a person.
-              </h2>
-              <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-                A person authorizes an agent, which can hand a narrower slice to a sub-agent. Revoke a grant and everything below it greys out.
-              </p>
-            </div>
-
-            <div className="glass rounded-babit-lg overflow-hidden">
-              <div className="h-px accent-hairline" />
-              <div className="p-5 space-y-3 text-xs">
-                <div className="flex items-center justify-between pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-                  <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: "var(--muted)" }}>
-                    How to read it
-                  </span>
-                  <span className="font-mono font-semibold" style={{ color: "var(--fg)" }}>
-                    signed delegation
-                  </span>
-                </div>
-                <ul className="space-y-2" style={{ color: "var(--muted)" }}>
-                  <li className="flex gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "var(--brand-accent)" }} />
-                    <span>Each node is a <span style={{ color: "var(--fg)" }}>grant</span>: a subject, its capabilities, and its scope (resources and value limit).</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "var(--brand-accent)" }} />
-                    <span>Each edge carries a <span style={{ color: "var(--fg)" }}>parent signature</span>, proof the grant above authorized the one below.</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: "var(--color-failed)" }} />
-                    <span>A hand-off can only narrow authority, never widen it. Revoke a grant and its whole subtree goes dark.</span>
-                  </li>
-                </ul>
+                <span className="type-eyebrow">How to read it</span>
+                <span className="font-mono text-[11px]" style={{ color: "var(--fg)" }}>
+                  signed delegation
+                </span>
               </div>
+              <ul className="space-y-2" style={{ color: "var(--muted)" }}>
+                {HOW_TO_READ.map((item, i) => (
+                  <li key={i} className="flex gap-2">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
+                      style={{ backgroundColor: item.dot }}
+                    />
+                    <span>{item.text}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-
-          {/* Right — Real interactive delegation DAG */}
-          <div className="relative animate-float-up" style={{ animationDelay: "120ms" }}>
-            <div className="ambient-glow" style={{ inset: "8% 6% 8% 6%", opacity: 0.28 }} />
-            <div className="glass rounded-babit-lg overflow-hidden relative z-10">
-              <Suspense fallback={<div style={{ height: 420 }} />}>
-                <AuthorityGraph nodes={NODES} edges={EDGES} height={420} />
-              </Suspense>
-            </div>
-          </div>
+          </LandingCard>
         </div>
+
+        {/* Right: the real interactive delegation DAG */}
+        <LandingCard padding="none" emphasis="raised" className="overflow-hidden">
+          <Suspense fallback={<div style={{ height: 420 }} />}>
+            <AuthorityGraph nodes={NODES} edges={EDGES} height={420} />
+          </Suspense>
+        </LandingCard>
       </div>
-    </section>
+    </Section>
   );
 }

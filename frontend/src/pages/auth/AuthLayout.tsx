@@ -17,52 +17,43 @@ export function AuthLayout({
   visual?: ReactNode;
 }) {
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-2">
-      <main className="relative flex flex-col justify-center overflow-hidden mesh-bg min-h-screen lg:min-h-0 py-10 sm:py-12 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 grid-fade pointer-events-none" />
-        <div
-          className="ambient-glow animate-glow-pulse"
-          style={{ top: "14%", left: "50%", width: "420px", height: "420px", transform: "translateX(-50%)" }}
-        />
+    <div className="min-h-screen lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <main
+        className="relative flex flex-col min-h-screen lg:min-h-0 px-6 py-8 sm:px-10 lg:px-16"
+        style={{ backgroundColor: "var(--bg)" }}
+      >
+        {/* Brand, anchored top-left like the console it leads to */}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2.5 self-start transition-opacity hover:opacity-70"
+          style={{ color: "var(--fg)" }}
+        >
+          <BabitLogo className="w-[22px] h-[22px]" />
+          <span className="font-medium text-[16px] tracking-tight">babit</span>
+        </Link>
 
-        <div className="relative z-10 w-full sm:mx-auto sm:max-w-[400px]">
-          {/* Brand logo + wordmark */}
-          <div className="flex justify-center mb-6 sm:mb-8">
-            <Link
-              to="/"
-              className="flex items-center gap-2.5 transition-opacity hover:opacity-75"
-              style={{ color: "var(--fg)" }}
-            >
-              <BabitLogo className="w-6 h-6" />
-              <span className="font-semibold text-[17px] tracking-tight font-mono">babit</span>
-            </Link>
-          </div>
-
-          <div className="text-center mb-5 sm:mb-6 space-y-1">
-            <h1 className="text-[22px] font-semibold tracking-tight" style={{ color: "var(--fg)" }}>
+        <div className="flex-1 flex flex-col justify-center py-12">
+          <div className="w-full max-w-[380px] mx-auto lg:mx-0">
+            <h1 className="text-[26px] font-semibold tracking-[-0.025em]" style={{ color: "var(--fg)" }}>
               {title}
             </h1>
             {subtitle && (
-              <p className="text-[14px] leading-relaxed" style={{ color: "var(--muted)" }}>
+              <p className="mt-2 text-[14px] leading-relaxed" style={{ color: "var(--muted)" }}>
                 {subtitle}
               </p>
             )}
+            <div className="mt-8">{children}</div>
+              {footer && (
+              <div className="mt-8 text-[13px]" style={{ color: "var(--muted)" }}>
+                {footer}
+              </div>
+            )}
           </div>
         </div>
+        <p className="text-[12px]" style={{ color: "var(--muted)" }}>
+          Receipts stay verifiable without an account.
+        </p>
 
-        {/* Form card */}
-        <div className="mt-2 relative z-10 w-full sm:mx-auto sm:max-w-[400px] animate-float-up">
-          <div className="glass rounded-babit-lg overflow-hidden">
-            <div className="h-px accent-hairline" />
-            <div className="py-6 sm:py-7 px-5 sm:px-8">{children}</div>
-          </div>
-
-          {footer && (
-            <div className="mt-5 text-center text-xs" style={{ color: "var(--muted)" }}>
-              {footer}
-            </div>
-          )}
-        </div>
       </main>
 
       {/* ── Visual panel (intentionally dark; collapses on mobile) ────── */}
@@ -72,24 +63,21 @@ export function AuthLayout({
 }
 
 /**
- * AuthVisual — the branded right-hand panel. An intentionally-dark surface built from
- * what babit owns: the mesh gradient, faded grid, an ambient teal glow, the live
- * evidence chain, and a static "Verified" receipt showcasing the product. The `dark`
- * class re-scopes the design tokens so the panel renders dark in both themes.
- */
+ * * AuthVisual — the branded right-hand panel. An intentionally-dark surface showing the
+ *  * artefact the product produces: a sealed, verified receipt, over the append-only
+ *  * evidence chain. The `dark` class re-scopes the design tokens so the panel renders
+ *  * dark in both themes.
+ *  */
 function AuthVisual() {
   return (
-    <aside className="dark relative flex flex-col justify-center overflow-hidden mesh-bg px-5 py-10 sm:px-8 sm:py-12 lg:px-12 xl:px-16 min-h-[380px] sm:min-h-[460px] lg:min-h-screen">
-      <div className="absolute inset-0 grid-fade pointer-events-none" />
-      <div
-        className="ambient-glow animate-glow-pulse"
-        style={{ top: "18%", left: "58%", width: "480px", height: "480px" }}
-      />
+      <aside
+      className="dark relative flex flex-col justify-center overflow-hidden px-6 py-14 sm:px-10 lg:px-16 min-h-[420px] lg:min-h-screen"
+      style={{ backgroundColor: "var(--bg)", borderLeft: "1px solid var(--border)" }}
+    >
 
       {/* The append-only evidence chain, drifting quietly along the base */}
       <div
-        className="absolute inset-x-0 bottom-0 h-28 sm:h-32 opacity-30 sm:opacity-40 pointer-events-none"
-        style={{
+          className="absolute inset-x-0 bottom-0 h-28 sm:h-32 opacity-30 pointer-events-none"        style={{
           maskImage: "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
           WebkitMaskImage: "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
         }}
@@ -97,29 +85,20 @@ function AuthVisual() {
         <EvidenceLedger className="w-full h-full" />
       </div>
 
-      <div className="relative z-10 w-full max-w-md mx-auto space-y-5 sm:space-y-8">
-        <div className="space-y-3 sm:space-y-4">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-mono font-medium uppercase tracking-[0.14em] glass-subtle"
-            style={{ color: "var(--muted)" }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--brand-accent)" }} />
-            <span>Evidence for what agents do</span>
-          </div>
+      <div className="relative z-10 w-full max-w-md mx-auto space-y-8">
+        <div className="space-y-4">
+          <p className="type-eyebrow">Evidence for what agents do</p>
 
-          <h2 className="text-[26px] sm:text-[32px] font-semibold tracking-[-0.02em] leading-[1.1]" style={{ color: "var(--fg)" }}>
-            Proof for what your agents do.
+   <h2 className="text-[28px] sm:text-[32px] font-semibold tracking-[-0.025em] leading-[1.1]" style={{ color: "var(--fg)" }}>
+     Proof for what your agents do.
           </h2>
 
-          <p className="text-[14px] sm:text-[15px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            babit binds every action an agent takes to the authority that permitted it, then seals
+<p className="text-[15px] leading-relaxed" style={{ color: "var(--muted)" }}>
+    babit binds every action an agent takes to the authority that permitted it, then seals
             it as evidence anyone can verify.
           </p>
         </div>
-
-        <div className="hidden sm:block">
           <ReceiptShowcase />
-        </div>
 
         <div className="flex items-center gap-2 text-[13px]" style={{ color: "var(--muted)" }}>
           <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-4 h-4" /></span>

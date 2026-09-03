@@ -5,46 +5,35 @@ export function FinalCTA() {
   const { navigate } = useRouter();
 
   return (
-    <section className="mesh-bg py-28 sm:py-36 relative overflow-hidden border-t" style={{ borderColor: "var(--border)" }}>
-      <div className="absolute inset-0 grid-fade pointer-events-none" />
+    <section className="section-y-lg border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
+      <div className="container-babit">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="type-display" style={{ color: "var(--fg)" }}>
+            Know what your agents did, and prove it.
+          </h2>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="relative">
-          <div className="ambient-glow animate-glow-pulse" style={{ inset: "-20% 12% 24% 12%" }} />
+          <p className="type-lead mt-6 max-w-xl mx-auto">
+            Record what your agents do, tie it to who allowed it, and let anyone verify it.
+          </p>
 
-          <div className="glass rounded-babit-lg overflow-hidden relative animate-float-up">
-            <div className="h-px accent-hairline" />
-
-            <div className="px-6 py-14 sm:px-14 sm:py-20 text-center space-y-6">
-              <h2 className="text-4xl sm:text-5xl lg:text-[56px] font-semibold tracking-[-0.03em] leading-[1.1]" style={{ color: "var(--fg)" }}>
-                Know what your agents did, and prove it.
-              </h2>
-
-              <p className="text-base sm:text-lg max-w-xl mx-auto leading-relaxed" style={{ color: "var(--muted)" }}>
-                Record what your agents do, tie it to who allowed it, and let anyone verify it.
-              </p>
-
-              <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
-                <button
-                  onClick={() => navigate("/signup")}
-                  className="px-6 py-3 text-[15px] font-semibold rounded-babit transition-all cursor-pointer hover:opacity-90 active:scale-[0.99]"
-                  style={{ backgroundColor: "var(--brand-accent)", color: "#fff", boxShadow: "0 10px 30px -12px var(--brand-accent)" }}
-                >
-                  Get started
-                </button>
-
-                <a
-                  href={docsUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-6 py-3 text-[15px] font-medium rounded-babit transition-all cursor-pointer inline-flex items-center gap-1.5 glass-subtle hover:opacity-90"
-                  style={{ color: "var(--fg)" }}
-                >
-                  <span>Read the docs</span>
-                  <span style={{ color: "var(--muted)" }}>↗</span>
-                </a>
-              </div>
-            </div>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={() => navigate("/signup")}
+              className="px-5 py-2.5 text-[15px] font-medium rounded-babit transition-opacity cursor-pointer hover:opacity-90"
+              style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
+            >
+              Start recording actions
+            </button>
+            <a
+              href={docsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="px-5 py-2.5 text-[15px] font-medium rounded-babit transition-colors cursor-pointer inline-flex items-center gap-1.5"
+              style={{ color: "var(--fg)", border: "1px solid var(--border)" }}
+            >
+              <span>Read the docs</span>
+              <span style={{ color: "var(--muted)" }}>↗</span>
+            </a>
           </div>
         </div>
       </div>
