@@ -1,26 +1,26 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth";
+import { CommandPalette } from "@/lib/CommandPalette";
 import {
   BabitLogo,
   IconActivity,
-  IconShieldCheck,
-  IconGitBranch,
-  IconCpu,
-  IconSettings,
-  IconLogOut,
-  IconFileText,
-  IconSearch,
-  IconLayers,
   IconBarChart,
-  IconFolder,
-  IconKey,
-  IconUser,
   IconChevronRight,
+  IconCpu,
+  IconFileText,
+  IconFolder,
+  IconGitBranch,
+  IconKey,
+  IconLayers,
+  IconLogOut,
+  IconSearch,
+  IconSettings,
+  IconShieldCheck,
+  IconUser,
 } from "@/lib/icons";
-import { useAuth } from "@/lib/auth";
-import { useRouter, Link } from "@/lib/router";
-import { CommandPalette } from "@/lib/CommandPalette";
-import { ThemeToggle } from "@/lib/ThemeToggle";
 import { docsUrl } from "@/lib/links";
+import { Link, useRouter } from "@/lib/router";
+import { ThemeToggle } from "@/lib/ThemeToggle";
 
 export type DashboardTab =
   | "overview"

@@ -1,6 +1,6 @@
-import type { DashboardTab } from "./DashboardLayout";
-import { PageHeader, EmptyState, Button } from "@/lib/ui";
 import { IconCpu, IconGitBranch, IconShieldCheck } from "@/lib/icons";
+import { Button, EmptyState, PageHeader } from "@/lib/ui";
+import type { DashboardTab } from "./DashboardLayout";
 
 export function Agents({ onNavigate }: { onNavigate?: (tab: DashboardTab) => void }) {
   return (

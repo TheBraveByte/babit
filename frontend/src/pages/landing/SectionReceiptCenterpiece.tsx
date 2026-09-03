@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconCheck, IconCopy } from "@/lib/icons";
-import { Section, SectionHeader, LandingCard } from "./Section";
+import { LandingCard, Section, SectionHeader } from "./Section";
 
 export function SectionReceiptCenterpiece() {
   const [expandedHex, setExpandedHex] = useState(false);

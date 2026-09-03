@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
-import { PageHeader, Card, Button, Error, StatusPill, TextArea, TextInput, Field } from "@/lib/ui";
 import {
   IconCheck,
-  IconShieldCheck,
-  IconShieldAlert,
-  IconFileText,
   IconChevronDown,
+  IconFileText,
+  IconShieldAlert,
+  IconShieldCheck,
 } from "@/lib/icons";
+import { Button, Card, Error, Field, PageHeader, StatusPill, TextArea, TextInput } from "@/lib/ui";
 
 type Proof = components["schemas"]["v1Proof"];
 type VResp = components["schemas"]["v1VerifyProofResponse"];

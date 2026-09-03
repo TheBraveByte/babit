@@ -1,6 +1,6 @@
-import { PageHeader, Card, Button, EmptyState } from "@/lib/ui";
-import { IconKey, IconFolder, IconAlertCircle } from "@/lib/icons";
+import { IconAlertCircle, IconFolder, IconKey } from "@/lib/icons";
 import { useRouter } from "@/lib/router";
+import { Button, Card, EmptyState, PageHeader } from "@/lib/ui";
 
 export function ApiKeys() {
   const { navigate } = useRouter();

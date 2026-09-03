@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { api, setAuthToken, getAuthToken, clearSessionCookie, errText } from "@/api/client";
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
+import { api, clearSessionCookie, errText, getAuthToken, setAuthToken } from "@/api/client";
 
 export interface User {
   id?: string;

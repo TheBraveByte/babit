@@ -1,5 +1,5 @@
-import { IconMonitor, IconTerminal, IconCpu, IconLayers } from "@/lib/icons";
-import { Section, SectionHeader, CardGrid, FlushCard, LandingCard, CardIcon } from "./Section";
+import { IconCpu, IconLayers, IconMonitor, IconTerminal } from "@/lib/icons";
+import { CardGrid, CardIcon, FlushCard, LandingCard, Section, SectionHeader } from "./Section";
 
 const SURFACES = [
   {

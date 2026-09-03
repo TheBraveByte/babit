@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Nav } from "./landing/Nav";
+import { Button, Field, TextArea, TextInput } from "@/lib/ui";
 import { Footer } from "./landing/Footer";
+import { Nav } from "./landing/Nav";
 import { Section, SectionHeader } from "./landing/Section";
-import { Field, TextInput, TextArea, Button } from "@/lib/ui";
 
 export function ContactPage() {
   const [submitted, setSubmitted] = useState(false);

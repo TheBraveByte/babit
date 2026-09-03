@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "@/lib/router";
 import { BabitLogo } from "@/lib/icons";
+import { Link } from "@/lib/router";
 
 export function ApiReference() {
   const [Scalar, setScalar] = useState<React.ComponentType<any> | null>(null);

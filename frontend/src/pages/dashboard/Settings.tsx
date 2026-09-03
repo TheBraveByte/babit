@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/lib/auth";
-import { BabitLogo } from "@/lib/icons";
-import { Copyable, PageHeader, Field, TextInput, Select, Button, Error } from "@/lib/ui";
-import { IconShieldCheck, IconKey, IconBuilding, IconCheck } from "@/lib/icons";
 import { api, errText } from "@/api/client";
+import { useAuth } from "@/lib/auth";
+import { BabitLogo, IconBuilding, IconCheck, IconKey, IconShieldCheck } from "@/lib/icons";
+import { Button, Copyable, Error, Field, PageHeader, Select, TextInput } from "@/lib/ui";
 
 type Section = "general" | "workspace" | "notary";
 

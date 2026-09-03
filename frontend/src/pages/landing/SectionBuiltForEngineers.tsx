@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { IconCheck, IconCopy, IconArrowUpRight } from "@/lib/icons";
+import { IconArrowUpRight, IconCheck, IconCopy } from "@/lib/icons";
 import { Link } from "@/lib/router";
-import { Section, SectionHeader, LandingCard } from "./Section";
+import { LandingCard, Section, SectionHeader } from "./Section";
 
 const CODE_EXAMPLES = {
   curl: `# 1. Record what an agent just did, one authenticated POST.

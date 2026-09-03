@@ -1,5 +1,5 @@
-import { useTheme, type Theme } from "@/lib/theme";
-import { IconSun, IconMoon, IconMonitor } from "@/lib/icons";
+import { IconMonitor, IconMoon, IconSun } from "@/lib/icons";
+import { type Theme, useTheme } from "@/lib/theme";
 
 const order: Theme[] = ["light", "dark", "system"];
 

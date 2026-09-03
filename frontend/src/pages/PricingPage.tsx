@@ -1,20 +1,15 @@
-import { Nav } from "./landing/Nav";
-import { Footer } from "./landing/Footer";
-import { Section, SectionHeader, CardGrid, FlushCard } from "./landing/Section";
-import { Link } from "@/lib/router";
 import { IconCheck } from "@/lib/icons";
+import { Link } from "@/lib/router";
+import { Footer } from "./landing/Footer";
+import { Nav } from "./landing/Nav";
+import { CardGrid, FlushCard, Section, SectionHeader } from "./landing/Section";
 
 const PLANS = [
   {
     name: "Developer",
     price: "Free",
     body: "For solo builders and evaluation.",
-    features: [
-      "1 project",
-      "1,000 events / month",
-      "Full API access",
-      "Community support",
-    ],
+    features: ["1 project", "1,000 events / month", "Full API access", "Community support"],
     cta: "Get started",
     href: "/signup",
   },
@@ -22,12 +17,7 @@ const PLANS = [
     name: "Team",
     price: "$99 / mo",
     body: "For teams shipping agent pipelines.",
-    features: [
-      "10 projects",
-      "100,000 events / month",
-      "Audit log export",
-      "Email support",
-    ],
+    features: ["10 projects", "100,000 events / month", "Audit log export", "Email support"],
     cta: "Start trial",
     href: "/signup",
   },
@@ -96,7 +86,8 @@ export function PricingPage() {
                       to={plan.href}
                       className="mt-8 inline-flex items-center justify-center rounded-pill px-5 py-2.5 text-[15px] font-medium transition-opacity hover:opacity-90 cursor-pointer"
                       style={{
-                        backgroundColor: plan.name === "Team" ? "var(--brand-accent)" : "var(--surface)",
+                        backgroundColor:
+                          plan.name === "Team" ? "var(--brand-accent)" : "var(--surface)",
                         color: plan.name === "Team" ? "var(--surface)" : "var(--fg)",
                         border: plan.name === "Team" ? "none" : "1px solid var(--border)",
                       }}

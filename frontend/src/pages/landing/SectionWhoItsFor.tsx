@@ -1,4 +1,4 @@
-import { Section, SectionHeader, CardGrid, FlushCard } from "./Section";
+import { CardGrid, FlushCard, Section, SectionHeader } from "./Section";
 
 const SECTORS = [
   {

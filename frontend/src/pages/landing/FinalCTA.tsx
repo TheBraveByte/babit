@@ -1,5 +1,5 @@
-import { useRouter } from "@/lib/router";
 import { docsUrl } from "@/lib/links";
+import { useRouter } from "@/lib/router";
 
 export function FinalCTA() {
   const { navigate } = useRouter();
@@ -29,7 +29,8 @@ export function FinalCTA() {
             className="type-lead mt-6 max-w-xl mx-auto"
             style={{ color: "var(--dark-section-muted)" }}
           >
-            Bind agent actions to who authorized them. Cryptographically signed, independently auditable.
+            Bind agent actions to who authorized them. Cryptographically signed, independently
+            auditable.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">

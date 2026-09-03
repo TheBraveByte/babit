@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "./router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  IconSearch,
   IconActivity,
   IconCpu,
-  IconGitBranch,
   IconFileText,
-  IconShieldCheck,
-  IconSettings,
+  IconGitBranch,
   IconLayers,
+  IconSearch,
+  IconSettings,
+  IconShieldCheck,
 } from "./icons";
+import { useRouter } from "./router";
 
 interface CommandItem {
   id: string;

@@ -1,8 +1,8 @@
-import { useState, useEffect, lazy, Suspense } from "react";
-import { useRouter } from "@/lib/router";
-import { IconCheck, IconRefresh } from "@/lib/icons";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
+import { IconCheck, IconRefresh } from "@/lib/icons";
 import { docsUrl } from "@/lib/links";
+import { useRouter } from "@/lib/router";
 
 const EvidencePipeline = lazy(() =>
   import("@/components/viz/EvidencePipeline").then((m) => ({ default: m.EvidencePipeline })),
@@ -69,23 +69,6 @@ export function Hero() {
       {/* ── Content ─────────────────────────────────────────────────── */}
       <div className="relative z-10 container-babit min-h-[100vh] flex flex-col justify-center pt-28 pb-20 lg:pt-28 lg:pb-24">
         <div className="max-w-2xl">
-          {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 mb-8">
-            <span
-              className="w-1.5 h-1.5 rounded-full"
-              style={{
-                backgroundColor: "var(--brand-accent)",
-                boxShadow: "0 0 8px var(--brand-accent)",
-              }}
-            />
-            <span
-              className="type-eyebrow"
-              style={{ color: "var(--brand-accent)", letterSpacing: "0.08em" }}
-            >
-              Chain of custody for AI agents
-            </span>
-          </div>
-
           {/* Bold headline — confident, not abstract */}
           <h1
             className="font-medium tracking-[-0.035em] leading-[1.05]"
@@ -107,8 +90,8 @@ export function Hero() {
               fontSize: "clamp(1.0625rem, 1.4vw, 1.25rem)",
             }}
           >
-            Babit binds every autonomous action to the person who authorized it,
-            signs it, and appends it to a tamper-evident ledger anyone can audit.
+            Babit binds every autonomous action to the person who authorized it, signs it, and
+            appends it to a tamper-evident ledger anyone can audit.
           </p>
 
           {/* CTAs */}
