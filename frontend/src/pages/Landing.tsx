@@ -3,6 +3,7 @@ import { Footer } from "./landing/Footer";
 import { Hero } from "./landing/Hero";
 import { Nav } from "./landing/Nav";
 import { ProductPreview } from "./landing/ProductPreview";
+import { SectionApiSnippet } from "./landing/SectionApiSnippet";
 import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
 import { SectionBuiltForEngineers } from "./landing/SectionBuiltForEngineers";
 import { SectionGlobalAnchor } from "./landing/SectionGlobalAnchor";
@@ -26,14 +27,15 @@ export function Landing() {
         <Hero />
         <ProductPreview />
         <SectionHowItWorks />
-        <SectionLogsVsEvidence />
-        <SectionGlobalAnchor />
-        <SectionWhoItsFor />
         <SectionSurfaces />
         <SectionAuthorityChain />
         <SectionReceiptCenterpiece />
         <SectionVerifyRecord />
+        <SectionGlobalAnchor />
+        <SectionLogsVsEvidence />
         <SectionBuiltForEngineers />
+        <SectionApiSnippet />
+        <SectionWhoItsFor />
         <SectionOfflineEvidence />
         <FinalCTA />
       </main>

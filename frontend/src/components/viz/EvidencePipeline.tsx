@@ -56,7 +56,7 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
 
     const nodes: Node[] = [];
     const count = 42;
-    const linkDist = 140;
+    const linkDist = 160;
     const linkDistSq = linkDist * linkDist;
 
     const initNodes = () => {
@@ -70,7 +70,7 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           r: 1.5 + Math.random() * 2.5,
-          alpha: 0.25 + Math.random() * 0.4,
+          alpha: 0.35 + Math.random() * 0.45,
         });
       }
     };
@@ -93,7 +93,7 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
       }
 
       // Connections
-      ctx.lineWidth = 0.8;
+      ctx.lineWidth = 1.2;
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i];
         for (let j = i + 1; j < nodes.length; j++) {
@@ -104,7 +104,7 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
           if (distSq < linkDistSq) {
             const dist = Math.sqrt(distSq);
             const t = 1 - dist / linkDist;
-            ctx.strokeStyle = `rgba(${accent}, ${(0.12 * t * (a.alpha + b.alpha)) / 2})`;
+            ctx.strokeStyle = `rgba(${accent}, ${(0.22 * t * (a.alpha + b.alpha)) / 2})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -131,8 +131,8 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
         ctx.fill();
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r + 3, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${accent}, ${p.alpha * 0.25})`;
+        ctx.arc(p.x, p.y, p.r + 5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${accent}, ${p.alpha * 0.35})`;
         ctx.fill();
       }
     };

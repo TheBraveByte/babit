@@ -75,7 +75,7 @@ export function LandingCard({
       className={`h-full transition-colors duration-200 ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
       style={{
         backgroundColor: "var(--surface)",
-        border: "1px solid var(--border-subtle)",
+        border: "1px solid var(--border)",
         borderRadius: "4px",
         boxShadow:
           emphasis === "raised"
@@ -107,7 +107,7 @@ export function CardGrid({
     <div
       className={`grid grid-cols-1 sm:grid-cols-2 ${colClass} ${className}`}
       style={{
-        border: "1px solid var(--border-subtle)",
+        border: "1px solid var(--border)",
         borderRadius: "4px",
         overflow: "hidden",
       }}
@@ -134,8 +134,8 @@ export function FlushCard({
     <div
       className={`h-full relative transition-colors duration-200 ${padding === "default" ? "p-6 sm:p-7" : ""} ${className} flush-card`}
       style={{
-        borderLeft: "1px solid var(--border-subtle)",
-        borderTop: "1px solid var(--border-subtle)",
+        borderLeft: "1px solid var(--border)",
+        borderTop: "1px solid var(--border)",
       }}
     >
       {children}
