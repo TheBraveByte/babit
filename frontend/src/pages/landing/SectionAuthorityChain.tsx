@@ -106,8 +106,8 @@ export function SectionAuthorityChain() {
             />
 
             <p className="px-5 py-4 text-xs" style={{ color: "var(--dark-section-muted)" }}>
-              Each row is one grant. The Principal column is the parent; the Subject column is who
-              received it. Scopes and capabilities narrow as authority moves down.
+              A root principal delegates to agents, which may delegate further to sub-agents. Each
+              box is a live grant; the labels show role, subject, capabilities and scope.
             </p>
           </div>
         </div>

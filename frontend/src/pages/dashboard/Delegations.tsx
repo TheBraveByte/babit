@@ -3,6 +3,8 @@ import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
 import { AuthorityGraph, chainToGraph, type GrantRole } from "@/components/viz/AuthorityGraph";
+import { GrantTree } from "@/components/viz/GrantTree";
+
 import { IconCheck, IconGitBranch, IconShieldCheck } from "@/lib/icons";
 import {
   Button,
@@ -298,113 +300,129 @@ export function Delegations() {
           </div>
         </Card>
       ) : (
-        <Card>
-          <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
-          {loading && !hasInitialLoaded ? (
-            <TableSkeleton rows={8} cols={4} />
-          ) : error ? (
-            <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>
-              Couldn't load grants. Try refreshing.
-            </p>
-          ) : grants.length === 0 ? (
-            <EmptyState
-              icon={<IconGitBranch className="w-5 h-5" />}
-              title="No grants issued yet"
-              description="Issue a root grant for a human principal, then delegate scoped authority to agents and sub-agents."
-            />
-          ) : (
-            <>
-              <div
-                className="overflow-hidden rounded-babit"
-                style={{ border: "1px solid var(--border-subtle)" }}
-              >
-                <table className="w-full text-left">
-                  <thead>
-                    <tr
-                      style={{
-                        borderBottom: "1px solid var(--border-subtle)",
-                        backgroundColor: "var(--secondary)",
-                      }}
-                    >
-                      <th
-                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider"
-                        style={{ color: "var(--muted)" }}
-                      >
-                        Grant ID
-                      </th>
-                      <th
-                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
-                        style={{ color: "var(--muted)" }}
-                      >
-                        Principal → Subject
-                      </th>
-                      <th
-                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
-                        style={{ color: "var(--muted)" }}
-                      >
-                        Capabilities
-                      </th>
-                      <th
-                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right"
-                        style={{ color: "var(--muted)" }}
-                      >
-                        Verify
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {grants.map((g, i) => (
+        <div className="space-y-6">
+          <Card
+            title="Grant hierarchy"
+            subtitle="Authority flows from the root principal down through signed delegations."
+          >
+            <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
+            {grants.length > 0 ? (
+              <GrantTree grants={grants} onSelect={(g) => setSelected(g)} />
+            ) : (
+              <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>
+                No grants to visualize yet.
+              </p>
+            )}
+          </Card>
+
+          <Card>
+            <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
+            {loading && !hasInitialLoaded ? (
+              <TableSkeleton rows={8} cols={4} />
+            ) : error ? (
+              <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>
+                Couldn't load grants. Try refreshing.
+              </p>
+            ) : grants.length === 0 ? (
+              <EmptyState
+                icon={<IconGitBranch className="w-5 h-5" />}
+                title="No grants issued yet"
+                description="Issue a root grant for a human principal, then delegate scoped authority to agents and sub-agents."
+              />
+            ) : (
+              <>
+                <div
+                  className="overflow-hidden rounded-babit"
+                  style={{ border: "1px solid var(--border-subtle)" }}
+                >
+                  <table className="w-full text-left">
+                    <thead>
                       <tr
-                        key={g.grant_id || i}
-                        onClick={() => setSelected(g)}
-                        className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
                         style={{
-                          borderBottom:
-                            i < grants.length - 1 ? "1px solid var(--border-subtle)" : undefined,
+                          borderBottom: "1px solid var(--border-subtle)",
+                          backgroundColor: "var(--secondary)",
                         }}
                       >
-                        <td
-                          className="px-3 py-2.5 font-mono text-xs"
-                          style={{ color: "var(--fg)" }}
-                        >
-                          {g.grant_id}
-                        </td>
-                        <td
-                          className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell"
+                        <th
+                          className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider"
                           style={{ color: "var(--muted)" }}
                         >
-                          {g.principal_id} → {g.subject_id}
-                        </td>
-                        <td
-                          className="px-3 py-2.5 text-xs hidden sm:table-cell"
+                          Grant ID
+                        </th>
+                        <th
+                          className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
                           style={{ color: "var(--muted)" }}
                         >
-                          {(g.capabilities ?? []).slice(0, 3).join(", ")}
-                        </td>
-                        <td className="px-3 py-2.5 text-right">
-                          <span
-                            className="text-xs font-medium inline-flex items-center gap-1"
-                            style={{ color: "var(--brand-accent)" }}
-                          >
-                            <IconShieldCheck className="w-3 h-3" /> Verify
-                          </span>
-                        </td>
+                          Principal → Subject
+                        </th>
+                        <th
+                          className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          Capabilities
+                        </th>
+                        <th
+                          className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          Verify
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
-                Showing {grants.length} grant{grants.length !== 1 ? "s" : ""}.
-              </p>
-              <LoadMoreButton
-                onClick={() => loadMore(fetcher, PAGE_SIZE)}
-                loading={loading}
-                disabled={!hasMore}
-              />
-            </>
-          )}
-        </Card>
+                    </thead>
+                    <tbody>
+                      {grants.map((g, i) => (
+                        <tr
+                          key={g.grant_id || i}
+                          onClick={() => setSelected(g)}
+                          className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
+                          style={{
+                            borderBottom:
+                              i < grants.length - 1 ? "1px solid var(--border-subtle)" : undefined,
+                          }}
+                        >
+                          <td
+                            className="px-3 py-2.5 font-mono text-xs"
+                            style={{ color: "var(--fg)" }}
+                          >
+                            {g.grant_id}
+                          </td>
+                          <td
+                            className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell"
+                            style={{ color: "var(--muted)" }}
+                          >
+                            {g.principal_id} → {g.subject_id}
+                          </td>
+                          <td
+                            className="px-3 py-2.5 text-xs hidden sm:table-cell"
+                            style={{ color: "var(--muted)" }}
+                          >
+                            {(g.capabilities ?? []).slice(0, 3).join(", ")}
+                          </td>
+                          <td className="px-3 py-2.5 text-right">
+                            <span
+                              className="text-xs font-medium inline-flex items-center gap-1"
+                              style={{ color: "var(--brand-accent)" }}
+                            >
+                              <IconShieldCheck className="w-3 h-3" /> Verify
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
+                  Showing {grants.length} grant{grants.length !== 1 ? "s" : ""}.
+                </p>
+                <LoadMoreButton
+                  onClick={() => loadMore(fetcher, PAGE_SIZE)}
+                  loading={loading}
+                  disabled={!hasMore}
+                />
+              </>
+            )}
+          </Card>
+        </div>
       )}
     </div>
   );

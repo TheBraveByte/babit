@@ -132,7 +132,7 @@ export function FlushCard({
 }) {
   return (
     <div
-      className={`h-full transition-colors duration-200 ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
+      className={`h-full relative transition-colors duration-200 ${padding === "default" ? "p-6 sm:p-7" : ""} ${className} flush-card`}
       style={{
         borderLeft: "1px solid var(--border-subtle)",
         borderTop: "1px solid var(--border-subtle)",
