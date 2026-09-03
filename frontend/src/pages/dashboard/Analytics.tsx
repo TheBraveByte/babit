@@ -245,6 +245,17 @@ export function Analytics() {
   const hasSurface = surfaceSeries.some((d) => d.count > 0);
   const hasDelegation = totalGrants > 0;
 
+  const topLinks = (data?.top_links ?? []).map((l) => ({
+    url: l.url ?? "",
+    count: num(l.count),
+  }));
+  const isStatic = (url: string) =>
+    /\.(png|jpg|jpeg|gif|svg|css|js|ico|woff|woff2|ttf|pdf|mp4|webm|ogg)$/i.test(url);
+  const linksOnly = topLinks.filter((l) => !isStatic(l.url));
+  const staticsOnly = topLinks.filter((l) => isStatic(l.url));
+  const hasLinks = linksOnly.length > 0;
+  const hasStatics = staticsOnly.length > 0;
+
   const notes: string[] = [];
   if (hasSurface) {
     const top = [...surfaceSeries].sort((a, b) => b.count - a.count)[0];
@@ -464,6 +475,54 @@ export function Analytics() {
                     </div>
                   </div>
                 </div>
+              )}
+            </Panel>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <Panel
+              title="Top links"
+              subtitle="Most recorded URLs and pages"
+              icon={<IconActivity className="w-4 h-4" />}
+            >
+              {loading || !hasLinks ? (
+                <EmptyChart />
+              ) : (
+                <ul className="space-y-2">
+                  {linksOnly.slice(0, 10).map((l, i) => (
+                    <li key={i} className="flex items-center gap-2 text-xs">
+                      <span className="font-mono truncate flex-1" style={{ color: "var(--fg)" }}>
+                        {l.url}
+                      </span>
+                      <span className="font-mono font-semibold" style={{ color: "var(--muted)" }}>
+                        {fmt(l.count)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Panel>
+
+            <Panel
+              title="Top statics"
+              subtitle="Most accessed images, styles and assets"
+              icon={<IconMonitor className="w-4 h-4" />}
+            >
+              {loading || !hasStatics ? (
+                <EmptyChart />
+              ) : (
+                <ul className="space-y-2">
+                  {staticsOnly.slice(0, 10).map((l, i) => (
+                    <li key={i} className="flex items-center gap-2 text-xs">
+                      <span className="font-mono truncate flex-1" style={{ color: "var(--fg)" }}>
+                        {l.url}
+                      </span>
+                      <span className="font-mono font-semibold" style={{ color: "var(--muted)" }}>
+                        {fmt(l.count)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               )}
             </Panel>
           </div>

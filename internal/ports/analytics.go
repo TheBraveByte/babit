@@ -15,6 +15,11 @@ type DayCount struct {
 	Count int64
 }
 
+type TopLink struct {
+	URL   string
+	Count int64
+}
+
 type Overview struct {
 	TotalEvents   int64
 	TotalSessions int64
@@ -22,6 +27,7 @@ type Overview struct {
 	RevokedGrants int64
 	BySurface     []SurfaceCount
 	OverTime      []DayCount
+	TopLinks      []TopLink
 }
 
 type AnalyticsStore interface {

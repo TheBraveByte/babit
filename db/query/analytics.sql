@@ -32,3 +32,14 @@ WHERE s.user_id = $1
   AND e.occurred_at >= now() - make_interval(days => $2::int)
 GROUP BY day
 ORDER BY day;
+
+-- name: TopRecordingRefsForUser :many
+SELECT e.recording_ref AS url, count(*) AS n
+FROM events e
+JOIN sessions s ON e.session_id = s.session_id
+WHERE s.user_id = $1
+  AND e.recording_ref <> ''
+  AND e.occurred_at >= now() - make_interval(days => $2::int)
+GROUP BY e.recording_ref
+ORDER BY n DESC
+LIMIT $3;

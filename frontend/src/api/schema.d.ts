@@ -571,6 +571,7 @@ export interface components {
       revoked_grants?: string;
       by_surface?: components["schemas"]["v1SurfaceCount"][];
       over_time?: components["schemas"]["v1DayCount"][];
+      top_links?: components["schemas"]["v1TopLink"][];
     };
     v1GetPublicKeyResponse: {
       key_id?: string;
@@ -742,6 +743,11 @@ export interface components {
     v1Surface: "SURFACE_UNSPECIFIED" | "SURFACE_BROWSER" | "SURFACE_SANDBOX" | "SURFACE_DESKTOP";
     v1SurfaceCount: {
       surface?: string;
+      /** Format: int64 */
+      count?: string;
+    };
+    v1TopLink: {
+      url?: string;
       /** Format: int64 */
       count?: string;
     };

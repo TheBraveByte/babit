@@ -44,6 +44,9 @@ func (s *AnalyticsSvc) GetOverview(ctx context.Context, req *ledgerv1.GetOvervie
 			Count: dc.Count,
 		})
 	}
+	for _, l := range o.TopLinks {
+		resp.TopLinks = append(resp.TopLinks, &ledgerv1.TopLink{Url: l.URL, Count: l.Count})
+	}
 	return resp, nil
 }
 

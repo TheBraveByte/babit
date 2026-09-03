@@ -127,6 +127,58 @@ func (x *DayCount) GetCount() int64 {
 	return 0
 }
 
+type TopLink struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Url           string                 `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	Count         int64                  `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TopLink) Reset() {
+	*x = TopLink{}
+	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TopLink) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TopLink) ProtoMessage() {}
+
+func (x *TopLink) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TopLink.ProtoReflect.Descriptor instead.
+func (*TopLink) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_analytics_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *TopLink) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *TopLink) GetCount() int64 {
+	if x != nil {
+		return x.Count
+	}
+	return 0
+}
+
 type GetOverviewRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Days          int32                  `protobuf:"varint,1,opt,name=days,proto3" json:"days,omitempty"`
@@ -136,7 +188,7 @@ type GetOverviewRequest struct {
 
 func (x *GetOverviewRequest) Reset() {
 	*x = GetOverviewRequest{}
-	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[2]
+	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -148,7 +200,7 @@ func (x *GetOverviewRequest) String() string {
 func (*GetOverviewRequest) ProtoMessage() {}
 
 func (x *GetOverviewRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[2]
+	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -161,7 +213,7 @@ func (x *GetOverviewRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOverviewRequest.ProtoReflect.Descriptor instead.
 func (*GetOverviewRequest) Descriptor() ([]byte, []int) {
-	return file_solari_ledger_v1_analytics_proto_rawDescGZIP(), []int{2}
+	return file_solari_ledger_v1_analytics_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetOverviewRequest) GetDays() int32 {
@@ -179,13 +231,14 @@ type GetOverviewResponse struct {
 	RevokedGrants int64                  `protobuf:"varint,4,opt,name=revoked_grants,json=revokedGrants,proto3" json:"revoked_grants,omitempty"`
 	BySurface     []*SurfaceCount        `protobuf:"bytes,5,rep,name=by_surface,json=bySurface,proto3" json:"by_surface,omitempty"`
 	OverTime      []*DayCount            `protobuf:"bytes,6,rep,name=over_time,json=overTime,proto3" json:"over_time,omitempty"`
+	TopLinks      []*TopLink             `protobuf:"bytes,7,rep,name=top_links,json=topLinks,proto3" json:"top_links,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetOverviewResponse) Reset() {
 	*x = GetOverviewResponse{}
-	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[3]
+	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -197,7 +250,7 @@ func (x *GetOverviewResponse) String() string {
 func (*GetOverviewResponse) ProtoMessage() {}
 
 func (x *GetOverviewResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[3]
+	mi := &file_solari_ledger_v1_analytics_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -210,7 +263,7 @@ func (x *GetOverviewResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOverviewResponse.ProtoReflect.Descriptor instead.
 func (*GetOverviewResponse) Descriptor() ([]byte, []int) {
-	return file_solari_ledger_v1_analytics_proto_rawDescGZIP(), []int{3}
+	return file_solari_ledger_v1_analytics_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetOverviewResponse) GetTotalEvents() int64 {
@@ -255,6 +308,13 @@ func (x *GetOverviewResponse) GetOverTime() []*DayCount {
 	return nil
 }
 
+func (x *GetOverviewResponse) GetTopLinks() []*TopLink {
+	if x != nil {
+		return x.TopLinks
+	}
+	return nil
+}
+
 var File_solari_ledger_v1_analytics_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_analytics_proto_rawDesc = "" +
@@ -265,9 +325,12 @@ const file_solari_ledger_v1_analytics_proto_rawDesc = "" +
 	"\x05count\x18\x02 \x01(\x03R\x05count\"4\n" +
 	"\bDayCount\x12\x12\n" +
 	"\x04date\x18\x01 \x01(\tR\x04date\x12\x14\n" +
+	"\x05count\x18\x02 \x01(\x03R\x05count\"1\n" +
+	"\aTopLink\x12\x10\n" +
+	"\x03url\x18\x01 \x01(\tR\x03url\x12\x14\n" +
 	"\x05count\x18\x02 \x01(\x03R\x05count\"(\n" +
 	"\x12GetOverviewRequest\x12\x12\n" +
-	"\x04days\x18\x01 \x01(\x05R\x04days\"\xa1\x02\n" +
+	"\x04days\x18\x01 \x01(\x05R\x04days\"\xd9\x02\n" +
 	"\x13GetOverviewResponse\x12!\n" +
 	"\ftotal_events\x18\x01 \x01(\x03R\vtotalEvents\x12%\n" +
 	"\x0etotal_sessions\x18\x02 \x01(\x03R\rtotalSessions\x12!\n" +
@@ -275,7 +338,8 @@ const file_solari_ledger_v1_analytics_proto_rawDesc = "" +
 	"\x0erevoked_grants\x18\x04 \x01(\x03R\rrevokedGrants\x12=\n" +
 	"\n" +
 	"by_surface\x18\x05 \x03(\v2\x1e.solari.ledger.v1.SurfaceCountR\tbySurface\x127\n" +
-	"\tover_time\x18\x06 \x03(\v2\x1a.solari.ledger.v1.DayCountR\boverTime2\xd3\x01\n" +
+	"\tover_time\x18\x06 \x03(\v2\x1a.solari.ledger.v1.DayCountR\boverTime\x126\n" +
+	"\ttop_links\x18\a \x03(\v2\x19.solari.ledger.v1.TopLinkR\btopLinks2\xd3\x01\n" +
 	"\x10AnalyticsService\x12\xbe\x01\n" +
 	"\vGetOverview\x12$.solari.ledger.v1.GetOverviewRequest\x1a%.solari.ledger.v1.GetOverviewResponse\"b\x92AA\x12?Aggregate activity across the ledger (events, sessions, grants)\x82\xd3\xe4\x93\x02\x18\x12\x16/v1/analytics/overviewB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
@@ -291,23 +355,25 @@ func file_solari_ledger_v1_analytics_proto_rawDescGZIP() []byte {
 	return file_solari_ledger_v1_analytics_proto_rawDescData
 }
 
-var file_solari_ledger_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_solari_ledger_v1_analytics_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_solari_ledger_v1_analytics_proto_goTypes = []any{
 	(*SurfaceCount)(nil),        // 0: solari.ledger.v1.SurfaceCount
 	(*DayCount)(nil),            // 1: solari.ledger.v1.DayCount
-	(*GetOverviewRequest)(nil),  // 2: solari.ledger.v1.GetOverviewRequest
-	(*GetOverviewResponse)(nil), // 3: solari.ledger.v1.GetOverviewResponse
+	(*TopLink)(nil),             // 2: solari.ledger.v1.TopLink
+	(*GetOverviewRequest)(nil),  // 3: solari.ledger.v1.GetOverviewRequest
+	(*GetOverviewResponse)(nil), // 4: solari.ledger.v1.GetOverviewResponse
 }
 var file_solari_ledger_v1_analytics_proto_depIdxs = []int32{
 	0, // 0: solari.ledger.v1.GetOverviewResponse.by_surface:type_name -> solari.ledger.v1.SurfaceCount
 	1, // 1: solari.ledger.v1.GetOverviewResponse.over_time:type_name -> solari.ledger.v1.DayCount
-	2, // 2: solari.ledger.v1.AnalyticsService.GetOverview:input_type -> solari.ledger.v1.GetOverviewRequest
-	3, // 3: solari.ledger.v1.AnalyticsService.GetOverview:output_type -> solari.ledger.v1.GetOverviewResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 2: solari.ledger.v1.GetOverviewResponse.top_links:type_name -> solari.ledger.v1.TopLink
+	3, // 3: solari.ledger.v1.AnalyticsService.GetOverview:input_type -> solari.ledger.v1.GetOverviewRequest
+	4, // 4: solari.ledger.v1.AnalyticsService.GetOverview:output_type -> solari.ledger.v1.GetOverviewResponse
+	4, // [4:5] is the sub-list for method output_type
+	3, // [3:4] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_solari_ledger_v1_analytics_proto_init() }
@@ -321,7 +387,7 @@ func file_solari_ledger_v1_analytics_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_solari_ledger_v1_analytics_proto_rawDesc), len(file_solari_ledger_v1_analytics_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

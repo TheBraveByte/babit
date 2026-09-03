@@ -49,5 +49,12 @@ func (s *analyticsStore) Overview(ctx context.Context, days int32) (*ports.Overv
 	for _, r := range daily {
 		o.OverTime = append(o.OverTime, ports.DayCount{Day: r.Day.Time, Count: r.N})
 	}
+	links, err := s.q.TopRecordingRefsForUser(ctx, storedb.TopRecordingRefsForUserParams{UserID: uid, Column2: days, Limit: 10})
+	if err != nil {
+		return nil, opErr(err, "top recording refs")
+	}
+	for _, r := range links {
+		o.TopLinks = append(o.TopLinks, ports.TopLink{URL: r.Url, Count: r.N})
+	}
 	return o, nil
 }

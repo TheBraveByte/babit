@@ -1510,6 +1510,12 @@
                         "items": {
                             "$ref": "#/components/schemas/v1DayCount"
                         }
+                    },
+                    "top_links": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1TopLink"
+                        }
                     }
                 }
             },
@@ -1902,6 +1908,18 @@
                 "type": "object",
                 "properties": {
                     "surface": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "string",
+                        "format": "int64"
+                    }
+                }
+            },
+            "v1TopLink": {
+                "type": "object",
+                "properties": {
+                    "url": {
                         "type": "string"
                     },
                     "count": {

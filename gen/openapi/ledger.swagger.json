@@ -1253,6 +1253,13 @@
             "type": "object",
             "$ref": "#/definitions/v1DayCount"
           }
+        },
+        "top_links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1TopLink"
+          }
         }
       }
     },
@@ -1651,6 +1658,18 @@
       "type": "object",
       "properties": {
         "surface": {
+          "type": "string"
+        },
+        "count": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1TopLink": {
+      "type": "object",
+      "properties": {
+        "url": {
           "type": "string"
         },
         "count": {
