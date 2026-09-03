@@ -1,5 +1,15 @@
 import { useEffect, useState, useCallback } from "react";
-import { PageHeader, Card, StatusPill, Copyable, MonospaceHash, Button, Error as ErrorBox, TableSkeleton, EmptyState } from "@/lib/ui";
+import {
+  PageHeader,
+  Card,
+  StatusPill,
+  Copyable,
+  MonospaceHash,
+  Button,
+  Error as ErrorBox,
+  TableSkeleton,
+  EmptyState,
+} from "@/lib/ui";
 import { IconLayers } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import { usePagination } from "@/lib/usePagination";
@@ -18,10 +28,21 @@ const ANCHOR_KIND_LABEL: Record<string, string> = {
   KIND_PUBLIC_CHAIN: "Public Chain",
 };
 
-function Meta({ label, children, mono = true }: { label: string; children: React.ReactNode; mono?: boolean }) {
+function Meta({
+  label,
+  children,
+  mono = true,
+}: {
+  label: string;
+  children: React.ReactNode;
+  mono?: boolean;
+}) {
   return (
     <div>
-      <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>
+      <span
+        className="text-[10px] font-mono uppercase tracking-wider block mb-1"
+        style={{ color: "var(--muted)" }}
+      >
         {label}
       </span>
       <div className={mono ? "font-mono text-xs tnum" : "text-xs"} style={{ color: "var(--fg)" }}>
@@ -36,7 +57,15 @@ export function Sessions() {
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const [anchorLoading, setAnchorLoading] = useState(false);
   const [anchorError, setAnchorError] = useState<string | null>(null);
-  const { items: sessions, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<Session>();
+  const {
+    items: sessions,
+    loading,
+    error,
+    hasMore,
+    hasInitialLoaded,
+    refresh,
+    loadMore,
+  } = usePagination<Session>();
 
   const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
     const res = await api.GET("/v1/sessions", { params: { query: params } });
@@ -64,10 +93,13 @@ export function Sessions() {
       else setAnchor(res.data?.anchor ?? null);
       setAnchorLoading(false);
     })();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [selected]);
 
-  const hasAnchor = anchor && (anchor.kind || anchor.root || anchor.anchor_receipt || anchor.anchored_at);
+  const hasAnchor =
+    anchor && (anchor.kind || anchor.root || anchor.anchor_receipt || anchor.anchored_at);
 
   return (
     <div className="space-y-6">
@@ -82,24 +114,41 @@ export function Sessions() {
         <Card
           title={selected.session_id}
           subtitle={`Surface: ${selected.surface || "—"}`}
-          action={<Button variant="secondary" size="sm" onClick={() => setSelected(null)}>Back</Button>}
+          action={
+            <Button variant="secondary" size="sm" onClick={() => setSelected(null)}>
+              Back
+            </Button>
+          }
         >
           <div className="space-y-5">
             <div className="h-px accent-hairline -mx-5 -mt-5" />
             <div className="grid sm:grid-cols-2 gap-4">
-              <Meta label="Session ID"><Copyable value={selected.session_id || "—"} /></Meta>
-              <Meta label="Root Grant"><Copyable value={selected.root_grant_id || "—"} /></Meta>
+              <Meta label="Session ID">
+                <Copyable value={selected.session_id || "—"} />
+              </Meta>
+              <Meta label="Root Grant">
+                <Copyable value={selected.root_grant_id || "—"} />
+              </Meta>
               <Meta label="Started At">{selected.started_at || "—"}</Meta>
               <Meta label="Ended At">{selected.ended_at || "open"}</Meta>
               <Meta label="Event Count">{selected.event_count ?? 0}</Meta>
-              <Meta label="Surface" mono={false}>{selected.surface || "—"}</Meta>
+              <Meta label="Surface" mono={false}>
+                {selected.surface || "—"}
+              </Meta>
             </div>
 
             <div className="pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
               <div className="flex items-center justify-between pb-2">
-                <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--fg)" }}>External Anchor</span>
+                <span
+                  className="text-xs font-semibold uppercase tracking-wide"
+                  style={{ color: "var(--fg)" }}
+                >
+                  External Anchor
+                </span>
                 {anchorLoading ? (
-                  <span className="text-xs" style={{ color: "var(--muted)" }}>Loading…</span>
+                  <span className="text-xs" style={{ color: "var(--muted)" }}>
+                    Loading…
+                  </span>
                 ) : hasAnchor ? (
                   <StatusPill ok label="ANCHORED" />
                 ) : anchorError ? (
@@ -107,16 +156,28 @@ export function Sessions() {
                 ) : null}
               </div>
               {anchorError && !hasAnchor && (
-                <p className="text-xs" style={{ color: "var(--muted)" }}>{anchorError}</p>
+                <p className="text-xs" style={{ color: "var(--muted)" }}>
+                  {anchorError}
+                </p>
               )}
               {hasAnchor && (
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Meta label="Kind" mono={false}>
-                    <span className="font-medium">{ANCHOR_KIND_LABEL[anchor!.kind ?? ""] ?? anchor!.kind ?? "—"}</span>
+                    <span className="font-medium">
+                      {ANCHOR_KIND_LABEL[anchor!.kind ?? ""] ?? anchor!.kind ?? "—"}
+                    </span>
                   </Meta>
                   {anchor!.anchored_at && <Meta label="Anchored At">{anchor!.anchored_at}</Meta>}
-                  {anchor!.root && <Meta label="Root"><MonospaceHash hash={anchor!.root} /></Meta>}
-                  {anchor!.anchor_receipt && <Meta label="Anchor Receipt"><MonospaceHash hash={anchor!.anchor_receipt} /></Meta>}
+                  {anchor!.root && (
+                    <Meta label="Root">
+                      <MonospaceHash hash={anchor!.root} />
+                    </Meta>
+                  )}
+                  {anchor!.anchor_receipt && (
+                    <Meta label="Anchor Receipt">
+                      <MonospaceHash hash={anchor!.anchor_receipt} />
+                    </Meta>
+                  )}
                 </div>
               )}
             </div>
@@ -128,7 +189,9 @@ export function Sessions() {
           {loading && !hasInitialLoaded ? (
             <TableSkeleton rows={8} cols={5} />
           ) : error ? (
-            <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>Couldn't load sessions. Try refreshing.</p>
+            <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>
+              Couldn't load sessions. Try refreshing.
+            </p>
           ) : sessions.length === 0 ? (
             <EmptyState
               icon={<IconLayers className="w-5 h-5" />}
@@ -137,45 +200,106 @@ export function Sessions() {
             />
           ) : (
             <>
-            <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
-              <table className="w-full text-left">
-                <thead>
-                  <tr style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Session ID</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Root Grant</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Events</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Status</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right" style={{ color: "var(--muted)" }}>Inspect</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sessions.map((s, i) => (
+              <div
+                className="overflow-hidden rounded-babit"
+                style={{ border: "1px solid var(--border-subtle)" }}
+              >
+                <table className="w-full text-left">
+                  <thead>
                     <tr
-                      key={s.session_id || i}
-                      onClick={() => setSelected(s)}
-                      className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
-                      style={{ borderBottom: i < sessions.length - 1 ? "1px solid var(--border-subtle)" : undefined }}
+                      style={{
+                        borderBottom: "1px solid var(--border-subtle)",
+                        backgroundColor: "var(--secondary)",
+                      }}
                     >
-                      <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>{s.session_id}</td>
-                      <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{s.root_grant_id}</td>
-                      <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{s.event_count ?? 0}</td>
-                      <td className="px-3 py-2.5 hidden sm:table-cell">
-                        <StatusPill status={s.ended_at ? "REVOKED" : "ACTIVE"} label={s.ended_at ? "CLOSED" : "OPEN"} />
-                      </td>
-                      <td className="px-3 py-2.5 text-right">
-                        <span className="text-xs font-medium inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
-                          <IconLayers className="w-3 h-3" /> Inspect
-                        </span>
-                      </td>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Session ID
+                      </th>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Root Grant
+                      </th>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Events
+                      </th>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Status
+                      </th>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Inspect
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
-              Showing {sessions.length} session{sessions.length !== 1 ? "s" : ""}.
-            </p>
-            <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
+                  </thead>
+                  <tbody>
+                    {sessions.map((s, i) => (
+                      <tr
+                        key={s.session_id || i}
+                        onClick={() => setSelected(s)}
+                        className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
+                        style={{
+                          borderBottom:
+                            i < sessions.length - 1 ? "1px solid var(--border-subtle)" : undefined,
+                        }}
+                      >
+                        <td
+                          className="px-3 py-2.5 font-mono text-xs"
+                          style={{ color: "var(--fg)" }}
+                        >
+                          {s.session_id}
+                        </td>
+                        <td
+                          className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          {s.root_grant_id}
+                        </td>
+                        <td
+                          className="px-3 py-2.5 text-xs hidden sm:table-cell"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          {s.event_count ?? 0}
+                        </td>
+                        <td className="px-3 py-2.5 hidden sm:table-cell">
+                          <StatusPill
+                            status={s.ended_at ? "REVOKED" : "ACTIVE"}
+                            label={s.ended_at ? "CLOSED" : "OPEN"}
+                          />
+                        </td>
+                        <td className="px-3 py-2.5 text-right">
+                          <span
+                            className="text-xs font-medium inline-flex items-center gap-1"
+                            style={{ color: "var(--brand-accent)" }}
+                          >
+                            <IconLayers className="w-3 h-3" /> Inspect
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
+                Showing {sessions.length} session{sessions.length !== 1 ? "s" : ""}.
+              </p>
+              <LoadMoreButton
+                onClick={() => loadMore(fetcher, PAGE_SIZE)}
+                loading={loading}
+                disabled={!hasMore}
+              />
             </>
           )}
         </Card>

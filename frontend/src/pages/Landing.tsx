@@ -10,53 +10,29 @@ import { SectionVerifyRecord } from "./landing/SectionVerifyRecord";
 import { SectionBuiltForEngineers } from "./landing/SectionBuiltForEngineers";
 import { SectionOfflineEvidence } from "./landing/SectionOfflineEvidence";
 import { SectionGlobalAnchor } from "./landing/SectionGlobalAnchor";
-import { SectionTestimonials } from "./landing/SectionTestimonials";
 import { FinalCTA } from "./landing/FinalCTA";
 import { Footer } from "./landing/Footer";
 
 export function Landing() {
   return (
-    <div className="min-h-screen font-sans" style={{ backgroundColor: "var(--bg)", color: "var(--fg)" }}>
+    <div
+      className="min-h-screen font-sans"
+      style={{ backgroundColor: "var(--bg)", color: "var(--fg)" }}
+    >
       <Nav />
 
       <main>
-        {/* Hero with live sealing stream + interactive receipt */}
         <Hero />
-
-        {/* Real product screenshot */}
         <ProductPreview />
-
-        {/* How it works — the four plain steps */}
         <SectionHowItWorks />
-
-        {/* id="product" — ordinary log vs babit evidence (the key "why") */}
         <SectionLogsVsEvidence />
-
-        {/* Global anchoring network — globe visualization (visual punch early) */}
         <SectionGlobalAnchor />
-
-        {/* id="who" — sectors that need agent evidence, honest use cases */}
         <SectionWhoItsFor />
-
-        {/* id="surfaces" — where babit records: browser, sandbox, desktop, REST */}
         <SectionSurfaces />
-
-        {/* Authority chain — person to agent to sub-agent */}
         <SectionAuthorityChain />
-
-        {/* Verify the record (carries id="security") */}
         <SectionVerifyRecord />
-
-        {/* Built for engineers (carries id="developers") */}
         <SectionBuiltForEngineers />
-
-        {/* Section: Offline verification */}
         <SectionOfflineEvidence />
-
-        {/* Testimonials — social proof */}
-        <SectionTestimonials />
-
-        {/* Final CTA */}
         <FinalCTA />
       </main>
 

@@ -1,9 +1,12 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.5.12/schema.json",
-  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": true },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "files": {
-    "ignoreUnknown": true,
-    "includes": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"]
+    "includes": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "!!**/dist"]
   },
   "formatter": {
     "enabled": true,
@@ -14,24 +17,51 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "style": {
         "noNonNullAssertion": "off",
         "useImportType": "off"
       },
       "suspicious": {
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "noShadowRestrictedNames": "off",
+        "noArrayIndexKey": "off"
       },
       "correctness": {
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "warn",
+        "useExhaustiveDependencies": "warn"
+      },
+      "complexity": {
+        "useOptionalChain": "warn"
+      },
+      "a11y": {
+        "useButtonType": "off",
+        "noStaticElementInteractions": "off",
+        "noNoninteractiveTabindex": "off",
+        "noAriaHiddenOnFocusable": "off",
+        "useAltText": "off",
+        "useSemanticElements": "off",
+        "useAnchorContent": "off",
+        "noSvgWithoutTitle": "off",
+        "noLabelWithoutControl": "off",
+        "useValidAnchor": "off",
+        "useKeyWithClickEvents": "off"
       }
     }
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "doubleQuote",
+      "quoteStyle": "double",
       "semicolons": "always",
       "trailingCommas": "all"
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
     }
   }
 }

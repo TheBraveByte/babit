@@ -23,7 +23,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-xs leading-relaxed max-w-xs" style={{ color: "var(--muted)" }}>
-              A sealed receipt for what your agents do, one anyone can verify.
+              A signed receipt for what your agents do. Independently auditable.
             </p>
           </div>
 
@@ -36,10 +36,31 @@ export function Footer() {
               Product
             </span>
             <ul className="space-y-2" style={{ color: "var(--muted)" }}>
-              <li><a href="#how" className="hover:text-[var(--fg)] transition-colors">How it works</a></li>
-              <li><a href="#product" className="hover:text-[var(--fg)] transition-colors">Chain of authority</a></li>
-              <li><a href="#product" className="hover:text-[var(--fg)] transition-colors">The receipt</a></li>
-              <li><Link to="/login" className="hover:text-[var(--fg)] transition-colors">Console</Link></li>
+              <li>
+                <a href="/#how" className="hover:text-[var(--fg)] transition-colors">
+                  How it works
+                </a>
+              </li>
+              <li>
+                <a href="/#authority" className="hover:text-[var(--fg)] transition-colors">
+                  Chain of authority
+                </a>
+              </li>
+              <li>
+                <a href="/#receipt" className="hover:text-[var(--fg)] transition-colors">
+                  The receipt
+                </a>
+              </li>
+              <li>
+                <Link to="/pricing" className="hover:text-[var(--fg)] transition-colors">
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link to="/login" className="hover:text-[var(--fg)] transition-colors">
+                  Console
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -52,14 +73,28 @@ export function Footer() {
               Developers
             </span>
             <ul className="space-y-2" style={{ color: "var(--muted)" }}>
-              <li><Link to="/api" className="hover:text-[var(--fg)] transition-colors">API reference</Link></li>
               <li>
-                <a href={docsUrl} target="_blank" rel="noreferrer" className="hover:text-[var(--fg)] transition-colors">
+                <Link to="/api" className="hover:text-[var(--fg)] transition-colors">
+                  API reference
+                </Link>
+              </li>
+              <li>
+                <a
+                  href={docsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[var(--fg)] transition-colors"
+                >
                   Documentation ↗
                 </a>
               </li>
               <li>
-                <a href="/openapi.json" target="_blank" rel="noreferrer" className="hover:text-[var(--fg)] transition-colors">
+                <a
+                  href="/openapi.json"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[var(--fg)] transition-colors"
+                >
                   OpenAPI spec ↗
                 </a>
               </li>
@@ -72,12 +107,19 @@ export function Footer() {
               className="text-xs font-semibold uppercase tracking-wider block font-mono"
               style={{ color: "var(--fg)" }}
             >
-              Verify
+              Security
             </span>
             <ul className="space-y-2" style={{ color: "var(--muted)" }}>
-              <li><a href="#security" className="hover:text-[var(--fg)] transition-colors">Verify it yourself</a></li>
-              <li><a href="#security" className="hover:text-[var(--fg)] transition-colors">Works offline</a></li>
-              <li><a href="#developers" className="hover:text-[var(--fg)] transition-colors">Public key</a></li>
+              <li>
+                <Link to="/security" className="hover:text-[var(--fg)] transition-colors">
+                  Security & compliance
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-[var(--fg)] transition-colors">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -91,7 +133,7 @@ export function Footer() {
           }}
         >
           <div>© {new Date().getFullYear()} babit. Proof for autonomous actions.</div>
-          <div>Don't trust us. Verify it yourself.</div>
+          <div>Verifiable by design.</div>
         </div>
       </div>
     </footer>

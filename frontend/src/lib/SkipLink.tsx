@@ -17,11 +17,7 @@ export function SkipLink() {
       main.setAttribute("tabindex", "-1");
       main.focus();
       main.scrollIntoView({ behavior: "smooth" });
-      main.addEventListener(
-        "blur",
-        () => main.removeAttribute("tabindex"),
-        { once: true },
-      );
+      main.addEventListener("blur", () => main.removeAttribute("tabindex"), { once: true });
     }
   };
 

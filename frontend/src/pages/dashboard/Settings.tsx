@@ -25,20 +25,44 @@ const INDUSTRIES = [
 
 function ReadonlyRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 py-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-      <span className="text-[11px] font-medium" style={{ color: "var(--muted)" }}>{label}</span>
-      <span className={`sm:col-span-2 text-xs break-all ${mono ? "font-mono tnum" : ""}`} style={{ color: "var(--fg)" }}>{value}</span>
+    <div
+      className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3 py-3"
+      style={{ borderBottom: "1px solid var(--border-subtle)" }}
+    >
+      <span className="text-[11px] font-medium" style={{ color: "var(--muted)" }}>
+        {label}
+      </span>
+      <span
+        className={`sm:col-span-2 text-xs break-all ${mono ? "font-mono tnum" : ""}`}
+        style={{ color: "var(--fg)" }}
+      >
+        {value}
+      </span>
     </div>
   );
 }
 
-function SectionHead({ title, description, icon }: { title: string; description: React.ReactNode; icon?: React.ReactNode }) {
+function SectionHead({
+  title,
+  description,
+  icon,
+}: {
+  title: string;
+  description: React.ReactNode;
+  icon?: React.ReactNode;
+}) {
   return (
     <div className="pb-3" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-      <h2 className="text-base font-semibold flex items-center gap-1.5" style={{ color: "var(--fg)" }}>
-        {icon}{title}
+      <h2
+        className="text-base font-semibold flex items-center gap-1.5"
+        style={{ color: "var(--fg)" }}
+      >
+        {icon}
+        {title}
       </h2>
-      <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{description}</p>
+      <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
+        {description}
+      </p>
     </div>
   );
 }
@@ -65,7 +89,8 @@ export function Settings() {
     setIndustry(user?.industry ?? "");
   }, [user?.org_name, user?.org_domain, user?.industry]);
 
-  const accountType = user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal";
+  const accountType =
+    user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : "Personal";
 
   async function save() {
     setSaving(true);
@@ -103,12 +128,18 @@ export function Settings() {
         if (active) setKeyError(true);
       }
     })();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [section, publicKey]);
 
   const sections: { key: Section; label: string; icon: React.ReactNode }[] = [
     { key: "general", label: "General", icon: <IconBuilding className="w-3.5 h-3.5" /> },
-    { key: "workspace", label: "Workspace & Branding", icon: <IconBuilding className="w-3.5 h-3.5" /> },
+    {
+      key: "workspace",
+      label: "Workspace & Branding",
+      icon: <IconBuilding className="w-3.5 h-3.5" />,
+    },
     { key: "notary", label: "Notary Key", icon: <IconShieldCheck className="w-3.5 h-3.5" /> },
   ];
 
@@ -159,12 +190,18 @@ export function Settings() {
 
               <form
                 className="grid gap-4 pt-2"
-                onSubmit={(e) => { e.preventDefault(); void save(); }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void save();
+                }}
               >
                 <Field label="Organization name" hint="Optional">
                   <TextInput
                     value={orgName}
-                    onChange={(e) => { setOrgName(e.target.value); setSaved(false); }}
+                    onChange={(e) => {
+                      setOrgName(e.target.value);
+                      setSaved(false);
+                    }}
                     placeholder="Acme Inc."
                     autoComplete="organization"
                   />
@@ -173,7 +210,10 @@ export function Settings() {
                 <Field label="Domain" hint="Optional">
                   <TextInput
                     value={orgDomain}
-                    onChange={(e) => { setOrgDomain(e.target.value); setSaved(false); }}
+                    onChange={(e) => {
+                      setOrgDomain(e.target.value);
+                      setSaved(false);
+                    }}
                     placeholder="acme.com"
                     autoComplete="url"
                   />
@@ -182,14 +222,19 @@ export function Settings() {
                 <Field label="Industry" hint="Optional">
                   <Select
                     value={industry}
-                    onChange={(e) => { setIndustry(e.target.value); setSaved(false); }}
+                    onChange={(e) => {
+                      setIndustry(e.target.value);
+                      setSaved(false);
+                    }}
                   >
                     <option value="">Not set</option>
                     {industry && !INDUSTRIES.includes(industry) && (
                       <option value={industry}>{industry}</option>
                     )}
                     {INDUSTRIES.map((ind) => (
-                      <option key={ind} value={ind}>{ind}</option>
+                      <option key={ind} value={ind}>
+                        {ind}
+                      </option>
                     ))}
                   </Select>
                 </Field>
@@ -202,7 +247,8 @@ export function Settings() {
                     style={{
                       color: "var(--color-verified)",
                       backgroundColor: "color-mix(in srgb, var(--color-verified) 10%, transparent)",
-                      border: "1px solid color-mix(in srgb, var(--color-verified) 30%, transparent)",
+                      border:
+                        "1px solid color-mix(in srgb, var(--color-verified) 30%, transparent)",
                     }}
                   >
                     <IconCheck className="w-4 h-4 shrink-0" />
@@ -242,15 +288,29 @@ export function Settings() {
                         onError={() => setLogoError(true)}
                       />
                     ) : branding.logo_url && logoError ? (
-                      <div className="w-8 h-8 rounded border p-0.5 bg-[var(--secondary)] object-contain flex items-center justify-center" style={{ borderColor: "var(--border)" }}>
+                      <div
+                        className="w-8 h-8 rounded border p-0.5 bg-[var(--secondary)] object-contain flex items-center justify-center"
+                        style={{ borderColor: "var(--border)" }}
+                      >
                         <BabitLogo className="w-4 h-4 text-[color:var(--muted)]" />
                       </div>
                     ) : null}
                     <div>
-                      <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>{branding.company_name || user?.org_domain}</span>
+                      <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>
+                        {branding.company_name || user?.org_domain}
+                      </span>
                       {branding.brand_color && (
-                        <span className="text-[11px] font-mono block flex items-center gap-1.5" style={{ color: "var(--muted)" }}>
-                          <span className="inline-block w-3 h-3 rounded-sm border" style={{ backgroundColor: branding.brand_color, borderColor: "var(--border)" }} />
+                        <span
+                          className="text-[11px] font-mono block flex items-center gap-1.5"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          <span
+                            className="inline-block w-3 h-3 rounded-sm border"
+                            style={{
+                              backgroundColor: branding.brand_color,
+                              borderColor: "var(--border)",
+                            }}
+                          />
                           {branding.brand_color}
                         </span>
                       )}
@@ -258,7 +318,9 @@ export function Settings() {
                   </div>
                 </div>
               ) : (
-                <p className="text-xs mt-2" style={{ color: "var(--muted)" }}>No branding resolved for this account.</p>
+                <p className="text-xs mt-2" style={{ color: "var(--muted)" }}>
+                  No branding resolved for this account.
+                </p>
               )}
             </>
           )}
@@ -274,13 +336,20 @@ export function Settings() {
                 <div className="space-y-3 font-mono text-xs">
                   {keyId && <ReadonlyRow label="Key ID" value={keyId} mono />}
                   <div>
-                    <span className="text-[11px] font-medium block mb-1" style={{ color: "var(--muted)" }}>Public key</span>
+                    <span
+                      className="text-[11px] font-medium block mb-1"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      Public key
+                    </span>
                     <Copyable value={publicKey} truncate />
                   </div>
                 </div>
               ) : (
                 <p className="text-xs font-mono" style={{ color: "var(--muted)" }}>
-                  {keyError ? "Notary key unavailable, the ledger service may be unreachable." : "Loading notary key…"}
+                  {keyError
+                    ? "Notary key unavailable, the ledger service may be unreachable."
+                    : "Loading notary key…"}
                 </p>
               )}
             </>

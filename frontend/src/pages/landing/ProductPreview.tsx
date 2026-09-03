@@ -16,7 +16,8 @@ export function ProductPreview() {
         style={{
           backgroundColor: "var(--surface)",
           border: "1px solid var(--border)",
-          boxShadow: "0 2px 8px -2px color-mix(in srgb, var(--fg) 6%, transparent), 0 40px 80px -32px color-mix(in srgb, var(--fg) 18%, transparent)",
+          boxShadow:
+            "0 2px 8px -2px color-mix(in srgb, var(--fg) 6%, transparent), 0 40px 80px -32px color-mix(in srgb, var(--fg) 18%, transparent)",
         }}
       >
         {/* Browser top bar */}
@@ -54,7 +55,8 @@ export function ProductPreview() {
           style={{
             backgroundColor: "var(--surface)",
             border: "1px solid var(--border)",
-            boxShadow: "0 2px 8px -2px color-mix(in srgb, var(--fg) 5%, transparent), 0 24px 48px -24px color-mix(in srgb, var(--fg) 14%, transparent)",
+            boxShadow:
+              "0 2px 8px -2px color-mix(in srgb, var(--fg) 5%, transparent), 0 24px 48px -24px color-mix(in srgb, var(--fg) 14%, transparent)",
           }}
         >
           <div
@@ -64,10 +66,7 @@ export function ProductPreview() {
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#FF5F57" }} />
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#28C840" }} />
-            <span
-              className="ml-2 text-[10px] font-mono"
-              style={{ color: "var(--muted)" }}
-            >
+            <span className="ml-2 text-[10px] font-mono" style={{ color: "var(--muted)" }}>
               analytics
             </span>
           </div>
@@ -87,7 +86,8 @@ export function ProductPreview() {
           style={{
             backgroundColor: "var(--surface)",
             border: "1px solid var(--border)",
-            boxShadow: "0 2px 8px -2px color-mix(in srgb, var(--fg) 5%, transparent), 0 24px 48px -24px color-mix(in srgb, var(--fg) 14%, transparent)",
+            boxShadow:
+              "0 2px 8px -2px color-mix(in srgb, var(--fg) 5%, transparent), 0 24px 48px -24px color-mix(in srgb, var(--fg) 14%, transparent)",
           }}
         >
           <div
@@ -97,10 +97,7 @@ export function ProductPreview() {
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#FF5F57" }} />
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#28C840" }} />
-            <span
-              className="ml-2 text-[10px] font-mono"
-              style={{ color: "var(--muted)" }}
-            >
+            <span className="ml-2 text-[10px] font-mono" style={{ color: "var(--muted)" }}>
               delegations
             </span>
           </div>

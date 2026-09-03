@@ -1,5 +1,16 @@
 import { useEffect, useState, useCallback } from "react";
-import { PageHeader, Card, Button, Field, TextInput, EmptyState, StatusPill, Copyable, Error as ErrorBox, ConfirmDialog } from "@/lib/ui";
+import {
+  PageHeader,
+  Card,
+  Button,
+  Field,
+  TextInput,
+  EmptyState,
+  StatusPill,
+  Copyable,
+  Error as ErrorBox,
+  ConfirmDialog,
+} from "@/lib/ui";
 import { IconFolder, IconKey, IconChevronDown, IconClock } from "@/lib/icons";
 import { useAuth } from "@/lib/auth";
 import { api, errText } from "@/api/client";
@@ -17,7 +28,15 @@ export function Projects() {
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const { items: projects, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<Project>();
+  const {
+    items: projects,
+    loading,
+    error,
+    hasMore,
+    hasInitialLoaded,
+    refresh,
+    loadMore,
+  } = usePagination<Project>();
 
   const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
     const res = await api.GET("/v1/projects", { params: { query: params } });
@@ -77,10 +96,21 @@ export function Projects() {
           <form onSubmit={createProject} className="flex flex-col sm:flex-row gap-3 sm:items-end">
             <div className="flex-1">
               <Field label="Project name">
-                <TextInput value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Production" autoFocus />
+                <TextInput
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Production"
+                  autoFocus
+                />
               </Field>
             </div>
-            <Button type="submit" variant="brand" size="md" loading={creating} disabled={!name.trim()}>
+            <Button
+              type="submit"
+              variant="brand"
+              size="md"
+              loading={creating}
+              disabled={!name.trim()}
+            >
               Create project
             </Button>
           </form>
@@ -90,20 +120,34 @@ export function Projects() {
       {error && <ErrorBox message={error} />}
 
       {loading && !hasInitialLoaded ? (
-        <Card><p className="text-sm" style={{ color: "var(--muted)" }}>Loading projects…</p></Card>
+        <Card>
+          <p className="text-sm" style={{ color: "var(--muted)" }}>
+            Loading projects…
+          </p>
+        </Card>
       ) : projects.length === 0 ? (
         <Card>
           <EmptyState
             icon={<IconFolder className="w-5 h-5" />}
             title="No projects yet"
             description="Create a project to start issuing API keys for your agents."
-            action={<Button variant="secondary" size="md" onClick={() => setShowForm(true)}>New project</Button>}
+            action={
+              <Button variant="secondary" size="md" onClick={() => setShowForm(true)}>
+                New project
+              </Button>
+            }
           />
         </Card>
       ) : (
         <div className="space-y-3">
-          {projects.map((p) => <ProjectRow key={p.id} project={p} onChanged={() => refresh(fetcher, PAGE_SIZE)} />)}
-          <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
+          {projects.map((p) => (
+            <ProjectRow key={p.id} project={p} onChanged={() => refresh(fetcher, PAGE_SIZE)} />
+          ))}
+          <LoadMoreButton
+            onClick={() => loadMore(fetcher, PAGE_SIZE)}
+            loading={loading}
+            disabled={!hasMore}
+          />
         </div>
       )}
     </div>
@@ -123,7 +167,9 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
     if (!project.id) return;
     setLoadingKeys(true);
     setKeyErr(null);
-    const res = await api.GET("/v1/projects/{project_id}/keys", { params: { path: { project_id: project.id }, query: { page_size: 50 } } });
+    const res = await api.GET("/v1/projects/{project_id}/keys", {
+      params: { path: { project_id: project.id }, query: { page_size: 50 } },
+    });
     if (res.error) setKeyErr(errText(res.error));
     else setKeys(res.data?.keys ?? []);
     setLoadingKeys(false);
@@ -154,7 +200,10 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
 
   async function revoke(keyId: string) {
     setKeyErr(null);
-    const res = await api.POST("/v1/keys/{key_id}/revoke", { params: { path: { key_id: keyId } }, body: {} });
+    const res = await api.POST("/v1/keys/{key_id}/revoke", {
+      params: { path: { key_id: keyId } },
+      body: {},
+    });
     if (res.error) setKeyErr(errText(res.error));
     else {
       await loadKeys();
@@ -168,16 +217,30 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
         <div className="flex items-start gap-3 min-w-0">
           <div
             className="w-9 h-9 rounded-babit flex items-center justify-center shrink-0"
-            style={{ backgroundColor: "var(--secondary)", color: "var(--muted)", border: "1px solid var(--border-subtle)" }}
+            style={{
+              backgroundColor: "var(--secondary)",
+              color: "var(--muted)",
+              border: "1px solid var(--border-subtle)",
+            }}
           >
             <IconFolder className="w-4 h-4" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold truncate" style={{ color: "var(--fg)" }}>{project.name}</h3>
-            <div className="flex items-center gap-3 mt-1 text-[11px] font-mono" style={{ color: "var(--muted)" }}>
-              <span className="inline-flex items-center gap-1"><IconKey className="w-3 h-3" /> {project.active_keys ?? 0} active</span>
+            <h3 className="text-sm font-semibold truncate" style={{ color: "var(--fg)" }}>
+              {project.name}
+            </h3>
+            <div
+              className="flex items-center gap-3 mt-1 text-[11px] font-mono"
+              style={{ color: "var(--muted)" }}
+            >
+              <span className="inline-flex items-center gap-1">
+                <IconKey className="w-3 h-3" /> {project.active_keys ?? 0} active
+              </span>
               {project.created_at && (
-                <span className="inline-flex items-center gap-1"><IconClock className="w-3 h-3" /> {new Date(project.created_at).toLocaleDateString()}</span>
+                <span className="inline-flex items-center gap-1">
+                  <IconClock className="w-3 h-3" />{" "}
+                  {new Date(project.created_at).toLocaleDateString()}
+                </span>
               )}
             </div>
           </div>
@@ -185,12 +248,17 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
         <Button variant="secondary" size="sm" onClick={toggle} aria-expanded={expanded}>
           <IconKey className="w-3.5 h-3.5" />
           <span>Manage keys</span>
-          <IconChevronDown className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
+          <IconChevronDown
+            className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-180" : ""}`}
+          />
         </Button>
       </div>
 
       {expanded && (
-        <div className="mt-4 pt-4 space-y-3" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+        <div
+          className="mt-4 pt-4 space-y-3"
+          style={{ borderTop: "1px solid var(--border-subtle)" }}
+        >
           <ConfirmDialog
             open={!!confirmRevoke}
             title="Revoke API key"
@@ -208,19 +276,31 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
           {keyErr && <ErrorBox message={keyErr} />}
 
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>API keys</span>
+            <span
+              className="text-xs font-mono uppercase tracking-wider"
+              style={{ color: "var(--muted)" }}
+            >
+              API keys
+            </span>
             <Button variant="brand" size="sm" loading={creating} onClick={createKey}>
-              <IconKey className="w-3.5 h-3.5" /><span>Create key</span>
+              <IconKey className="w-3.5 h-3.5" />
+              <span>Create key</span>
             </Button>
           </div>
 
           {loadingKeys ? (
-            <p className="text-xs font-mono" style={{ color: "var(--muted)" }}>Loading…</p>
+            <p className="text-xs font-mono" style={{ color: "var(--muted)" }}>
+              Loading…
+            </p>
           ) : keys.length === 0 ? (
-            <p className="text-xs" style={{ color: "var(--muted)" }}>No keys yet. Create one to authenticate API calls for this project.</p>
+            <p className="text-xs" style={{ color: "var(--muted)" }}>
+              No keys yet. Create one to authenticate API calls for this project.
+            </p>
           ) : (
             <div className="space-y-1.5">
-              {keys.map((k) => <KeyRow key={k.id} apiKey={k} onRevoke={() => k.id && setConfirmRevoke(k.id)} />)}
+              {keys.map((k) => (
+                <KeyRow key={k.id} apiKey={k} onRevoke={() => k.id && setConfirmRevoke(k.id)} />
+              ))}
             </div>
           )}
         </div>
@@ -237,18 +317,32 @@ function KeyRow({ apiKey, onRevoke }: { apiKey: ApiKey; onRevoke: () => void }) 
       style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border-subtle)" }}
     >
       <div className="flex items-center gap-2.5 min-w-0">
-        <span style={{ color: "var(--muted)" }} className="shrink-0"><IconKey className="w-4 h-4" /></span>
-        <span className="font-mono text-xs truncate" style={{ color: "var(--fg)" }}>{masked}</span>
+        <span style={{ color: "var(--muted)" }} className="shrink-0">
+          <IconKey className="w-4 h-4" />
+        </span>
+        <span className="font-mono text-xs truncate" style={{ color: "var(--fg)" }}>
+          {masked}
+        </span>
       </div>
       <div className="flex items-center gap-3 shrink-0">
         {apiKey.created_at && (
-          <span className="text-[11px] font-mono hidden sm:inline" style={{ color: "var(--muted)" }}>
+          <span
+            className="text-[11px] font-mono hidden sm:inline"
+            style={{ color: "var(--muted)" }}
+          >
             {new Date(apiKey.created_at).toLocaleDateString()}
           </span>
         )}
         <StatusPill status={apiKey.revoked ? "REVOKED" : "ACTIVE"} />
         {!apiKey.revoked && (
-          <Button variant="ghost" size="sm" onClick={onRevoke} style={{ color: "var(--color-failed)" }}>Revoke</Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onRevoke}
+            style={{ color: "var(--color-failed)" }}
+          >
+            Revoke
+          </Button>
         )}
       </div>
     </div>
@@ -265,20 +359,31 @@ function RevealPanel({ secret, onDone }: { secret: string; onDone: () => void })
       }}
     >
       <div className="flex items-center gap-2">
-        <span style={{ color: "var(--color-verified)" }}><IconKey className="w-4 h-4" /></span>
-        <span className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Copy your key now</span>
+        <span style={{ color: "var(--color-verified)" }}>
+          <IconKey className="w-4 h-4" />
+        </span>
+        <span className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
+          Copy your key now
+        </span>
       </div>
       <p className="text-xs" style={{ color: "var(--muted)" }}>
-        This is the only time the full key is shown. Store it somewhere safe. After you close this panel only the masked prefix remains.
+        This is the only time the full key is shown. Store it somewhere safe. After you close this
+        panel only the masked prefix remains.
       </p>
       <Copyable value={secret} />
       <div
         className="rounded-babit-sm p-2.5 font-mono text-[11px] leading-relaxed overflow-x-auto"
-        style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border-subtle)", color: "var(--muted)" }}
+        style={{
+          backgroundColor: "var(--secondary)",
+          border: "1px solid var(--border-subtle)",
+          color: "var(--muted)",
+        }}
       >
         curl -H "x-api-key: {secret}" http://localhost:8080/v1/projects
       </div>
-      <Button variant="secondary" size="sm" onClick={onDone}>I saved it, close</Button>
+      <Button variant="secondary" size="sm" onClick={onDone}>
+        I saved it, close
+      </Button>
     </div>
   );
 }

@@ -16,7 +16,15 @@ export function Receipts() {
   const [proof, setProof] = useState<Proof | null>(null);
   const [fetchingProof, setFetchingProof] = useState(false);
   const [proofError, setProofError] = useState<string | null>(null);
-  const { items: events, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<ActionEvent>();
+  const {
+    items: events,
+    loading,
+    error,
+    hasMore,
+    hasInitialLoaded,
+    refresh,
+    loadMore,
+  } = usePagination<ActionEvent>();
 
   const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
     const res = await api.GET("/v1/events", { params: { query: params } });
@@ -62,7 +70,9 @@ export function Receipts() {
         {loading && !hasInitialLoaded ? (
           <TableSkeleton rows={8} cols={4} />
         ) : error ? (
-          <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>Couldn't load events. Try refreshing.</p>
+          <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>
+            Couldn't load events. Try refreshing.
+          </p>
         ) : events.length === 0 ? (
           <EmptyState
             icon={<IconFileText className="w-5 h-5" />}
@@ -71,46 +81,97 @@ export function Receipts() {
           />
         ) : (
           <>
-          <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
-            <table className="w-full text-left">
-              <thead>
-                <tr style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}>
-                  <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Event ID</th>
-                  <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Action</th>
-                  <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Session</th>
-                  <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right" style={{ color: "var(--muted)" }}>Proof</th>
-                </tr>
-              </thead>
-              <tbody>
-                {events.map((ev, i) => (
+            <div
+              className="overflow-hidden rounded-babit"
+              style={{ border: "1px solid var(--border-subtle)" }}
+            >
+              <table className="w-full text-left">
+                <thead>
                   <tr
-                    key={ev.event_id || i}
-                    className="transition-colors hover:bg-[var(--secondary)]"
-                    style={{ borderBottom: i < events.length - 1 ? "1px solid var(--border-subtle)" : undefined }}
+                    style={{
+                      borderBottom: "1px solid var(--border-subtle)",
+                      backgroundColor: "var(--secondary)",
+                    }}
                   >
-                    <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>{ev.event_id}</td>
-                    <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.action_type}</td>
-                    <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.session_id}</td>
-                    <td className="px-3 py-2.5 text-right">
-                      <button
-                        onClick={() => ev.event_id && fetchProof(ev.event_id)}
-                        disabled={fetchingProof}
-                        className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-babit-sm transition-colors cursor-pointer disabled:opacity-40"
-                        style={{ color: "var(--brand-accent)", border: "1px solid var(--brand-accent-border)", backgroundColor: "var(--brand-accent-subtle)" }}
-                      >
-                        <IconShieldCheck className="w-3.5 h-3.5" />
-                        <span>Proof</span>
-                      </button>
-                    </td>
+                    <th
+                      className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      Event ID
+                    </th>
+                    <th
+                      className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      Action
+                    </th>
+                    <th
+                      className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      Session
+                    </th>
+                    <th
+                      className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      Proof
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
-            Showing {events.length} event{events.length !== 1 ? "s" : ""}.
-          </p>
-          <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
+                </thead>
+                <tbody>
+                  {events.map((ev, i) => (
+                    <tr
+                      key={ev.event_id || i}
+                      className="transition-colors hover:bg-[var(--secondary)]"
+                      style={{
+                        borderBottom:
+                          i < events.length - 1 ? "1px solid var(--border-subtle)" : undefined,
+                      }}
+                    >
+                      <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>
+                        {ev.event_id}
+                      </td>
+                      <td
+                        className="px-3 py-2.5 text-xs hidden sm:table-cell"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        {ev.action_type}
+                      </td>
+                      <td
+                        className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        {ev.session_id}
+                      </td>
+                      <td className="px-3 py-2.5 text-right">
+                        <button
+                          onClick={() => ev.event_id && fetchProof(ev.event_id)}
+                          disabled={fetchingProof}
+                          className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-babit-sm transition-colors cursor-pointer disabled:opacity-40"
+                          style={{
+                            color: "var(--brand-accent)",
+                            border: "1px solid var(--brand-accent-border)",
+                            backgroundColor: "var(--brand-accent-subtle)",
+                          }}
+                        >
+                          <IconShieldCheck className="w-3.5 h-3.5" />
+                          <span>Proof</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
+              Showing {events.length} event{events.length !== 1 ? "s" : ""}.
+            </p>
+            <LoadMoreButton
+              onClick={() => loadMore(fetcher, PAGE_SIZE)}
+              loading={loading}
+              disabled={!hasMore}
+            />
           </>
         )}
       </Card>

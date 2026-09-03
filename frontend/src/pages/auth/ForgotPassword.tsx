@@ -44,14 +44,19 @@ export function ForgotPassword() {
         <div className="space-y-4">
           <div
             className="p-4 rounded-babit space-y-2"
-            style={{ backgroundColor: "var(--color-verified-bg)", border: "1px solid var(--color-verified-border)", color: "var(--color-verified)" }}
+            style={{
+              backgroundColor: "var(--color-verified-bg)",
+              border: "1px solid var(--color-verified-border)",
+              color: "var(--color-verified)",
+            }}
           >
             <div className="flex items-center gap-1.5 text-sm font-medium">
               <IconCheck className="w-4 h-4" />
               <span>Reset link sent</span>
             </div>
             <p className="text-[13px] leading-relaxed">
-              If an account exists for <strong>{email}</strong>, the reset instructions are on their way.
+              If an account exists for <strong>{email}</strong>, the reset instructions are on their
+              way.
             </p>
           </div>
 

@@ -9,21 +9,44 @@ import { Login } from "@/pages/auth/Login";
 import { Signup } from "@/pages/auth/Signup";
 import { ForgotPassword } from "@/pages/auth/ForgotPassword";
 import { DashboardLayout } from "@/pages/dashboard/DashboardLayout";
+import { SecurityPage } from "@/pages/SecurityPage";
+import { ContactPage } from "@/pages/ContactPage";
+import { PricingPage } from "@/pages/PricingPage";
 
 // Lazy: heavy or route-gated screens are code-split out of the initial load
 // (Scalar reference, react-flow graphs, recharts analytics, etc.).
-const ApiReference = lazy(() => import("@/pages/ApiReference").then((m) => ({ default: m.ApiReference })));
-const Overview = lazy(() => import("@/pages/dashboard/Overview").then((m) => ({ default: m.Overview })));
-const Analytics = lazy(() => import("@/pages/dashboard/Analytics").then((m) => ({ default: m.Analytics })));
-const Activity = lazy(() => import("@/pages/dashboard/Activity").then((m) => ({ default: m.Activity })));
+const ApiReference = lazy(() =>
+  import("@/pages/ApiReference").then((m) => ({ default: m.ApiReference })),
+);
+const Overview = lazy(() =>
+  import("@/pages/dashboard/Overview").then((m) => ({ default: m.Overview })),
+);
+const Analytics = lazy(() =>
+  import("@/pages/dashboard/Analytics").then((m) => ({ default: m.Analytics })),
+);
+const Activity = lazy(() =>
+  import("@/pages/dashboard/Activity").then((m) => ({ default: m.Activity })),
+);
 const Agents = lazy(() => import("@/pages/dashboard/Agents").then((m) => ({ default: m.Agents })));
-const Delegations = lazy(() => import("@/pages/dashboard/Delegations").then((m) => ({ default: m.Delegations })));
-const Sessions = lazy(() => import("@/pages/dashboard/Sessions").then((m) => ({ default: m.Sessions })));
-const Receipts = lazy(() => import("@/pages/dashboard/Receipts").then((m) => ({ default: m.Receipts })));
+const Delegations = lazy(() =>
+  import("@/pages/dashboard/Delegations").then((m) => ({ default: m.Delegations })),
+);
+const Sessions = lazy(() =>
+  import("@/pages/dashboard/Sessions").then((m) => ({ default: m.Sessions })),
+);
+const Receipts = lazy(() =>
+  import("@/pages/dashboard/Receipts").then((m) => ({ default: m.Receipts })),
+);
 const Verify = lazy(() => import("@/screens/Verify").then((m) => ({ default: m.Verify })));
-const Projects = lazy(() => import("@/pages/dashboard/Projects").then((m) => ({ default: m.Projects })));
-const ApiKeys = lazy(() => import("@/pages/dashboard/ApiKeys").then((m) => ({ default: m.ApiKeys })));
-const Settings = lazy(() => import("@/pages/dashboard/Settings").then((m) => ({ default: m.Settings })));
+const Projects = lazy(() =>
+  import("@/pages/dashboard/Projects").then((m) => ({ default: m.Projects })),
+);
+const ApiKeys = lazy(() =>
+  import("@/pages/dashboard/ApiKeys").then((m) => ({ default: m.ApiKeys })),
+);
+const Settings = lazy(() =>
+  import("@/pages/dashboard/Settings").then((m) => ({ default: m.Settings })),
+);
 
 function Loading() {
   return (
@@ -48,6 +71,9 @@ export function App() {
   if (route === "/login") return <Login />;
   if (route === "/signup") return <Signup />;
   if (route === "/forgot-password") return <ForgotPassword />;
+  if (route === "/security") return <SecurityPage />;
+  if (route === "/contact") return <ContactPage />;
+  if (route === "/pricing") return <PricingPage />;
   if (route === "/api" || route === "/docs/api") {
     return (
       <Boundary>

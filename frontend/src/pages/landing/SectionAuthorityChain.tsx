@@ -51,8 +51,8 @@ const HOW_TO_READ = [
     dot: "var(--brand-accent)" as const,
     text: (
       <>
-        Each node is a <span style={{ color: "var(--dark-section-fg)" }}>grant</span>: a subject, its
-        capabilities, and its scope (resources and value limit).
+        Each node is a <span style={{ color: "var(--dark-section-fg)" }}>grant</span>: a subject,
+        its capabilities, and its scope (resources and value limit).
       </>
     ),
   },
@@ -60,8 +60,9 @@ const HOW_TO_READ = [
     dot: "var(--brand-accent)" as const,
     text: (
       <>
-        Each edge carries a <span style={{ color: "var(--dark-section-fg)" }}>parent signature</span>, proof
-        the grant above authorized the one below.
+        Each edge carries a{" "}
+        <span style={{ color: "var(--dark-section-fg)" }}>parent signature</span>, proof the grant
+        above authorized the one below.
       </>
     ),
   },
@@ -69,8 +70,8 @@ const HOW_TO_READ = [
     dot: "var(--color-failed)" as const,
     text: (
       <>
-        A hand-off can only narrow authority, never widen it. Revoke a grant and its whole
-        subtree goes dark.
+        A hand-off can only narrow authority, never widen it. Revoke a grant and its whole subtree
+        goes dark.
       </>
     ),
   },
@@ -103,23 +104,39 @@ function GrantCard({ node, depth }: { node: GrantNode; depth: number }) {
           </span>
         </div>
         {node.revoked ? (
-          <span className="inline-flex items-center gap-1 text-[10px] font-mono shrink-0" style={{ color: "var(--color-failed)" }}>
+          <span
+            className="inline-flex items-center gap-1 text-[10px] font-mono shrink-0"
+            style={{ color: "var(--color-failed)" }}
+          >
             <IconXCircle className="w-3 h-3" />
             revoked
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 text-[10px] font-mono shrink-0" style={{ color: "var(--color-verified)" }}>
+          <span
+            className="inline-flex items-center gap-1 text-[10px] font-mono shrink-0"
+            style={{ color: "var(--color-verified)" }}
+          >
             <IconCheck className="w-3 h-3" />
             active
           </span>
         )}
       </div>
-      <div className="mt-2 flex items-center gap-3 text-[11px] font-mono" style={{ color: "var(--dark-section-muted)" }}>
+      <div
+        className="mt-2 flex items-center gap-3 text-[11px] font-mono"
+        style={{ color: "var(--dark-section-muted)" }}
+      >
         <span>{node.scope}</span>
         {node.capabilities && (
           <span className="flex items-center gap-1">
             {node.capabilities.map((c) => (
-              <span key={c} className="px-1.5 py-0.5 rounded" style={{ backgroundColor: "var(--dark-section-bg)", border: "1px solid var(--dark-section-border)" }}>
+              <span
+                key={c}
+                className="px-1.5 py-0.5 rounded"
+                style={{
+                  backgroundColor: "var(--dark-section-bg)",
+                  border: "1px solid var(--dark-section-border)",
+                }}
+              >
                 {c}
               </span>
             ))}
@@ -132,15 +149,13 @@ function GrantCard({ node, depth }: { node: GrantNode; depth: number }) {
 
 export function SectionAuthorityChain() {
   return (
-    <section
-      id="authority"
-      className="dark-section relative overflow-hidden section-y-lg"
-    >
+    <section id="authority" className="dark-section relative overflow-hidden section-y-lg">
       <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 70% 50% at 70% 50%, rgba(45, 212, 191, 0.06), transparent 70%)",
+          background:
+            "radial-gradient(ellipse 70% 50% at 70% 50%, rgba(45, 212, 191, 0.06), transparent 70%)",
         }}
       />
       <div className="container-babit relative z-10">
@@ -148,25 +163,32 @@ export function SectionAuthorityChain() {
           {/* Left: heading + how to read it */}
           <div className="space-y-8">
             <div>
-              <p className="type-eyebrow mb-4" style={{ color: "var(--brand-accent)" }}>Authority</p>
+              <p className="type-eyebrow mb-4" style={{ color: "var(--brand-accent)" }}>
+                Authority
+              </p>
               <h2 className="type-h2" style={{ color: "var(--dark-section-fg)" }}>
                 Every action traces back to a person.
               </h2>
               <p className="type-lead mt-5" style={{ color: "var(--dark-section-muted)" }}>
-                A person authorizes an agent, which can hand a narrower slice to a sub-agent.
-                Revoke a grant and everything below it greys out.
+                A person authorizes an agent, which can hand a narrower slice to a sub-agent. Revoke
+                a grant and everything below it greys out.
               </p>
             </div>
 
             <div
               className="rounded-babit-md p-5 space-y-3 text-xs"
-              style={{ backgroundColor: "var(--dark-section-surface)", border: "1px solid var(--dark-section-border)" }}
+              style={{
+                backgroundColor: "var(--dark-section-surface)",
+                border: "1px solid var(--dark-section-border)",
+              }}
             >
               <div
                 className="flex items-center justify-between pb-2"
                 style={{ borderBottom: "1px solid var(--dark-section-border)" }}
               >
-                <span className="type-eyebrow" style={{ color: "var(--dark-section-muted)" }}>How to read it</span>
+                <span className="type-eyebrow" style={{ color: "var(--dark-section-muted)" }}>
+                  How to read it
+                </span>
                 <span className="font-mono text-[11px]" style={{ color: "var(--dark-section-fg)" }}>
                   signed delegation
                 </span>
@@ -200,7 +222,10 @@ export function SectionAuthorityChain() {
               <span className="type-eyebrow" style={{ color: "var(--dark-section-muted)" }}>
                 Delegation tree
               </span>
-              <span className="font-mono text-[11px]" style={{ color: "var(--dark-section-muted)" }}>
+              <span
+                className="font-mono text-[11px]"
+                style={{ color: "var(--dark-section-muted)" }}
+              >
                 BAL-DEL-8921
               </span>
             </div>

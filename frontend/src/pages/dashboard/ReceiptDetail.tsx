@@ -40,20 +40,16 @@ function HashRow({ label, value }: { label: string; value?: string }) {
         {value ? (
           <MonospaceHash hash={value} />
         ) : (
-          <span className="text-xs font-mono" style={{ color: "var(--muted)" }}>—</span>
+          <span className="text-xs font-mono" style={{ color: "var(--muted)" }}>
+            —
+          </span>
         )}
       </span>
     </div>
   );
 }
 
-export function ReceiptDetail({
-  proof,
-  onBack,
-}: {
-  proof: Proof;
-  onBack: () => void;
-}) {
+export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => void }) {
   const event = proof.event ?? {};
   const chain = proof.delegation_chain ?? [];
   const merklePath = proof.merkle_path ?? [];
@@ -159,7 +155,11 @@ export function ReceiptDetail({
                 </div>
                 <span
                   className="shrink-0 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-babit-sm"
-                  style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--muted)" }}
+                  style={{
+                    backgroundColor: "var(--surface)",
+                    border: "1px solid var(--border)",
+                    color: "var(--muted)",
+                  }}
                 >
                   Depth {idx + 1}
                 </span>

@@ -96,7 +96,11 @@ function GrantNode({ data }: NodeProps<Node<GrantNodeData>>) {
           {data.scope}
         </div>
       )}
-      <Handle type="source" position={Position.Bottom} style={{ opacity: 0, pointerEvents: "none" }} />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        style={{ opacity: 0, pointerEvents: "none" }}
+      />
     </div>
   );
 }
@@ -172,13 +176,25 @@ export function AuthorityGraph({
 /** Build a vertical delegation tree layout from a linear chain of grants (root -> leaf),
  *  as returned by GET /v1/grants/{id}:verify. */
 export function chainToGraph(
-  chain: { subject: string; role: GrantRole; capabilities?: string[]; scope?: string; revoked?: boolean }[],
+  chain: {
+    subject: string;
+    role: GrantRole;
+    capabilities?: string[];
+    scope?: string;
+    revoked?: boolean;
+  }[],
 ): { nodes: Node<GrantNodeData>[]; edges: Edge[] } {
   const nodes: Node<GrantNodeData>[] = chain.map((g, i) => ({
     id: `g${i}`,
     type: "grant",
     position: { x: 0, y: i * 130 },
-    data: { role: g.role, subject: g.subject, capabilities: g.capabilities, scope: g.scope, revoked: g.revoked },
+    data: {
+      role: g.role,
+      subject: g.subject,
+      capabilities: g.capabilities,
+      scope: g.scope,
+      revoked: g.revoked,
+    },
   }));
   const edges: Edge[] = chain.slice(1).map((g, i) => ({
     id: `e${i}`,

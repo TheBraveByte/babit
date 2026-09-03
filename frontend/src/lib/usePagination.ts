@@ -28,9 +28,7 @@ export function usePagination<T>() {
       try {
         const pageToken = currentPageToken.current;
         const res = await fetcher({ page_size: pageSize, page_token: pageToken });
-        setItems((prev) =>
-          pageToken === "" ? res.items : [...prev, ...res.items],
-        );
+        setItems((prev) => (pageToken === "" ? res.items : [...prev, ...res.items]));
         setNextPageToken(res.next_page_token ?? "");
         setHasInitialLoaded(true);
       } catch (e) {

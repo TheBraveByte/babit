@@ -16,10 +16,13 @@ export function ApiKeys() {
         className="glass-subtle rounded-babit p-3 flex items-start gap-2.5 text-xs"
         style={{ color: "var(--muted)", border: "1px solid var(--border-subtle)" }}
       >
-        <span style={{ color: "var(--brand-accent)" }} className="shrink-0 mt-px"><IconAlertCircle className="w-4 h-4" /></span>
+        <span style={{ color: "var(--brand-accent)" }} className="shrink-0 mt-px">
+          <IconAlertCircle className="w-4 h-4" />
+        </span>
         <span>
-          Keys are issued and managed inside a project. Create a project, then generate a key from it.
-          The projects API is not live yet, so keys created here are held in your browser for now.
+          Keys are issued and managed inside a project. Create a project, then generate a key from
+          it. The projects API is not live yet, so keys created here are held in your browser for
+          now.
         </span>
       </div>
 

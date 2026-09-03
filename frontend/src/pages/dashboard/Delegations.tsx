@@ -1,5 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
-import { PageHeader, Card, StatusPill, Button, Error as ErrorBox, TableSkeleton, EmptyState, ConfirmDialog } from "@/lib/ui";
+import {
+  PageHeader,
+  Card,
+  StatusPill,
+  Button,
+  Error as ErrorBox,
+  TableSkeleton,
+  EmptyState,
+  ConfirmDialog,
+} from "@/lib/ui";
 import { IconShieldCheck, IconCheck, IconGitBranch } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import { usePagination } from "@/lib/usePagination";
@@ -20,7 +29,8 @@ function grantsToGraph(chain: Grant[]) {
       const scopeParts: string[] = [];
       const globs = g.scope?.resource_globs;
       if (globs && globs.length) scopeParts.push(globs.slice(0, 2).join(", "));
-      if (g.scope?.max_value_cents) scopeParts.push(`≤ $${(Number(g.scope.max_value_cents) / 100).toLocaleString()}`);
+      if (g.scope?.max_value_cents)
+        scopeParts.push(`≤ $${(Number(g.scope.max_value_cents) / 100).toLocaleString()}`);
       return {
         role,
         subject: (i === 0 ? g.principal_id : g.subject_id) || g.subject_id || g.principal_id || "—",
@@ -40,7 +50,15 @@ export function Delegations() {
   const [revokeError, setRevokeError] = useState<string | null>(null);
   const [revoked, setRevoked] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const { items: grants, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<Grant>();
+  const {
+    items: grants,
+    loading,
+    error,
+    hasMore,
+    hasInitialLoaded,
+    refresh,
+    loadMore,
+  } = usePagination<Grant>();
 
   const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
     const res = await api.GET("/v1/grants", { params: { query: params } });
@@ -70,7 +88,9 @@ export function Delegations() {
       else setChain(res.data);
       setChainLoading(false);
     })();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [selected]);
 
   return (
@@ -86,7 +106,11 @@ export function Delegations() {
         <Card
           title={selected.grant_id}
           subtitle={`${selected.principal_id} → ${selected.subject_id}`}
-          action={<Button variant="secondary" size="sm" onClick={() => setSelected(null)}>Back</Button>}
+          action={
+            <Button variant="secondary" size="sm" onClick={() => setSelected(null)}>
+              Back
+            </Button>
+          }
         >
           <div className="space-y-5">
             <div className="h-px accent-hairline -mx-5 -mt-5" />
@@ -94,29 +118,64 @@ export function Delegations() {
             {/* Grant details */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>Principal</span>
-                <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>{selected.principal_id || "—"}</span>
+                <span
+                  className="text-[10px] font-mono uppercase tracking-wider block mb-1"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Principal
+                </span>
+                <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+                  {selected.principal_id || "—"}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>Subject</span>
-                <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>{selected.subject_id || "—"}</span>
+                <span
+                  className="text-[10px] font-mono uppercase tracking-wider block mb-1"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Subject
+                </span>
+                <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+                  {selected.subject_id || "—"}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>Parent Grant</span>
-                <span className="font-mono text-xs" style={{ color: "var(--fg)" }}>{selected.parent_grant_id || "root"}</span>
+                <span
+                  className="text-[10px] font-mono uppercase tracking-wider block mb-1"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Parent Grant
+                </span>
+                <span className="font-mono text-xs" style={{ color: "var(--fg)" }}>
+                  {selected.parent_grant_id || "root"}
+                </span>
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>Capabilities</span>
-                <span className="font-mono text-xs" style={{ color: "var(--fg)" }}>{(selected.capabilities ?? []).join(", ") || "—"}</span>
+                <span
+                  className="text-[10px] font-mono uppercase tracking-wider block mb-1"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Capabilities
+                </span>
+                <span className="font-mono text-xs" style={{ color: "var(--fg)" }}>
+                  {(selected.capabilities ?? []).join(", ") || "—"}
+                </span>
               </div>
             </div>
 
             {/* Chain verification */}
             <div className="pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
               <div className="flex items-center justify-between pb-2">
-                <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--fg)" }}>Authority Chain</span>
+                <span
+                  className="text-xs font-semibold uppercase tracking-wide"
+                  style={{ color: "var(--fg)" }}
+                >
+                  Authority Chain
+                </span>
                 {chainLoading ? (
-                  <span className="text-xs" style={{ color: "var(--muted)" }}>Verifying…</span>
+                  <span className="text-xs" style={{ color: "var(--muted)" }}>
+                    Verifying…
+                  </span>
                 ) : chain ? (
                   <StatusPill ok={chain.valid === true} label={chain.valid ? "VALID" : "INVALID"} />
                 ) : chainError ? (
@@ -124,7 +183,11 @@ export function Delegations() {
                 ) : null}
               </div>
 
-              {chainError && <p className="text-xs" style={{ color: "var(--muted)" }}>{chainError}</p>}
+              {chainError && (
+                <p className="text-xs" style={{ color: "var(--muted)" }}>
+                  {chainError}
+                </p>
+              )}
 
               {chain && (chain.chain ?? []).length > 0 && (
                 <>
@@ -144,14 +207,25 @@ export function Delegations() {
                       <div
                         key={g.grant_id || i}
                         className="p-3 rounded-babit flex items-center justify-between font-mono text-xs"
-                        style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
+                        style={{
+                          backgroundColor: "var(--secondary)",
+                          border: "1px solid var(--border)",
+                        }}
                       >
                         <div>
                           <span className="text-[11px]" style={{ color: "var(--fg)" }}>
-                            <span className="font-semibold">{g.principal_id || "?"}</span> → <span>{g.subject_id || "?"}</span>
+                            <span className="font-semibold">{g.principal_id || "?"}</span> →{" "}
+                            <span>{g.subject_id || "?"}</span>
                           </span>
                         </div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-babit-sm" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--muted)" }}>
+                        <span
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-babit-sm"
+                          style={{
+                            backgroundColor: "var(--surface)",
+                            border: "1px solid var(--border)",
+                            color: "var(--muted)",
+                          }}
+                        >
                           Depth #{i + 1}
                         </span>
                       </div>
@@ -163,7 +237,8 @@ export function Delegations() {
                       style={{
                         color: "var(--color-failed)",
                         backgroundColor: "color-mix(in srgb, var(--color-failed) 10%, transparent)",
-                        border: "1px solid color-mix(in srgb, var(--color-failed) 30%, transparent)",
+                        border:
+                          "1px solid color-mix(in srgb, var(--color-failed) 30%, transparent)",
                       }}
                     >
                       <strong>Reason:</strong> {chain.reason}
@@ -192,7 +267,11 @@ export function Delegations() {
                   Revoke this grant
                 </Button>
               )}
-              {revokeError && <div className="mt-3"><ErrorBox message={revokeError} /></div>}
+              {revokeError && (
+                <div className="mt-3">
+                  <ErrorBox message={revokeError} />
+                </div>
+              )}
             </div>
 
             <ConfirmDialog
@@ -209,7 +288,8 @@ export function Delegations() {
                   params: { path: { grant_id: selected.grant_id! } },
                   body: {},
                 });
-                if (res.error || !res.data) setRevokeError(errText(res.error) || "Failed to revoke.");
+                if (res.error || !res.data)
+                  setRevokeError(errText(res.error) || "Failed to revoke.");
                 else setRevoked(res.data.revoked ?? false);
                 setRevoking(false);
               }}
@@ -224,7 +304,9 @@ export function Delegations() {
           {loading && !hasInitialLoaded ? (
             <TableSkeleton rows={8} cols={4} />
           ) : error ? (
-            <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>Couldn't load grants. Try refreshing.</p>
+            <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>
+              Couldn't load grants. Try refreshing.
+            </p>
           ) : grants.length === 0 ? (
             <EmptyState
               icon={<IconGitBranch className="w-5 h-5" />}
@@ -233,45 +315,94 @@ export function Delegations() {
             />
           ) : (
             <>
-            <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
-              <table className="w-full text-left">
-                <thead>
-                  <tr style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Grant ID</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Principal → Subject</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Capabilities</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right" style={{ color: "var(--muted)" }}>Verify</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {grants.map((g, i) => (
+              <div
+                className="overflow-hidden rounded-babit"
+                style={{ border: "1px solid var(--border-subtle)" }}
+              >
+                <table className="w-full text-left">
+                  <thead>
                     <tr
-                      key={g.grant_id || i}
-                      onClick={() => setSelected(g)}
-                      className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
-                      style={{ borderBottom: i < grants.length - 1 ? "1px solid var(--border-subtle)" : undefined }}
+                      style={{
+                        borderBottom: "1px solid var(--border-subtle)",
+                        backgroundColor: "var(--secondary)",
+                      }}
                     >
-                      <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>{g.grant_id}</td>
-                      <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>
-                        {g.principal_id} → {g.subject_id}
-                      </td>
-                      <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>
-                        {(g.capabilities ?? []).slice(0, 3).join(", ")}
-                      </td>
-                      <td className="px-3 py-2.5 text-right">
-                        <span className="text-xs font-medium inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
-                          <IconShieldCheck className="w-3 h-3" /> Verify
-                        </span>
-                      </td>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Grant ID
+                      </th>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Principal → Subject
+                      </th>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Capabilities
+                      </th>
+                      <th
+                        className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right"
+                        style={{ color: "var(--muted)" }}
+                      >
+                        Verify
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
-              Showing {grants.length} grant{grants.length !== 1 ? "s" : ""}.
-            </p>
-            <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
+                  </thead>
+                  <tbody>
+                    {grants.map((g, i) => (
+                      <tr
+                        key={g.grant_id || i}
+                        onClick={() => setSelected(g)}
+                        className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
+                        style={{
+                          borderBottom:
+                            i < grants.length - 1 ? "1px solid var(--border-subtle)" : undefined,
+                        }}
+                      >
+                        <td
+                          className="px-3 py-2.5 font-mono text-xs"
+                          style={{ color: "var(--fg)" }}
+                        >
+                          {g.grant_id}
+                        </td>
+                        <td
+                          className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          {g.principal_id} → {g.subject_id}
+                        </td>
+                        <td
+                          className="px-3 py-2.5 text-xs hidden sm:table-cell"
+                          style={{ color: "var(--muted)" }}
+                        >
+                          {(g.capabilities ?? []).slice(0, 3).join(", ")}
+                        </td>
+                        <td className="px-3 py-2.5 text-right">
+                          <span
+                            className="text-xs font-medium inline-flex items-center gap-1"
+                            style={{ color: "var(--brand-accent)" }}
+                          >
+                            <IconShieldCheck className="w-3 h-3" /> Verify
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
+                Showing {grants.length} grant{grants.length !== 1 ? "s" : ""}.
+              </p>
+              <LoadMoreButton
+                onClick={() => loadMore(fetcher, PAGE_SIZE)}
+                loading={loading}
+                disabled={!hasMore}
+              />
             </>
           )}
         </Card>

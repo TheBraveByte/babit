@@ -77,7 +77,10 @@ export function LandingCard({
         backgroundColor: "var(--surface)",
         border: "1px solid var(--border-subtle)",
         borderRadius: "4px",
-        boxShadow: emphasis === "raised" ? "0 1px 2px 0 color-mix(in srgb, var(--fg) 3%, transparent)" : "none",
+        boxShadow:
+          emphasis === "raised"
+            ? "0 1px 2px 0 color-mix(in srgb, var(--fg) 3%, transparent)"
+            : "none",
       }}
     >
       {children}

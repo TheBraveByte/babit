@@ -18,8 +18,8 @@ const SCENARIO = {
 };
 
 const STATS = [
-  { value: "Offline", label: "verifiable" },
-  { value: "0", label: "trust required" },
+  { value: "Ed25519", label: "signatures" },
+  { value: "Merkle", label: "anchored roots" },
 ];
 
 export function Hero() {
@@ -49,10 +49,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section
-      className="relative overflow-hidden"
-      style={{ backgroundColor: "var(--bg)" }}
-    >
+    <section className="relative overflow-hidden" style={{ backgroundColor: "var(--bg)" }}>
       {/* ── Full-bleed cinematic evidence pipeline ──────────────────── */}
       <div className="absolute inset-0">
         <Suspense fallback={null}>
@@ -64,7 +61,8 @@ export function Hero() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "linear-gradient(to right, color-mix(in srgb, var(--bg) 80%, transparent) 0%, color-mix(in srgb, var(--bg) 40%, transparent) 40%, transparent 70%)",
+          background:
+            "linear-gradient(to right, color-mix(in srgb, var(--bg) 80%, transparent) 0%, color-mix(in srgb, var(--bg) 40%, transparent) 40%, transparent 70%)",
         }}
       />
 
@@ -75,7 +73,10 @@ export function Hero() {
           <div className="inline-flex items-center gap-2 mb-8">
             <span
               className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: "var(--brand-accent)", boxShadow: "0 0 8px var(--brand-accent)" }}
+              style={{
+                backgroundColor: "var(--brand-accent)",
+                boxShadow: "0 0 8px var(--brand-accent)",
+              }}
             />
             <span
               className="type-eyebrow"
@@ -95,7 +96,7 @@ export function Hero() {
           >
             Every agent action,
             <br />
-            <span style={{ color: "var(--brand-accent)" }}>sealed as evidence.</span>
+            <span style={{ color: "var(--brand-accent)" }}>signed as evidence.</span>
           </h1>
 
           {/* Subhead */}
@@ -107,7 +108,7 @@ export function Hero() {
             }}
           >
             Babit binds every autonomous action to the person who authorized it,
-            seals it, and appends it to a ledger anyone can verify without trusting babit.
+            signs it, and appends it to a tamper-evident ledger anyone can audit.
           </p>
 
           {/* CTAs */}
@@ -121,7 +122,7 @@ export function Hero() {
                 boxShadow: "0 0 24px color-mix(in srgb, var(--brand-accent) 30%, transparent)",
               }}
             >
-              Start recording actions
+              Try babit free
             </button>
             <a
               href={docsUrl}
@@ -179,16 +180,10 @@ export function Hero() {
               className="px-5 py-3 flex items-center justify-between gap-3"
               style={{ borderBottom: "1px solid var(--border)" }}
             >
-              <span
-                className="type-eyebrow"
-                style={{ color: "var(--muted)" }}
-              >
+              <span className="type-eyebrow" style={{ color: "var(--muted)" }}>
                 Live receipt
               </span>
-              <span
-                className="font-mono text-[11px]"
-                style={{ color: "var(--muted)" }}
-              >
+              <span className="font-mono text-[11px]" style={{ color: "var(--muted)" }}>
                 {SCENARIO.grantId}
               </span>
             </div>
@@ -197,10 +192,7 @@ export function Hero() {
             <div className="p-5 space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1 min-w-0">
-                  <span
-                    className="type-eyebrow block"
-                    style={{ color: "var(--muted)" }}
-                  >
+                  <span className="type-eyebrow block" style={{ color: "var(--muted)" }}>
                     Action
                   </span>
                   <p
@@ -228,7 +220,7 @@ export function Hero() {
                       <span>Verified</span>
                     </>
                   ) : (
-                    <span>{computing ? "Sealing…" : "Pending"}</span>
+                    <span>{computing ? "Signing…" : "Pending"}</span>
                   )}
                 </div>
               </div>
@@ -265,13 +257,8 @@ export function Hero() {
                       className="flex items-center justify-between gap-3 px-3 py-2 font-mono text-[10px]"
                       style={{ borderColor: "var(--border)" }}
                     >
-                      <span style={{ color: "var(--muted)" }}>
-                        {row.label}
-                      </span>
-                      <span
-                        className="truncate"
-                        style={{ color: "var(--fg)" }}
-                      >
+                      <span style={{ color: "var(--muted)" }}>{row.label}</span>
+                      <span className="truncate" style={{ color: "var(--fg)" }}>
                         {row.value.slice(0, 24)}…
                       </span>
                       <span style={{ color: "var(--brand-accent)" }}>✓</span>
@@ -282,10 +269,7 @@ export function Hero() {
 
               {/* Footer */}
               <div className="flex items-center justify-between pt-1">
-                <span
-                  className="text-[10px] font-mono"
-                  style={{ color: "var(--muted)" }}
-                >
+                <span className="text-[10px] font-mono" style={{ color: "var(--muted)" }}>
                   computed in your browser
                 </span>
                 <button
@@ -297,9 +281,7 @@ export function Hero() {
                     border: "1px solid rgba(45, 212, 191, 0.2)",
                   }}
                 >
-                  <IconRefresh
-                    className={`w-3 h-3 ${computing ? "animate-spin" : ""}`}
-                  />
+                  <IconRefresh className={`w-3 h-3 ${computing ? "animate-spin" : ""}`} />
                   <span>new</span>
                 </button>
               </div>
