@@ -72,10 +72,15 @@ function AuthVisual() {
       className="dark relative overflow-hidden min-h-[420px] lg:min-h-screen"
       style={{ backgroundColor: "var(--bg)", borderLeft: "1px solid var(--border)" }}
     >
-      <SealingStream className="absolute inset-0 w-full h-full" />
+      {/* Canvas starts below the overlay text area */}
+      <div className="absolute inset-0 pt-32">
+        <SealingStream className="w-full h-full" />
+      </div>
 
       {/* Top-left label overlay */}
-      <div className="absolute top-0 left-0 right-0 p-6 lg:p-10 pointer-events-none">
+      <div className="absolute top-0 left-0 right-0 p-6 lg:p-10 pointer-events-none z-10"
+        style={{ background: "linear-gradient(to bottom, var(--bg) 0%, color-mix(in srgb, var(--bg) 80%, transparent) 70%, transparent 100%)" }}
+      >
         <p className="type-eyebrow" style={{ color: "var(--muted)" }}>
           Live · evidence pipeline
         </p>
@@ -87,12 +92,10 @@ function AuthVisual() {
         </h2>
       </div>
 
-      {/* Bottom overlay — subtle fade so chain blocks are legible */}
+      {/* Bottom fade */}
       <div
         className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
-        style={{
-          background: "linear-gradient(to top, var(--bg) 0%, transparent 100%)",
-        }}
+        style={{ background: "linear-gradient(to top, var(--bg) 0%, transparent 100%)" }}
       />
     </aside>
   );

@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { PageHeader, Card, Button, Error, EmptyState, Field, TextInput, Copyable, MonospaceHash, StatusPill } from "@/lib/ui";
-import { IconFileText, IconSearch } from "@/lib/icons";
+import { PageHeader, Card, Button, Error, Field, TextInput, Copyable, MonospaceHash, StatusPill } from "@/lib/ui";
+import { IconSearch } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
+import { useRecentLookups } from "@/lib/useRecentLookups";
+import { RecentTable } from "@/components/RecentTable";
 
 type ActionEvent = components["schemas"]["v1ActionEvent"];
 
@@ -22,6 +24,7 @@ export function Activity() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [event, setEvent] = useState<ActionEvent | null>(null);
+  const { entries, addLookup } = useRecentLookups("events");
 
   async function lookup(e: React.FormEvent) {
     e.preventDefault();
@@ -37,6 +40,7 @@ export function Activity() {
         setError(errText(res.error) || "No action event found for that ID.");
       } else {
         setEvent(res.data.event);
+        addLookup(eventId.trim(), `${res.data.event.action_type || "event"} · ${res.data.event.session_id || ""}`);
       }
     } catch (err) {
       setError(errText(err));
@@ -44,6 +48,16 @@ export function Activity() {
       setLoading(false);
     }
   }
+
+  // Click a recent row → auto-fill and run the lookup
+  const selectRecent = (id: string) => {
+    setEventId(id);
+    // Trigger lookup programmatically
+    setTimeout(() => {
+      const form = document.querySelector("form");
+      if (form) form.requestSubmit();
+    }, 50);
+  };
 
   return (
     <div className="space-y-6">
@@ -96,11 +110,10 @@ export function Activity() {
         </Card>
       ) : (
         !error && (
-          <EmptyState
-            title="No event loaded"
-            description="Enter an action event ID above to inspect its recorded fields and cryptographic hashes."
-            icon={<IconFileText className="w-5 h-5" />}
-          />
+          <Card title="Recent lookups" subtitle="Click a row to inspect that event.">
+            <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
+            <RecentTable entries={entries} onSelect={selectRecent} emptyLabel="Look up an event ID above to start building history." />
+          </Card>
         )
       )}
     </div>

@@ -39,8 +39,11 @@ export function Nav() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
         scrolled
           ? "glass-subtle border-b border-[color:var(--border)] py-3"
-          : "bg-transparent py-4"
+          : "py-4"
       }`}
+      style={!scrolled ? {
+        background: "linear-gradient(to bottom, var(--bg) 0%, color-mix(in srgb, var(--bg) 85%, transparent) 60%, transparent 100%)",
+      } : undefined}
     >
       <div className="container-babit flex items-center justify-between">
         {/* Brand */}

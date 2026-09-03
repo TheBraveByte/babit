@@ -60,7 +60,7 @@ export function Hero() {
       {/* Full-bleed two-column: message left, live sealing stream right */}
       <div className="relative grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] min-h-[100vh]">
         {/* ── Left: message ────────────────────────────────────────── */}
-        <div className="relative flex flex-col justify-center px-6 py-32 sm:px-10 lg:px-20">
+        <div className="relative flex flex-col justify-center px-6 pt-32 pb-20 sm:px-10 lg:px-20 lg:pt-32 lg:pb-24">
           {/* Subtle dot grid background */}
           <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
           <div
@@ -120,7 +120,10 @@ export function Hero() {
           className="dark relative overflow-hidden hidden lg:block"
           style={{ backgroundColor: "var(--bg)", borderLeft: "1px solid var(--border)" }}
         >
-          <SealingStream className="absolute inset-0 w-full h-full" />
+          {/* Canvas starts below the nav gradient */}
+          <div className="absolute inset-0 pt-16">
+            <SealingStream className="w-full h-full" />
+          </div>
 
           {/* Top-left label overlay */}
           <div className="absolute top-0 left-0 right-0 p-10 pointer-events-none">
@@ -149,7 +152,9 @@ export function Hero() {
         style={{ backgroundColor: "var(--bg)", borderTop: "1px solid var(--border)" }}
       >
         <div className="relative h-[360px]">
-          <SealingStream className="absolute inset-0 w-full h-full" />
+          <div className="absolute inset-0 pt-12">
+            <SealingStream className="w-full h-full" />
+          </div>
           <div className="absolute top-0 left-0 right-0 p-6 pointer-events-none">
             <p className="type-eyebrow" style={{ color: "var(--muted)" }}>
               Live · evidence pipeline

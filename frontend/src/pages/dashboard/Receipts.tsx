@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { ReceiptDetail } from "./ReceiptDetail";
-import { PageHeader, Card, Button, Error, EmptyState, TextInput, Field } from "@/lib/ui";
-import { IconFileText, IconShieldCheck } from "@/lib/icons";
+import { PageHeader, Card, Button, Error, TextInput, Field } from "@/lib/ui";
+import { IconShieldCheck } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
+import { useRecentLookups } from "@/lib/useRecentLookups";
+import { RecentTable } from "@/components/RecentTable";
 
 type Proof = components["schemas"]["v1Proof"];
 
@@ -12,6 +14,7 @@ export function Receipts() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [proof, setProof] = useState<Proof | null>(null);
+  const { entries, addLookup } = useRecentLookups("events");
 
   async function lookup(e: React.FormEvent) {
     e.preventDefault();
@@ -27,6 +30,7 @@ export function Receipts() {
         setError(errText(res.error) || "No inclusion proof found for that event ID.");
       } else {
         setProof(res.data.proof);
+        addLookup(eventId.trim(), `Proof · ${res.data.proof.merkle_root?.slice(0, 12) || "sealed"}`);
       }
     } catch (err) {
       setError(errText(err));
@@ -34,6 +38,15 @@ export function Receipts() {
       setLoading(false);
     }
   }
+
+  // Click a recent row → auto-fill and run the lookup
+  const selectRecent = (id: string) => {
+    setEventId(id);
+    setTimeout(() => {
+      const form = document.querySelector("form");
+      if (form) form.requestSubmit();
+    }, 50);
+  };
 
   if (proof) {
     return <ReceiptDetail proof={proof} onBack={() => setProof(null)} />;
@@ -70,11 +83,10 @@ export function Receipts() {
           {error && <Error message={error} />}
 
           {!error && (
-            <EmptyState
-              title="No receipt loaded"
-              description="Enter an action event ID above to fetch its cryptographic receipt. Babit has no bulk listing endpoint yet, so receipts are retrieved individually by ID."
-              icon={<IconFileText className="w-5 h-5" />}
-            />
+            <Card title="Recent lookups" subtitle="Click a row to fetch that receipt.">
+              <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
+              <RecentTable entries={entries} onSelect={selectRecent} emptyLabel="Look up an event ID above to start building history." />
+            </Card>
           )}
         </div>
       </Card>
