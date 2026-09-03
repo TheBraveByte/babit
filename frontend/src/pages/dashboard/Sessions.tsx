@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PageHeader, Card, StatusPill, Copyable, MonospaceHash, Button, Error } from "@/lib/ui";
+import { PageHeader, Card, StatusPill, Copyable, MonospaceHash, Button, Error, TableSkeleton, EmptyState } from "@/lib/ui";
 import { IconLayers } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
@@ -127,10 +127,15 @@ export function Sessions() {
         <Card>
           <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
           {loading ? (
-            <p className="text-sm" style={{ color: "var(--muted)" }}>Loading sessions…</p>
+            <TableSkeleton rows={8} cols={5} />
           ) : sessions.length === 0 ? (
-            <p className="text-sm" style={{ color: "var(--muted)" }}>No sessions recorded yet.</p>
+            <EmptyState
+              icon={<IconLayers className="w-5 h-5" />}
+              title="No sessions recorded yet"
+              description="Open a capture session to bind agent actions to a root grant and seal them under an external anchor."
+            />
           ) : (
+            <>
             <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
               <table className="w-full text-left">
                 <thead>
@@ -166,6 +171,10 @@ export function Sessions() {
                 </tbody>
               </table>
             </div>
+            <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
+              Showing {sessions.length} session{sessions.length !== 1 ? "s" : ""}.
+            </p>
+            </>
           )}
         </Card>
       )}

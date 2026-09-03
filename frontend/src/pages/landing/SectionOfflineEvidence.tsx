@@ -53,15 +53,14 @@ export function SectionOfflineEvidence() {
       {/* ── Full-bleed cinematic globe section ─────────────────────────── */}
       <section
         id="offline-globe"
-        className="dark relative overflow-hidden"
-        style={{ backgroundColor: "var(--bg)" }}
+        className="dark-section relative overflow-hidden"
       >
         {/* Dot grid + radial glow background */}
         <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: "radial-gradient(circle at 50% 65%, var(--brand-accent-subtle) 0%, transparent 55%)",
+            background: "radial-gradient(circle at 50% 65%, rgba(45, 212, 191, 0.08) 0%, transparent 55%)",
           }}
         />
 
@@ -73,13 +72,13 @@ export function SectionOfflineEvidence() {
             </p>
             <h2
               className="mt-4 font-semibold tracking-[-0.028em] leading-tight"
-              style={{ color: "var(--fg)", fontSize: "clamp(1.9rem, 3.4vw, 2.75rem)" }}
+              style={{ color: "var(--dark-section-fg)", fontSize: "clamp(1.625rem, 2.8vw, 2.25rem)" }}
             >
               Witnessed where babit can't reach.
             </h2>
             <p
               className="mt-5 max-w-md mx-auto"
-              style={{ color: "var(--muted)", fontSize: "clamp(1.0625rem, 1.4vw, 1.25rem)", lineHeight: 1.55 }}
+              style={{ color: "var(--dark-section-muted)", fontSize: "clamp(1.0625rem, 1.4vw, 1.1875rem)", lineHeight: 1.55 }}
             >
               Each session's Merkle root is published to a public transparency log,
               so a receipt can be checked against a record babit does not control.
@@ -112,7 +111,7 @@ export function SectionOfflineEvidence() {
               <span className="type-eyebrow block" style={{ color: "var(--brand-accent)" }}>
                 Check it yourself
               </span>
-              <h3 className="type-h3" style={{ color: "var(--fg)" }}>
+              <h3 className="type-h3" style={{ color: "var(--dark-section-fg)" }}>
                 Run the check and watch it pass.
               </h3>
               <p className="type-body">
@@ -123,30 +122,30 @@ export function SectionOfflineEvidence() {
 
             <div
               className="mt-auto rounded-babit overflow-hidden font-mono text-xs"
-              style={{ backgroundColor: "#0A0C0C", border: "1px solid #222626" }}
+              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--dark-section-border)" }}
             >
               <div
                 className="px-4 py-2.5 flex items-center justify-between"
-                style={{ backgroundColor: "#111414", borderBottom: "1px solid #222626" }}
+                style={{ backgroundColor: "var(--secondary)", borderBottom: "1px solid var(--dark-section-border)" }}
               >
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
-                  <span className="ml-2 text-[#929894] text-[11px]">terminal</span>
+                  <span className="ml-2 text-[var(--dark-section-muted)] text-[11px]">terminal</span>
                 </div>
                 <button
                   onClick={runCli}
                   disabled={running}
-                  className="text-[11px] text-[#A2B0AC] hover:text-[#F5F6F4] flex items-center gap-1 cursor-pointer"
+                  className="text-[11px] text-[var(--dark-section-muted)] hover:text-[var(--dark-section-fg)] flex items-center gap-1 cursor-pointer"
                 >
                   <IconRefresh className={`w-3 h-3 ${running ? "animate-spin" : ""}`} />
                   <span>Run it</span>
                 </button>
               </div>
 
-              <div className="p-5 space-y-2 text-[#F5F6F4]">
-                <div className="text-[#8A9490]">$ babit verify rcpt_BAL_778812.json --public-key notary.pub</div>
+              <div className="p-5 space-y-2 text-[var(--dark-section-fg)]">
+                <div className="text-[var(--dark-section-muted)]">$ babit verify rcpt_BAL_778812.json --public-key notary.pub</div>
                 {running && <div className="text-amber-400">Checking the receipt offline…</div>}
                 {output && (
                   <div className="space-y-1.5 pt-1 animate-fade-in">
@@ -156,7 +155,7 @@ export function SectionOfflineEvidence() {
                         <span>{line}</span>
                       </div>
                     ))}
-                    <div className="pt-2 text-[11px] text-[#737D79] border-t border-[#1C2020]">
+                    <div className="pt-2 text-[11px] text-[var(--dark-section-muted)] border-t border-[var(--dark-section-border)]">
                       Checked offline in {output.duration}. No network calls to babit.
                     </div>
                   </div>
@@ -169,7 +168,7 @@ export function SectionOfflineEvidence() {
           <div className="grid grid-cols-1 gap-5">
             {POINTS.map((p) => (
               <LandingCard key={p.title} className="space-y-2">
-                <h3 className="text-[15px] font-medium" style={{ color: "var(--fg)" }}>
+                <h3 className="text-[15px] font-medium" style={{ color: "var(--dark-section-fg)" }}>
                   {p.title}
                 </h3>
                 <p className="type-body">{p.body}</p>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { PageHeader, Card, StatusPill, Button, Error } from "@/lib/ui";
-import { IconShieldCheck, IconCheck } from "@/lib/icons";
+import { PageHeader, Card, StatusPill, Button, Error, TableSkeleton, EmptyState, ConfirmDialog } from "@/lib/ui";
+import { IconShieldCheck, IconCheck, IconGitBranch } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { AuthorityGraph, chainToGraph, type GrantRole } from "@/components/viz/AuthorityGraph";
@@ -38,6 +38,7 @@ export function Delegations() {
   const [revoking, setRevoking] = useState(false);
   const [revokeError, setRevokeError] = useState<string | null>(null);
   const [revoked, setRevoked] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -72,19 +73,6 @@ export function Delegations() {
     })();
     return () => { active = false; };
   }, [selected]);
-
-  async function revokeGrant() {
-    if (!selected) return;
-    setRevoking(true);
-    setRevokeError(null);
-    const res = await api.POST("/v1/grants/{grant_id}/revoke", {
-      params: { path: { grant_id: selected.grant_id! } },
-      body: {},
-    });
-    if (res.error || !res.data) setRevokeError(errText(res.error) || "Failed to revoke.");
-    else setRevoked(res.data.revoked ?? false);
-    setRevoking(false);
-  }
 
   return (
     <div className="space-y-6 font-sans">
@@ -201,22 +189,49 @@ export function Delegations() {
                   <span>Grant revoked. All authority beneath it is now invalid.</span>
                 </div>
               ) : (
-                <Button variant="danger" size="md" loading={revoking} onClick={revokeGrant}>
+                <Button variant="danger" size="md" onClick={() => setShowConfirm(true)}>
                   Revoke this grant
                 </Button>
               )}
               {revokeError && <div className="mt-3"><Error message={revokeError} /></div>}
             </div>
+
+            <ConfirmDialog
+              open={showConfirm}
+              danger
+              title="Revoke this grant?"
+              message={`Revoking ${selected.grant_id} will invalidate all authority delegated beneath it. This action cannot be undone.`}
+              confirmLabel="Revoke grant"
+              onConfirm={async () => {
+                setShowConfirm(false);
+                setRevoking(true);
+                setRevokeError(null);
+                const res = await api.POST("/v1/grants/{grant_id}/revoke", {
+                  params: { path: { grant_id: selected.grant_id! } },
+                  body: {},
+                });
+                if (res.error || !res.data) setRevokeError(errText(res.error) || "Failed to revoke.");
+                else setRevoked(res.data.revoked ?? false);
+                setRevoking(false);
+              }}
+              onCancel={() => setShowConfirm(false)}
+              loading={revoking}
+            />
           </div>
         </Card>
       ) : (
         <Card>
           <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
           {loading ? (
-            <p className="text-sm" style={{ color: "var(--muted)" }}>Loading grants…</p>
+            <TableSkeleton rows={8} cols={4} />
           ) : grants.length === 0 ? (
-            <p className="text-sm" style={{ color: "var(--muted)" }}>No grants issued yet.</p>
+            <EmptyState
+              icon={<IconGitBranch className="w-5 h-5" />}
+              title="No grants issued yet"
+              description="Issue a root grant for a human principal, then delegate scoped authority to agents and sub-agents."
+            />
           ) : (
+            <>
             <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
               <table className="w-full text-left">
                 <thead>
@@ -252,6 +267,10 @@ export function Delegations() {
                 </tbody>
               </table>
             </div>
+            <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
+              Showing {grants.length} grant{grants.length !== 1 ? "s" : ""}.
+            </p>
+            </>
           )}
         </Card>
       )}

@@ -112,19 +112,19 @@ export function SectionBuiltForEngineers() {
         {/* Dominant tile: code playground */}
         <div className="lg:col-span-2">
           <div
-            className="rounded-babit-lg overflow-hidden h-full"
+            className="rounded-babit-md overflow-hidden h-full"
             style={{
-              backgroundColor: "#0A0C0C",
-              border: "1px solid #222626",
-              boxShadow: "0 30px 70px -24px rgba(0,0,0,0.5)",
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--border)",
+              boxShadow: "0 30px 70px -24px rgba(0,0,0,0.12)",
             }}
           >
             {/* Header tabs bar */}
             <div
               className="px-4 py-3 flex items-center justify-between"
               style={{
-                backgroundColor: "#111414",
-                borderBottom: "1px solid #222626",
+                backgroundColor: "var(--secondary)",
+                borderBottom: "1px solid var(--border)",
               }}
             >
               {/* Language tabs */}
@@ -135,8 +135,8 @@ export function SectionBuiltForEngineers() {
                     onClick={() => setActiveLang(lang)}
                     className="px-3 py-1.5 rounded-babit-sm text-xs font-mono font-medium transition-colors cursor-pointer"
                     style={{
-                      backgroundColor: activeLang === lang ? "#202626" : "transparent",
-                      color: activeLang === lang ? "#F5F6F4" : "#8A9490",
+                      backgroundColor: activeLang === lang ? "var(--bg)" : "transparent",
+                      color: activeLang === lang ? "var(--fg)" : "var(--muted)",
                     }}
                   >
                     {lang === "curl" ? "cURL" : lang === "typescript" ? "TypeScript" : lang === "python" ? "Python" : "Go"}
@@ -147,15 +147,16 @@ export function SectionBuiltForEngineers() {
               {/* Copy code button */}
               <button
                 onClick={copyCode}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-babit-sm text-xs font-mono text-[#8A9490] hover:text-[#F5F6F4] bg-[#1A1F1F] hover:bg-[#252C2C] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-babit-sm text-xs font-mono transition-colors cursor-pointer"
+                style={{ color: "var(--muted)" }}
               >
-                {copied ? <IconCheck className="w-3.5 h-3.5 text-emerald-400" /> : <IconCopy className="w-3.5 h-3.5" />}
+                {copied ? <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span> : <IconCopy className="w-3.5 h-3.5" />}
                 <span>{copied ? "Copied" : "Copy"}</span>
               </button>
             </div>
 
             {/* Code content */}
-            <div className="p-6 overflow-x-auto font-mono text-xs leading-relaxed text-[#D8E0DC]">
+            <div className="p-6 overflow-x-auto font-mono text-xs leading-relaxed" style={{ color: "var(--fg)" }}>
               <pre tabIndex={0} className="outline-none">
                 <code>{CODE_EXAMPLES[activeLang]}</code>
               </pre>
@@ -165,9 +166,9 @@ export function SectionBuiltForEngineers() {
             <div
               className="px-4 py-2 flex items-center justify-between text-[11px] font-mono"
               style={{
-                backgroundColor: "#0E1111",
-                borderTop: "1px solid #1C2020",
-                color: "#737D79",
+                backgroundColor: "var(--secondary)",
+                borderTop: "1px solid var(--border)",
+                color: "var(--muted)",
               }}
             >
               <span>POST /v1/sessions/{'{session_id}'}/actions</span>
@@ -192,7 +193,7 @@ export function SectionBuiltForEngineers() {
           <div className="mt-auto">
             <Link
               to="/api"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-babit transition-all hover:opacity-90"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-pill transition-all hover:opacity-90"
               style={{ backgroundColor: "var(--brand-accent)", color: "#fff" }}
             >
               <span>Open the API reference</span>

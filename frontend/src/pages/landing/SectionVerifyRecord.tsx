@@ -97,7 +97,7 @@ export function SectionVerifyRecord() {
                 <button
                   onClick={runVerification}
                   disabled={verifying}
-                  className="px-4 py-1.5 rounded-babit-sm text-xs font-semibold flex items-center gap-1.5 transition-opacity cursor-pointer hover:opacity-90"
+                  className="px-4 py-1.5 rounded-pill text-xs font-medium flex items-center gap-1.5 transition-opacity cursor-pointer hover:opacity-90"
                   style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
                 >
                   <IconRefresh className={`w-3.5 h-3.5 ${verifying ? "animate-spin" : ""}`} />

@@ -81,7 +81,7 @@ function Panel({ title, subtitle, icon, flagship, children }: { title: string; s
 
 function RoadmapTile({ title, note, icon }: { title: string; note: string; icon: ReactNode }) {
   return (
-    <div className="rounded-babit-lg p-5 flex flex-col gap-2" style={{ border: "1px dashed var(--border)", backgroundColor: "color-mix(in srgb, var(--secondary) 50%, transparent)" }}>
+    <div className="rounded-babit-md p-5 flex flex-col gap-2" style={{ border: "1px dashed var(--border)", backgroundColor: "color-mix(in srgb, var(--secondary) 50%, transparent)" }}>
       <div className="flex items-center justify-between">
         <span style={{ color: "var(--muted)" }}>{icon}</span>
         <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded" style={{ color: "var(--brand-accent)", backgroundColor: "color-mix(in srgb, var(--brand-accent) 10%, transparent)" }}>Planned</span>

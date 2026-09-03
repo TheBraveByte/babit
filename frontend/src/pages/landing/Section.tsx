@@ -72,7 +72,7 @@ export function LandingCard({
 }) {
   return (
     <div
-      className={`rounded-babit-lg h-full ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
+      className={`rounded-babit-md h-full ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
       style={{
         backgroundColor: "var(--surface)",
         border: "1px solid var(--border)",

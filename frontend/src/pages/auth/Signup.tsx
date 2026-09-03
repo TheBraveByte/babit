@@ -232,10 +232,10 @@ function AccountTypeCard({
     <button
       type="button"
       onClick={onClick}
-      className="p-3 rounded-babit border text-left flex flex-col gap-1 transition-all cursor-pointer shadow-xs"
+      className="p-3 rounded-babit border text-left flex flex-col gap-1 transition-all cursor-pointer"
       style={
         selected
-          ? { borderColor: "var(--fg)", backgroundColor: "var(--fg)", color: "var(--surface)" }
+          ? { borderColor: "var(--brand-accent)", backgroundColor: "var(--brand-accent-subtle)", color: "var(--fg)" }
           : { borderColor: "var(--border)", backgroundColor: "var(--surface)", color: "var(--fg)" }
       }
     >

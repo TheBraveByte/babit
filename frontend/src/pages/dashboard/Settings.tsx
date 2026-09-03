@@ -119,7 +119,7 @@ export function Settings() {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
         <nav
-          className="md:col-span-4 rounded-babit-lg p-2 shadow-xs space-y-0.5 animate-float-up"
+          className="md:col-span-4 rounded-babit-md p-2 shadow-xs space-y-0.5 animate-float-up"
           style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
         >
           {sections.map((s) => {
@@ -142,7 +142,7 @@ export function Settings() {
         </nav>
 
         <div
-          className="md:col-span-8 rounded-babit-lg p-6 sm:p-8 shadow-xs space-y-4"
+          className="md:col-span-8 rounded-babit-md p-6 sm:p-8 shadow-xs space-y-4"
           style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
         >
           {section === "general" && (

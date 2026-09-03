@@ -67,7 +67,7 @@ const HOW_TO_READ = [
     dot: "var(--brand-accent)",
     text: (
       <>
-        Each node is a <span style={{ color: "var(--fg)" }}>grant</span>: a subject, its
+        Each node is a <span style={{ color: "var(--dark-section-fg)" }}>grant</span>: a subject, its
         capabilities, and its scope (resources and value limit).
       </>
     ),
@@ -76,7 +76,7 @@ const HOW_TO_READ = [
     dot: "var(--brand-accent)",
     text: (
       <>
-        Each edge carries a <span style={{ color: "var(--fg)" }}>parent signature</span>, proof
+        Each edge carries a <span style={{ color: "var(--dark-section-fg)" }}>parent signature</span>, proof
         the grant above authorized the one below.
       </>
     ),
@@ -96,14 +96,13 @@ export function SectionAuthorityChain() {
   return (
     <section
       id="authority"
-      className="dark relative overflow-hidden section-y-lg"
-      style={{ backgroundColor: "var(--bg)" }}
+      className="dark-section relative overflow-hidden section-y-lg"
     >
       <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 70% 50% at 70% 50%, var(--brand-accent-subtle), transparent 70%)",
+          background: "radial-gradient(ellipse 70% 50% at 70% 50%, rgba(45, 212, 191, 0.06), transparent 70%)",
         }}
       />
       <div className="container-babit relative z-10">
@@ -112,29 +111,29 @@ export function SectionAuthorityChain() {
           <div className="space-y-8">
             <div>
               <p className="type-eyebrow mb-4" style={{ color: "var(--brand-accent)" }}>Authority</p>
-              <h2 className="type-h2" style={{ color: "var(--fg)" }}>
+              <h2 className="type-h2" style={{ color: "var(--dark-section-fg)" }}>
                 Every action traces back to a person.
               </h2>
-              <p className="type-lead mt-5">
+              <p className="type-lead mt-5" style={{ color: "var(--dark-section-muted)" }}>
                 A person authorizes an agent, which can hand a narrower slice to a sub-agent.
                 Revoke a grant and everything below it greys out.
               </p>
             </div>
 
             <div
-              className="rounded-babit-lg p-5 space-y-3 text-xs"
-              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
+              className="rounded-babit-md p-5 space-y-3 text-xs"
+              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--dark-section-border)" }}
             >
               <div
                 className="flex items-center justify-between pb-2"
                 style={{ borderBottom: "1px solid var(--border-subtle)" }}
               >
                 <span className="type-eyebrow">How to read it</span>
-                <span className="font-mono text-[11px]" style={{ color: "var(--fg)" }}>
+                <span className="font-mono text-[11px]" style={{ color: "var(--dark-section-fg)" }}>
                   signed delegation
                 </span>
               </div>
-              <ul className="space-y-2" style={{ color: "var(--muted)" }}>
+              <ul className="space-y-2" style={{ color: "var(--dark-section-muted)" }}>
                 {HOW_TO_READ.map((item, i) => (
                   <li key={i} className="flex gap-2">
                     <span
@@ -150,10 +149,10 @@ export function SectionAuthorityChain() {
 
           {/* Right: the real interactive delegation DAG */}
           <div
-            className="rounded-babit-lg overflow-hidden"
+            className="rounded-babit-md overflow-hidden"
             style={{
               backgroundColor: "var(--surface)",
-              border: "1px solid var(--border)",
+              border: "1px solid var(--dark-section-border)",
               boxShadow: "0 1px 3px 0 rgba(0,0,0,0.05), 0 32px 64px -32px rgba(0,0,0,0.6)",
             }}
           >
