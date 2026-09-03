@@ -3,8 +3,8 @@ import { lazy, Suspense } from "react";
 import { BabitLogo, IconCheck } from "@/lib/icons";
 import { Link } from "@/lib/router";
 
-const SealingStream = lazy(() =>
-  import("@/components/viz/SealingStream").then((m) => ({ default: m.SealingStream })),
+const AnchorGlobe = lazy(() =>
+  import("@/components/viz/AnchorGlobe").then((m) => ({ default: m.AnchorGlobe })),
 );
 
 export function AuthLayout({
@@ -60,16 +60,15 @@ export function AuthLayout({
         </p>
       </main>
 
-      {/* ── Visual panel: live sealing animation ────────────────────── */}
+      {/* ── Visual panel: globe ─────────────────────────────────────── */}
       {visual ?? <AuthVisual />}
     </div>
   );
 }
 
 /**
- * AuthVisual — the right-hand panel with a live sealing animation.
- * Actions flow in, get sealed with a flash, and form a hash chain.
- * Product-relevant, theme-aware, and visually engaging.
+ * AuthVisual — the right-hand panel with the anchoring globe.
+ * Same globe as the landing page, centered and smaller.
  */
 function AuthVisual() {
   const benefits = [
@@ -83,11 +82,13 @@ function AuthVisual() {
       className="relative overflow-hidden hidden lg:flex flex-col justify-between min-h-screen px-12 py-16"
       style={{ backgroundColor: "var(--secondary)", borderLeft: "1px solid var(--border)" }}
     >
-      {/* Live sealing animation canvas */}
-      <div className="absolute inset-0">
-        <Suspense fallback={null}>
-          <SealingStream className="w-full h-full" />
-        </Suspense>
+      {/* Globe canvas — centered, sized to the panel */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-[420px] h-[420px] opacity-90">
+          <Suspense fallback={null}>
+            <AnchorGlobe className="w-full h-full" />
+          </Suspense>
+        </div>
       </div>
 
       {/* Content overlay */}
@@ -108,7 +109,7 @@ function AuthVisual() {
         {benefits.map((b) => (
           <div key={b} className="flex items-start gap-3">
             <div
-              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+              className="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5"
               style={{
                 backgroundColor: "var(--color-verified-bg)",
                 border: "1px solid var(--color-verified-border)",
@@ -124,7 +125,7 @@ function AuthVisual() {
 
         {/* Verified badge */}
         <div
-          className="mt-8 inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full"
+          className="mt-8 inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5"
           style={{
             backgroundColor: "var(--color-verified-bg)",
             color: "var(--color-verified)",

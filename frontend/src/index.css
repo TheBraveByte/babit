@@ -198,11 +198,11 @@ button:focus-visible {
 ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
 /* ─── Border Radius Tokens ──────────────────────────────────────────────────── */
-.rounded-babit-sm { border-radius: 6px; }
-.rounded-babit    { border-radius: 8px; }
-.rounded-babit-md { border-radius: 10px; }
-.rounded-babit-lg { border-radius: 12px; }
-.rounded-pill    { border-radius: 9999px; }
+.rounded-babit-sm { border-radius: 4px; }
+.rounded-babit    { border-radius: 4px; }
+.rounded-babit-md { border-radius: 4px; }
+.rounded-babit-lg { border-radius: 4px; }
+.rounded-pill    { border-radius: 4px; }
 
 /* ─── Shadow Tokens ─────────────────────────────────────────────────────────── */
 .shadow-2xs { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04); }
