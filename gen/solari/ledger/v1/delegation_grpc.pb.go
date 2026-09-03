@@ -23,6 +23,7 @@ const (
 	DelegationService_Delegate_FullMethodName       = "/solari.ledger.v1.DelegationService/Delegate"
 	DelegationService_VerifyChain_FullMethodName    = "/solari.ledger.v1.DelegationService/VerifyChain"
 	DelegationService_Revoke_FullMethodName         = "/solari.ledger.v1.DelegationService/Revoke"
+	DelegationService_ListGrants_FullMethodName     = "/solari.ledger.v1.DelegationService/ListGrants"
 )
 
 // DelegationServiceClient is the client API for DelegationService service.
@@ -33,6 +34,7 @@ type DelegationServiceClient interface {
 	Delegate(ctx context.Context, in *DelegateRequest, opts ...grpc.CallOption) (*DelegateResponse, error)
 	VerifyChain(ctx context.Context, in *VerifyChainRequest, opts ...grpc.CallOption) (*VerifyChainResponse, error)
 	Revoke(ctx context.Context, in *RevokeRequest, opts ...grpc.CallOption) (*RevokeResponse, error)
+	ListGrants(ctx context.Context, in *ListGrantsRequest, opts ...grpc.CallOption) (*ListGrantsResponse, error)
 }
 
 type delegationServiceClient struct {
@@ -83,6 +85,16 @@ func (c *delegationServiceClient) Revoke(ctx context.Context, in *RevokeRequest,
 	return out, nil
 }
 
+func (c *delegationServiceClient) ListGrants(ctx context.Context, in *ListGrantsRequest, opts ...grpc.CallOption) (*ListGrantsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListGrantsResponse)
+	err := c.cc.Invoke(ctx, DelegationService_ListGrants_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DelegationServiceServer is the server API for DelegationService service.
 // All implementations must embed UnimplementedDelegationServiceServer
 // for forward compatibility.
@@ -91,6 +103,7 @@ type DelegationServiceServer interface {
 	Delegate(context.Context, *DelegateRequest) (*DelegateResponse, error)
 	VerifyChain(context.Context, *VerifyChainRequest) (*VerifyChainResponse, error)
 	Revoke(context.Context, *RevokeRequest) (*RevokeResponse, error)
+	ListGrants(context.Context, *ListGrantsRequest) (*ListGrantsResponse, error)
 	mustEmbedUnimplementedDelegationServiceServer()
 }
 
@@ -112,6 +125,9 @@ func (UnimplementedDelegationServiceServer) VerifyChain(context.Context, *Verify
 }
 func (UnimplementedDelegationServiceServer) Revoke(context.Context, *RevokeRequest) (*RevokeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Revoke not implemented")
+}
+func (UnimplementedDelegationServiceServer) ListGrants(context.Context, *ListGrantsRequest) (*ListGrantsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListGrants not implemented")
 }
 func (UnimplementedDelegationServiceServer) mustEmbedUnimplementedDelegationServiceServer() {}
 func (UnimplementedDelegationServiceServer) testEmbeddedByValue()                           {}
@@ -206,6 +222,24 @@ func _DelegationService_Revoke_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DelegationService_ListGrants_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListGrantsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DelegationServiceServer).ListGrants(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DelegationService_ListGrants_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DelegationServiceServer).ListGrants(ctx, req.(*ListGrantsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DelegationService_ServiceDesc is the grpc.ServiceDesc for DelegationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +262,10 @@ var DelegationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Revoke",
 			Handler:    _DelegationService_Revoke_Handler,
+		},
+		{
+			MethodName: "ListGrants",
+			Handler:    _DelegationService_ListGrants_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

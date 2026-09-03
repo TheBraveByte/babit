@@ -199,6 +199,94 @@ func (x *GetInclusionProofResponse) GetProof() *Proof {
 	return nil
 }
 
+type ListEventsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListEventsRequest) Reset() {
+	*x = ListEventsRequest{}
+	mi := &file_solari_ledger_v1_ledger_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListEventsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListEventsRequest) ProtoMessage() {}
+
+func (x *ListEventsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_ledger_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListEventsRequest.ProtoReflect.Descriptor instead.
+func (*ListEventsRequest) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_ledger_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ListEventsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type ListEventsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Events        []*ActionEvent         `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListEventsResponse) Reset() {
+	*x = ListEventsResponse{}
+	mi := &file_solari_ledger_v1_ledger_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListEventsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListEventsResponse) ProtoMessage() {}
+
+func (x *ListEventsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_ledger_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListEventsResponse.ProtoReflect.Descriptor instead.
+func (*ListEventsResponse) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_ledger_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ListEventsResponse) GetEvents() []*ActionEvent {
+	if x != nil {
+		return x.Events
+	}
+	return nil
+}
+
 var File_solari_ledger_v1_ledger_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_ledger_proto_rawDesc = "" +
@@ -211,10 +299,17 @@ const file_solari_ledger_v1_ledger_proto_rawDesc = "" +
 	"\x18GetInclusionProofRequest\x12\x19\n" +
 	"\bevent_id\x18\x01 \x01(\tR\aeventId\"J\n" +
 	"\x19GetInclusionProofResponse\x12-\n" +
-	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof2\xe5\x02\n" +
+	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof\")\n" +
+	"\x11ListEventsRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"K\n" +
+	"\x12ListEventsResponse\x125\n" +
+	"\x06events\x18\x01 \x03(\v2\x1d.solari.ledger.v1.ActionEventR\x06events2\x8c\x04\n" +
 	"\rLedgerService\x12\x8f\x01\n" +
 	"\bGetEvent\x12!.solari.ledger.v1.GetEventRequest\x1a\".solari.ledger.v1.GetEventResponse\"<\x92A\x1c\x12\x1aRead a sealed action event\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/events/{event_id}\x12\xc1\x01\n" +
-	"\x11GetInclusionProof\x12*.solari.ledger.v1.GetInclusionProofRequest\x1a+.solari.ledger.v1.GetInclusionProofResponse\"S\x92A-\x12+Build an offline-verifiable inclusion proof\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/events/{event_id}:proofB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\x11GetInclusionProof\x12*.solari.ledger.v1.GetInclusionProofRequest\x1a+.solari.ledger.v1.GetInclusionProofResponse\"S\x92A-\x12+Build an offline-verifiable inclusion proof\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/events/{event_id}:proof\x12\xa4\x01\n" +
+	"\n" +
+	"ListEvents\x12#.solari.ledger.v1.ListEventsRequest\x1a$.solari.ledger.v1.ListEventsResponse\"K\x92A6\x124List recent action events for the authenticated user\x82\xd3\xe4\x93\x02\f\x12\n" +
+	"/v1/eventsB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_ledger_proto_rawDescOnce sync.Once
@@ -228,27 +323,32 @@ func file_solari_ledger_v1_ledger_proto_rawDescGZIP() []byte {
 	return file_solari_ledger_v1_ledger_proto_rawDescData
 }
 
-var file_solari_ledger_v1_ledger_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_solari_ledger_v1_ledger_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_solari_ledger_v1_ledger_proto_goTypes = []any{
 	(*GetEventRequest)(nil),           // 0: solari.ledger.v1.GetEventRequest
 	(*GetEventResponse)(nil),          // 1: solari.ledger.v1.GetEventResponse
 	(*GetInclusionProofRequest)(nil),  // 2: solari.ledger.v1.GetInclusionProofRequest
 	(*GetInclusionProofResponse)(nil), // 3: solari.ledger.v1.GetInclusionProofResponse
-	(*ActionEvent)(nil),               // 4: solari.ledger.v1.ActionEvent
-	(*Proof)(nil),                     // 5: solari.ledger.v1.Proof
+	(*ListEventsRequest)(nil),         // 4: solari.ledger.v1.ListEventsRequest
+	(*ListEventsResponse)(nil),        // 5: solari.ledger.v1.ListEventsResponse
+	(*ActionEvent)(nil),               // 6: solari.ledger.v1.ActionEvent
+	(*Proof)(nil),                     // 7: solari.ledger.v1.Proof
 }
 var file_solari_ledger_v1_ledger_proto_depIdxs = []int32{
-	4, // 0: solari.ledger.v1.GetEventResponse.event:type_name -> solari.ledger.v1.ActionEvent
-	5, // 1: solari.ledger.v1.GetInclusionProofResponse.proof:type_name -> solari.ledger.v1.Proof
-	0, // 2: solari.ledger.v1.LedgerService.GetEvent:input_type -> solari.ledger.v1.GetEventRequest
-	2, // 3: solari.ledger.v1.LedgerService.GetInclusionProof:input_type -> solari.ledger.v1.GetInclusionProofRequest
-	1, // 4: solari.ledger.v1.LedgerService.GetEvent:output_type -> solari.ledger.v1.GetEventResponse
-	3, // 5: solari.ledger.v1.LedgerService.GetInclusionProof:output_type -> solari.ledger.v1.GetInclusionProofResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	6, // 0: solari.ledger.v1.GetEventResponse.event:type_name -> solari.ledger.v1.ActionEvent
+	7, // 1: solari.ledger.v1.GetInclusionProofResponse.proof:type_name -> solari.ledger.v1.Proof
+	6, // 2: solari.ledger.v1.ListEventsResponse.events:type_name -> solari.ledger.v1.ActionEvent
+	0, // 3: solari.ledger.v1.LedgerService.GetEvent:input_type -> solari.ledger.v1.GetEventRequest
+	2, // 4: solari.ledger.v1.LedgerService.GetInclusionProof:input_type -> solari.ledger.v1.GetInclusionProofRequest
+	4, // 5: solari.ledger.v1.LedgerService.ListEvents:input_type -> solari.ledger.v1.ListEventsRequest
+	1, // 6: solari.ledger.v1.LedgerService.GetEvent:output_type -> solari.ledger.v1.GetEventResponse
+	3, // 7: solari.ledger.v1.LedgerService.GetInclusionProof:output_type -> solari.ledger.v1.GetInclusionProofResponse
+	5, // 8: solari.ledger.v1.LedgerService.ListEvents:output_type -> solari.ledger.v1.ListEventsResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_solari_ledger_v1_ledger_proto_init() }
@@ -263,7 +363,7 @@ func file_solari_ledger_v1_ledger_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_solari_ledger_v1_ledger_proto_rawDesc), len(file_solari_ledger_v1_ledger_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -431,6 +431,94 @@ func (x *RevokeResponse) GetRevoked() bool {
 	return false
 }
 
+type ListGrantsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListGrantsRequest) Reset() {
+	*x = ListGrantsRequest{}
+	mi := &file_solari_ledger_v1_delegation_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListGrantsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListGrantsRequest) ProtoMessage() {}
+
+func (x *ListGrantsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_delegation_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListGrantsRequest.ProtoReflect.Descriptor instead.
+func (*ListGrantsRequest) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_delegation_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ListGrantsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type ListGrantsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Grants        []*Grant               `protobuf:"bytes,1,rep,name=grants,proto3" json:"grants,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListGrantsResponse) Reset() {
+	*x = ListGrantsResponse{}
+	mi := &file_solari_ledger_v1_delegation_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListGrantsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListGrantsResponse) ProtoMessage() {}
+
+func (x *ListGrantsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_delegation_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListGrantsResponse.ProtoReflect.Descriptor instead.
+func (*ListGrantsResponse) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_delegation_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ListGrantsResponse) GetGrants() []*Grant {
+	if x != nil {
+		return x.Grants
+	}
+	return nil
+}
+
 var File_solari_ledger_v1_delegation_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
@@ -459,13 +547,20 @@ const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
 	"\bgrant_id\x18\x01 \x01(\tR\agrantId\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\"*\n" +
 	"\x0eRevokeResponse\x12\x18\n" +
-	"\arevoked\x18\x01 \x01(\bR\arevoked2\xb4\x05\n" +
+	"\arevoked\x18\x01 \x01(\bR\arevoked\")\n" +
+	"\x11ListGrantsRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"E\n" +
+	"\x12ListGrantsResponse\x12/\n" +
+	"\x06grants\x18\x01 \x03(\v2\x17.solari.ledger.v1.GrantR\x06grants2\xd4\x06\n" +
 	"\x11DelegationService\x12\xac\x01\n" +
 	"\x0eIssueRootGrant\x12'.solari.ledger.v1.IssueRootGrantRequest\x1a(.solari.ledger.v1.IssueRootGrantResponse\"G\x92A*\x12(Issue a root grant for a human principal\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/grants:root\x12\x9f\x01\n" +
 	"\bDelegate\x12!.solari.ledger.v1.DelegateRequest\x1a\".solari.ledger.v1.DelegateResponse\"L\x92A4\x122Delegate scoped authority to an agent or sub-agent\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
 	"/v1/grants\x12\xaf\x01\n" +
 	"\vVerifyChain\x12$.solari.ledger.v1.VerifyChainRequest\x1a%.solari.ledger.v1.VerifyChainResponse\"S\x92A,\x12*Verify a delegation chain back to its root\x82\xd3\xe4\x93\x02\x1e\x12\x1c/v1/grants/{grant_id}:verify\x12\x9b\x01\n" +
-	"\x06Revoke\x12\x1f.solari.ledger.v1.RevokeRequest\x1a .solari.ledger.v1.RevokeResponse\"N\x92A$\x12\"Revoke a grant and its descendants\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/grants/{grant_id}/revokeB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
+	"\x06Revoke\x12\x1f.solari.ledger.v1.RevokeRequest\x1a .solari.ledger.v1.RevokeResponse\"N\x92A$\x12\"Revoke a grant and its descendants\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/grants/{grant_id}/revoke\x12\x9d\x01\n" +
+	"\n" +
+	"ListGrants\x12#.solari.ledger.v1.ListGrantsRequest\x1a$.solari.ledger.v1.ListGrantsResponse\"D\x92A/\x12-List recent grants for the authenticated user\x82\xd3\xe4\x93\x02\f\x12\n" +
+	"/v1/grantsB4Z2github.com/babit/nal/gen/solari/ledger/v1;ledgerv1b\x06proto3"
 
 var (
 	file_solari_ledger_v1_delegation_proto_rawDescOnce sync.Once
@@ -479,7 +574,7 @@ func file_solari_ledger_v1_delegation_proto_rawDescGZIP() []byte {
 	return file_solari_ledger_v1_delegation_proto_rawDescData
 }
 
-var file_solari_ledger_v1_delegation_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_solari_ledger_v1_delegation_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_solari_ledger_v1_delegation_proto_goTypes = []any{
 	(*IssueRootGrantRequest)(nil),  // 0: solari.ledger.v1.IssueRootGrantRequest
 	(*IssueRootGrantResponse)(nil), // 1: solari.ledger.v1.IssueRootGrantResponse
@@ -489,28 +584,33 @@ var file_solari_ledger_v1_delegation_proto_goTypes = []any{
 	(*VerifyChainResponse)(nil),    // 5: solari.ledger.v1.VerifyChainResponse
 	(*RevokeRequest)(nil),          // 6: solari.ledger.v1.RevokeRequest
 	(*RevokeResponse)(nil),         // 7: solari.ledger.v1.RevokeResponse
-	(*Scope)(nil),                  // 8: solari.ledger.v1.Scope
-	(*Grant)(nil),                  // 9: solari.ledger.v1.Grant
+	(*ListGrantsRequest)(nil),      // 8: solari.ledger.v1.ListGrantsRequest
+	(*ListGrantsResponse)(nil),     // 9: solari.ledger.v1.ListGrantsResponse
+	(*Scope)(nil),                  // 10: solari.ledger.v1.Scope
+	(*Grant)(nil),                  // 11: solari.ledger.v1.Grant
 }
 var file_solari_ledger_v1_delegation_proto_depIdxs = []int32{
-	8, // 0: solari.ledger.v1.IssueRootGrantRequest.scope:type_name -> solari.ledger.v1.Scope
-	9, // 1: solari.ledger.v1.IssueRootGrantResponse.grant:type_name -> solari.ledger.v1.Grant
-	8, // 2: solari.ledger.v1.DelegateRequest.scope:type_name -> solari.ledger.v1.Scope
-	9, // 3: solari.ledger.v1.DelegateResponse.grant:type_name -> solari.ledger.v1.Grant
-	9, // 4: solari.ledger.v1.VerifyChainResponse.chain:type_name -> solari.ledger.v1.Grant
-	0, // 5: solari.ledger.v1.DelegationService.IssueRootGrant:input_type -> solari.ledger.v1.IssueRootGrantRequest
-	2, // 6: solari.ledger.v1.DelegationService.Delegate:input_type -> solari.ledger.v1.DelegateRequest
-	4, // 7: solari.ledger.v1.DelegationService.VerifyChain:input_type -> solari.ledger.v1.VerifyChainRequest
-	6, // 8: solari.ledger.v1.DelegationService.Revoke:input_type -> solari.ledger.v1.RevokeRequest
-	1, // 9: solari.ledger.v1.DelegationService.IssueRootGrant:output_type -> solari.ledger.v1.IssueRootGrantResponse
-	3, // 10: solari.ledger.v1.DelegationService.Delegate:output_type -> solari.ledger.v1.DelegateResponse
-	5, // 11: solari.ledger.v1.DelegationService.VerifyChain:output_type -> solari.ledger.v1.VerifyChainResponse
-	7, // 12: solari.ledger.v1.DelegationService.Revoke:output_type -> solari.ledger.v1.RevokeResponse
-	9, // [9:13] is the sub-list for method output_type
-	5, // [5:9] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	10, // 0: solari.ledger.v1.IssueRootGrantRequest.scope:type_name -> solari.ledger.v1.Scope
+	11, // 1: solari.ledger.v1.IssueRootGrantResponse.grant:type_name -> solari.ledger.v1.Grant
+	10, // 2: solari.ledger.v1.DelegateRequest.scope:type_name -> solari.ledger.v1.Scope
+	11, // 3: solari.ledger.v1.DelegateResponse.grant:type_name -> solari.ledger.v1.Grant
+	11, // 4: solari.ledger.v1.VerifyChainResponse.chain:type_name -> solari.ledger.v1.Grant
+	11, // 5: solari.ledger.v1.ListGrantsResponse.grants:type_name -> solari.ledger.v1.Grant
+	0,  // 6: solari.ledger.v1.DelegationService.IssueRootGrant:input_type -> solari.ledger.v1.IssueRootGrantRequest
+	2,  // 7: solari.ledger.v1.DelegationService.Delegate:input_type -> solari.ledger.v1.DelegateRequest
+	4,  // 8: solari.ledger.v1.DelegationService.VerifyChain:input_type -> solari.ledger.v1.VerifyChainRequest
+	6,  // 9: solari.ledger.v1.DelegationService.Revoke:input_type -> solari.ledger.v1.RevokeRequest
+	8,  // 10: solari.ledger.v1.DelegationService.ListGrants:input_type -> solari.ledger.v1.ListGrantsRequest
+	1,  // 11: solari.ledger.v1.DelegationService.IssueRootGrant:output_type -> solari.ledger.v1.IssueRootGrantResponse
+	3,  // 12: solari.ledger.v1.DelegationService.Delegate:output_type -> solari.ledger.v1.DelegateResponse
+	5,  // 13: solari.ledger.v1.DelegationService.VerifyChain:output_type -> solari.ledger.v1.VerifyChainResponse
+	7,  // 14: solari.ledger.v1.DelegationService.Revoke:output_type -> solari.ledger.v1.RevokeResponse
+	9,  // 15: solari.ledger.v1.DelegationService.ListGrants:output_type -> solari.ledger.v1.ListGrantsResponse
+	11, // [11:16] is the sub-list for method output_type
+	6,  // [6:11] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_solari_ledger_v1_delegation_proto_init() }
@@ -525,7 +625,7 @@ func file_solari_ledger_v1_delegation_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_solari_ledger_v1_delegation_proto_rawDesc), len(file_solari_ledger_v1_delegation_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

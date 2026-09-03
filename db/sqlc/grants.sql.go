@@ -107,6 +107,64 @@ func (q *Queries) IsRevoked(ctx context.Context, grantID string) (bool, error) {
 	return exists, err
 }
 
+const listGrantsByUser = `-- name: ListGrantsByUser :many
+SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities,
+       resource_globs, max_value_cents, max_depth, expires_at, parent_signature
+FROM grants
+WHERE user_id = $1
+ORDER BY grant_id DESC
+LIMIT $2
+`
+
+type ListGrantsByUserParams struct {
+	UserID pgtype.UUID
+	Limit  int32
+}
+
+type ListGrantsByUserRow struct {
+	GrantID         string
+	ParentGrantID   string
+	PrincipalID     string
+	SubjectID       string
+	Capabilities    []string
+	ResourceGlobs   []string
+	MaxValueCents   int64
+	MaxDepth        int32
+	ExpiresAt       pgtype.Timestamptz
+	ParentSignature []byte
+}
+
+func (q *Queries) ListGrantsByUser(ctx context.Context, arg ListGrantsByUserParams) ([]ListGrantsByUserRow, error) {
+	rows, err := q.db.Query(ctx, listGrantsByUser, arg.UserID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListGrantsByUserRow{}
+	for rows.Next() {
+		var i ListGrantsByUserRow
+		if err := rows.Scan(
+			&i.GrantID,
+			&i.ParentGrantID,
+			&i.PrincipalID,
+			&i.SubjectID,
+			&i.Capabilities,
+			&i.ResourceGlobs,
+			&i.MaxValueCents,
+			&i.MaxDepth,
+			&i.ExpiresAt,
+			&i.ParentSignature,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const putGrant = `-- name: PutGrant :exec
 INSERT INTO grants (
     grant_id, parent_grant_id, principal_id, subject_id, capabilities,

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/core/auth"
 	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
 )
@@ -63,4 +64,15 @@ func (l *Ledger) GetInclusionProof(ctx context.Context, req *ledgerv1.GetInclusi
 		DelegationChain: chain,
 	}
 	return &ledgerv1.GetInclusionProofResponse{Proof: proof}, nil
+}
+
+func (l *Ledger) ListEvents(ctx context.Context, req *ledgerv1.ListEventsRequest) (*ledgerv1.ListEventsResponse, error) {
+	if auth.UserID(ctx) == "" {
+		return nil, errs.New(errs.Unauthenticated, "not authenticated")
+	}
+	events, err := l.events.List(ctx, req.GetLimit())
+	if err != nil {
+		return nil, err
+	}
+	return &ledgerv1.ListEventsResponse{Events: events}, nil
 }

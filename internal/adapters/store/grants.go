@@ -81,6 +81,21 @@ func (s *grantStore) IsRevoked(ctx context.Context, grantID string) (bool, error
 	return revoked, nil
 }
 
+func (s *grantStore) List(ctx context.Context, limit int32) ([]*ledgerv1.Grant, error) {
+	if limit <= 0 {
+		limit = 50
+	}
+	rows, err := s.q.ListGrantsByUser(ctx, storedb.ListGrantsByUserParams{UserID: ctxUserUUID(ctx), Limit: limit})
+	if err != nil {
+		return nil, opErr(err, "list grants")
+	}
+	out := make([]*ledgerv1.Grant, 0, len(rows))
+	for _, row := range rows {
+		out = append(out, grantFromListRow(row))
+	}
+	return out, nil
+}
+
 func grantFromModel(row storedb.Grant) *ledgerv1.Grant {
 	return buildGrant(row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
 		row.Capabilities, row.ResourceGlobs, row.MaxValueCents, row.MaxDepth,
@@ -88,6 +103,12 @@ func grantFromModel(row storedb.Grant) *ledgerv1.Grant {
 }
 
 func grantFromChainRow(row storedb.GrantChainRow) *ledgerv1.Grant {
+	return buildGrant(row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
+		row.Capabilities, row.ResourceGlobs, row.MaxValueCents, row.MaxDepth,
+		fromTimestamptz(row.ExpiresAt), row.ParentSignature)
+}
+
+func grantFromListRow(row storedb.ListGrantsByUserRow) *ledgerv1.Grant {
 	return buildGrant(row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
 		row.Capabilities, row.ResourceGlobs, row.MaxValueCents, row.MaxDepth,
 		fromTimestamptz(row.ExpiresAt), row.ParentSignature)

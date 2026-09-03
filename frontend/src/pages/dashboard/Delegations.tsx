@@ -1,16 +1,14 @@
-import { useState } from "react";
-import { StatusPill, Copyable, Button, Field, TextInput, Error, PageHeader } from "@/lib/ui";
-import { IconCheck, IconShieldCheck } from "@/lib/icons";
+import { useEffect, useState } from "react";
+import { PageHeader, Card, StatusPill, Button, Error } from "@/lib/ui";
+import { IconShieldCheck, IconCheck } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { AuthorityGraph, chainToGraph, type GrantRole } from "@/components/viz/AuthorityGraph";
-import { useRecentLookups } from "@/lib/useRecentLookups";
-import { RecentTable } from "@/components/RecentTable";
+import { Suspense } from "react";
 
 type VerifyChain = components["schemas"]["v1VerifyChainResponse"];
 type Grant = components["schemas"]["v1Grant"];
 
-/** Map a real verified Grant[] chain (root -> leaf) onto the AuthorityGraph. */
 function grantsToGraph(chain: Grant[]) {
   return chainToGraph(
     chain.map((g, i) => {
@@ -29,409 +27,234 @@ function grantsToGraph(chain: Grant[]) {
   );
 }
 
-type Mode = "verify" | "issue-root" | "delegate" | "revoke";
-
 export function Delegations() {
-  const [mode, setMode] = useState<Mode>("verify");
+  const [grants, setGrants] = useState<Grant[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Grant | null>(null);
+  const [chain, setChain] = useState<VerifyChain | null>(null);
+  const [chainLoading, setChainLoading] = useState(false);
+  const [chainError, setChainError] = useState<string | null>(null);
+  const [revoking, setRevoking] = useState(false);
+  const [revokeError, setRevokeError] = useState<string | null>(null);
+  const [revoked, setRevoked] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      setLoading(true);
+      const res = await api.GET("/v1/grants", { params: { query: { limit: 50 } } });
+      if (!active) return;
+      if (res.error) setError(errText(res.error));
+      else setGrants(res.data?.grants ?? []);
+      setLoading(false);
+    })();
+    return () => { active = false; };
+  }, []);
+
+  // Verify chain when a grant is selected
+  useEffect(() => {
+    if (!selected) return;
+    let active = true;
+    setChain(null);
+    setChainError(null);
+    setChainLoading(true);
+    setRevoked(false);
+    setRevokeError(null);
+    (async () => {
+      const res = await api.GET("/v1/grants/{grant_id}:verify", {
+        params: { path: { grant_id: selected.grant_id! } },
+      });
+      if (!active) return;
+      if (res.error || !res.data) setChainError(errText(res.error) || "Grant not found.");
+      else setChain(res.data);
+      setChainLoading(false);
+    })();
+    return () => { active = false; };
+  }, [selected]);
+
+  async function revokeGrant() {
+    if (!selected) return;
+    setRevoking(true);
+    setRevokeError(null);
+    const res = await api.POST("/v1/grants/{grant_id}/revoke", {
+      params: { path: { grant_id: selected.grant_id! } },
+      body: {},
+    });
+    if (res.error || !res.data) setRevokeError(errText(res.error) || "Failed to revoke.");
+    else setRevoked(res.data.revoked ?? false);
+    setRevoking(false);
+  }
 
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
         title="Delegations"
-        description="Issue and verify capability grants. Authority attenuates monotonically from a root principal down each signed delegation."
+        description="Issue and verify capability grants. Authority attenuates monotonically from a root principal down each signed delegation. Click a grant to verify its chain."
       />
 
-      <div
-        className="inline-flex items-center gap-1 p-1 rounded-babit"
-        style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
-      >
-        {([
-          ["verify", "Verify Chain"],
-          ["issue-root", "Issue Root"],
-          ["delegate", "Delegate"],
-          ["revoke", "Revoke"],
-        ] as [Mode, string][]).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => setMode(key)}
-            className="px-3 py-1.5 rounded-babit-sm text-xs font-medium transition-colors cursor-pointer"
-            style={{
-              backgroundColor: mode === key ? "var(--fg)" : "transparent",
-              color: mode === key ? "var(--surface)" : "var(--muted)",
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {mode === "verify" && <VerifyChainPanel />}
-      {mode === "issue-root" && <IssueRootPanel />}
-      {mode === "delegate" && <DelegatePanel />}
-      {mode === "revoke" && <RevokePanel />}
-    </div>
-  );
-}
-
-function Panel({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="rounded-babit-lg p-6 shadow-xs space-y-5"
-      style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function GrantCard({ grant, depth }: { grant: Grant; depth: number }) {
-  return (
-    <div
-      className="p-3 rounded-babit flex items-center justify-between font-mono text-xs"
-      style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
-    >
-      <div>
-        <div className="text-[11px]" style={{ color: "var(--fg)" }}>
-          <span className="font-semibold">{grant.principal_id || "?"}</span> → <span>{grant.subject_id || "?"}</span>
-        </div>
-        <span className="text-[10px]" style={{ color: "var(--muted)" }}>Grant: {grant.grant_id || "—"}</span>
-      </div>
-      <span
-        className="text-[10px] font-bold px-2 py-0.5 rounded-babit-sm"
-        style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--muted)" }}
-      >
-        Depth #{depth}
-      </span>
-    </div>
-  );
-}
-
-function VerifyChainPanel() {
-  const [grantId, setGrantId] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<VerifyChain | null>(null);
-  const { entries, addLookup } = useRecentLookups("grants");
-
-  async function run(e: React.FormEvent) {
-    e.preventDefault();
-    if (!grantId.trim()) return;
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    try {
-      const res = await api.GET("/v1/grants/{grant_id}:verify", {
-        params: { path: { grant_id: grantId.trim() } },
-      });
-      if (res.error || !res.data) setError(errText(res.error) || "Grant not found.");
-      else {
-        setResult(res.data);
-        const chain = res.data.chain ?? [];
-        const leaf = chain[chain.length - 1];
-        addLookup(grantId.trim(), `${leaf?.subject_id ?? "grant"} · ${res.data.valid ? "VALID" : "INVALID"}`);
-      }
-    } catch (err) {
-      setError(errText(err));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const selectRecent = (id: string) => {
-    setGrantId(id);
-    setTimeout(() => {
-      const form = document.querySelector("form");
-      if (form) form.requestSubmit();
-    }, 50);
-  };
-
-  return (
-    <Panel>
-      <form onSubmit={run} className="space-y-3">
-        <label className="text-xs font-medium" style={{ color: "var(--fg)" }}>Verify a grant and its chain to root</label>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <TextInput value={grantId} onChange={(e) => setGrantId(e.target.value)} placeholder="e.g. BAL-417849" className="flex-1" />
-          <Button type="submit" variant="primary" size="md" loading={loading} disabled={!grantId.trim()}>
-            <IconShieldCheck className="w-4 h-4" />
-            <span>Verify</span>
-          </Button>
-        </div>
-      </form>
-
       {error && <Error message={error} />}
 
-      {result && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-            <span className="text-xs font-semibold uppercase" style={{ color: "var(--fg)" }}>Authority Chain</span>
-            <StatusPill ok={result.valid === true} label={result.valid ? "VALID" : "INVALID"} />
+      {selected ? (
+        <Card
+          title={selected.grant_id}
+          subtitle={`${selected.principal_id} → ${selected.subject_id}`}
+          action={<Button variant="secondary" size="sm" onClick={() => setSelected(null)}>Back</Button>}
+        >
+          <div className="space-y-5">
+            <div className="h-px accent-hairline -mx-5 -mt-5" />
+
+            {/* Grant details */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>Principal</span>
+                <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>{selected.principal_id || "—"}</span>
+              </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>Subject</span>
+                <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>{selected.subject_id || "—"}</span>
+              </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>Parent Grant</span>
+                <span className="font-mono text-xs" style={{ color: "var(--fg)" }}>{selected.parent_grant_id || "root"}</span>
+              </div>
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider block mb-1" style={{ color: "var(--muted)" }}>Capabilities</span>
+                <span className="font-mono text-xs" style={{ color: "var(--fg)" }}>{(selected.capabilities ?? []).join(", ") || "—"}</span>
+              </div>
+            </div>
+
+            {/* Chain verification */}
+            <div className="pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+              <div className="flex items-center justify-between pb-2">
+                <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--fg)" }}>Authority Chain</span>
+                {chainLoading ? (
+                  <span className="text-xs" style={{ color: "var(--muted)" }}>Verifying…</span>
+                ) : chain ? (
+                  <StatusPill ok={chain.valid === true} label={chain.valid ? "VALID" : "INVALID"} />
+                ) : chainError ? (
+                  <StatusPill status="PENDING" label="ERROR" />
+                ) : null}
+              </div>
+
+              {chainError && <p className="text-xs" style={{ color: "var(--muted)" }}>{chainError}</p>}
+
+              {chain && (chain.chain ?? []).length > 0 && (
+                <>
+                  <div className="rounded-babit overflow-hidden relative glass mb-3">
+                    <div className="h-px accent-hairline" />
+                    <Suspense fallback={<div style={{ height: 300 }} />}>
+                      <AuthorityGraph
+                        nodes={grantsToGraph(chain.chain!).nodes}
+                        edges={grantsToGraph(chain.chain!).edges}
+                        height={Math.min(560, Math.max(240, chain.chain!.length * 132))}
+                        interactive
+                      />
+                    </Suspense>
+                  </div>
+                  <div className="space-y-2">
+                    {chain.chain!.map((g, i) => (
+                      <div
+                        key={g.grant_id || i}
+                        className="p-3 rounded-babit flex items-center justify-between font-mono text-xs"
+                        style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
+                      >
+                        <div>
+                          <span className="text-[11px]" style={{ color: "var(--fg)" }}>
+                            <span className="font-semibold">{g.principal_id || "?"}</span> → <span>{g.subject_id || "?"}</span>
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-babit-sm" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--muted)" }}>
+                          Depth #{i + 1}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  {chain.reason && (
+                    <div
+                      className="p-3 rounded-babit text-xs font-mono mt-3"
+                      style={{
+                        color: "var(--color-failed)",
+                        backgroundColor: "color-mix(in srgb, var(--color-failed) 10%, transparent)",
+                        border: "1px solid color-mix(in srgb, var(--color-failed) 30%, transparent)",
+                      }}
+                    >
+                      <strong>Reason:</strong> {chain.reason}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Revoke action */}
+            <div className="pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+              {revoked ? (
+                <div
+                  className="p-3 rounded-babit flex items-center gap-2 text-xs font-mono"
+                  style={{
+                    backgroundColor: "var(--color-verified-bg)",
+                    border: "1px solid var(--color-verified-border)",
+                    color: "var(--color-verified)",
+                  }}
+                >
+                  <IconCheck className="w-3.5 h-3.5" />
+                  <span>Grant revoked. All authority beneath it is now invalid.</span>
+                </div>
+              ) : (
+                <Button variant="danger" size="md" loading={revoking} onClick={revokeGrant}>
+                  Revoke this grant
+                </Button>
+              )}
+              {revokeError && <div className="mt-3"><Error message={revokeError} /></div>}
+            </div>
           </div>
-          {(result.chain ?? []).length === 0 ? (
-            <p className="text-xs font-mono" style={{ color: "var(--muted)" }}>Chain empty.</p>
+        </Card>
+      ) : (
+        <Card>
+          <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
+          {loading ? (
+            <p className="text-sm" style={{ color: "var(--muted)" }}>Loading grants…</p>
+          ) : grants.length === 0 ? (
+            <p className="text-sm" style={{ color: "var(--muted)" }}>No grants issued yet.</p>
           ) : (
-            <>
-              {/* Live signed delegation DAG from the verified chain */}
-              <div className="rounded-babit overflow-hidden relative glass">
-                <div className="h-px accent-hairline" />
-                {(() => {
-                  const g = grantsToGraph(result.chain!);
-                  return (
-                    <AuthorityGraph
-                      nodes={g.nodes}
-                      edges={g.edges}
-                      height={Math.min(560, Math.max(240, result.chain!.length * 132))}
-                      interactive
-                    />
-                  );
-                })()}
-              </div>
-              <div className="space-y-2">
-                {result.chain!.map((g, i) => <GrantCard key={g.grant_id || i} grant={g} depth={i + 1} />)}
-              </div>
-            </>
-          )}
-          {result.reason && (
-            <div
-              className="p-3 rounded-babit text-xs font-mono"
-              style={{
-                color: "var(--color-failed)",
-                backgroundColor: "color-mix(in srgb, var(--color-failed) 10%, transparent)",
-                border: "1px solid color-mix(in srgb, var(--color-failed) 30%, transparent)",
-              }}
-            >
-              <strong>Reason:</strong> {result.reason}
+            <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
+              <table className="w-full text-left">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Grant ID</th>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Principal → Subject</th>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Capabilities</th>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right" style={{ color: "var(--muted)" }}>Verify</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {grants.map((g, i) => (
+                    <tr
+                      key={g.grant_id || i}
+                      onClick={() => setSelected(g)}
+                      className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
+                      style={{ borderBottom: i < grants.length - 1 ? "1px solid var(--border-subtle)" : undefined }}
+                    >
+                      <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>{g.grant_id}</td>
+                      <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>
+                        {g.principal_id} → {g.subject_id}
+                      </td>
+                      <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>
+                        {(g.capabilities ?? []).slice(0, 3).join(", ")}
+                      </td>
+                      <td className="px-3 py-2.5 text-right">
+                        <span className="text-xs font-medium inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
+                          <IconShieldCheck className="w-3 h-3" /> Verify
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
-        </div>
+        </Card>
       )}
-
-      {!result && !error && (
-        <div className="space-y-3">
-          <div>
-            <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>Recent grants</span>
-            <p className="text-[11px] mt-0.5" style={{ color: "var(--muted)" }}>Click a row to verify its chain.</p>
-          </div>
-          <RecentTable entries={entries} onSelect={selectRecent} emptyLabel="Look up a grant ID above to start building history." />
-        </div>
-      )}
-    </Panel>
-  );
-}
-
-function IssueRootPanel() {
-  const [principalId, setPrincipalId] = useState("");
-  const [maxDepth, setMaxDepth] = useState("3");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [grant, setGrant] = useState<Grant | null>(null);
-
-  async function run(e: React.FormEvent) {
-    e.preventDefault();
-    if (!principalId.trim()) return;
-    setLoading(true);
-    setError(null);
-    setGrant(null);
-    try {
-      const res = await api.POST("/v1/grants:root", {
-        body: {
-          principal_id: principalId.trim(),
-          scope: { max_depth: Number(maxDepth) || 1 },
-        },
-      });
-      if (res.error || !res.data?.grant) setError(errText(res.error) || "Failed to issue root grant.");
-      else setGrant(res.data.grant);
-    } catch (err) {
-      setError(errText(err));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <Panel>
-      <form onSubmit={run} className="space-y-4">
-        <div className="pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-          <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Issue Root Grant</h2>
-          <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>Establish a top-level authority for a human principal.</p>
-        </div>
-        <Field label="Principal ID">
-          <TextInput value={principalId} onChange={(e) => setPrincipalId(e.target.value)} placeholder="e.g. usr_alice" required />
-        </Field>
-        <Field label="Max Delegation Depth">
-          <TextInput type="number" min={1} value={maxDepth} onChange={(e) => setMaxDepth(e.target.value)} />
-        </Field>
-        <Button type="submit" variant="primary" size="md" loading={loading} disabled={!principalId.trim()}>
-          Issue Root Grant
-        </Button>
-      </form>
-
-      {error && <Error message={error} />}
-      {grant && <IssuedGrant grant={grant} />}
-    </Panel>
-  );
-}
-
-function DelegatePanel() {
-  const [parentGrantId, setParentGrantId] = useState("");
-  const [subjectId, setSubjectId] = useState("");
-  const [capabilities, setCapabilities] = useState("");
-  const [resourceGlobs, setResourceGlobs] = useState("");
-  const [maxValueCents, setMaxValueCents] = useState("");
-  const [maxDepth, setMaxDepth] = useState("2");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [grant, setGrant] = useState<Grant | null>(null);
-
-  async function run(e: React.FormEvent) {
-    e.preventDefault();
-    if (!parentGrantId.trim() || !subjectId.trim()) return;
-    setLoading(true);
-    setError(null);
-    setGrant(null);
-    try {
-      const res = await api.POST("/v1/grants", {
-        body: {
-          parent_grant_id: parentGrantId.trim(),
-          subject_id: subjectId.trim(),
-          capabilities: capabilities.split(",").map((c) => c.trim()).filter(Boolean),
-          scope: {
-            resource_globs: resourceGlobs.split(",").map((g) => g.trim()).filter(Boolean),
-            ...(maxValueCents.trim() ? { max_value_cents: maxValueCents.trim() } : {}),
-            max_depth: Number(maxDepth) || 1,
-          },
-        },
-      });
-      if (res.error || !res.data?.grant) setError(errText(res.error) || "Failed to delegate grant.");
-      else setGrant(res.data.grant);
-    } catch (err) {
-      setError(errText(err));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <Panel>
-      <form onSubmit={run} className="space-y-4">
-        <div className="pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-          <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Delegate Grant</h2>
-          <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>Attenuate authority from a parent grant to a subject.</p>
-        </div>
-        <Field label="Parent Grant ID">
-          <TextInput value={parentGrantId} onChange={(e) => setParentGrantId(e.target.value)} placeholder="e.g. BAL-417849" required />
-        </Field>
-        <Field label="Subject ID">
-          <TextInput value={subjectId} onChange={(e) => setSubjectId(e.target.value)} placeholder="e.g. agt_shopper" required />
-        </Field>
-        <Field label="Capabilities" hint="comma separated">
-          <TextInput value={capabilities} onChange={(e) => setCapabilities(e.target.value)} placeholder="browser.click, browser.type" />
-        </Field>
-        <Field label="Resource Globs" hint="comma separated">
-          <TextInput value={resourceGlobs} onChange={(e) => setResourceGlobs(e.target.value)} placeholder="https://shop.example.com/*" />
-        </Field>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Max Value (cents)">
-            <TextInput type="number" min={0} value={maxValueCents} onChange={(e) => setMaxValueCents(e.target.value)} placeholder="50000" />
-          </Field>
-          <Field label="Max Depth">
-            <TextInput type="number" min={1} value={maxDepth} onChange={(e) => setMaxDepth(e.target.value)} />
-          </Field>
-        </div>
-        <Button type="submit" variant="primary" size="md" loading={loading} disabled={!parentGrantId.trim() || !subjectId.trim()}>
-          Sign &amp; Delegate
-        </Button>
-      </form>
-
-      {error && <Error message={error} />}
-      {grant && <IssuedGrant grant={grant} />}
-    </Panel>
-  );
-}
-
-function RevokePanel() {
-  const [grantId, setGrantId] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [revoked, setRevoked] = useState<boolean | null>(null);
-
-  async function run(e: React.FormEvent) {
-    e.preventDefault();
-    if (!grantId.trim()) return;
-    setLoading(true);
-    setError(null);
-    setRevoked(null);
-    try {
-      const res = await api.POST("/v1/grants/{grant_id}/revoke", {
-        params: { path: { grant_id: grantId.trim() } },
-        body: {},
-      });
-      if (res.error || !res.data) setError(errText(res.error) || "Failed to revoke grant.");
-      else setRevoked(res.data.revoked ?? false);
-    } catch (err) {
-      setError(errText(err));
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <Panel>
-      <form onSubmit={run} className="space-y-4">
-        <div className="pb-2" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-          <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Revoke Grant</h2>
-          <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>Invalidate a grant and every authority delegated beneath it.</p>
-        </div>
-        <Field label="Grant ID">
-          <TextInput value={grantId} onChange={(e) => setGrantId(e.target.value)} placeholder="e.g. BAL-DEL-8921" required />
-        </Field>
-        <Button type="submit" variant="danger" size="md" loading={loading} disabled={!grantId.trim()}>
-          Revoke Grant
-        </Button>
-      </form>
-
-      {error && <Error message={error} />}
-      {revoked !== null && (
-        <div
-          className="p-3 rounded-babit flex items-center gap-2 text-xs font-mono"
-          style={{
-            backgroundColor: revoked ? "var(--color-verified-bg)" : "var(--color-pending-bg)",
-            border: `1px solid ${revoked ? "var(--color-verified-border)" : "var(--color-pending-border)"}`,
-            color: revoked ? "var(--color-verified)" : "var(--color-pending)",
-          }}
-        >
-          <IconCheck className="w-3.5 h-3.5" />
-          <span>{revoked ? "Grant revoked." : "Grant was not revoked (already inactive or not found)."}</span>
-        </div>
-      )}
-    </Panel>
-  );
-}
-
-function IssuedGrant({ grant }: { grant: Grant }) {
-  return (
-    <div className="space-y-3 pt-2" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-      <div className="flex items-center gap-2">
-        <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span>
-        <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>Grant issued</span>
-      </div>
-      <div className="font-mono text-xs space-y-2">
-        <div>
-          <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Grant ID</span>
-          <Copyable value={grant.grant_id || "—"} />
-        </div>
-        {grant.parent_signature && (
-          <div>
-            <span className="text-[10px] uppercase block mb-0.5" style={{ color: "var(--muted)" }}>Parent Signature</span>
-            <span className="text-[11px] break-all block" style={{ color: "var(--muted)" }}>{grant.parent_signature}</span>
-          </div>
-        )}
-        {grant.expires_at && (
-          <div>
-            <span className="text-[10px] uppercase block" style={{ color: "var(--muted)" }}>Expires At</span>
-            <span className="tnum" style={{ color: "var(--fg)" }}>{grant.expires_at}</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

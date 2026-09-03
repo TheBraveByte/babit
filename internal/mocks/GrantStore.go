@@ -240,6 +240,74 @@ func (_c *MockGrantStore_IsRevoked_Call) RunAndReturn(run func(ctx context.Conte
 	return _c
 }
 
+// List provides a mock function for the type MockGrantStore
+func (_mock *MockGrantStore) List(ctx context.Context, limit int32) ([]*ledgerv1.Grant, error) {
+	ret := _mock.Called(ctx, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for List")
+	}
+
+	var r0 []*ledgerv1.Grant
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int32) ([]*ledgerv1.Grant, error)); ok {
+		return returnFunc(ctx, limit)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int32) []*ledgerv1.Grant); ok {
+		r0 = returnFunc(ctx, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*ledgerv1.Grant)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, int32) error); ok {
+		r1 = returnFunc(ctx, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockGrantStore_List_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'List'
+type MockGrantStore_List_Call struct {
+	*mock.Call
+}
+
+// List is a helper method to define mock.On call
+//   - ctx context.Context
+//   - limit int32
+func (_e *MockGrantStore_Expecter) List(ctx any, limit any) *MockGrantStore_List_Call {
+	return &MockGrantStore_List_Call{Call: _e.mock.On("List", ctx, limit)}
+}
+
+func (_c *MockGrantStore_List_Call) Run(run func(ctx context.Context, limit int32)) *MockGrantStore_List_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 int32
+		if args[1] != nil {
+			arg1 = args[1].(int32)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockGrantStore_List_Call) Return(grants []*ledgerv1.Grant, err error) *MockGrantStore_List_Call {
+	_c.Call.Return(grants, err)
+	return _c
+}
+
+func (_c *MockGrantStore_List_Call) RunAndReturn(run func(ctx context.Context, limit int32) ([]*ledgerv1.Grant, error)) *MockGrantStore_List_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Put provides a mock function for the type MockGrantStore
 func (_mock *MockGrantStore) Put(ctx context.Context, grant *ledgerv1.Grant) error {
 	ret := _mock.Called(ctx, grant)

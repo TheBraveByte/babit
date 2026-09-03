@@ -73,6 +73,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List recent action events for the authenticated user */
+        get: operations["LedgerService_ListEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/events/{event_id}": {
         parameters: {
             query?: never;
@@ -114,7 +131,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List recent grants for the authenticated user */
+        get: operations["DelegationService_ListGrants"];
         put?: never;
         /** Delegate scoped authority to an agent or sub-agent */
         post: operations["DelegationService_Delegate"];
@@ -269,7 +287,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List recent capture sessions for the authenticated user */
+        get: operations["CaptureService_ListSessions"];
         put?: never;
         /** Open a capture session bound to a root grant */
         post: operations["CaptureService_BeginSession"];
@@ -605,8 +624,17 @@ export interface components {
         v1ListApiKeysResponse: {
             keys?: components["schemas"]["v1ApiKey"][];
         };
+        v1ListEventsResponse: {
+            events?: components["schemas"]["v1ActionEvent"][];
+        };
+        v1ListGrantsResponse: {
+            grants?: components["schemas"]["v1Grant"][];
+        };
         v1ListProjectsResponse: {
             projects?: components["schemas"]["v1Project"][];
+        };
+        v1ListSessionsResponse: {
+            sessions?: components["schemas"]["v1Session"][];
         };
         /**
          * @example {
@@ -913,6 +941,37 @@ export interface operations {
             };
         };
     };
+    LedgerService_ListEvents: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1ListEventsResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
     LedgerService_GetEvent: {
         parameters: {
             query?: never;
@@ -962,6 +1021,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["v1GetInclusionProofResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    DelegationService_ListGrants: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1ListGrantsResponse"];
                 };
             };
             /** @description An unexpected error response. */
@@ -1319,6 +1409,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["v1VerifyProofResponse"];
+                };
+            };
+            /** @description An unexpected error response. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["rpcStatus"];
+                };
+            };
+        };
+    };
+    CaptureService_ListSessions: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description A successful response. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["v1ListSessionsResponse"];
                 };
             };
             /** @description An unexpected error response. */

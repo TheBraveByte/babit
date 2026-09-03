@@ -185,6 +185,45 @@
                 }
             }
         },
+        "/v1/events": {
+            "get": {
+                "summary": "List recent action events for the authenticated user",
+                "operationId": "LedgerService_ListEvents",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1ListEventsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ]
+            }
+        },
         "/v1/events/{event_id}": {
             "get": {
                 "summary": "Read a sealed action event",
@@ -262,6 +301,43 @@
             }
         },
         "/v1/grants": {
+            "get": {
+                "summary": "List recent grants for the authenticated user",
+                "operationId": "DelegationService_ListGrants",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1ListGrantsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ]
+            },
             "post": {
                 "summary": "Delegate scoped authority to an agent or sub-agent",
                 "operationId": "DelegationService_Delegate",
@@ -686,6 +762,43 @@
             }
         },
         "/v1/sessions": {
+            "get": {
+                "summary": "List recent capture sessions for the authenticated user",
+                "operationId": "CaptureService_ListSessions",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/v1ListSessionsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ]
+            },
             "post": {
                 "summary": "Open a capture session bound to a root grant",
                 "operationId": "CaptureService_BeginSession",
@@ -1425,6 +1538,28 @@
                     }
                 }
             },
+            "v1ListEventsResponse": {
+                "type": "object",
+                "properties": {
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1ActionEvent"
+                        }
+                    }
+                }
+            },
+            "v1ListGrantsResponse": {
+                "type": "object",
+                "properties": {
+                    "grants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1Grant"
+                        }
+                    }
+                }
+            },
             "v1ListProjectsResponse": {
                 "type": "object",
                 "properties": {
@@ -1432,6 +1567,17 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/v1Project"
+                        }
+                    }
+                }
+            },
+            "v1ListSessionsResponse": {
+                "type": "object",
+                "properties": {
+                    "sessions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/v1Session"
                         }
                     }
                 }

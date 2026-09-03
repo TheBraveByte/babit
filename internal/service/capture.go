@@ -5,6 +5,7 @@ import (
 	"time"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/core/auth"
 	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -103,5 +104,16 @@ func (c *Capture) ensureNotRevoked(ctx context.Context, chain []*ledgerv1.Grant)
 		}
 	}
 	return nil
+}
+
+func (c *Capture) ListSessions(ctx context.Context, req *ledgerv1.ListSessionsRequest) (*ledgerv1.ListSessionsResponse, error) {
+	if auth.UserID(ctx) == "" {
+		return nil, errs.New(errs.Unauthenticated, "not authenticated")
+	}
+	sessions, err := c.sessions.List(ctx, req.GetLimit())
+	if err != nil {
+		return nil, err
+	}
+	return &ledgerv1.ListSessionsResponse{Sessions: sessions}, nil
 }
 

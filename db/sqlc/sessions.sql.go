@@ -90,6 +90,47 @@ func (q *Queries) GetSession(ctx context.Context, sessionID string) (Session, er
 	return i, err
 }
 
+const listSessionsByUser = `-- name: ListSessionsByUser :many
+SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id FROM sessions
+WHERE user_id = $1
+ORDER BY started_at DESC
+LIMIT $2
+`
+
+type ListSessionsByUserParams struct {
+	UserID pgtype.UUID
+	Limit  int32
+}
+
+func (q *Queries) ListSessionsByUser(ctx context.Context, arg ListSessionsByUserParams) ([]Session, error) {
+	rows, err := q.db.Query(ctx, listSessionsByUser, arg.UserID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Session{}
+	for rows.Next() {
+		var i Session
+		if err := rows.Scan(
+			&i.SessionID,
+			&i.RootGrantID,
+			&i.Surface,
+			&i.StartedAt,
+			&i.EndedAt,
+			&i.EventCount,
+			&i.Uuid,
+			&i.UserID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const nextSequence = `-- name: NextSequence :one
 UPDATE sessions
 SET event_count = event_count + 1

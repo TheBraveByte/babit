@@ -238,6 +238,74 @@ func (_c *MockSessionStore_Get_Call) RunAndReturn(run func(ctx context.Context, 
 	return _c
 }
 
+// List provides a mock function for the type MockSessionStore
+func (_mock *MockSessionStore) List(ctx context.Context, limit int32) ([]*ledgerv1.Session, error) {
+	ret := _mock.Called(ctx, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for List")
+	}
+
+	var r0 []*ledgerv1.Session
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int32) ([]*ledgerv1.Session, error)); ok {
+		return returnFunc(ctx, limit)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int32) []*ledgerv1.Session); ok {
+		r0 = returnFunc(ctx, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*ledgerv1.Session)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, int32) error); ok {
+		r1 = returnFunc(ctx, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockSessionStore_List_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'List'
+type MockSessionStore_List_Call struct {
+	*mock.Call
+}
+
+// List is a helper method to define mock.On call
+//   - ctx context.Context
+//   - limit int32
+func (_e *MockSessionStore_Expecter) List(ctx any, limit any) *MockSessionStore_List_Call {
+	return &MockSessionStore_List_Call{Call: _e.mock.On("List", ctx, limit)}
+}
+
+func (_c *MockSessionStore_List_Call) Run(run func(ctx context.Context, limit int32)) *MockSessionStore_List_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 int32
+		if args[1] != nil {
+			arg1 = args[1].(int32)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockSessionStore_List_Call) Return(sessions []*ledgerv1.Session, err error) *MockSessionStore_List_Call {
+	_c.Call.Return(sessions, err)
+	return _c
+}
+
+func (_c *MockSessionStore_List_Call) RunAndReturn(run func(ctx context.Context, limit int32) ([]*ledgerv1.Session, error)) *MockSessionStore_List_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NextSequence provides a mock function for the type MockSessionStore
 func (_mock *MockSessionStore) NextSequence(ctx context.Context, sessionID string) (int64, error) {
 	ret := _mock.Called(ctx, sessionID)

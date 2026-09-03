@@ -1,10 +1,8 @@
-import { useState } from "react";
-import { PageHeader, Card, Button, Error, Field, TextInput, Copyable, MonospaceHash, StatusPill } from "@/lib/ui";
+import { useEffect, useState } from "react";
+import { PageHeader, Card, Button, Error, Copyable, MonospaceHash, StatusPill } from "@/lib/ui";
 import { IconSearch } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
-import { useRecentLookups } from "@/lib/useRecentLookups";
-import { RecentTable } from "@/components/RecentTable";
 
 type ActionEvent = components["schemas"]["v1ActionEvent"];
 
@@ -20,101 +18,101 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 export function Activity() {
-  const [eventId, setEventId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [events, setEvents] = useState<ActionEvent[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [event, setEvent] = useState<ActionEvent | null>(null);
-  const { entries, addLookup } = useRecentLookups("events");
+  const [selected, setSelected] = useState<ActionEvent | null>(null);
 
-  async function lookup(e: React.FormEvent) {
-    e.preventDefault();
-    if (!eventId.trim()) return;
-    setLoading(true);
-    setError(null);
-    setEvent(null);
-    try {
-      const res = await api.GET("/v1/events/{event_id}", {
-        params: { path: { event_id: eventId.trim() } },
-      });
-      if (res.error || !res.data?.event) {
-        setError(errText(res.error) || "No action event found for that ID.");
-      } else {
-        setEvent(res.data.event);
-        addLookup(eventId.trim(), `${res.data.event.action_type || "event"} · ${res.data.event.session_id || ""}`);
-      }
-    } catch (err) {
-      setError(errText(err));
-    } finally {
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      setLoading(true);
+      const res = await api.GET("/v1/events", { params: { query: { limit: 50 } } });
+      if (!active) return;
+      if (res.error) setError(errText(res.error));
+      else setEvents(res.data?.events ?? []);
       setLoading(false);
-    }
-  }
-
-  // Click a recent row → auto-fill and run the lookup
-  const selectRecent = (id: string) => {
-    setEventId(id);
-    // Trigger lookup programmatically
-    setTimeout(() => {
-      const form = document.querySelector("form");
-      if (form) form.requestSubmit();
-    }, 50);
-  };
+    })();
+    return () => { active = false; };
+  }, []);
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Activity"
-        description="Inspect a recorded action event by ID. Babit has no aggregate activity feed endpoint yet, so events are looked up individually."
+        description="Every recorded action event, newest first. Click any row to inspect its full record."
       />
-
-      <Card className="animate-float-up" title="Event lookup" subtitle="Resolve an action event to its recorded fields and cryptographic hashes.">
-        <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
-        <form onSubmit={lookup} className="space-y-3">
-          <Field label="Action event ID">
-            <div className="flex flex-col sm:flex-row gap-2">
-              <TextInput
-                value={eventId}
-                onChange={(e) => setEventId(e.target.value)}
-                placeholder="e.g. BAL-778812"
-                className="flex-1"
-              />
-              <Button type="submit" variant="primary" size="md" loading={loading} disabled={!eventId.trim()}>
-                <IconSearch className="w-4 h-4" />
-                <span>Look up</span>
-              </Button>
-            </div>
-          </Field>
-        </form>
-      </Card>
 
       {error && <Error message={error} />}
 
-      {event ? (
+      {selected ? (
         <Card
-          title={event.event_id}
-          subtitle={event.action_type}
-          action={<StatusPill ok={!!event.notary_signature} label={event.notary_signature ? "SIGNED" : "UNSIGNED"} />}
+          title={selected.event_id}
+          subtitle={selected.action_type}
+          action={
+            <div className="flex items-center gap-2">
+              <StatusPill ok={!!selected.notary_signature} label={selected.notary_signature ? "SIGNED" : "UNSIGNED"} />
+              <Button variant="secondary" size="sm" onClick={() => setSelected(null)}>Back</Button>
+            </div>
+          }
         >
-          <Row label="Session"><Copyable value={event.session_id || "—"} /></Row>
-          <Row label="Sequence"><span className="tnum">{event.sequence ?? "—"}</span></Row>
-          <Row label="Surface">{event.surface || "—"}</Row>
-          <Row label="Grant"><Copyable value={event.grant_id || "—"} /></Row>
-          <Row label="Recording">{event.recording_ref || "—"}</Row>
-          <Row label="Occurred At"><span className="tnum">{event.occurred_at || "—"}</span></Row>
-          <Row label="Content Hash">{event.content_hash ? <MonospaceHash hash={event.content_hash} /> : "—"}</Row>
-          <Row label="Prev Hash">{event.prev_hash ? <MonospaceHash hash={event.prev_hash} /> : "—"}</Row>
+          <Row label="Session"><Copyable value={selected.session_id || "—"} /></Row>
+          <Row label="Sequence"><span className="tnum">{selected.sequence ?? "—"}</span></Row>
+          <Row label="Surface">{selected.surface || "—"}</Row>
+          <Row label="Grant"><Copyable value={selected.grant_id || "—"} /></Row>
+          <Row label="Recording">{selected.recording_ref || "—"}</Row>
+          <Row label="Occurred At"><span className="tnum">{selected.occurred_at || "—"}</span></Row>
+          <Row label="Content Hash">{selected.content_hash ? <MonospaceHash hash={selected.content_hash} /> : "—"}</Row>
+          <Row label="Prev Hash">{selected.prev_hash ? <MonospaceHash hash={selected.prev_hash} /> : "—"}</Row>
           <Row label="Notary Signature">
-            {event.notary_signature ? (
-              <span className="break-all text-[11px]" style={{ color: "var(--muted)" }}>{event.notary_signature}</span>
+            {selected.notary_signature ? (
+              <span className="break-all text-[11px]" style={{ color: "var(--muted)" }}>{selected.notary_signature}</span>
             ) : "—"}
           </Row>
         </Card>
       ) : (
-        !error && (
-          <Card title="Recent lookups" subtitle="Click a row to inspect that event.">
-            <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
-            <RecentTable entries={entries} onSelect={selectRecent} emptyLabel="Look up an event ID above to start building history." />
-          </Card>
-        )
+        <Card>
+          <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
+          {loading ? (
+            <p className="text-sm" style={{ color: "var(--muted)" }}>Loading events…</p>
+          ) : events.length === 0 ? (
+            <p className="text-sm" style={{ color: "var(--muted)" }}>No events recorded yet.</p>
+          ) : (
+            <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
+              <table className="w-full text-left">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Event ID</th>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Action</th>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Session</th>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>When</th>
+                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right" style={{ color: "var(--muted)" }}>View</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {events.map((ev, i) => (
+                    <tr
+                      key={ev.event_id || i}
+                      onClick={() => setSelected(ev)}
+                      className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
+                      style={{ borderBottom: i < events.length - 1 ? "1px solid var(--border-subtle)" : undefined }}
+                    >
+                      <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>{ev.event_id}</td>
+                      <td className="px-3 py-2.5 text-xs" style={{ color: "var(--muted)" }}>{ev.action_type}</td>
+                      <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.session_id}</td>
+                      <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.occurred_at?.slice(0, 19).replace("T", " ") || "—"}</td>
+                      <td className="px-3 py-2.5 text-right">
+                        <span className="text-xs font-medium inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
+                          <IconSearch className="w-3 h-3" /> View
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
       )}
     </div>
   );

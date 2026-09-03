@@ -4,6 +4,7 @@ import (
 	"context"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/core/auth"
 	"github.com/babit/nal/internal/core/canon"
 	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
@@ -81,6 +82,17 @@ func (d *Delegation) Revoke(ctx context.Context, req *ledgerv1.RevokeRequest) (*
 		return nil, err
 	}
 	return &ledgerv1.RevokeResponse{Revoked: true}, nil
+}
+
+func (d *Delegation) ListGrants(ctx context.Context, req *ledgerv1.ListGrantsRequest) (*ledgerv1.ListGrantsResponse, error) {
+	if auth.UserID(ctx) == "" {
+		return nil, errs.New(errs.Unauthenticated, "not authenticated")
+	}
+	grants, err := d.grants.List(ctx, req.GetLimit())
+	if err != nil {
+		return nil, err
+	}
+	return &ledgerv1.ListGrantsResponse{Grants: grants}, nil
 }
 
 func (d *Delegation) sign(g *ledgerv1.Grant) error {
