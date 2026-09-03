@@ -1,70 +1,54 @@
-import { lazy, Suspense } from "react";
-import type { Node, Edge } from "@xyflow/react";
-import type { GrantNodeData } from "../../components/viz/AuthorityGraph";
+import { IconCheck, IconXCircle } from "@/lib/icons";
 
-const AuthorityGraph = lazy(() =>
-  import("../../components/viz/AuthorityGraph").then((m) => ({ default: m.AuthorityGraph })),
-);
+interface GrantNode {
+  id: string;
+  role: "principal" | "agent" | "subagent";
+  subject: string;
+  scope: string;
+  capabilities?: string[];
+  revoked?: boolean;
+}
 
-// Curated, truthful example of babit's signed delegation DAG (Grant model):
-// a human principal issues a root grant, delegates scoped authority to an agent,
-// which sub-delegates to two sub-agents, one live and one revoked (greyed subtree).
-const NODES: Node<GrantNodeData>[] = [
+const TREE: GrantNode[] = [
   {
     id: "principal",
-    type: "grant",
-    position: { x: 150, y: 0 },
-    data: {
-      role: "principal",
-      subject: "Alice, Risk Supervisor",
-      scope: "claims/* · ≤ $5,000",
-    },
+    role: "principal",
+    subject: "Alice, Risk Supervisor",
+    scope: "claims/* · ≤ $5,000",
   },
   {
     id: "agent",
-    type: "grant",
-    position: { x: 150, y: 150 },
-    data: {
-      role: "agent",
-      subject: "claims-agent",
-      capabilities: ["approve.payout", "read.claim"],
-      scope: "claims/48102 · ≤ $4,200",
-    },
+    role: "agent",
+    subject: "claims-agent",
+    scope: "claims/48102 · ≤ $4,200",
+    capabilities: ["approve.payout", "read.claim"],
   },
   {
     id: "doc-fetcher",
-    type: "grant",
-    position: { x: -40, y: 320 },
-    data: {
-      role: "subagent",
-      subject: "doc-fetcher",
-      capabilities: ["read.claim"],
-      scope: "claims/48102",
-    },
+    role: "subagent",
+    subject: "doc-fetcher",
+    scope: "claims/48102",
+    capabilities: ["read.claim"],
   },
   {
     id: "batch-exporter",
-    type: "grant",
-    position: { x: 320, y: 320 },
-    data: {
-      role: "subagent",
-      subject: "batch-exporter",
-      capabilities: ["read.claim"],
-      scope: "claims/48102",
-      revoked: true,
-    },
+    role: "subagent",
+    subject: "batch-exporter",
+    scope: "claims/48102",
+    capabilities: ["read.claim"],
+    revoked: true,
   },
 ];
 
-const EDGES: Edge[] = [
-  { id: "e-root", source: "principal", target: "agent" },
-  { id: "e-doc", source: "agent", target: "doc-fetcher" },
-  { id: "e-exp", source: "agent", target: "batch-exporter", data: { revoked: true } },
-];
+const ROLE_LABELS: Record<GrantNode["role"], string> = {
+  principal: "Principal",
+  agent: "Agent",
+  subagent: "Sub-agent",
+};
 
 const HOW_TO_READ = [
   {
-    dot: "var(--brand-accent)",
+    dot: "var(--brand-accent)" as const,
     text: (
       <>
         Each node is a <span style={{ color: "var(--dark-section-fg)" }}>grant</span>: a subject, its
@@ -73,7 +57,7 @@ const HOW_TO_READ = [
     ),
   },
   {
-    dot: "var(--brand-accent)",
+    dot: "var(--brand-accent)" as const,
     text: (
       <>
         Each edge carries a <span style={{ color: "var(--dark-section-fg)" }}>parent signature</span>, proof
@@ -82,7 +66,7 @@ const HOW_TO_READ = [
     ),
   },
   {
-    dot: "var(--color-failed)",
+    dot: "var(--color-failed)" as const,
     text: (
       <>
         A hand-off can only narrow authority, never widen it. Revoke a grant and its whole
@@ -91,6 +75,60 @@ const HOW_TO_READ = [
     ),
   },
 ];
+
+function GrantCard({ node, depth }: { node: GrantNode; depth: number }) {
+  return (
+    <div
+      className="rounded-babit-sm p-4 transition-all"
+      style={{
+        marginLeft: depth * 24,
+        backgroundColor: node.revoked ? "transparent" : "var(--dark-section-surface)",
+        border: `1px solid ${node.revoked ? "var(--dark-section-border)" : "var(--brand-accent-border)"}`,
+        opacity: node.revoked ? 0.4 : 1,
+      }}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <span
+            className="text-[10px] font-mono uppercase tracking-wider shrink-0"
+            style={{ color: node.revoked ? "var(--dark-section-muted)" : "var(--brand-accent)" }}
+          >
+            {ROLE_LABELS[node.role]}
+          </span>
+          <span
+            className="text-[13px] font-medium font-mono truncate"
+            style={{ color: "var(--dark-section-fg)" }}
+          >
+            {node.subject}
+          </span>
+        </div>
+        {node.revoked ? (
+          <span className="inline-flex items-center gap-1 text-[10px] font-mono shrink-0" style={{ color: "var(--color-failed)" }}>
+            <IconXCircle className="w-3 h-3" />
+            revoked
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-[10px] font-mono shrink-0" style={{ color: "var(--color-verified)" }}>
+            <IconCheck className="w-3 h-3" />
+            active
+          </span>
+        )}
+      </div>
+      <div className="mt-2 flex items-center gap-3 text-[11px] font-mono" style={{ color: "var(--dark-section-muted)" }}>
+        <span>{node.scope}</span>
+        {node.capabilities && (
+          <span className="flex items-center gap-1">
+            {node.capabilities.map((c) => (
+              <span key={c} className="px-1.5 py-0.5 rounded" style={{ backgroundColor: "var(--dark-section-bg)", border: "1px solid var(--dark-section-border)" }}>
+                {c}
+              </span>
+            ))}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function SectionAuthorityChain() {
   return (
@@ -122,13 +160,13 @@ export function SectionAuthorityChain() {
 
             <div
               className="rounded-babit-md p-5 space-y-3 text-xs"
-              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--dark-section-border)" }}
+              style={{ backgroundColor: "var(--dark-section-surface)", border: "1px solid var(--dark-section-border)" }}
             >
               <div
                 className="flex items-center justify-between pb-2"
-                style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                style={{ borderBottom: "1px solid var(--dark-section-border)" }}
               >
-                <span className="type-eyebrow">How to read it</span>
+                <span className="type-eyebrow" style={{ color: "var(--dark-section-muted)" }}>How to read it</span>
                 <span className="font-mono text-[11px]" style={{ color: "var(--dark-section-fg)" }}>
                   signed delegation
                 </span>
@@ -147,18 +185,45 @@ export function SectionAuthorityChain() {
             </div>
           </div>
 
-          {/* Right: the real interactive delegation DAG */}
+          {/* Right: static delegation tree */}
           <div
-            className="rounded-babit-md overflow-hidden"
+            className="rounded-babit-md overflow-hidden p-6 space-y-3"
             style={{
-              backgroundColor: "var(--surface)",
+              backgroundColor: "var(--dark-section-bg)",
               border: "1px solid var(--dark-section-border)",
-              boxShadow: "0 1px 3px 0 rgba(0,0,0,0.05), 0 32px 64px -32px rgba(0,0,0,0.6)",
             }}
           >
-            <Suspense fallback={<div style={{ height: 420 }} />}>
-              <AuthorityGraph nodes={NODES} edges={EDGES} height={420} />
-            </Suspense>
+            <div
+              className="flex items-center justify-between pb-3 mb-2"
+              style={{ borderBottom: "1px solid var(--dark-section-border)" }}
+            >
+              <span className="type-eyebrow" style={{ color: "var(--dark-section-muted)" }}>
+                Delegation tree
+              </span>
+              <span className="font-mono text-[11px]" style={{ color: "var(--dark-section-muted)" }}>
+                BAL-DEL-8921
+              </span>
+            </div>
+
+            {/* Principal → Agent → Sub-agents */}
+            <GrantCard node={TREE[0]} depth={0} />
+
+            {/* Connector line */}
+            <div className="flex justify-center">
+              <div className="w-px h-4" style={{ backgroundColor: "var(--dark-section-border)" }} />
+            </div>
+
+            <GrantCard node={TREE[1]} depth={1} />
+
+            {/* Connector to sub-agents */}
+            <div className="flex justify-center">
+              <div className="w-px h-4" style={{ backgroundColor: "var(--dark-section-border)" }} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <GrantCard node={TREE[2]} depth={0} />
+              <GrantCard node={TREE[3]} depth={0} />
+            </div>
           </div>
         </div>
       </div>

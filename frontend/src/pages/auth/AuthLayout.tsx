@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
-import { BabitLogo } from "@/lib/icons";
+import { BabitLogo, IconCheck, IconShieldCheck, IconGitBranch, IconFileText } from "@/lib/icons";
 import { Link } from "@/lib/router";
-import { SealingStream } from "@/components/viz/SealingStream";
 
 export function AuthLayout({
   title,
@@ -55,48 +54,111 @@ export function AuthLayout({
         </p>
       </main>
 
-      {/* ── Visual panel: live sealing stream ──────────────────────── */}
+      {/* ── Visual panel: evidence principles ──────────────────────── */}
       {visual ?? <AuthVisual />}
     </div>
   );
 }
 
 /**
- * AuthVisual — the right-hand panel. A dark surface with a live canvas
- * showing agent actions being hashed, notary-sealed, and appended to the
- * evidence chain in real time. This is the product's core loop, visualized.
+ * AuthVisual — the right-hand panel. A clean, static panel showing
+ * the three pillars of evidence: record, seal, verify.
+ * No canvas animation — just type, monospace, and hairline borders.
  */
 function AuthVisual() {
+  const pillars = [
+    {
+      icon: <IconFileText className="w-4 h-4" />,
+      label: "Record",
+      desc: "Every agent action is captured with who authorized it.",
+      meta: "POST /v1/sessions/{id}/actions",
+    },
+    {
+      icon: <IconShieldCheck className="w-4 h-4" />,
+      label: "Seal",
+      desc: "Actions are notary-signed and Merkle-sealed into a ledger.",
+      meta: "SHA-256 · Ed25519 · append-only",
+    },
+    {
+      icon: <IconGitBranch className="w-4 h-4" />,
+      label: "Verify",
+      desc: "Anyone can check the receipt offline, without trusting babit.",
+      meta: "babit verify receipt.json",
+    },
+  ];
+
   return (
     <aside
-      className="dark relative overflow-hidden min-h-[420px] lg:min-h-screen"
-      style={{ backgroundColor: "var(--bg)", borderLeft: "1px solid var(--border)" }}
+      className="relative overflow-hidden hidden lg:flex flex-col justify-center min-h-screen px-12 py-16"
+      style={{ backgroundColor: "var(--secondary)", borderLeft: "1px solid var(--border)" }}
     >
-      {/* Canvas starts below the overlay text area */}
-      <div className="absolute inset-0 pt-28">
-        <SealingStream className="w-full h-full" />
-      </div>
+      {/* Subtle dot grid */}
+      <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 60% 50% at 50% 50%, var(--brand-accent-subtle), transparent 70%)",
+        }}
+      />
 
-      {/* Top-left label overlay */}
-      <div className="absolute top-0 left-0 right-0 p-6 lg:p-10 pointer-events-none z-10"
-        style={{ background: "linear-gradient(to bottom, var(--bg) 0%, color-mix(in srgb, var(--bg) 80%, transparent) 70%, transparent 100%)" }}
-      >
-        <p className="type-eyebrow" style={{ color: "var(--muted)" }}>
-          Live · evidence pipeline
+      <div className="relative z-10 max-w-md">
+        <p className="type-eyebrow mb-6" style={{ color: "var(--brand-accent)" }}>
+          How it works
         </p>
+
         <h2
-          className="mt-3 text-[20px] sm:text-[22px] font-semibold tracking-[-0.02em] leading-tight max-w-[280px]"
+          className="text-[24px] font-medium tracking-[-0.025em] leading-tight"
           style={{ color: "var(--fg)" }}
         >
-          Every agent action, sealed as it happens.
+          Three steps from action to evidence.
         </h2>
-      </div>
 
-      {/* Bottom fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
-        style={{ background: "linear-gradient(to top, var(--bg) 0%, transparent 100%)" }}
-      />
+        <div className="mt-10 space-y-6">
+          {pillars.map((p, i) => (
+            <div key={p.label} className="flex items-start gap-4">
+              <div
+                className="w-9 h-9 rounded-babit-sm flex items-center justify-center shrink-0"
+                style={{
+                  backgroundColor: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  color: "var(--brand-accent)",
+                }}
+              >
+                {p.icon}
+              </div>
+              <div className="space-y-1.5 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono" style={{ color: "var(--muted)" }}>
+                    0{i + 1}
+                  </span>
+                  <span className="text-[15px] font-medium" style={{ color: "var(--fg)" }}>
+                    {p.label}
+                  </span>
+                </div>
+                <p className="text-[13px] leading-relaxed" style={{ color: "var(--muted)" }}>
+                  {p.desc}
+                </p>
+                <p className="text-[11px] font-mono" style={{ color: "var(--muted)" }}>
+                  {p.meta}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Verified badge */}
+        <div
+          className="mt-10 inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full"
+          style={{
+            backgroundColor: "var(--color-verified-bg)",
+            color: "var(--color-verified)",
+            border: "1px solid var(--color-verified-border)",
+          }}
+        >
+          <IconCheck className="w-3.5 h-3.5" />
+          <span>Cryptographically verifiable</span>
+        </div>
+      </div>
     </aside>
   );
 }
