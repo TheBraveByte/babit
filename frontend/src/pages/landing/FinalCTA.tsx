@@ -5,9 +5,24 @@ export function FinalCTA() {
   const { navigate } = useRouter();
 
   return (
-    <section className="section-y-lg border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="container-babit">
+    <section
+      className="dark relative overflow-hidden section-y-lg"
+      style={{ backgroundColor: "var(--bg)" }}
+    >
+      {/* Layered background */}
+      <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 60% 60% at 50% 50%, var(--brand-accent-subtle), transparent 70%)",
+        }}
+      />
+
+      <div className="container-babit relative z-10">
         <div className="max-w-3xl mx-auto text-center">
+          <p className="type-eyebrow mb-6" style={{ color: "var(--brand-accent)" }}>
+            Start now
+          </p>
           <h2 className="type-display" style={{ color: "var(--fg)" }}>
             Know what your agents did, and prove it.
           </h2>
