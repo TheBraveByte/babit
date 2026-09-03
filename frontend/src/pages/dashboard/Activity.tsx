@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { PageHeader, Card, Button, Error, Copyable, MonospaceHash, StatusPill } from "@/lib/ui";
-import { IconSearch } from "@/lib/icons";
+import { PageHeader, Card, Button, Error, Copyable, MonospaceHash, StatusPill, TableSkeleton, EmptyState } from "@/lib/ui";
+import { IconSearch, IconActivity } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 
@@ -74,43 +74,52 @@ export function Activity() {
         <Card>
           <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
           {loading ? (
-            <p className="text-sm" style={{ color: "var(--muted)" }}>Loading events…</p>
+            <TableSkeleton rows={8} cols={5} />
           ) : events.length === 0 ? (
-            <p className="text-sm" style={{ color: "var(--muted)" }}>No events recorded yet.</p>
+            <EmptyState
+              icon={<IconActivity className="w-5 h-5" />}
+              title="No events recorded yet"
+              description="Start a capture session and record an agent action to see it appear here."
+            />
           ) : (
-            <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
-              <table className="w-full text-left">
-                <thead>
-                  <tr style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Event ID</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Action</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Session</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>When</th>
-                    <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right" style={{ color: "var(--muted)" }}>View</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {events.map((ev, i) => (
-                    <tr
-                      key={ev.event_id || i}
-                      onClick={() => setSelected(ev)}
-                      className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
-                      style={{ borderBottom: i < events.length - 1 ? "1px solid var(--border-subtle)" : undefined }}
-                    >
-                      <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>{ev.event_id}</td>
-                      <td className="px-3 py-2.5 text-xs" style={{ color: "var(--muted)" }}>{ev.action_type}</td>
-                      <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.session_id}</td>
-                      <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.occurred_at?.slice(0, 19).replace("T", " ") || "—"}</td>
-                      <td className="px-3 py-2.5 text-right">
-                        <span className="text-xs font-medium inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
-                          <IconSearch className="w-3 h-3" /> View
-                        </span>
-                      </td>
+            <>
+              <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
+                <table className="w-full text-left">
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}>
+                      <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Event ID</th>
+                      <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Action</th>
+                      <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>Session</th>
+                      <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider hidden sm:table-cell" style={{ color: "var(--muted)" }}>When</th>
+                      <th className="px-3 py-2 text-[10px] font-mono uppercase tracking-wider text-right" style={{ color: "var(--muted)" }}>View</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {events.map((ev, i) => (
+                      <tr
+                        key={ev.event_id || i}
+                        onClick={() => setSelected(ev)}
+                        className="cursor-pointer transition-colors hover:bg-[var(--secondary)]"
+                        style={{ borderBottom: i < events.length - 1 ? "1px solid var(--border-subtle)" : undefined }}
+                      >
+                        <td className="px-3 py-2.5 font-mono text-xs" style={{ color: "var(--fg)" }}>{ev.event_id}</td>
+                        <td className="px-3 py-2.5 text-xs" style={{ color: "var(--muted)" }}>{ev.action_type}</td>
+                        <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.session_id}</td>
+                        <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.occurred_at?.slice(0, 19).replace("T", " ") || "—"}</td>
+                        <td className="px-3 py-2.5 text-right">
+                          <span className="text-xs font-medium inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
+                            <IconSearch className="w-3 h-3" /> View
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
+                Showing {events.length} event{events.length !== 1 ? "s" : ""}.
+              </p>
+            </>
           )}
         </Card>
       )}

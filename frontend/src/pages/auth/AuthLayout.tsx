@@ -34,7 +34,7 @@ export function AuthLayout({
 
         <div className="flex-1 flex flex-col justify-center py-12">
           <div className="w-full max-w-[380px] mx-auto lg:mx-0">
-            <h1 className="text-[26px] font-semibold tracking-[-0.025em]" style={{ color: "var(--fg)" }}>
+            <h1 className="text-[26px] font-medium tracking-[-0.025em]" style={{ color: "var(--fg)" }}>
               {title}
             </h1>
             {subtitle && (
@@ -73,7 +73,7 @@ function AuthVisual() {
       style={{ backgroundColor: "var(--bg)", borderLeft: "1px solid var(--border)" }}
     >
       {/* Canvas starts below the overlay text area */}
-      <div className="absolute inset-0 pt-32">
+      <div className="absolute inset-0 pt-28">
         <SealingStream className="w-full h-full" />
       </div>
 

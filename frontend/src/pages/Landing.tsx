@@ -6,7 +6,6 @@ import { SectionWhoItsFor } from "./landing/SectionWhoItsFor";
 import { SectionSurfaces } from "./landing/SectionSurfaces";
 import { SectionLogsVsEvidence } from "./landing/SectionLogsVsEvidence";
 import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
-import { SectionReceiptCenterpiece } from "./landing/SectionReceiptCenterpiece";
 import { SectionVerifyRecord } from "./landing/SectionVerifyRecord";
 import { SectionBuiltForEngineers } from "./landing/SectionBuiltForEngineers";
 import { SectionOfflineEvidence } from "./landing/SectionOfflineEvidence";
@@ -19,7 +18,7 @@ export function Landing() {
       <Nav />
 
       <main>
-        {/* Hero */}
+        {/* Hero with live sealing stream + interactive receipt */}
         <Hero />
 
         {/* Real product screenshot */}
@@ -39,9 +38,6 @@ export function Landing() {
 
         {/* Authority chain — person to agent to sub-agent */}
         <SectionAuthorityChain />
-
-        {/* Section 4: Centerpiece receipt */}
-        <SectionReceiptCenterpiece />
 
         {/* Verify the record (carries id="security") */}
         <SectionVerifyRecord />

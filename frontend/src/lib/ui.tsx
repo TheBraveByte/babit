@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { IconCopy, IconCheck, IconAlertCircle } from "./icons";
+import { IconCopy, IconCheck, IconAlertCircle, IconShieldCheck } from "./icons";
 
 /* ─── PageHeader (dashboard) ────────────────────────────────────────────────── */
 export function PageHeader({
@@ -24,7 +24,7 @@ export function PageHeader({
             {eyebrow}
           </span>
         )}
-        <h1 className="text-2xl font-semibold tracking-[-0.02em]" style={{ color: "var(--fg)" }}>
+        <h1 className="text-2xl font-medium tracking-[-0.02em]" style={{ color: "var(--fg)" }}>
           {title}
         </h1>
         {description && (
@@ -52,7 +52,7 @@ export function Card({
 }) {
   return (
     <section
-      className={`border bg-[var(--surface)] rounded-babit-lg shadow-xs overflow-hidden ${className}`}
+      className={`border bg-[var(--surface)] rounded-babit-md overflow-hidden ${className}`}
       style={{ borderColor: "var(--border)" }}
     >
       {title && (
@@ -61,7 +61,7 @@ export function Card({
           style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}
         >
           <div>
-            <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>{title}</h2>
+            <h2 className="text-[13px] font-mono font-semibold uppercase tracking-wider" style={{ color: "var(--fg)" }}>{title}</h2>
             {subtitle && <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{subtitle}</p>}
           </div>
           {action && <div>{action}</div>}
@@ -155,20 +155,20 @@ export function Button({
   loading?: boolean;
 }) {
   const base =
-    "inline-flex items-center justify-center gap-1.5 font-medium rounded-babit transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer";
+    "inline-flex items-center justify-center gap-1.5 font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer";
 
   const sizes = {
-    sm: "px-2.5 py-1 text-xs",
+    sm: "px-3 py-1 text-xs",
     md: "px-4 py-2 text-sm",
     lg: "px-5 py-2.5 text-[15px]",
   };
 
   const variants = {
-    primary:   "bg-[var(--fg)] text-[var(--surface)] hover:opacity-85 active:opacity-75 shadow-xs",
-    secondary: "bg-[var(--surface)] text-[var(--fg)] border border-[var(--border)] hover:bg-[var(--secondary)] shadow-xs",
-    danger:    "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-xs",
-    ghost:     "bg-transparent text-[var(--muted)] hover:bg-[var(--secondary)] hover:text-[var(--fg)]",
-    brand:     "bg-[var(--brand-accent)] text-white hover:opacity-90 active:opacity-80 shadow-[0_8px_24px_-12px_var(--brand-accent)]",
+    primary:   "rounded-pill bg-[var(--fg)] text-[var(--surface)] hover:opacity-85 active:opacity-75 shadow-xs",
+    secondary: "rounded-babit bg-[var(--surface)] text-[var(--fg)] border border-[var(--border)] hover:bg-[var(--secondary)] shadow-xs",
+    danger:    "rounded-pill bg-[var(--color-failed)] text-white hover:opacity-90 active:opacity-80 shadow-xs",
+    ghost:     "rounded-babit bg-transparent text-[var(--muted)] hover:bg-[var(--secondary)] hover:text-[var(--fg)]",
+    brand:     "rounded-pill bg-[var(--brand-accent)] text-white hover:bg-[var(--brand-accent-hover)] active:opacity-90 shadow-xs",
   };
 
   return (
@@ -285,14 +285,14 @@ export function MetricCard({
 }) {
   return (
     <div
-      className="rounded-babit-lg p-5 shadow-xs"
+      className="rounded-babit-md p-5"
       style={{
         border: "1px solid var(--border)",
         backgroundColor: "var(--surface)",
       }}
     >
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted)" }}>
+        <span className="text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>
           {label}
         </span>
         {icon && <span style={{ color: "var(--muted)" }}>{icon}</span>}
@@ -302,7 +302,7 @@ export function MetricCard({
           {value}
         </span>
         {change && (
-          <span className="text-xs font-medium text-emerald-600 font-mono">{change}</span>
+          <span className="text-xs font-medium font-mono" style={{ color: "var(--color-verified)" }}>{change}</span>
         )}
       </div>
       {sublabel && (
@@ -315,7 +315,10 @@ export function MetricCard({
 /* ─── Json ──────────────────────────────────────────────────────────────────── */
 export function Json({ data }: { data: unknown }) {
   return (
-    <pre className="overflow-auto rounded-babit-sm p-3.5 text-xs font-mono leading-relaxed max-h-72 bg-[#0E1010] text-[#A8B5A2] border border-[#1C2020]">
+    <pre
+      className="overflow-auto rounded-babit-sm p-3.5 text-xs font-mono leading-relaxed max-h-72"
+      style={{ backgroundColor: "var(--secondary)", color: "var(--fg)", border: "1px solid var(--border)" }}
+    >
       {JSON.stringify(data, null, 2)}
     </pre>
   );
@@ -352,7 +355,7 @@ export function EmptyState({
 }) {
   return (
     <div
-      className="border-dashed border-2 rounded-babit-lg p-10 text-center"
+      className="border-dashed border-2 rounded-babit-md p-10 text-center"
       style={{ borderColor: "var(--border)", backgroundColor: "var(--secondary)" }}
     >
       {icon && (
@@ -366,6 +369,99 @@ export function EmptyState({
       <h3 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>{title}</h3>
       <p className="mt-1 text-xs max-w-sm mx-auto" style={{ color: "var(--muted)" }}>{description}</p>
       {action && <div className="mt-4">{action}</div>}
+    </div>
+  );
+}
+
+/* ─── Skeleton ──────────────────────────────────────────────────────────────── */
+export function Skeleton({ className = "", style }: { className?: string; style?: React.CSSProperties }) {
+  return <div className={`skeleton ${className}`} style={style} />;
+}
+
+/* ─── TableSkeleton ────────────────────────────────────────────────────────── */
+export function TableSkeleton({ rows = 6, cols = 4 }: { rows?: number; cols?: number }) {
+  return (
+    <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
+      <table className="w-full text-left">
+        <thead>
+          <tr style={{ borderBottom: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}>
+            {Array.from({ length: cols }).map((_, i) => (
+              <th key={i} className="px-3 py-2">
+                <Skeleton style={{ height: 10, width: 60 }} />
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from({ length: rows }).map((_, r) => (
+            <tr key={r} style={{ borderBottom: r < rows - 1 ? "1px solid var(--border-subtle)" : undefined }}>
+              {Array.from({ length: cols }).map((_, c) => (
+                <td key={c} className="px-3 py-2.5">
+                  <Skeleton style={{ height: 10, width: c === 0 ? 100 : c === cols - 1 ? 40 : 80 }} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* ─── ConfirmDialog ─────────────────────────────────────────────────────────── */
+export function ConfirmDialog({
+  open,
+  title,
+  message,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  onConfirm,
+  onCancel,
+  loading = false,
+  danger = false,
+}: {
+  open: boolean;
+  title: string;
+  message: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  loading?: boolean;
+  danger?: boolean;
+}) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in-fast">
+      <div className="absolute inset-0" style={{ backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)" }} onClick={onCancel} />
+      <div
+        className="relative rounded-babit-md p-6 max-w-md w-full"
+        style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", boxShadow: "0 24px 60px -20px rgba(0,0,0,0.3)" }}
+      >
+        <div className="flex items-start gap-3 mb-4">
+          {danger && (
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+              style={{ backgroundColor: "color-mix(in srgb, var(--color-failed) 12%, transparent)" }}
+            >
+              <span style={{ color: "var(--color-failed)" }}><IconAlertCircle className="w-5 h-5" /></span>
+            </div>
+          )}
+          <div>
+            <h3 className="text-base font-semibold" style={{ color: "var(--fg)" }}>{title}</h3>
+            <p className="mt-1 text-sm" style={{ color: "var(--muted)" }}>{message}</p>
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-2 mt-6">
+          <Button variant="secondary" size="md" onClick={onCancel} disabled={loading}>
+            {cancelLabel}
+          </Button>
+          <Button variant={danger ? "danger" : "brand"} size="md" onClick={onConfirm} loading={loading}>
+            {danger && <IconShieldCheck className="w-3.5 h-3.5" />}
+            {confirmLabel}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

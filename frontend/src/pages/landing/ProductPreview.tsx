@@ -12,7 +12,7 @@ export function ProductPreview() {
     <Section id="product-preview" size="default">
       {/* Primary: dashboard overview */}
       <div
-        className="rounded-babit-lg overflow-hidden mx-auto max-w-[1080px]"
+        className="rounded-babit-md overflow-hidden mx-auto max-w-[1080px]"
         style={{
           backgroundColor: "var(--surface)",
           border: "1px solid var(--border)",
@@ -50,7 +50,7 @@ export function ProductPreview() {
       <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[1080px] mx-auto">
         {/* Analytics */}
         <div
-          className="rounded-babit-lg overflow-hidden"
+          className="rounded-babit-md overflow-hidden"
           style={{
             backgroundColor: "var(--surface)",
             border: "1px solid var(--border)",
@@ -83,7 +83,7 @@ export function ProductPreview() {
 
         {/* Delegations — authority chain */}
         <div
-          className="rounded-babit-lg overflow-hidden"
+          className="rounded-babit-md overflow-hidden"
           style={{
             backgroundColor: "var(--surface)",
             border: "1px solid var(--border)",

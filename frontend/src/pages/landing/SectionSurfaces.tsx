@@ -77,16 +77,16 @@ export function SectionSurfaces() {
 
             <div
               className="rounded-babit overflow-hidden"
-              style={{ backgroundColor: "#0A0C0C", border: "1px solid #222626" }}
+              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
             >
               <div
                 className="px-4 py-2 text-[11px] font-mono flex items-center justify-between"
-                style={{ backgroundColor: "#111414", borderBottom: "1px solid #222626", color: "#8A9490" }}
+                style={{ backgroundColor: "var(--secondary)", borderBottom: "1px solid var(--border)", color: "var(--muted)" }}
               >
                 <span>cURL</span>
                 <span>POST /v1/sessions/{"{id}"}/actions</span>
               </div>
-              <div className="p-4 overflow-x-auto font-mono text-xs leading-relaxed text-[#D8E0DC]">
+              <div className="p-4 overflow-x-auto font-mono text-xs leading-relaxed" style={{ color: "var(--fg)" }}>
                 <pre tabIndex={0} className="outline-none">
                   <code>{CURL}</code>
                 </pre>

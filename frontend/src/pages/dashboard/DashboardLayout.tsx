@@ -212,7 +212,7 @@ export function DashboardLayout({
           </div>
 
           {/* Navigation — grouped by spacing + hairline, no shouty labels */}
-          <div className={collapsed ? "p-2 space-y-3" : "p-3 space-y-3"}>
+          <div className={collapsed ? "p-2 space-y-3" : "px-3 py-3 space-y-3"}>
             {[mainNav, devNav, secondaryNav].map((group, gi) => (
               <nav
                 key={gi}
@@ -229,13 +229,15 @@ export function DashboardLayout({
                         navigate(`/dashboard/${n.key}`);
                       }}
                       title={collapsed ? n.label : undefined}
-                      className={`w-full flex items-center rounded-babit text-[14px] font-medium transition-all cursor-pointer ${collapsed ? "justify-center px-0 py-2" : "gap-2.5 px-2.5 py-2"}`}
+                      className={`w-full flex items-center rounded-babit-sm text-[13px] font-medium transition-all cursor-pointer ${collapsed ? "justify-center px-0 py-2" : "gap-2.5 px-2.5 py-1.5"}`}
                       style={isActive ? {
-                        backgroundColor: "var(--brand-accent)",
-                        color: "white",
+                        backgroundColor: "var(--brand-accent-subtle)",
+                        color: "var(--brand-accent)",
                         fontWeight: 600,
+                        border: "1px solid var(--brand-accent-border)",
                       } : {
                         color: "var(--muted)",
+                        border: "1px solid transparent",
                       }}
                     >
                       <span>{n.icon}</span>
@@ -313,7 +315,7 @@ export function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex flex-col min-w-0">
         {/* Header Bar */}
-        <header className="h-14 px-6 border-b border-[color:var(--border)] glass-subtle sticky top-0 z-30 flex items-center justify-between gap-4">
+        <header className="h-14 px-6 border-b border-[color:var(--border)] sticky top-0 z-30 flex items-center justify-between gap-4" style={{ backgroundColor: "color-mix(in srgb, var(--surface) 80%, transparent)", backdropFilter: "blur(12px)" }}>
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}

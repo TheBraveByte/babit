@@ -84,11 +84,11 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
           <MetricCard label="Active grants" value={Math.max(0, n(stats?.total_grants) - n(stats?.revoked_grants)).toLocaleString()} icon={<IconGitBranch className="w-4 h-4" />} />
           <button
             onClick={() => onNavigate("analytics")}
-            className="text-left rounded-babit-lg p-5 shadow-xs transition-colors cursor-pointer hover:bg-[var(--secondary)] flex flex-col justify-between"
+            className="text-left rounded-babit-md p-5 transition-colors cursor-pointer hover:bg-[var(--secondary)] flex flex-col justify-between"
             style={{ border: "1px solid var(--border)", backgroundColor: "var(--surface)" }}
           >
-            <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "var(--muted)" }}>Analytics</span>
-            <span className="mt-3 text-sm font-semibold inline-flex items-center gap-1" style={{ color: "var(--brand-accent)" }}>
+            <span className="text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted)" }}>Analytics</span>
+            <span className="mt-3 text-sm font-semibold inline-flex items-center gap-1.5" style={{ color: "var(--brand-accent)" }}>
               View charts <IconArrowRight className="w-3.5 h-3.5" />
             </span>
           </button>
@@ -133,7 +133,7 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
             <button
               key={a.tab}
               onClick={() => onNavigate(a.tab)}
-              className="text-left rounded-babit-lg p-5 shadow-xs transition-colors cursor-pointer hover:bg-[var(--secondary)]"
+              className="text-left rounded-babit-md p-5 transition-colors cursor-pointer hover:bg-[var(--secondary)]"
               style={{ border: "1px solid var(--border)", backgroundColor: "var(--surface)" }}
             >
               <div className="flex items-center justify-between">

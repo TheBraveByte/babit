@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ReceiptDetail } from "./ReceiptDetail";
-import { PageHeader, Card, Button, Error } from "@/lib/ui";
-import { IconShieldCheck } from "@/lib/icons";
+import { PageHeader, Card, Error, TableSkeleton, EmptyState } from "@/lib/ui";
+import { IconShieldCheck, IconFileText } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 
@@ -61,10 +61,15 @@ export function Receipts() {
       <Card>
         <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
         {loading ? (
-          <p className="text-sm" style={{ color: "var(--muted)" }}>Loading events…</p>
+          <TableSkeleton rows={8} cols={4} />
         ) : events.length === 0 ? (
-          <p className="text-sm" style={{ color: "var(--muted)" }}>No events recorded yet.</p>
+          <EmptyState
+            icon={<IconFileText className="w-5 h-5" />}
+            title="No events recorded yet"
+            description="Record an agent action to generate a sealed inclusion proof you can verify offline."
+          />
         ) : (
+          <>
           <div className="overflow-hidden rounded-babit" style={{ border: "1px solid var(--border-subtle)" }}>
             <table className="w-full text-left">
               <thead>
@@ -86,21 +91,25 @@ export function Receipts() {
                     <td className="px-3 py-2.5 text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.action_type}</td>
                     <td className="px-3 py-2.5 font-mono text-xs hidden sm:table-cell" style={{ color: "var(--muted)" }}>{ev.session_id}</td>
                     <td className="px-3 py-2.5 text-right">
-                      <Button
-                        variant="brand"
-                        size="sm"
-                        loading={fetchingProof}
+                      <button
                         onClick={() => ev.event_id && fetchProof(ev.event_id)}
+                        disabled={fetchingProof}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-babit-sm transition-colors cursor-pointer disabled:opacity-40"
+                        style={{ color: "var(--brand-accent)", border: "1px solid var(--brand-accent-border)", backgroundColor: "var(--brand-accent-subtle)" }}
                       >
                         <IconShieldCheck className="w-3.5 h-3.5" />
-                        <span>Fetch Proof</span>
-                      </Button>
+                        <span>Proof</span>
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
+            Showing {events.length} event{events.length !== 1 ? "s" : ""}.
+          </p>
+          </>
         )}
       </Card>
     </div>

@@ -12,7 +12,7 @@ export function Nav() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 8);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -38,48 +38,51 @@ export function Nav() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
         scrolled
-          ? "glass-subtle border-b border-[color:var(--border)] py-3"
-          : "py-4"
+          ? "glass-subtle border-b border-[color:var(--border)]"
+          : "border-b border-transparent"
       }`}
-      style={!scrolled ? {
-        background: "linear-gradient(to bottom, var(--bg) 0%, color-mix(in srgb, var(--bg) 85%, transparent) 60%, transparent 100%)",
-      } : undefined}
+      style={{
+        height: 56,
+        background: !scrolled
+          ? "linear-gradient(to bottom, var(--bg) 0%, color-mix(in srgb, var(--bg) 72%, transparent) 70%, transparent 100%)"
+          : undefined,
+      }}
     >
-      <div className="container-babit flex items-center justify-between">
+      <div className="container-babit h-full flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5">
-          <BabitLogo className="w-[22px] h-[22px] text-[color:var(--fg)]" />
-          <span className="font-medium text-[16px] tracking-tight text-[color:var(--fg)]">
+          <BabitLogo className="w-[20px] h-[20px] text-[color:var(--fg)]" />
+          <span className="font-semibold text-[15px] tracking-tight text-[color:var(--fg)]">
             babit
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-7">
           {navLinks.map((item) => (
             <button
               key={item.label}
               onClick={() => scrollTo(item.href)}
-              className="text-[14px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors cursor-pointer"
+              className="text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors cursor-pointer"
             >
               {item.label}
             </button>
           ))}
           <Link
             to="/api"
-            className="text-[14px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors"
+            className="text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors"
           >
             API
           </Link>
         </nav>
 
         {/* Auth CTA */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <ThemeToggle className="hover:bg-[var(--secondary)]" />
           {isAuthenticated ? (
             <button
               onClick={() => navigate("/dashboard")}
-              className="px-3.5 py-1.5 text-[14px] font-medium rounded-babit hover:opacity-90 transition-opacity cursor-pointer"
+              className="hidden sm:inline-flex items-center px-3.5 py-1.5 text-[13px] font-medium rounded-pill hover:opacity-90 transition-opacity cursor-pointer"
               style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
             >
               Console →
@@ -88,13 +91,13 @@ export function Nav() {
             <>
               <button
                 onClick={() => navigate("/login")}
-                className="text-[14px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors cursor-pointer px-2.5 py-1.5"
+                className="hidden sm:inline-flex text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors cursor-pointer px-2.5 py-1.5"
               >
                 Sign in
               </button>
               <button
                 onClick={() => navigate("/signup")}
-                className="px-3.5 py-1.5 text-[14px] font-medium rounded-babit hover:opacity-90 transition-opacity cursor-pointer"
+                className="hidden sm:inline-flex px-3.5 py-1.5 text-[13px] font-medium rounded-pill hover:opacity-90 transition-opacity cursor-pointer"
                 style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
               >
                 Get started
@@ -121,7 +124,10 @@ export function Nav() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[var(--surface)] border-b border-[color:var(--border)] px-4 pt-2 pb-4 space-y-2 animate-fade-in shadow-md">
+        <div
+          className="md:hidden glass-subtle border-b border-[color:var(--border)] px-6 pt-2 pb-4 space-y-1 animate-fade-in"
+          style={{ borderTop: "1px solid var(--border-subtle)" }}
+        >
           {navLinks.map((item) => (
             <button
               key={item.label}
@@ -138,26 +144,41 @@ export function Nav() {
           >
             API
           </Link>
-          <div className="pt-3 border-t border-[color:var(--border-subtle)] flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate("/login");
-              }}
-              className="w-full text-center py-2.5 text-[14px] text-[color:var(--fg)] font-medium"
-            >
-              Sign in
-            </button>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                navigate("/signup");
-              }}
-              className="w-full text-center py-2.5 text-[14px] rounded-babit font-medium"
-              style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
-            >
-              Get started
-            </button>
+          <div className="pt-3 mt-2 border-t border-[color:var(--border-subtle)] flex flex-col gap-2">
+            {isAuthenticated ? (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate("/dashboard");
+                }}
+                className="w-full text-center py-2.5 text-[14px] rounded-babit font-medium"
+                style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
+              >
+                Console →
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate("/login");
+                  }}
+                  className="w-full text-center py-2.5 text-[14px] text-[color:var(--fg)] font-medium"
+                >
+                  Sign in
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate("/signup");
+                  }}
+                  className="w-full text-center py-2.5 text-[14px] rounded-babit font-medium"
+                  style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
+                >
+                  Get started
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
