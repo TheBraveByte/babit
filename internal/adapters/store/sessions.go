@@ -17,6 +17,7 @@ type sessionStore struct {
 func (s *sessionStore) Create(ctx context.Context, session *ledgerv1.Session) error {
 	if err := s.q.CreateSession(ctx, storedb.CreateSessionParams{
 		SessionID:   session.SessionId,
+		ProjectID:   toUUID(session.ProjectId),
 		RootGrantID: session.RootGrantId,
 		Surface:     int32(session.Surface),
 		StartedAt:   toTimestamptz(session.StartedAt),
@@ -56,7 +57,7 @@ func (s *sessionStore) NextSequence(ctx context.Context, sessionID string) (int6
 	return seq, nil
 }
 
-func (s *sessionStore) List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.Session, string, error) {
+func (s *sessionStore) List(ctx context.Context, projectID string, pageSize int32, pageToken string) ([]*ledgerv1.Session, string, error) {
 	pageSize = pagination.ClampPageSize(pageSize, 100)
 	cur, err := pagination.Decode(pageToken)
 	if err != nil {
@@ -66,6 +67,7 @@ func (s *sessionStore) List(ctx context.Context, pageSize int32, pageToken strin
 		UserID:  ctxUserUUID(ctx),
 		Column2: cur.Value,
 		Limit:   pageSize + 1,
+		Column4: projectID,
 	})
 	if err != nil {
 		return nil, "", opErr(err, "list sessions")
@@ -85,6 +87,7 @@ func (s *sessionStore) List(ctx context.Context, pageSize int32, pageToken strin
 func sessionFromRow(row storedb.Session) *ledgerv1.Session {
 	return &ledgerv1.Session{
 		SessionId:   row.SessionID,
+		ProjectId:   uuidString(row.ProjectID),
 		RootGrantId: row.RootGrantID,
 		Surface:     ledgerv1.Surface(row.Surface),
 		StartedAt:   fromTimestamptz(row.StartedAt),

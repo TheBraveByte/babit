@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/chromedp/chromedp"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/chromedp/chromedp"
 	solarisdk "github.com/solari-sdk/solari-browser-go"
 )
 

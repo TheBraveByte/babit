@@ -1,10 +1,10 @@
 -- name: AppendEvent :exec
 INSERT INTO events (
-    event_id, session_id, sequence, surface, action_type, action_payload,
+    event_id, project_id, session_id, sequence, surface, action_type, action_payload,
     grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at,
     content_hash, prev_hash, notary_signature
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
 );
 
 -- name: GetEvent :one
@@ -31,5 +31,6 @@ SELECT e.* FROM events e
 JOIN sessions s ON e.session_id = s.session_id
 WHERE s.user_id = $1
   AND ($2::text = '' OR e.event_id < $2::text)
+  AND ($4::text = '' OR e.project_id::text = $4)
 ORDER BY e.event_id DESC
 LIMIT $3;

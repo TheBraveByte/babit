@@ -163,7 +163,6 @@ func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
 	}
 }
 
-
 func dbAPIKeyInterceptor(keys ports.APIKeyStore) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 		if md, ok := metadata.FromIncomingContext(ctx); ok {

@@ -228,6 +228,14 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "project_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ]
             }
@@ -346,6 +354,14 @@
                     },
                     {
                         "name": "page_token",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "project_id",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -856,6 +872,14 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "project_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ]
             },
@@ -1203,6 +1227,9 @@
                     "event_id": {
                         "type": "string"
                     },
+                    "project_id": {
+                        "type": "string"
+                    },
                     "session_id": {
                         "type": "string"
                     },
@@ -1534,6 +1561,9 @@
                     "grant_id": {
                         "type": "string"
                     },
+                    "project_id": {
+                        "type": "string"
+                    },
                     "parent_grant_id": {
                         "type": "string"
                     },
@@ -1576,6 +1606,9 @@
                     },
                     "scope": {
                         "$ref": "#/components/schemas/v1Scope"
+                    },
+                    "project_id": {
+                        "type": "string"
                     }
                 }
             },
@@ -1788,6 +1821,9 @@
                 "type": "object",
                 "properties": {
                     "session_id": {
+                        "type": "string"
+                    },
+                    "project_id": {
                         "type": "string"
                     },
                     "root_grant_id": {

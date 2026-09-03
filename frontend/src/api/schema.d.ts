@@ -442,6 +442,7 @@ export interface components {
      */
     v1ActionEvent: {
       event_id?: string;
+      project_id?: string;
       session_id?: string;
       /** Format: int64 */
       sequence?: string;
@@ -603,6 +604,7 @@ export interface components {
      */
     v1Grant: {
       grant_id?: string;
+      project_id?: string;
       parent_grant_id?: string;
       principal_id?: string;
       subject_id?: string;
@@ -624,6 +626,7 @@ export interface components {
     v1IssueRootGrantRequest: {
       principal_id?: string;
       scope?: components["schemas"]["v1Scope"];
+      project_id?: string;
     };
     v1IssueRootGrantResponse: {
       grant?: components["schemas"]["v1Grant"];
@@ -700,6 +703,7 @@ export interface components {
     };
     v1Session: {
       session_id?: string;
+      project_id?: string;
       root_grant_id?: string;
       surface?: components["schemas"]["v1Surface"];
       /** Format: date-time */
@@ -958,6 +962,7 @@ export interface operations {
       query?: {
         page_size?: number;
         page_token?: string;
+        project_id?: string;
       };
       header?: never;
       path?: never;
@@ -1052,6 +1057,7 @@ export interface operations {
       query?: {
         page_size?: number;
         page_token?: string;
+        project_id?: string;
       };
       header?: never;
       path?: never;
@@ -1447,6 +1453,7 @@ export interface operations {
       query?: {
         page_size?: number;
         page_token?: string;
+        project_id?: string;
       };
       header?: never;
       path?: never;

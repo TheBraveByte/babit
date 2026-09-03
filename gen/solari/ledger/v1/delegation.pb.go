@@ -27,6 +27,7 @@ type IssueRootGrantRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PrincipalId   string                 `protobuf:"bytes,1,opt,name=principal_id,json=principalId,proto3" json:"principal_id,omitempty"`
 	Scope         *Scope                 `protobuf:"bytes,2,opt,name=scope,proto3" json:"scope,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,3,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -73,6 +74,13 @@ func (x *IssueRootGrantRequest) GetScope() *Scope {
 		return x.Scope
 	}
 	return nil
+}
+
+func (x *IssueRootGrantRequest) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
 }
 
 type IssueRootGrantResponse struct {
@@ -435,6 +443,7 @@ type ListGrantsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,3,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -479,6 +488,13 @@ func (x *ListGrantsRequest) GetPageSize() int32 {
 func (x *ListGrantsRequest) GetPageToken() string {
 	if x != nil {
 		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListGrantsRequest) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
 	}
 	return ""
 }
@@ -539,10 +555,12 @@ var File_solari_ledger_v1_delegation_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
 	"\n" +
-	"!solari/ledger/v1/delegation.proto\x12\x10solari.ledger.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1dsolari/ledger/v1/common.proto\"\xa4\x01\n" +
+	"!solari/ledger/v1/delegation.proto\x12\x10solari.ledger.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x1dsolari/ledger/v1/common.proto\"\xc3\x01\n" +
 	"\x15IssueRootGrantRequest\x12!\n" +
 	"\fprincipal_id\x18\x01 \x01(\tR\vprincipalId\x12-\n" +
-	"\x05scope\x18\x02 \x01(\v2\x17.solari.ledger.v1.ScopeR\x05scope:9\x92A624{\"principal_id\":\"usr_alice\",\"scope\":{\"max_depth\":3}}\"G\n" +
+	"\x05scope\x18\x02 \x01(\v2\x17.solari.ledger.v1.ScopeR\x05scope\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x03 \x01(\tR\tprojectId:9\x92A624{\"principal_id\":\"usr_alice\",\"scope\":{\"max_depth\":3}}\"G\n" +
 	"\x16IssueRootGrantResponse\x12-\n" +
 	"\x05grant\x18\x01 \x01(\v2\x17.solari.ledger.v1.GrantR\x05grant\"\x80\x03\n" +
 	"\x0fDelegateRequest\x12&\n" +
@@ -563,11 +581,13 @@ const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
 	"\bgrant_id\x18\x01 \x01(\tR\agrantId\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\"*\n" +
 	"\x0eRevokeResponse\x12\x18\n" +
-	"\arevoked\x18\x01 \x01(\bR\arevoked\"O\n" +
+	"\arevoked\x18\x01 \x01(\bR\arevoked\"n\n" +
 	"\x11ListGrantsRequest\x12\x1b\n" +
 	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
 	"\n" +
-	"page_token\x18\x02 \x01(\tR\tpageToken\"m\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x03 \x01(\tR\tprojectId\"m\n" +
 	"\x12ListGrantsResponse\x12/\n" +
 	"\x06grants\x18\x01 \x03(\v2\x17.solari.ledger.v1.GrantR\x06grants\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\xd4\x06\n" +

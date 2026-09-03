@@ -26,6 +26,7 @@ func NewDelegation(grants ports.GrantStore, signer ports.Signer, verifier ports.
 func (d *Delegation) IssueRootGrant(ctx context.Context, req *ledgerv1.IssueRootGrantRequest) (*ledgerv1.IssueRootGrantResponse, error) {
 	g := &ledgerv1.Grant{
 		GrantId:     d.ids.New(),
+		ProjectId:   req.GetProjectId(),
 		PrincipalId: req.GetPrincipalId(),
 		SubjectId:   req.GetPrincipalId(),
 		Scope:       req.GetScope(),
@@ -53,6 +54,7 @@ func (d *Delegation) Delegate(ctx context.Context, req *ledgerv1.DelegateRequest
 	}
 	child := &ledgerv1.Grant{
 		GrantId:       d.ids.New(),
+		ProjectId:     parent.GetProjectId(),
 		ParentGrantId: parent.GetGrantId(),
 		PrincipalId:   parent.GetSubjectId(),
 		SubjectId:     req.GetSubjectId(),
@@ -88,7 +90,7 @@ func (d *Delegation) ListGrants(ctx context.Context, req *ledgerv1.ListGrantsReq
 	if auth.UserID(ctx) == "" {
 		return nil, errs.New(errs.Unauthenticated, "not authenticated")
 	}
-	grants, next, err := d.grants.List(ctx, req.GetPageSize(), req.GetPageToken())
+	grants, next, err := d.grants.List(ctx, req.GetProjectId(), req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, err
 	}

@@ -48,6 +48,7 @@ message GetInclusionProofResponse {
 message ListEventsRequest {
   int32 page_size = 1;
   string page_token = 2;
+  string project_id = 3;
 }
 
 message ListEventsResponse {

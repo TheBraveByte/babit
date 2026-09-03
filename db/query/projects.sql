@@ -12,7 +12,7 @@ SELECT
     (SELECT count(*) FROM api_keys k WHERE k.project_id = p.id AND k.revoked_at IS NULL) AS active_keys
 FROM projects p
 WHERE p.user_id = $1
-  AND ($2::text = '' OR p.id < $2::text)
+  AND ($2::text = '' OR p.id::text < $2)
 ORDER BY p.id DESC
 LIMIT $3;
 
@@ -27,7 +27,7 @@ RETURNING *;
 -- name: ListApiKeysByProject :many
 SELECT * FROM api_keys
 WHERE project_id = $1
-  AND ($2::text = '' OR id < $2::text)
+  AND ($2::text = '' OR id::text < $2)
 ORDER BY id DESC
 LIMIT $3;
 

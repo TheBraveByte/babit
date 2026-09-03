@@ -56,6 +56,7 @@ message IssueRootGrantRequest {
   };
   string principal_id = 1;
   Scope scope = 2;
+  string project_id = 3;
 }
 
 message IssueRootGrantResponse {
@@ -98,6 +99,7 @@ message RevokeResponse {
 message ListGrantsRequest {
   int32 page_size = 1;
   string page_token = 2;
+  string project_id = 3;
 }
 
 message ListGrantsResponse {

@@ -13,14 +13,15 @@ import (
 
 const createSession = `-- name: CreateSession :exec
 INSERT INTO sessions (
-    session_id, root_grant_id, surface, started_at, ended_at, event_count, user_id
+    session_id, project_id, root_grant_id, surface, started_at, ended_at, event_count, user_id
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $8
 )
 `
 
 type CreateSessionParams struct {
 	SessionID   string
+	ProjectID   pgtype.UUID
 	RootGrantID string
 	Surface     int32
 	StartedAt   pgtype.Timestamptz
@@ -32,6 +33,7 @@ type CreateSessionParams struct {
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) error {
 	_, err := q.db.Exec(ctx, createSession,
 		arg.SessionID,
+		arg.ProjectID,
 		arg.RootGrantID,
 		arg.Surface,
 		arg.StartedAt,
@@ -46,7 +48,7 @@ const endSession = `-- name: EndSession :one
 UPDATE sessions
 SET ended_at = $2
 WHERE session_id = $1
-RETURNING session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id
+RETURNING session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id, project_id
 `
 
 type EndSessionParams struct {
@@ -66,12 +68,13 @@ func (q *Queries) EndSession(ctx context.Context, arg EndSessionParams) (Session
 		&i.EventCount,
 		&i.Uuid,
 		&i.UserID,
+		&i.ProjectID,
 	)
 	return i, err
 }
 
 const getSession = `-- name: GetSession :one
-SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id FROM sessions WHERE session_id = $1
+SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id, project_id FROM sessions WHERE session_id = $1
 `
 
 func (q *Queries) GetSession(ctx context.Context, sessionID string) (Session, error) {
@@ -86,14 +89,16 @@ func (q *Queries) GetSession(ctx context.Context, sessionID string) (Session, er
 		&i.EventCount,
 		&i.Uuid,
 		&i.UserID,
+		&i.ProjectID,
 	)
 	return i, err
 }
 
 const listSessionsByUser = `-- name: ListSessionsByUser :many
-SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id FROM sessions
+SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id, project_id FROM sessions
 WHERE user_id = $1
   AND ($2::text = '' OR session_id < $2::text)
+  AND ($4::text = '' OR project_id::text = $4)
 ORDER BY session_id DESC
 LIMIT $3
 `
@@ -102,10 +107,16 @@ type ListSessionsByUserParams struct {
 	UserID  pgtype.UUID
 	Column2 string
 	Limit   int32
+	Column4 string
 }
 
 func (q *Queries) ListSessionsByUser(ctx context.Context, arg ListSessionsByUserParams) ([]Session, error) {
-	rows, err := q.db.Query(ctx, listSessionsByUser, arg.UserID, arg.Column2, arg.Limit)
+	rows, err := q.db.Query(ctx, listSessionsByUser,
+		arg.UserID,
+		arg.Column2,
+		arg.Limit,
+		arg.Column4,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -122,6 +133,7 @@ func (q *Queries) ListSessionsByUser(ctx context.Context, arg ListSessionsByUser
 			&i.EventCount,
 			&i.Uuid,
 			&i.UserID,
+			&i.ProjectID,
 		); err != nil {
 			return nil, err
 		}

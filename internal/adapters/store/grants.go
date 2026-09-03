@@ -28,6 +28,7 @@ func (s *grantStore) Put(ctx context.Context, grant *ledgerv1.Grant) error {
 	}
 	if err := s.q.PutGrant(ctx, storedb.PutGrantParams{
 		GrantID:         grant.GrantId,
+		ProjectID:       toUUID(grant.ProjectId),
 		ParentGrantID:   grant.ParentGrantId,
 		PrincipalID:     grant.PrincipalId,
 		SubjectID:       grant.SubjectId,
@@ -82,7 +83,7 @@ func (s *grantStore) IsRevoked(ctx context.Context, grantID string) (bool, error
 	return revoked, nil
 }
 
-func (s *grantStore) List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.Grant, string, error) {
+func (s *grantStore) List(ctx context.Context, projectID string, pageSize int32, pageToken string) ([]*ledgerv1.Grant, string, error) {
 	pageSize = pagination.ClampPageSize(pageSize, 100)
 	cur, err := pagination.Decode(pageToken)
 	if err != nil {
@@ -92,6 +93,7 @@ func (s *grantStore) List(ctx context.Context, pageSize int32, pageToken string)
 		UserID:  ctxUserUUID(ctx),
 		Column2: cur.Value,
 		Limit:   pageSize + 1,
+		Column4: projectID,
 	})
 	if err != nil {
 		return nil, "", opErr(err, "list grants")
@@ -109,26 +111,33 @@ func (s *grantStore) List(ctx context.Context, pageSize int32, pageToken string)
 }
 
 func grantFromModel(row storedb.Grant) *ledgerv1.Grant {
-	return buildGrant(row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
+	return buildGrant(
+		uuidString(row.ProjectID),
+		row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
 		row.Capabilities, row.ResourceGlobs, row.MaxValueCents, row.MaxDepth,
 		fromTimestamptz(row.ExpiresAt), row.ParentSignature)
 }
 
 func grantFromChainRow(row storedb.GrantChainRow) *ledgerv1.Grant {
-	return buildGrant(row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
+	return buildGrant(
+		uuidString(row.ProjectID),
+		row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
 		row.Capabilities, row.ResourceGlobs, row.MaxValueCents, row.MaxDepth,
 		fromTimestamptz(row.ExpiresAt), row.ParentSignature)
 }
 
 func grantFromListRow(row storedb.ListGrantsByUserRow) *ledgerv1.Grant {
-	return buildGrant(row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
+	return buildGrant(
+		uuidString(row.ProjectID),
+		row.GrantID, row.ParentGrantID, row.PrincipalID, row.SubjectID,
 		row.Capabilities, row.ResourceGlobs, row.MaxValueCents, row.MaxDepth,
 		fromTimestamptz(row.ExpiresAt), row.ParentSignature)
 }
 
-func buildGrant(grantID, parentID, principalID, subjectID string, caps, globs []string,
+func buildGrant(projectID, grantID, parentID, principalID, subjectID string, caps, globs []string,
 	maxValue int64, maxDepth int32, expiresAt *timestamppb.Timestamp, sig []byte) *ledgerv1.Grant {
 	return &ledgerv1.Grant{
+		ProjectId:     projectID,
 		GrantId:       grantID,
 		ParentGrantId: parentID,
 		PrincipalId:   principalID,
