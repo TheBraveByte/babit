@@ -1,8 +1,8 @@
 -- name: CreateSession :exec
 INSERT INTO sessions (
-    session_id, root_grant_id, surface, started_at, ended_at, event_count, user_id
+    session_id, project_id, root_grant_id, surface, started_at, ended_at, event_count, user_id
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $8
 );
 
 -- name: GetSession :one
@@ -24,5 +24,6 @@ RETURNING event_count;
 SELECT * FROM sessions
 WHERE user_id = $1
   AND ($2::text = '' OR session_id < $2::text)
+  AND ($4::text = '' OR project_id::text = $4)
 ORDER BY session_id DESC
 LIMIT $3;

@@ -15,6 +15,7 @@ type eventStore struct {
 func (s *eventStore) Append(ctx context.Context, event *ledgerv1.ActionEvent) error {
 	if err := s.q.AppendEvent(ctx, storedb.AppendEventParams{
 		EventID:         event.EventId,
+		ProjectID:       toUUID(event.ProjectId),
 		SessionID:       event.SessionId,
 		Sequence:        event.Sequence,
 		Surface:         int32(event.Surface),
@@ -74,7 +75,7 @@ func (s *eventStore) Range(ctx context.Context, fromSeq, toSeq int64) ([]*ledger
 	return out, nil
 }
 
-func (s *eventStore) List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.ActionEvent, string, error) {
+func (s *eventStore) List(ctx context.Context, projectID string, pageSize int32, pageToken string) ([]*ledgerv1.ActionEvent, string, error) {
 	pageSize = pagination.ClampPageSize(pageSize, 100)
 	cur, err := pagination.Decode(pageToken)
 	if err != nil {
@@ -84,6 +85,7 @@ func (s *eventStore) List(ctx context.Context, pageSize int32, pageToken string)
 		UserID:  ctxUserUUID(ctx),
 		Column2: cur.Value,
 		Limit:   pageSize + 1,
+		Column4: projectID,
 	})
 	if err != nil {
 		return nil, "", opErr(err, "list events")
@@ -103,6 +105,7 @@ func (s *eventStore) List(ctx context.Context, pageSize int32, pageToken string)
 func eventFromRow(row storedb.Event) *ledgerv1.ActionEvent {
 	return &ledgerv1.ActionEvent{
 		EventId:         row.EventID,
+		ProjectId:       uuidString(row.ProjectID),
 		SessionId:       row.SessionID,
 		Sequence:        row.Sequence,
 		Surface:         ledgerv1.Surface(row.Surface),

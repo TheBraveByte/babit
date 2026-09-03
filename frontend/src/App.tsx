@@ -4,8 +4,9 @@ import { ForgotPassword } from "@/pages/auth/ForgotPassword";
 import { Login } from "@/pages/auth/Login";
 import { Signup } from "@/pages/auth/Signup";
 import { ContactPage } from "@/pages/ContactPage";
-import type { DashboardTab } from "@/pages/dashboard/DashboardLayout";
+import { ProjectProvider } from "@/lib/project";
 import { DashboardLayout } from "@/pages/dashboard/DashboardLayout";
+import type { DashboardTab } from "@/pages/dashboard/DashboardLayout";
 // Eager: landing + auth are the entry surfaces, kept in the initial bundle.
 import { Landing } from "@/pages/Landing";
 import { NotFound } from "@/pages/NotFound";
@@ -87,21 +88,23 @@ export function App() {
     const handleTabChange = (tab: DashboardTab) => navigate(`/dashboard/${tab}`);
 
     return (
-      <DashboardLayout activeTab={activeTab} onTabChange={handleTabChange}>
-        <Boundary>
-          {activeTab === "overview" && <Overview onNavigate={handleTabChange} />}
-          {activeTab === "analytics" && <Analytics />}
-          {activeTab === "activity" && <Activity />}
-          {activeTab === "agents" && <Agents onNavigate={handleTabChange} />}
-          {activeTab === "delegations" && <Delegations />}
-          {activeTab === "sessions" && <Sessions />}
-          {activeTab === "receipts" && <Receipts />}
-          {activeTab === "verify" && <Verify />}
-          {activeTab === "projects" && <Projects />}
-          {activeTab === "apikeys" && <ApiKeys />}
-          {activeTab === "settings" && <Settings />}
-        </Boundary>
-      </DashboardLayout>
+      <ProjectProvider>
+        <DashboardLayout activeTab={activeTab} onTabChange={handleTabChange}>
+          <Boundary>
+            {activeTab === "overview" && <Overview onNavigate={handleTabChange} />}
+            {activeTab === "analytics" && <Analytics />}
+            {activeTab === "activity" && <Activity />}
+            {activeTab === "agents" && <Agents onNavigate={handleTabChange} />}
+            {activeTab === "delegations" && <Delegations />}
+            {activeTab === "sessions" && <Sessions />}
+            {activeTab === "receipts" && <Receipts />}
+            {activeTab === "verify" && <Verify />}
+            {activeTab === "projects" && <Projects />}
+            {activeTab === "apikeys" && <ApiKeys />}
+            {activeTab === "settings" && <Settings />}
+          </Boundary>
+        </DashboardLayout>
+      </ProjectProvider>
     );
   }
 

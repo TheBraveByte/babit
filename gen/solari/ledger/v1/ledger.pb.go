@@ -203,6 +203,7 @@ type ListEventsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,3,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -247,6 +248,13 @@ func (x *ListEventsRequest) GetPageSize() int32 {
 func (x *ListEventsRequest) GetPageToken() string {
 	if x != nil {
 		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListEventsRequest) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
 	}
 	return ""
 }
@@ -315,11 +323,13 @@ const file_solari_ledger_v1_ledger_proto_rawDesc = "" +
 	"\x18GetInclusionProofRequest\x12\x19\n" +
 	"\bevent_id\x18\x01 \x01(\tR\aeventId\"J\n" +
 	"\x19GetInclusionProofResponse\x12-\n" +
-	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof\"O\n" +
+	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof\"n\n" +
 	"\x11ListEventsRequest\x12\x1b\n" +
 	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
 	"\n" +
-	"page_token\x18\x02 \x01(\tR\tpageToken\"s\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x03 \x01(\tR\tprojectId\"s\n" +
 	"\x12ListEventsResponse\x125\n" +
 	"\x06events\x18\x01 \x03(\v2\x1d.solari.ledger.v1.ActionEventR\x06events\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\x8c\x04\n" +

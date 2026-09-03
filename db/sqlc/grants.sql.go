@@ -12,7 +12,7 @@ import (
 )
 
 const getGrant = `-- name: GetGrant :one
-SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities, resource_globs, max_value_cents, max_depth, expires_at, parent_signature, uuid, user_id FROM grants WHERE grant_id = $1
+SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities, resource_globs, max_value_cents, max_depth, expires_at, parent_signature, uuid, user_id, project_id FROM grants WHERE grant_id = $1
 `
 
 func (q *Queries) GetGrant(ctx context.Context, grantID string) (Grant, error) {
@@ -31,22 +31,23 @@ func (q *Queries) GetGrant(ctx context.Context, grantID string) (Grant, error) {
 		&i.ParentSignature,
 		&i.Uuid,
 		&i.UserID,
+		&i.ProjectID,
 	)
 	return i, err
 }
 
 const grantChain = `-- name: GrantChain :many
 WITH RECURSIVE chain AS (
-    SELECT g.grant_id, g.parent_grant_id, g.principal_id, g.subject_id, g.capabilities, g.resource_globs, g.max_value_cents, g.max_depth, g.expires_at, g.parent_signature, g.uuid, g.user_id, 0 AS depth
+    SELECT g.grant_id, g.parent_grant_id, g.principal_id, g.subject_id, g.capabilities, g.resource_globs, g.max_value_cents, g.max_depth, g.expires_at, g.parent_signature, g.uuid, g.user_id, g.project_id, 0 AS depth
     FROM grants g
     WHERE g.grant_id = $1
     UNION ALL
-    SELECT p.grant_id, p.parent_grant_id, p.principal_id, p.subject_id, p.capabilities, p.resource_globs, p.max_value_cents, p.max_depth, p.expires_at, p.parent_signature, p.uuid, p.user_id, c.depth + 1
+    SELECT p.grant_id, p.parent_grant_id, p.principal_id, p.subject_id, p.capabilities, p.resource_globs, p.max_value_cents, p.max_depth, p.expires_at, p.parent_signature, p.uuid, p.user_id, p.project_id, c.depth + 1
     FROM grants p
     JOIN chain c ON p.grant_id = c.parent_grant_id
     WHERE c.parent_grant_id <> ''
 )
-SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities,
+SELECT grant_id, project_id, parent_grant_id, principal_id, subject_id, capabilities,
        resource_globs, max_value_cents, max_depth, expires_at, parent_signature
 FROM chain
 ORDER BY depth DESC
@@ -54,6 +55,7 @@ ORDER BY depth DESC
 
 type GrantChainRow struct {
 	GrantID         string
+	ProjectID       pgtype.UUID
 	ParentGrantID   string
 	PrincipalID     string
 	SubjectID       string
@@ -76,6 +78,7 @@ func (q *Queries) GrantChain(ctx context.Context, grantID string) ([]GrantChainR
 		var i GrantChainRow
 		if err := rows.Scan(
 			&i.GrantID,
+			&i.ProjectID,
 			&i.ParentGrantID,
 			&i.PrincipalID,
 			&i.SubjectID,
@@ -108,11 +111,12 @@ func (q *Queries) IsRevoked(ctx context.Context, grantID string) (bool, error) {
 }
 
 const listGrantsByUser = `-- name: ListGrantsByUser :many
-SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities,
+SELECT grant_id, project_id, parent_grant_id, principal_id, subject_id, capabilities,
        resource_globs, max_value_cents, max_depth, expires_at, parent_signature
 FROM grants
 WHERE user_id = $1
   AND ($2::text = '' OR grant_id < $2::text)
+  AND ($4::text = '' OR project_id::text = $4)
 ORDER BY grant_id DESC
 LIMIT $3
 `
@@ -121,10 +125,12 @@ type ListGrantsByUserParams struct {
 	UserID  pgtype.UUID
 	Column2 string
 	Limit   int32
+	Column4 string
 }
 
 type ListGrantsByUserRow struct {
 	GrantID         string
+	ProjectID       pgtype.UUID
 	ParentGrantID   string
 	PrincipalID     string
 	SubjectID       string
@@ -137,7 +143,12 @@ type ListGrantsByUserRow struct {
 }
 
 func (q *Queries) ListGrantsByUser(ctx context.Context, arg ListGrantsByUserParams) ([]ListGrantsByUserRow, error) {
-	rows, err := q.db.Query(ctx, listGrantsByUser, arg.UserID, arg.Column2, arg.Limit)
+	rows, err := q.db.Query(ctx, listGrantsByUser,
+		arg.UserID,
+		arg.Column2,
+		arg.Limit,
+		arg.Column4,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -147,6 +158,7 @@ func (q *Queries) ListGrantsByUser(ctx context.Context, arg ListGrantsByUserPara
 		var i ListGrantsByUserRow
 		if err := rows.Scan(
 			&i.GrantID,
+			&i.ProjectID,
 			&i.ParentGrantID,
 			&i.PrincipalID,
 			&i.SubjectID,
@@ -169,12 +181,13 @@ func (q *Queries) ListGrantsByUser(ctx context.Context, arg ListGrantsByUserPara
 
 const putGrant = `-- name: PutGrant :exec
 INSERT INTO grants (
-    grant_id, parent_grant_id, principal_id, subject_id, capabilities,
+    grant_id, project_id, parent_grant_id, principal_id, subject_id, capabilities,
     resource_globs, max_value_cents, max_depth, expires_at, parent_signature, user_id
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
 )
 ON CONFLICT (grant_id) DO UPDATE SET
+    project_id = EXCLUDED.project_id,
     parent_grant_id = EXCLUDED.parent_grant_id,
     principal_id = EXCLUDED.principal_id,
     subject_id = EXCLUDED.subject_id,
@@ -189,6 +202,7 @@ ON CONFLICT (grant_id) DO UPDATE SET
 
 type PutGrantParams struct {
 	GrantID         string
+	ProjectID       pgtype.UUID
 	ParentGrantID   string
 	PrincipalID     string
 	SubjectID       string
@@ -204,6 +218,7 @@ type PutGrantParams struct {
 func (q *Queries) PutGrant(ctx context.Context, arg PutGrantParams) error {
 	_, err := q.db.Exec(ctx, putGrant,
 		arg.GrantID,
+		arg.ProjectID,
 		arg.ParentGrantID,
 		arg.PrincipalID,
 		arg.SubjectID,

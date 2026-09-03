@@ -57,7 +57,6 @@ func (s *ProjectSvc) ListProjects(ctx context.Context, req *ledgerv1.ListProject
 	return &ledgerv1.ListProjectsResponse{Projects: out, NextPageToken: next}, nil
 }
 
-
 type APIKeySvc struct {
 	ledgerv1.UnimplementedApiKeyServiceServer
 	keys     ports.APIKeyStore

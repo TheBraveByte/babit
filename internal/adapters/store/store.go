@@ -21,6 +21,14 @@ func ctxUserUUID(ctx context.Context) pgtype.UUID {
 	return id
 }
 
+func toUUID(s string) pgtype.UUID {
+	var id pgtype.UUID
+	if s != "" {
+		_ = id.Scan(s)
+	}
+	return id
+}
+
 func lookupErr(err error, entity, id string) error {
 	if errors.Is(err, pgx.ErrNoRows) {
 		return errs.New(errs.NotFound, "%s %s not found", entity, id)

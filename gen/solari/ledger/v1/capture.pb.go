@@ -363,6 +363,7 @@ type ListSessionsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,3,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -407,6 +408,13 @@ func (x *ListSessionsRequest) GetPageSize() int32 {
 func (x *ListSessionsRequest) GetPageToken() string {
 	if x != nil {
 		return x.PageToken
+	}
+	return ""
+}
+
+func (x *ListSessionsRequest) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
 	}
 	return ""
 }
@@ -492,11 +500,13 @@ const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"I\n" +
 	"\x12EndSessionResponse\x123\n" +
-	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"Q\n" +
+	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"p\n" +
 	"\x13ListSessionsRequest\x12\x1b\n" +
 	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
 	"\n" +
-	"page_token\x18\x02 \x01(\tR\tpageToken\"u\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x03 \x01(\tR\tprojectId\"u\n" +
 	"\x14ListSessionsResponse\x125\n" +
 	"\bsessions\x18\x01 \x03(\v2\x19.solari.ledger.v1.SessionR\bsessions\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\xc6\x05\n" +

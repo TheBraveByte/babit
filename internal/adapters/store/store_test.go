@@ -79,7 +79,7 @@ func TestEventsAppendAndWORM(t *testing.T) {
 	ev := &ledgerv1.ActionEvent{
 		EventId: "evt_worm1", SessionId: "ses_worm", Sequence: 1,
 		Surface: ledgerv1.Surface_SURFACE_SANDBOX, ActionType: "exec", GrantId: "grn_c",
-		OccurredAt: timestamppb.New(time.Now()),
+		OccurredAt:  timestamppb.New(time.Now()),
 		ContentHash: []byte("c"), PrevHash: []byte("p"), NotarySignature: []byte("s"),
 	}
 	if err := st.Events().Append(ctx, ev); err != nil {

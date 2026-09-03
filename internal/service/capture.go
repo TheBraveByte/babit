@@ -27,8 +27,13 @@ func NewCapture(sessions ports.SessionStore, grants ports.GrantStore, verifier p
 }
 
 func (c *Capture) BeginSession(ctx context.Context, req *ledgerv1.BeginSessionRequest) (*ledgerv1.BeginSessionResponse, error) {
+	grant, err := c.grants.Get(ctx, req.GetRootGrantId())
+	if err != nil {
+		return nil, err
+	}
 	s := &ledgerv1.Session{
 		SessionId:   c.ids.New(),
+		ProjectId:   grant.GetProjectId(),
 		RootGrantId: req.GetRootGrantId(),
 		Surface:     req.GetSurface(),
 		StartedAt:   timestamppb.New(c.clock.Now()),
@@ -64,6 +69,7 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 	}
 	draft := &ledgerv1.ActionEvent{
 		EventId:       c.ids.New(),
+		ProjectId:     session.GetProjectId(),
 		SessionId:     req.GetSessionId(),
 		Sequence:      seq,
 		Surface:       session.GetSurface(),
@@ -110,10 +116,9 @@ func (c *Capture) ListSessions(ctx context.Context, req *ledgerv1.ListSessionsRe
 	if auth.UserID(ctx) == "" {
 		return nil, errs.New(errs.Unauthenticated, "not authenticated")
 	}
-	sessions, next, err := c.sessions.List(ctx, req.GetPageSize(), req.GetPageToken())
+	sessions, next, err := c.sessions.List(ctx, req.GetProjectId(), req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
 	return &ledgerv1.ListSessionsResponse{Sessions: sessions, NextPageToken: next}, nil
 }
-

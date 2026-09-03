@@ -23,13 +23,14 @@ message Grant {
     example: "{\"grant_id\":\"BAL-417849\",\"parent_grant_id\":\"BAL-100200\",\"principal_id\":\"usr_alice\",\"subject_id\":\"agt_shopper\",\"capabilities\":[\"browser.click\",\"browser.type\"],\"scope\":{\"resource_globs\":[\"https://shop.example.com/*\"],\"max_value_cents\":50000,\"max_depth\":2},\"expires_at\":\"2026-09-01T18:00:00Z\"}"
   };
   string grant_id = 1;
-  string parent_grant_id = 2;
-  string principal_id = 3;
-  string subject_id = 4;
-  repeated string capabilities = 5;
-  Scope scope = 6;
-  google.protobuf.Timestamp expires_at = 7;
-  bytes parent_signature = 8;
+  string project_id = 2;
+  string parent_grant_id = 3;
+  string principal_id = 4;
+  string subject_id = 5;
+  repeated string capabilities = 6;
+  Scope scope = 7;
+  google.protobuf.Timestamp expires_at = 8;
+  bytes parent_signature = 9;
 }
 
 message Scope {
@@ -50,19 +51,20 @@ message ActionEvent {
     example: "{\"event_id\":\"BAL-778812\",\"session_id\":\"BAL-4a1055\",\"sequence\":7,\"surface\":\"SURFACE_BROWSER\",\"action_type\":\"browser.click\",\"grant_id\":\"BAL-417849\",\"recording_ref\":\"slr://session/demo\",\"occurred_at\":\"2026-09-01T12:03:11Z\"}"
   };
   string event_id = 1;
-  string session_id = 2;
-  int64 sequence = 3;
-  Surface surface = 4;
-  string action_type = 5;
-  bytes action_payload = 6;
-  string grant_id = 7;
-  bytes pre_state_hash = 8;
-  bytes post_state_hash = 9;
-  string recording_ref = 10;
-  google.protobuf.Timestamp occurred_at = 11;
-  bytes content_hash = 12;
-  bytes prev_hash = 13;
-  bytes notary_signature = 14;
+  string project_id = 2;
+  string session_id = 3;
+  int64 sequence = 4;
+  Surface surface = 5;
+  string action_type = 6;
+  bytes action_payload = 7;
+  string grant_id = 8;
+  bytes pre_state_hash = 9;
+  bytes post_state_hash = 10;
+  string recording_ref = 11;
+  google.protobuf.Timestamp occurred_at = 12;
+  bytes content_hash = 13;
+  bytes prev_hash = 14;
+  bytes notary_signature = 15;
 }
 
 message Proof {
@@ -88,11 +90,12 @@ message Anchor {
 
 message Session {
   string session_id = 1;
-  string root_grant_id = 2;
-  Surface surface = 3;
-  google.protobuf.Timestamp started_at = 4;
-  google.protobuf.Timestamp ended_at = 5;
-  int64 event_count = 6;
+  string project_id = 2;
+  string root_grant_id = 3;
+  Surface surface = 4;
+  google.protobuf.Timestamp started_at = 5;
+  google.protobuf.Timestamp ended_at = 6;
+  int64 event_count = 7;
 }
 
 message PageRequest {

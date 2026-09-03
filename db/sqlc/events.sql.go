@@ -13,16 +13,17 @@ import (
 
 const appendEvent = `-- name: AppendEvent :exec
 INSERT INTO events (
-    event_id, session_id, sequence, surface, action_type, action_payload,
+    event_id, project_id, session_id, sequence, surface, action_type, action_payload,
     grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at,
     content_hash, prev_hash, notary_signature
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
 )
 `
 
 type AppendEventParams struct {
 	EventID         string
+	ProjectID       pgtype.UUID
 	SessionID       string
 	Sequence        int64
 	Surface         int32
@@ -41,6 +42,7 @@ type AppendEventParams struct {
 func (q *Queries) AppendEvent(ctx context.Context, arg AppendEventParams) error {
 	_, err := q.db.Exec(ctx, appendEvent,
 		arg.EventID,
+		arg.ProjectID,
 		arg.SessionID,
 		arg.Sequence,
 		arg.Surface,
@@ -59,7 +61,7 @@ func (q *Queries) AppendEvent(ctx context.Context, arg AppendEventParams) error 
 }
 
 const eventsBySession = `-- name: EventsBySession :many
-SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid FROM events
+SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid, project_id FROM events
 WHERE session_id = $1
 ORDER BY sequence
 `
@@ -89,6 +91,7 @@ func (q *Queries) EventsBySession(ctx context.Context, sessionID string) ([]Even
 			&i.PrevHash,
 			&i.NotarySignature,
 			&i.Uuid,
+			&i.ProjectID,
 		); err != nil {
 			return nil, err
 		}
@@ -101,7 +104,7 @@ func (q *Queries) EventsBySession(ctx context.Context, sessionID string) ([]Even
 }
 
 const eventsInRange = `-- name: EventsInRange :many
-SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid FROM events
+SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid, project_id FROM events
 WHERE sequence >= $1 AND sequence <= $2
 ORDER BY sequence
 `
@@ -136,6 +139,7 @@ func (q *Queries) EventsInRange(ctx context.Context, arg EventsInRangeParams) ([
 			&i.PrevHash,
 			&i.NotarySignature,
 			&i.Uuid,
+			&i.ProjectID,
 		); err != nil {
 			return nil, err
 		}
@@ -148,7 +152,7 @@ func (q *Queries) EventsInRange(ctx context.Context, arg EventsInRangeParams) ([
 }
 
 const getEvent = `-- name: GetEvent :one
-SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid FROM events WHERE event_id = $1
+SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid, project_id FROM events WHERE event_id = $1
 `
 
 func (q *Queries) GetEvent(ctx context.Context, eventID string) (Event, error) {
@@ -170,12 +174,13 @@ func (q *Queries) GetEvent(ctx context.Context, eventID string) (Event, error) {
 		&i.PrevHash,
 		&i.NotarySignature,
 		&i.Uuid,
+		&i.ProjectID,
 	)
 	return i, err
 }
 
 const lastEventBySession = `-- name: LastEventBySession :one
-SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid FROM events
+SELECT event_id, session_id, sequence, surface, action_type, action_payload, grant_id, pre_state_hash, post_state_hash, recording_ref, occurred_at, content_hash, prev_hash, notary_signature, uuid, project_id FROM events
 WHERE session_id = $1
 ORDER BY sequence DESC
 LIMIT 1
@@ -200,15 +205,17 @@ func (q *Queries) LastEventBySession(ctx context.Context, sessionID string) (Eve
 		&i.PrevHash,
 		&i.NotarySignature,
 		&i.Uuid,
+		&i.ProjectID,
 	)
 	return i, err
 }
 
 const listEventsByUser = `-- name: ListEventsByUser :many
-SELECT e.event_id, e.session_id, e.sequence, e.surface, e.action_type, e.action_payload, e.grant_id, e.pre_state_hash, e.post_state_hash, e.recording_ref, e.occurred_at, e.content_hash, e.prev_hash, e.notary_signature, e.uuid FROM events e
+SELECT e.event_id, e.session_id, e.sequence, e.surface, e.action_type, e.action_payload, e.grant_id, e.pre_state_hash, e.post_state_hash, e.recording_ref, e.occurred_at, e.content_hash, e.prev_hash, e.notary_signature, e.uuid, e.project_id FROM events e
 JOIN sessions s ON e.session_id = s.session_id
 WHERE s.user_id = $1
   AND ($2::text = '' OR e.event_id < $2::text)
+  AND ($4::text = '' OR e.project_id::text = $4)
 ORDER BY e.event_id DESC
 LIMIT $3
 `
@@ -217,10 +224,16 @@ type ListEventsByUserParams struct {
 	UserID  pgtype.UUID
 	Column2 string
 	Limit   int32
+	Column4 string
 }
 
 func (q *Queries) ListEventsByUser(ctx context.Context, arg ListEventsByUserParams) ([]Event, error) {
-	rows, err := q.db.Query(ctx, listEventsByUser, arg.UserID, arg.Column2, arg.Limit)
+	rows, err := q.db.Query(ctx, listEventsByUser,
+		arg.UserID,
+		arg.Column2,
+		arg.Limit,
+		arg.Column4,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -244,6 +257,7 @@ func (q *Queries) ListEventsByUser(ctx context.Context, arg ListEventsByUserPara
 			&i.PrevHash,
 			&i.NotarySignature,
 			&i.Uuid,
+			&i.ProjectID,
 		); err != nil {
 			return nil, err
 		}

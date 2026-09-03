@@ -183,6 +183,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       }
@@ -271,6 +277,12 @@
           },
           {
             "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "project_id",
             "in": "query",
             "required": false,
             "type": "string"
@@ -655,6 +667,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       },
@@ -948,6 +966,9 @@
       },
       "properties": {
         "event_id": {
+          "type": "string"
+        },
+        "project_id": {
           "type": "string"
         },
         "session_id": {
@@ -1283,6 +1304,9 @@
         "grant_id": {
           "type": "string"
         },
+        "project_id": {
+          "type": "string"
+        },
         "parent_grant_id": {
           "type": "string"
         },
@@ -1325,6 +1349,9 @@
         },
         "scope": {
           "$ref": "#/definitions/v1Scope"
+        },
+        "project_id": {
+          "type": "string"
         }
       }
     },
@@ -1543,6 +1570,9 @@
       "type": "object",
       "properties": {
         "session_id": {
+          "type": "string"
+        },
+        "project_id": {
           "type": "string"
         },
         "root_grant_id": {

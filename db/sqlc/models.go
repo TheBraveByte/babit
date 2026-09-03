@@ -36,6 +36,7 @@ type Event struct {
 	PrevHash        []byte
 	NotarySignature []byte
 	Uuid            pgtype.UUID
+	ProjectID       pgtype.UUID
 }
 
 type Grant struct {
@@ -51,6 +52,7 @@ type Grant struct {
 	ParentSignature []byte
 	Uuid            pgtype.UUID
 	UserID          pgtype.UUID
+	ProjectID       pgtype.UUID
 }
 
 type Project struct {
@@ -75,6 +77,7 @@ type Session struct {
 	EventCount  int64
 	Uuid        pgtype.UUID
 	UserID      pgtype.UUID
+	ProjectID   pgtype.UUID
 }
 
 type User struct {

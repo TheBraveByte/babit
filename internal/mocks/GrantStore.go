@@ -241,8 +241,8 @@ func (_c *MockGrantStore_IsRevoked_Call) RunAndReturn(run func(ctx context.Conte
 }
 
 // List provides a mock function for the type MockGrantStore
-func (_mock *MockGrantStore) List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.Grant, string, error) {
-	ret := _mock.Called(ctx, pageSize, pageToken)
+func (_mock *MockGrantStore) List(ctx context.Context, projectID string, pageSize int32, pageToken string) ([]*ledgerv1.Grant, string, error) {
+	ret := _mock.Called(ctx, projectID, pageSize, pageToken)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
@@ -251,23 +251,23 @@ func (_mock *MockGrantStore) List(ctx context.Context, pageSize int32, pageToken
 	var r0 []*ledgerv1.Grant
 	var r1 string
 	var r2 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, int32, string) ([]*ledgerv1.Grant, string, error)); ok {
-		return returnFunc(ctx, pageSize, pageToken)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, int32, string) ([]*ledgerv1.Grant, string, error)); ok {
+		return returnFunc(ctx, projectID, pageSize, pageToken)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, int32, string) []*ledgerv1.Grant); ok {
-		r0 = returnFunc(ctx, pageSize, pageToken)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, int32, string) []*ledgerv1.Grant); ok {
+		r0 = returnFunc(ctx, projectID, pageSize, pageToken)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*ledgerv1.Grant)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, int32, string) string); ok {
-		r1 = returnFunc(ctx, pageSize, pageToken)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, int32, string) string); ok {
+		r1 = returnFunc(ctx, projectID, pageSize, pageToken)
 	} else {
 		r1 = ret.Get(1).(string)
 	}
-	if returnFunc, ok := ret.Get(2).(func(context.Context, int32, string) error); ok {
-		r2 = returnFunc(ctx, pageSize, pageToken)
+	if returnFunc, ok := ret.Get(2).(func(context.Context, string, int32, string) error); ok {
+		r2 = returnFunc(ctx, projectID, pageSize, pageToken)
 	} else {
 		r2 = ret.Error(2)
 	}
@@ -281,30 +281,36 @@ type MockGrantStore_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
+//   - projectID string
 //   - pageSize int32
 //   - pageToken string
-func (_e *MockGrantStore_Expecter) List(ctx any, pageSize any, pageToken any) *MockGrantStore_List_Call {
-	return &MockGrantStore_List_Call{Call: _e.mock.On("List", ctx, pageSize, pageToken)}
+func (_e *MockGrantStore_Expecter) List(ctx any, projectID any, pageSize any, pageToken any) *MockGrantStore_List_Call {
+	return &MockGrantStore_List_Call{Call: _e.mock.On("List", ctx, projectID, pageSize, pageToken)}
 }
 
-func (_c *MockGrantStore_List_Call) Run(run func(ctx context.Context, pageSize int32, pageToken string)) *MockGrantStore_List_Call {
+func (_c *MockGrantStore_List_Call) Run(run func(ctx context.Context, projectID string, pageSize int32, pageToken string)) *MockGrantStore_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 int32
+		var arg1 string
 		if args[1] != nil {
-			arg1 = args[1].(int32)
+			arg1 = args[1].(string)
 		}
-		var arg2 string
+		var arg2 int32
 		if args[2] != nil {
-			arg2 = args[2].(string)
+			arg2 = args[2].(int32)
+		}
+		var arg3 string
+		if args[3] != nil {
+			arg3 = args[3].(string)
 		}
 		run(
 			arg0,
 			arg1,
 			arg2,
+			arg3,
 		)
 	})
 	return _c
@@ -315,7 +321,7 @@ func (_c *MockGrantStore_List_Call) Return(grants []*ledgerv1.Grant, s string, e
 	return _c
 }
 
-func (_c *MockGrantStore_List_Call) RunAndReturn(run func(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.Grant, string, error)) *MockGrantStore_List_Call {
+func (_c *MockGrantStore_List_Call) RunAndReturn(run func(ctx context.Context, projectID string, pageSize int32, pageToken string) ([]*ledgerv1.Grant, string, error)) *MockGrantStore_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

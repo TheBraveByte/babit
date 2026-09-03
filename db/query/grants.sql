@@ -1,11 +1,12 @@
 -- name: PutGrant :exec
 INSERT INTO grants (
-    grant_id, parent_grant_id, principal_id, subject_id, capabilities,
+    grant_id, project_id, parent_grant_id, principal_id, subject_id, capabilities,
     resource_globs, max_value_cents, max_depth, expires_at, parent_signature, user_id
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
 )
 ON CONFLICT (grant_id) DO UPDATE SET
+    project_id = EXCLUDED.project_id,
     parent_grant_id = EXCLUDED.parent_grant_id,
     principal_id = EXCLUDED.principal_id,
     subject_id = EXCLUDED.subject_id,
@@ -31,7 +32,7 @@ WITH RECURSIVE chain AS (
     JOIN chain c ON p.grant_id = c.parent_grant_id
     WHERE c.parent_grant_id <> ''
 )
-SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities,
+SELECT grant_id, project_id, parent_grant_id, principal_id, subject_id, capabilities,
        resource_globs, max_value_cents, max_depth, expires_at, parent_signature
 FROM chain
 ORDER BY depth DESC;
@@ -45,10 +46,11 @@ ON CONFLICT (grant_id) DO UPDATE SET reason = EXCLUDED.reason;
 SELECT EXISTS (SELECT 1 FROM revocations WHERE grant_id = $1);
 
 -- name: ListGrantsByUser :many
-SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities,
+SELECT grant_id, project_id, parent_grant_id, principal_id, subject_id, capabilities,
        resource_globs, max_value_cents, max_depth, expires_at, parent_signature
 FROM grants
 WHERE user_id = $1
   AND ($2::text = '' OR grant_id < $2::text)
+  AND ($4::text = '' OR project_id::text = $4)
 ORDER BY grant_id DESC
 LIMIT $3;
