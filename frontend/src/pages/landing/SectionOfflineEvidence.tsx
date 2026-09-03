@@ -56,48 +56,43 @@ export function SectionOfflineEvidence() {
         className="dark relative overflow-hidden"
         style={{ backgroundColor: "var(--bg)" }}
       >
-        {/* Globe centered, massive */}
-        <div className="relative min-h-[560px] flex items-center justify-center py-20">
-          {/* Radial glow behind the globe */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: "radial-gradient(circle at 50% 50%, var(--brand-accent-subtle) 0%, transparent 50%)",
-            }}
-          />
+        {/* Dot grid + radial glow background */}
+        <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "radial-gradient(circle at 50% 65%, var(--brand-accent-subtle) 0%, transparent 55%)",
+          }}
+        />
 
-          {/* Dot grid background */}
-          <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
+        <div className="relative z-10 min-h-[760px] flex flex-col items-center justify-center py-24 px-6">
+          {/* Text above the globe */}
+          <div className="text-center max-w-xl">
+            <p className="type-eyebrow" style={{ color: "var(--brand-accent)" }}>
+              Public anchoring
+            </p>
+            <h2
+              className="mt-4 font-semibold tracking-[-0.028em] leading-tight"
+              style={{ color: "var(--fg)", fontSize: "clamp(1.9rem, 3.4vw, 2.75rem)" }}
+            >
+              Witnessed where babit can't reach.
+            </h2>
+            <p
+              className="mt-5 max-w-md mx-auto"
+              style={{ color: "var(--muted)", fontSize: "clamp(1.0625rem, 1.4vw, 1.25rem)", lineHeight: 1.55 }}
+            >
+              Each session's Merkle root is published to a public transparency log,
+              so a receipt can be checked against a record babit does not control.
+            </p>
+          </div>
 
-          {/* The globe — 500px, centered */}
-          <div className="relative z-10 flex flex-col items-center">
+          {/* The globe — 500px, centered below the text */}
+          <div className="mt-12">
             <Suspense fallback={<div style={{ width: 500, height: 500 }} />}>
               <div style={{ width: 500, height: 500, flexShrink: 0 }}>
                 <AnchorGlobe size={500} />
               </div>
             </Suspense>
-          </div>
-
-          {/* Overlay text — positioned around the globe */}
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none">
-            <div className="text-center px-6" style={{ marginTop: "-340px" }}>
-              <p className="type-eyebrow" style={{ color: "var(--brand-accent)" }}>
-                Public anchoring
-              </p>
-              <h2
-                className="mt-3 font-semibold tracking-[-0.028em] leading-tight"
-                style={{ color: "var(--fg)", fontSize: "clamp(1.9rem, 3.4vw, 2.75rem)" }}
-              >
-                Witnessed where babit can't reach.
-              </h2>
-              <p
-                className="mt-4 max-w-md mx-auto"
-                style={{ color: "var(--muted)", fontSize: "clamp(1.0625rem, 1.4vw, 1.25rem)", lineHeight: 1.55 }}
-              >
-                Each session's Merkle root is published to a public transparency log,
-                so a receipt can be checked against a record babit does not control.
-              </p>
-            </div>
           </div>
         </div>
       </section>

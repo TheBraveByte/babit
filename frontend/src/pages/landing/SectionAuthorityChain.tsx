@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import type { Node, Edge } from "@xyflow/react";
 import type { GrantNodeData } from "../../components/viz/AuthorityGraph";
-import { Section, LandingCard } from "./Section";
 
 const AuthorityGraph = lazy(() =>
   import("../../components/viz/AuthorityGraph").then((m) => ({ default: m.AuthorityGraph })),
@@ -95,23 +94,37 @@ const HOW_TO_READ = [
 
 export function SectionAuthorityChain() {
   return (
-    <Section id="authority">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        {/* Left: heading + how to read it */}
-        <div className="space-y-8">
-          <div>
-            <p className="type-eyebrow mb-4">Authority</p>
-            <h2 className="type-h2" style={{ color: "var(--fg)" }}>
-              Every action traces back to a person.
-            </h2>
-            <p className="type-lead mt-5">
-              A person authorizes an agent, which can hand a narrower slice to a sub-agent.
-              Revoke a grant and everything below it greys out.
-            </p>
-          </div>
+    <section
+      id="authority"
+      className="dark relative overflow-hidden section-y-lg"
+      style={{ backgroundColor: "var(--bg)" }}
+    >
+      <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 70% 50% at 70% 50%, var(--brand-accent-subtle), transparent 70%)",
+        }}
+      />
+      <div className="container-babit relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left: heading + how to read it */}
+          <div className="space-y-8">
+            <div>
+              <p className="type-eyebrow mb-4" style={{ color: "var(--brand-accent)" }}>Authority</p>
+              <h2 className="type-h2" style={{ color: "var(--fg)" }}>
+                Every action traces back to a person.
+              </h2>
+              <p className="type-lead mt-5">
+                A person authorizes an agent, which can hand a narrower slice to a sub-agent.
+                Revoke a grant and everything below it greys out.
+              </p>
+            </div>
 
-          <LandingCard padding="none">
-            <div className="p-5 space-y-3 text-xs">
+            <div
+              className="rounded-babit-lg p-5 space-y-3 text-xs"
+              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
+            >
               <div
                 className="flex items-center justify-between pb-2"
                 style={{ borderBottom: "1px solid var(--border-subtle)" }}
@@ -133,16 +146,23 @@ export function SectionAuthorityChain() {
                 ))}
               </ul>
             </div>
-          </LandingCard>
-        </div>
+          </div>
 
-        {/* Right: the real interactive delegation DAG */}
-        <LandingCard padding="none" emphasis="raised" className="overflow-hidden">
-          <Suspense fallback={<div style={{ height: 420 }} />}>
-            <AuthorityGraph nodes={NODES} edges={EDGES} height={420} />
-          </Suspense>
-        </LandingCard>
+          {/* Right: the real interactive delegation DAG */}
+          <div
+            className="rounded-babit-lg overflow-hidden"
+            style={{
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--border)",
+              boxShadow: "0 1px 3px 0 rgba(0,0,0,0.05), 0 32px 64px -32px rgba(0,0,0,0.6)",
+            }}
+          >
+            <Suspense fallback={<div style={{ height: 420 }} />}>
+              <AuthorityGraph nodes={NODES} edges={EDGES} height={420} />
+            </Suspense>
+          </div>
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }

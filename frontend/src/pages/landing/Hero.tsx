@@ -143,6 +143,31 @@ export function Hero() {
         </div>
       </div>
 
+      {/* ── Mobile SealingStream (visible below the message on small screens) ── */}
+      <div
+        className="dark relative overflow-hidden lg:hidden"
+        style={{ backgroundColor: "var(--bg)", borderTop: "1px solid var(--border)" }}
+      >
+        <div className="relative h-[360px]">
+          <SealingStream className="absolute inset-0 w-full h-full" />
+          <div className="absolute top-0 left-0 right-0 p-6 pointer-events-none">
+            <p className="type-eyebrow" style={{ color: "var(--muted)" }}>
+              Live · evidence pipeline
+            </p>
+            <h2
+              className="mt-2 text-[18px] font-semibold tracking-[-0.02em] leading-tight max-w-[280px]"
+              style={{ color: "var(--fg)" }}
+            >
+              Every agent action, sealed as it happens.
+            </h2>
+          </div>
+          <div
+            className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
+            style={{ background: "linear-gradient(to top, var(--bg) 0%, transparent 100%)" }}
+          />
+        </div>
+      </div>
+
       {/* ── Interactive receipt below the fold ──────────────────────── */}
       <div className="container-babit py-24 lg:py-32">
         <div className="grid lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] gap-14 items-center">
