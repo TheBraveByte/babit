@@ -3,7 +3,6 @@ import { useRouter } from "@/lib/router";
 import { IconCheck, IconRefresh, IconCopy } from "@/lib/icons";
 import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
 import { docsUrl } from "@/lib/links";
-import { EvidenceLedger } from "@/components/viz/EvidenceLedger";
 
 const PRESETS = [
   { name: "Payout", action: "Approved a $4,200 insurance payout", agent: "claims-agent", principal: "Alice, Risk Supervisor", grantId: "BAL-DEL-8921", resource: "claims/48102", amount: 4200.0 },
@@ -40,16 +39,6 @@ export function Hero() {
   return (
     <section className="mesh-bg pt-24 pb-24 sm:pt-28 sm:pb-32 relative overflow-hidden">
       <div className="absolute inset-0 grid-fade pointer-events-none" />
-      {/* The append-only evidence chain the whole hero rests on (real ActionEvent model) */}
-      <div
-        className="absolute inset-x-0 bottom-0 h-28 opacity-60 pointer-events-none hidden sm:block"
-        style={{
-          maskImage: "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
-          WebkitMaskImage: "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
-        }}
-      >
-        <EvidenceLedger className="w-full h-full" />
-      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] gap-14 lg:gap-16 items-center">

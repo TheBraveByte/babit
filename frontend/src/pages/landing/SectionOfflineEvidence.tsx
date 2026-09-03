@@ -73,22 +73,20 @@ export function SectionOfflineEvidence() {
           <div className="relative rounded-babit-lg p-6 glass animate-float-up overflow-hidden flex flex-col lg:col-span-2 lg:row-span-3">
             <div className="h-px accent-hairline absolute inset-x-0 top-0" />
 
-            {/* Ambient globe: the sealed root is published to a public transparency log,
-                so a receipt is verifiable anywhere. Decorative, never dominant. */}
+            {/* The sealed root is published to a public transparency log, so a receipt is
+                verifiable anywhere. Now a clearly visible globe. */}
             <div
               className="absolute pointer-events-none hidden lg:block"
               style={{
-                top: "42%",
-                right: "-16%",
+                top: "48%",
+                right: "-4%",
                 transform: "translateY(-50%)",
-                opacity: 0.7,
-                maskImage: "radial-gradient(circle at center, black 55%, transparent 78%)",
-                WebkitMaskImage: "radial-gradient(circle at center, black 55%, transparent 78%)",
+                opacity: 0.95,
               }}
             >
-              <div className="ambient-glow" style={{ inset: "8%" }} />
+              <div className="ambient-glow" style={{ inset: "6%", opacity: 0.6 }} />
               <Suspense fallback={null}>
-                <AnchorGlobe size={440} className="relative" />
+                <AnchorGlobe size={360} className="relative" />
               </Suspense>
             </div>
 
