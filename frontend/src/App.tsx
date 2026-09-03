@@ -42,12 +42,13 @@ function Boundary({ children }: { children: ReactNode }) {
 
 export function App() {
   const { path, navigate } = useRouter();
+  const route = path.split("?")[0]; // strip query string for matching
 
-  if (path === "/" || path === "") return <Landing />;
-  if (path === "/login") return <Login />;
-  if (path === "/signup") return <Signup />;
-  if (path === "/forgot-password") return <ForgotPassword />;
-  if (path === "/api" || path === "/docs/api") {
+  if (route === "/" || route === "") return <Landing />;
+  if (route === "/login") return <Login />;
+  if (route === "/signup") return <Signup />;
+  if (route === "/forgot-password") return <ForgotPassword />;
+  if (route === "/api" || route === "/docs/api") {
     return (
       <Boundary>
         <ApiReference />
@@ -55,8 +56,8 @@ export function App() {
     );
   }
 
-  if (path.startsWith("/dashboard")) {
-    const parts = path.split("/");
+  if (route.startsWith("/dashboard")) {
+    const parts = route.split("/");
     const activeTab = (parts[2] as DashboardTab) || "overview";
     const handleTabChange = (tab: DashboardTab) => navigate(`/dashboard/${tab}`);
 

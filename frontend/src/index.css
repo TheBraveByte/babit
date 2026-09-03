@@ -126,6 +126,18 @@ button:focus-visible {
   .container-babit { padding-inline: 40px; }
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .section-y  { padding-block: 72px; }
 .section-y-lg { padding-block: 96px; }
 @media (min-width: 768px) {

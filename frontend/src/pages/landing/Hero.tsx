@@ -107,8 +107,7 @@ export function Hero() {
             }}
           >
             Babit binds every autonomous action to the person who authorized it,
-            notary-seals it, and appends it to a ledger anyone can verify —
-            without trusting babit.
+            seals it, and appends it to a ledger anyone can verify without trusting babit.
           </p>
 
           {/* CTAs */}

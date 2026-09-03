@@ -20,10 +20,10 @@ export function NotFound() {
         </div>
         <div className="space-y-1">
           <h1 className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
-            404 — Page not found
+            404. Page not found.
           </h1>
           <p className="text-sm" style={{ color: "var(--muted)" }}>
-            That page does not exist. It may have moved or never been part of the ledger.
+            That page does not exist.
           </p>
         </div>
         <div className="flex items-center justify-center gap-3">

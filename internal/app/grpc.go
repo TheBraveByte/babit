@@ -115,9 +115,30 @@ func jwtInterceptor(secret string) grpc.UnaryServerInterceptor {
 					ctx = coreauth.WithUserID(ctx, uid)
 				}
 			}
+			if coreauth.UserID(ctx) == "" {
+				if vals := md.Get("cookie"); len(vals) > 0 {
+					for _, c := range vals {
+						if tok := parseCookieValue(c, "babit_session"); tok != "" {
+							if uid, err := coreauth.ParseToken(tok, secret); err == nil {
+								ctx = coreauth.WithUserID(ctx, uid)
+							}
+						}
+					}
+				}
+			}
 		}
 		return handler(ctx, req)
 	}
+}
+
+func parseCookieValue(raw, name string) string {
+	for _, part := range strings.Split(raw, ";") {
+		part = strings.TrimSpace(part)
+		if strings.HasPrefix(part, name+"=") {
+			return strings.TrimPrefix(part, name+"=")
+		}
+	}
+	return ""
 }
 
 func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {

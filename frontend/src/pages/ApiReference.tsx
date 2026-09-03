@@ -1,11 +1,21 @@
-import { ApiReferenceReact } from "@scalar/api-reference-react";
-import "@scalar/api-reference-react/style.css";
+import { useEffect, useState } from "react";
 import { Link } from "@/lib/router";
 import { BabitLogo } from "@/lib/icons";
-import spec from "../../openapi.v3.json";
-
 
 export function ApiReference() {
+  const [Scalar, setScalar] = useState<React.ComponentType<any> | null>(null);
+  const [spec, setSpec] = useState<Record<string, unknown> | null>(null);
+
+  useEffect(() => {
+    import("@scalar/api-reference-react").then((m) => {
+      setScalar(() => m.ApiReferenceReact);
+      import("@scalar/api-reference-react/style.css");
+    });
+    fetch("/openapi.v3.json").then((r) => r.json()).then(setSpec).catch(() => {
+      import("../../openapi.v3.json").then((m) => setSpec(m.default as Record<string, unknown>));
+    });
+  }, []);
+
   return (
     <div id="main-content" tabIndex={-1} className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
       <header
@@ -25,12 +35,16 @@ export function ApiReference() {
           Back to babit
         </Link>
       </header>
-      <ApiReferenceReact
-        configuration={{
-          content: spec as unknown as Record<string, unknown>,
-          hideModels: false,
-        }}
-      />
+      {Scalar && spec ? (
+        <Scalar configuration={{ content: spec, hideModels: false }} />
+      ) : (
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <div
+            className="w-5 h-5 rounded-full animate-spin"
+            style={{ border: "2px solid var(--border)", borderTopColor: "var(--brand-accent)" }}
+          />
+        </div>
+      )}
     </div>
   );
 }
