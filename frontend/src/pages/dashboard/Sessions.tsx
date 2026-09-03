@@ -14,6 +14,7 @@ import {
   StatusPill,
   TableSkeleton,
 } from "@/lib/ui";
+import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
 
 type Anchor = components["schemas"]["v1Anchor"];
@@ -57,6 +58,7 @@ export function Sessions() {
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const [anchorLoading, setAnchorLoading] = useState(false);
   const [anchorError, setAnchorError] = useState<string | null>(null);
+  const { selected: project } = useProject();
   const {
     items: sessions,
     loading,
@@ -67,11 +69,16 @@ export function Sessions() {
     loadMore,
   } = usePagination<Session>();
 
-  const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
-    const res = await api.GET("/v1/sessions", { params: { query: params } });
-    if (res.error) throw new Error(errText(res.error));
-    return { items: res.data?.sessions ?? [], next_page_token: res.data?.next_page_token };
-  }, []);
+  const fetcher = useCallback(
+    async (params: { page_size: number; page_token: string }) => {
+      const res = await api.GET("/v1/sessions", {
+        params: { query: { ...params, project_id: project?.id ?? "" } },
+      });
+      if (res.error) throw new Error(errText(res.error));
+      return { items: res.data?.sessions ?? [], next_page_token: res.data?.next_page_token };
+    },
+    [project?.id],
+  );
 
   useEffect(() => {
     refresh(fetcher, PAGE_SIZE);
