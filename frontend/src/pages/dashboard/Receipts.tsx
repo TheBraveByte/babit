@@ -4,6 +4,7 @@ import type { components } from "@/api/schema";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
 import { IconFileText, IconShieldCheck } from "@/lib/icons";
 import { Card, EmptyState, Error as ErrorBox, PageHeader, TableSkeleton } from "@/lib/ui";
+import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
 import { ReceiptDetail } from "./ReceiptDetail";
 
@@ -16,6 +17,7 @@ export function Receipts() {
   const [proof, setProof] = useState<Proof | null>(null);
   const [fetchingProof, setFetchingProof] = useState(false);
   const [proofError, setProofError] = useState<string | null>(null);
+  const { selected: project } = useProject();
   const {
     items: events,
     loading,
@@ -26,11 +28,16 @@ export function Receipts() {
     loadMore,
   } = usePagination<ActionEvent>();
 
-  const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
-    const res = await api.GET("/v1/events", { params: { query: params } });
-    if (res.error) throw new Error(errText(res.error));
-    return { items: res.data?.events ?? [], next_page_token: res.data?.next_page_token };
-  }, []);
+  const fetcher = useCallback(
+    async (params: { page_size: number; page_token: string }) => {
+      const res = await api.GET("/v1/events", {
+        params: { query: { ...params, project_id: project?.id ?? "" } },
+      });
+      if (res.error) throw new Error(errText(res.error));
+      return { items: res.data?.events ?? [], next_page_token: res.data?.next_page_token };
+    },
+    [project?.id],
+  );
 
   useEffect(() => {
     refresh(fetcher, PAGE_SIZE);

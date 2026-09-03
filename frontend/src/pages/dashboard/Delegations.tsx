@@ -16,6 +16,7 @@ import {
   StatusPill,
   TableSkeleton,
 } from "@/lib/ui";
+import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
 
 type VerifyChain = components["schemas"]["v1VerifyChainResponse"];
@@ -51,6 +52,7 @@ export function Delegations() {
   const [revokeError, setRevokeError] = useState<string | null>(null);
   const [revoked, setRevoked] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { selected: project } = useProject();
   const {
     items: grants,
     loading,
@@ -61,11 +63,16 @@ export function Delegations() {
     loadMore,
   } = usePagination<Grant>();
 
-  const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
-    const res = await api.GET("/v1/grants", { params: { query: params } });
-    if (res.error) throw new Error(errText(res.error));
-    return { items: res.data?.grants ?? [], next_page_token: res.data?.next_page_token };
-  }, []);
+  const fetcher = useCallback(
+    async (params: { page_size: number; page_token: string }) => {
+      const res = await api.GET("/v1/grants", {
+        params: { query: { ...params, project_id: project?.id ?? "" } },
+      });
+      if (res.error) throw new Error(errText(res.error));
+      return { items: res.data?.grants ?? [], next_page_token: res.data?.next_page_token };
+    },
+    [project?.id],
+  );
 
   useEffect(() => {
     refresh(fetcher, PAGE_SIZE);

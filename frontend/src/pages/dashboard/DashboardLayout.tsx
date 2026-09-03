@@ -18,6 +18,7 @@ import {
   IconShieldCheck,
   IconUser,
 } from "@/lib/icons";
+import { useProject } from "@/lib/project";
 import { docsUrl } from "@/lib/links";
 import { Link, useRouter } from "@/lib/router";
 import { ThemeToggle } from "@/lib/ThemeToggle";
@@ -74,6 +75,7 @@ export function DashboardLayout({
 }) {
   const { user, branding, logout } = useAuth();
   const { navigate } = useRouter();
+  const { projects, selected, selectProject } = useProject();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
@@ -379,6 +381,25 @@ export function DashboardLayout({
           </div>
 
           <div className="flex items-center gap-3">
+            {projects.length > 0 && (
+              <select
+                aria-label="Select project"
+                className="text-xs font-mono bg-transparent border border-[color:var(--border)] rounded-babit-sm px-2 py-1.5 text-[color:var(--fg)] focus:outline-none focus:ring-1 focus:ring-[color:var(--accent)]"
+                value={selected?.id ?? ""}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  const p = projects.find((x) => x.id === id);
+                  if (p) selectProject(p);
+                }}
+              >
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id ?? ""}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
             <ThemeToggle className="hover:bg-[var(--secondary)]" />
 
             <Link
