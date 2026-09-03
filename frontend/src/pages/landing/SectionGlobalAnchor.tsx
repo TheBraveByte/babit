@@ -43,7 +43,7 @@ export function SectionGlobalAnchor() {
           </div>
         </div>
 
-        <div className="relative h-[400px] lg:h-[500px]">
+        <div className="relative h-[520px] lg:h-[620px]">
           <Suspense fallback={null}>
             <AnchorGlobe className="w-full h-full" />
           </Suspense>

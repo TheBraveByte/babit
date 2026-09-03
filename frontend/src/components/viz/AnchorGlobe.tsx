@@ -91,7 +91,7 @@ export function AnchorGlobe({ className = "" }: { className?: string }) {
     const tick = () => {
       const cx = w / 2;
       const cy = h / 2;
-      const r = Math.min(w, h) * 0.38;
+      const r = Math.min(w, h) * 0.48;
 
       const isDark = theme === "dark";
       const accent = isDark ? "45, 212, 191" : "13, 148, 136";
@@ -105,8 +105,8 @@ export function AnchorGlobe({ className = "" }: { className?: string }) {
         sphereGrad.addColorStop(0, "rgba(10, 20, 19, 0.8)");
         sphereGrad.addColorStop(1, "rgba(5, 8, 7, 0.4)");
       } else {
-        sphereGrad.addColorStop(0, "rgba(240, 253, 250, 0.6)");
-        sphereGrad.addColorStop(1, "rgba(248, 250, 252, 0.3)");
+        sphereGrad.addColorStop(0, "rgba(240, 253, 250, 0.7)");
+        sphereGrad.addColorStop(1, "rgba(248, 250, 252, 0.4)");
       }
       ctx.fillStyle = sphereGrad;
       ctx.beginPath();
@@ -114,8 +114,8 @@ export function AnchorGlobe({ className = "" }: { className?: string }) {
       ctx.fill();
 
       // Draw latitude lines
-      ctx.strokeStyle = `rgba(${accent}, 0.08)`;
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = `rgba(${accent}, 0.12)`;
+      ctx.lineWidth = 1.2;
       for (let lat = -60; lat <= 60; lat += 30) {
         ctx.beginPath();
         const points: { x: number; y: number; z: number }[] = [];
@@ -161,8 +161,8 @@ export function AnchorGlobe({ className = "" }: { className?: string }) {
         const midR = r * 1.15;
         const mid = project(midLat, midLon, midR, cx, cy);
 
-        ctx.strokeStyle = `rgba(${accent}, 0.2)`;
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = `rgba(${accent}, 0.35)`;
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
         ctx.quadraticCurveTo(mid.x, mid.y, p2.x, p2.y);
@@ -175,23 +175,23 @@ export function AnchorGlobe({ className = "" }: { className?: string }) {
         if (!p.visible) return;
 
         // Glow
-        const glowGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 16);
-        glowGrad.addColorStop(0, `rgba(${accent}, 0.4)`);
+        const glowGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 20);
+        glowGrad.addColorStop(0, `rgba(${accent}, 0.5)`);
         glowGrad.addColorStop(1, `rgba(${accent}, 0)`);
         ctx.fillStyle = glowGrad;
-        ctx.fillRect(p.x - 16, p.y - 16, 32, 32);
+        ctx.fillRect(p.x - 20, p.y - 20, 40, 40);
 
         // Dot
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${accent}, 0.9)`;
+        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${accent}, 0.95)`;
         ctx.fill();
 
         // Ring
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(${accent}, 0.3)`;
-        ctx.lineWidth = 1;
+        ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${accent}, 0.4)`;
+        ctx.lineWidth = 1.2;
         ctx.stroke();
       });
 

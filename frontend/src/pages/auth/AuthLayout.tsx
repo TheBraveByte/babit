@@ -90,7 +90,7 @@ function AuthVisual() {
     >
       {/* Globe canvas — centered, sized to the panel */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[420px] h-[420px] opacity-90">
+        <div className="w-[520px] h-[520px] opacity-100">
           <Suspense fallback={null}>
             <AnchorGlobe className="w-full h-full" />
           </Suspense>
