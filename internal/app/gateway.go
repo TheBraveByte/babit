@@ -97,7 +97,12 @@ func withAuthCookies(h http.Handler) http.Handler {
 			}
 		}
 
-		w.WriteHeader(rw.status)
+		// Default to 200 if the handler didn't call WriteHeader
+		status := rw.status
+		if status == 0 {
+			status = http.StatusOK
+		}
+		w.WriteHeader(status)
 		_, _ = w.Write([]byte(rw.buf.String()))
 	})
 }
@@ -120,6 +125,9 @@ func (b *bufferedWriter) WriteHeader(status int) {
 }
 
 func (b *bufferedWriter) Write(p []byte) (int, error) {
+	if b.status == 0 {
+		b.status = http.StatusOK
+	}
 	return b.buf.Write(p)
 }
 
