@@ -1,5 +1,6 @@
 import { useState, lazy, Suspense } from "react";
 import { IconCheck, IconRefresh } from "@/lib/icons";
+import { Section, SectionHeader, LandingCard } from "./Section";
 
 const AnchorGlobe = lazy(() =>
   import("@/components/viz/AnchorGlobe").then((m) => ({ default: m.AnchorGlobe })),
@@ -49,137 +50,111 @@ export function SectionOfflineEvidence() {
   };
 
   return (
-    <section className="py-24 sm:py-32 border-t relative overflow-hidden" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg)" }}>
-      <div className="absolute inset-0 mesh-bg pointer-events-none" />
-      <div className="absolute inset-0 grid-fade pointer-events-none" />
+    <Section>
+      <SectionHeader
+        eyebrow="Offline verification"
+        title="Evidence that stands on its own."
+        lead="A receipt carries everything needed to check it, offline, without ever calling babit."
+      />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 relative z-10">
-        {/* Header */}
-        <div className="max-w-3xl space-y-4 animate-float-up">
-          <h2
-            className="text-3xl sm:text-4xl lg:text-[46px] font-semibold tracking-tight leading-tight"
-            style={{ color: "var(--fg)" }}
-          >
-            Evidence that stands on its own.
-          </h2>
-          <p className="text-[17px] leading-relaxed" style={{ color: "var(--muted)" }}>
-            A receipt carries everything needed to check it, offline, without ever calling babit.
-          </p>
-        </div>
+      <div className="mt-14 grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Public anchoring: the globe is the subject of its own panel, not a backdrop */}
+        <LandingCard padding="none" className="overflow-hidden flex flex-col">
+          <div className="px-6 pt-6">
+            <span className="type-eyebrow block" style={{ color: "var(--brand-accent)" }}>
+              Public anchoring
+            </span>
+            <h3 className="type-h3 mt-2" style={{ color: "var(--fg)" }}>
+              The sealed root is published where anyone can see it.
+            </h3>
+            <p className="type-body mt-2">
+              Each session's Merkle root is witnessed publicly, so a receipt can be checked against
+              a record babit does not control.
+            </p>
+          </div>
+          <div className="flex-1 flex items-center justify-center px-6 pt-4 pb-2">
+            <Suspense fallback={<div style={{ height: 340 }} />}>
+              <AnchorGlobe size={340} />
+            </Suspense>
+          </div>
+        </LandingCard>
 
-        {/* Bento grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* Dominant tile: the sealed root anchored to a public log, verified in a live terminal */}
-          <div className="relative rounded-babit-lg p-6 glass animate-float-up overflow-hidden flex flex-col lg:col-span-2 lg:row-span-3">
-            <div className="h-px accent-hairline absolute inset-x-0 top-0" />
-
-            {/* The sealed root is published to a public transparency log, so a receipt is
-                verifiable anywhere. Now a clearly visible globe. */}
-            <div
-              className="absolute pointer-events-none hidden lg:block"
-              style={{
-                top: "48%",
-                right: "-4%",
-                transform: "translateY(-50%)",
-                opacity: 0.95,
-              }}
-            >
-              <div className="ambient-glow" style={{ inset: "6%", opacity: 0.6 }} />
-              <Suspense fallback={null}>
-                <AnchorGlobe size={360} className="relative" />
-              </Suspense>
-            </div>
-
-            <div className="relative space-y-1.5 mb-5">
-              <span className="text-xs font-mono uppercase tracking-wider" style={{ color: "var(--brand-accent)" }}>
-                Check it yourself
-              </span>
-              <h3 className="text-xl font-semibold leading-snug tracking-tight" style={{ color: "var(--fg)" }}>
-                Run the check and watch it pass.
-              </h3>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-                The verifier reads the receipt and the public key, then confirms it offline. No call reaches babit.
-              </p>
-            </div>
-
-            {/* Live interactive terminal simulator */}
-            <div className="relative mt-auto">
-              <div className="ambient-glow animate-glow-pulse" style={{ inset: "-10% 4% 10% 4%" }} />
-              <div
-                className="relative rounded-babit overflow-hidden shadow-sm font-mono text-xs"
-                style={{
-                  backgroundColor: "#0A0C0C",
-                  border: "1px solid #222626",
-                }}
-              >
-                {/* Terminal window header */}
-                <div
-                  className="px-4 py-2.5 flex items-center justify-between"
-                  style={{
-                    backgroundColor: "#111414",
-                    borderBottom: "1px solid #222626",
-                  }}
-                >
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
-                    <span className="ml-2 text-[#929894] text-[11px]">terminal</span>
-                  </div>
-
-                  <button
-                    onClick={runCli}
-                    disabled={running}
-                    className="text-[11px] text-[#A2B0AC] hover:text-[#F5F6F4] flex items-center gap-1 cursor-pointer"
-                  >
-                    <IconRefresh className={`w-3 h-3 ${running ? "animate-spin" : ""}`} />
-                    <span>Run it</span>
-                  </button>
-                </div>
-
-                {/* Terminal output */}
-                <div className="p-5 space-y-2 text-[#F5F6F4]">
-                  <div className="text-[#8A9490]">$ babit verify rcpt_BAL_778812.json --public-key notary.pub</div>
-
-                  {running && <div className="text-amber-400">Checking the receipt offline…</div>}
-
-                  {output && (
-                    <div className="space-y-1.5 pt-1 animate-fade-in">
-                      <div className="text-emerald-400 flex items-center gap-1.5">
-                        <IconCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span>{output.sig}</span>
-                      </div>
-                      <div className="text-emerald-400 flex items-center gap-1.5">
-                        <IconCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span>{output.chain}</span>
-                      </div>
-                      <div className="text-emerald-400 flex items-center gap-1.5">
-                        <IconCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span>{output.auth}</span>
-                      </div>
-                      <div className="pt-2 text-[11px] text-[#737D79] border-t border-[#1C2020]">
-                        Checked offline in {output.duration}. No network calls to babit.
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+        {/* Live verification terminal */}
+        <LandingCard emphasis="raised" className="flex flex-col">
+          <div className="space-y-2 mb-5">
+            <span className="type-eyebrow block" style={{ color: "var(--brand-accent)" }}>
+              Check it yourself
+            </span>
+            <h3 className="type-h3" style={{ color: "var(--fg)" }}>
+              Run the check and watch it pass.
+            </h3>
+            <p className="type-body">
+              The verifier reads the receipt and the public key, then confirms it offline. No call
+              reaches babit.
+            </p>
           </div>
 
-          {/* Supporting tiles: the offline points */}
-          {POINTS.map((p, idx) => (
+          <div
+            className="mt-auto rounded-babit overflow-hidden font-mono text-xs"
+            style={{ backgroundColor: "#0A0C0C", border: "1px solid #222626" }}
+          >
+            {/* Terminal window header */}
             <div
-              key={p.title}
-              className="rounded-babit-lg p-6 space-y-2 h-full glass-subtle animate-float-up"
-              style={{ animationDelay: `${(idx + 1) * 80}ms` }}
+              className="px-4 py-2.5 flex items-center justify-between"
+              style={{ backgroundColor: "#111414", borderBottom: "1px solid #222626" }}
             >
-              <h3 className="text-[15px] font-semibold" style={{ color: "var(--fg)" }}>{p.title}</h3>
-              <p className="leading-relaxed text-sm" style={{ color: "var(--muted)" }}>{p.body}</p>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
+                <span className="ml-2 text-[#929894] text-[11px]">terminal</span>
+              </div>
+
+              <button
+                onClick={runCli}
+                disabled={running}
+                className="text-[11px] text-[#A2B0AC] hover:text-[#F5F6F4] flex items-center gap-1 cursor-pointer"
+              >
+                <IconRefresh className={`w-3 h-3 ${running ? "animate-spin" : ""}`} />
+                <span>Run it</span>
+              </button>
             </div>
-          ))}
-        </div>
+
+            {/* Terminal output */}
+            <div className="p-5 space-y-2 text-[#F5F6F4]">
+              <div className="text-[#8A9490]">$ babit verify rcpt_BAL_778812.json --public-key notary.pub</div>
+
+              {running && <div className="text-amber-400">Checking the receipt offline…</div>}
+
+              {output && (
+                <div className="space-y-1.5 pt-1 animate-fade-in">
+                  {[output.sig, output.chain, output.auth].map((line) => (
+                    <div key={line} className="text-emerald-400 flex items-center gap-1.5">
+                      <IconCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                      <span>{line}</span>
+                    </div>
+                  ))}
+                  <div className="pt-2 text-[11px] text-[#737D79] border-t border-[#1C2020]">
+                    Checked offline in {output.duration}. No network calls to babit.
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </LandingCard>
       </div>
-    </section>
+
+      {/* The offline points */}
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-5">
+        {POINTS.map((p) => (
+          <LandingCard key={p.title} className="space-y-2">
+            <h3 className="text-[15px] font-medium" style={{ color: "var(--fg)" }}>
+              {p.title}
+            </h3>
+            <p className="type-body">{p.body}</p>
+          </LandingCard>
+        ))}
+      </div>
+    </Section>
   );
 }

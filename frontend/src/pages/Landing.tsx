@@ -1,6 +1,7 @@
 import { Nav } from "./landing/Nav";
 import { Hero } from "./landing/Hero";
 import { SectionHowItWorks } from "./landing/SectionHowItWorks";
+import { SectionWhoItsFor } from "./landing/SectionWhoItsFor";
 import { SectionSurfaces } from "./landing/SectionSurfaces";
 import { SectionLogsVsEvidence } from "./landing/SectionLogsVsEvidence";
 import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
@@ -23,6 +24,9 @@ export function Landing() {
         {/* How it works — the four plain steps */}
         <SectionHowItWorks />
 
+        {/* id="who" — sectors that need agent evidence, honest use cases */}
+        <SectionWhoItsFor />
+
         {/* id="surfaces" — where babit records: browser, sandbox, desktop, REST */}
         <SectionSurfaces />
 
@@ -37,15 +41,11 @@ export function Landing() {
         {/* Section 4: Centerpiece receipt */}
         <SectionReceiptCenterpiece />
 
-        {/* Section 5: id="security" — Verify the record */}
-        <div id="security">
-          <SectionVerifyRecord />
-        </div>
+        {/* Verify the record (carries id="security") */}
+        <SectionVerifyRecord />
 
-        {/* Section 6: id="developers" — Built for engineers */}
-        <div id="developers">
-          <SectionBuiltForEngineers />
-        </div>
+        {/* Built for engineers (carries id="developers") */}
+        <SectionBuiltForEngineers />
 
         {/* Section 7: Offline verification */}
         <SectionOfflineEvidence />

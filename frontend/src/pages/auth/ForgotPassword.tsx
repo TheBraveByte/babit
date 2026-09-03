@@ -30,44 +30,41 @@ export function ForgotPassword() {
   return (
     <AuthLayout
       title="Reset your password"
-      subtitle="Enter your verified work email and we'll dispatch a secure recovery token."
+      subtitle="Enter your work email and we'll send you a reset link."
       footer={
         <p>
-          Remember your credentials?{" "}
-          <Link to="/login" className="font-semibold underline hover:opacity-80" style={{ color: "var(--fg)" }}>
+          Remembered it?{" "}
+          <Link to="/login" className="font-medium hover:underline" style={{ color: "var(--fg)" }}>
             Sign in
           </Link>
         </p>
       }
     >
       {sent ? (
-        <div className="space-y-4 text-center font-sans">
+        <div className="space-y-4">
           <div
-            className="p-4 rounded-babit text-xs space-y-2"
+            className="p-4 rounded-babit space-y-2"
             style={{ backgroundColor: "var(--color-verified-bg)", border: "1px solid var(--color-verified-border)", color: "var(--color-verified)" }}
           >
-            <div className="flex items-center justify-center gap-1.5 font-bold">
+            <div className="flex items-center gap-1.5 text-sm font-medium">
               <IconCheck className="w-4 h-4" />
-              <span>Recovery link sent</span>
+              <span>Reset link sent</span>
             </div>
-            <p className="text-[11px] leading-relaxed">
-              If an active workspace is associated with <strong>{email}</strong>, you will receive password reset instructions shortly.
+            <p className="text-[13px] leading-relaxed">
+              If an account exists for <strong>{email}</strong>, the reset instructions are on their way.
             </p>
           </div>
 
           <Link
             to="/login"
-            className="block text-xs font-semibold py-2 rounded-babit text-center transition-colors"
-            style={{
-              backgroundColor: "var(--fg)",
-              color: "var(--surface)",
-            }}
+            className="block text-sm font-medium py-2.5 rounded-babit text-center transition-opacity hover:opacity-90"
+            style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
           >
-            Return to Sign In
+            Back to sign in
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4 font-sans">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && <Error message={error} />}
 
           <Field label="Work email">
@@ -88,7 +85,7 @@ export function ForgotPassword() {
             loading={loading}
             className="w-full justify-center mt-2"
           >
-            Send recovery link
+            Send reset link
           </Button>
         </form>
       )}

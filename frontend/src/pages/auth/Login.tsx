@@ -35,13 +35,13 @@ export function Login() {
 
   return (
     <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your Babit accountability workspace"
+      title="Sign in to babit"
+      subtitle="Pick up the evidence trail where you left it."
       footer={
         <p>
           Don't have an account?{" "}
           <Link to="/signup" className="font-medium hover:underline" style={{ color: "var(--fg)" }}>
-            Create workspace
+            Create One
           </Link>
         </p>
       }
@@ -87,20 +87,6 @@ export function Login() {
         >
           Sign in
         </Button>
-
-        <div className="mt-4 pt-4 text-center" style={{ borderTop: "1px solid var(--border-subtle)" }}>
-          <button
-            type="button"
-            onClick={() => {
-              setEmail("demo@babit.dev");
-              setPassword("demo1234");
-            }}
-            className="text-xs font-mono transition-colors cursor-pointer hover:opacity-80"
-            style={{ color: "var(--muted)" }}
-          >
-            Fill demo credentials
-          </button>
-        </div>
       </form>
     </AuthLayout>
   );

@@ -1,0 +1,13 @@
+{
+  "name": "babit",
+  "short_name": "babit",
+  "description": "Chain of custody for AI agent actions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FCFCFB",
+  "theme_color": "#0B0C0C",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/apple-touch-icon.png", "type": "image/png", "sizes": "180x180" }
+  ]
+}

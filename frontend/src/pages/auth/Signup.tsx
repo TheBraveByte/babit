@@ -79,14 +79,14 @@ export function Signup() {
     if (res.success) {
       navigate("/dashboard");
     } else {
-      setError(res.error || "Failed to create workspace. Please try again.");
+      setError(res.error || "Couldn't create the workspace. Please try again.");
     }
   };
 
   return (
     <AuthLayout
-      title="Create your Babit workspace"
-      subtitle="Establish cryptographic evidence and accountability for autonomous agents"
+      title="Create your babit workspace"
+      subtitle="Start recording what your agents do, and who allowed it."
       footer={
         <p>
           Already have an account?{" "}
@@ -108,14 +108,14 @@ export function Signup() {
               onClick={() => setAccountType("ACCOUNT_TYPE_ORGANIZATION")}
               icon={<IconBuilding className="w-4 h-4" />}
               label="Organization"
-              description="Multi-agent teams & brand domain"
+              description="A team and its agents, under one domain"
             />
             <AccountTypeCard
               selected={accountType === "ACCOUNT_TYPE_PERSONAL"}
               onClick={() => setAccountType("ACCOUNT_TYPE_PERSONAL")}
               icon={<IconUser className="w-4 h-4" />}
               label="Personal"
-              description="Individual developer or researcher"
+              description="Just you and your own agents"
             />
           </div>
         </div>
@@ -163,7 +163,7 @@ export function Signup() {
               style={{ color: "var(--brand-accent)", backgroundColor: "var(--brand-accent-subtle)", border: "1px solid var(--brand-accent-border)" }}
             >
               <IconSparkles className="w-3.5 h-3.5 shrink-0" />
-              <span>Domain auto-branding: we'll match your logo & brand palette in real time.</span>
+              <span>We'll pull your logo and colours from your domain to brand the console.</span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
