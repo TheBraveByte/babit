@@ -29,7 +29,7 @@ const SECTORS = [
     sector: "Legal and audit",
     agentDoes: "Reviews contracts, exports records, files submissions.",
     benefit:
-      "Receipts verify offline, years later, without a live babit account — the format an auditor or opposing counsel can check independently.",
+      "Receipts verify offline, years later, without a live babit account, in a format an auditor or opposing counsel can check independently.",
   },
   {
     sector: "Public sector",
@@ -45,7 +45,7 @@ export function SectionWhoItsFor() {
       <SectionHeader
         eyebrow="Who it's for"
         title="Where an agent's word isn't good enough."
-        lead="babit is built for teams that have to answer for what their agents did — to a regulator, an auditor, a customer, or a court."
+        lead="babit is built for teams that have to answer for what their agents did, to a regulator, an auditor, a customer, or a court."
       />
 
       <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
