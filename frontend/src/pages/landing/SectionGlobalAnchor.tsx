@@ -21,7 +21,6 @@ export function SectionGlobalAnchor() {
           />
           <div className="mt-8 space-y-4">
             {[
-              { label: "Anchoring nodes", value: "12+ regions" },
               { label: "Anchor types", value: "RFC 3161 · Transparency logs" },
               { label: "Verification", value: "Offline, no babit required" },
             ].map((item) => (

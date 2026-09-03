@@ -232,6 +232,7 @@ function AccountTypeCard({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={selected}
       className="p-3 rounded-babit border text-left flex flex-col gap-1 transition-all cursor-pointer"
       style={
         selected

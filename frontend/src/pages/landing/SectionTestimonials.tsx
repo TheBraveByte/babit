@@ -1,15 +1,15 @@
-import { Section, SectionHeader } from "./Section";
+import { Section, SectionHeader, CardGrid, FlushCard } from "./Section";
 
 /**
  * SectionTestimonials — social proof from teams using Babit.
- * Clean, simple cards with short quotes. Not wordy.
+ * Clean, flush-joined cards with short quotes.
  */
 export function SectionTestimonials() {
   const testimonials = [
     {
       quote: "We can finally prove what our agents did, not just log it.",
       author: "Head of Risk",
-      company: "Insurance, Fortune 500",
+      company: "Insurance",
     },
     {
       quote: "Audits went from weeks to hours. The receipts speak for themselves.",
@@ -19,7 +19,7 @@ export function SectionTestimonials() {
     {
       quote: "It's the first time 'trust but verify' actually means something for AI.",
       author: "CTO",
-      company: "Healthtech startup",
+      company: "Healthtech",
     },
   ];
 
@@ -30,16 +30,9 @@ export function SectionTestimonials() {
         title="Built for teams who need proof."
         align="center"
       />
-      <div className="mt-16 grid md:grid-cols-3 gap-6">
+      <CardGrid cols={3} className="mt-16">
         {testimonials.map((t) => (
-          <div
-            key={t.author}
-            className="rounded-babit-md p-7"
-            style={{
-              backgroundColor: "var(--surface)",
-              border: "1px solid var(--border)",
-            }}
-          >
+          <FlushCard key={t.author} className="p-7">
             <p
               className="text-[18px] leading-relaxed font-medium tracking-[-0.01em]"
               style={{ color: "var(--fg)" }}
@@ -54,9 +47,9 @@ export function SectionTestimonials() {
                 {t.company}
               </div>
             </div>
-          </div>
+          </FlushCard>
         ))}
-      </div>
+      </CardGrid>
     </Section>
   );
 }

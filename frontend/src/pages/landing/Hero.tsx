@@ -18,8 +18,7 @@ const SCENARIO = {
 };
 
 const STATS = [
-  { value: "< 1ms", label: "seal time" },
-  { value: "100%", label: "offline verifiable" },
+  { value: "Offline", label: "verifiable" },
   { value: "0", label: "trust required" },
 ];
 

@@ -4,16 +4,21 @@ import "./index.css";
 import { App } from "@/App";
 import { RouterProvider } from "@/lib/router";
 import { AuthProvider } from "@/lib/auth";
+import { ErrorBoundary } from "@/lib/ErrorBoundary";
+import { SkipLink } from "@/lib/SkipLink";
 import { initTheme } from "@/lib/theme";
 
 initTheme();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <RouterProvider>
-        <App />
-      </RouterProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <RouterProvider>
+          <SkipLink />
+          <App />
+        </RouterProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   </StrictMode>,
 );

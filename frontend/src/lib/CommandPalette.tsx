@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "./router";
 import { IconSearch, IconActivity, IconCpu, IconGitBranch, IconFileText, IconShieldCheck, IconSettings, IconLayers } from "./icons";
 
@@ -22,28 +22,8 @@ export function CommandPalette({
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (open) {
-      setTimeout(() => inputRef.current?.focus(), 50);
-      setQuery("");
-      setSelectedIndex(0);
-    }
-  }, [open]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        if (open) onClose();
-        else onClose(); // parent handles toggle
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
-
-  if (!open) return null;
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousActiveRef = useRef<Element | null>(null);
 
   const items: CommandItem[] = [
     {
@@ -51,7 +31,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Overview",
       subtitle: "Workspace summary and notary key",
-      icon: <IconActivity className="w-4 h-4 text-neutral-500" />,
+      icon: <IconActivity className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => { navigate("/dashboard/overview"); onClose(); },
     },
     {
@@ -59,7 +39,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Activity",
       subtitle: "Look up an action event by ID",
-      icon: <IconFileText className="w-4 h-4 text-neutral-500" />,
+      icon: <IconFileText className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => { navigate("/dashboard/activity"); onClose(); },
     },
     {
@@ -67,7 +47,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Agents",
       subtitle: "Autonomous subjects under delegated authority",
-      icon: <IconCpu className="w-4 h-4 text-neutral-500" />,
+      icon: <IconCpu className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => { navigate("/dashboard/agents"); onClose(); },
     },
     {
@@ -75,7 +55,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Delegations",
       subtitle: "Issue, delegate, verify and revoke grants",
-      icon: <IconGitBranch className="w-4 h-4 text-neutral-500" />,
+      icon: <IconGitBranch className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => { navigate("/dashboard/delegations"); onClose(); },
     },
     {
@@ -83,7 +63,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Sessions",
       subtitle: "Inspect a capture session's external anchor",
-      icon: <IconLayers className="w-4 h-4 text-neutral-500" />,
+      icon: <IconLayers className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => { navigate("/dashboard/sessions"); onClose(); },
     },
     {
@@ -91,7 +71,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Receipts",
       subtitle: "Fetch a sealed inclusion proof by event ID",
-      icon: <IconShieldCheck className="w-4 h-4 text-neutral-500" />,
+      icon: <IconShieldCheck className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => { navigate("/dashboard/receipts"); onClose(); },
     },
     {
@@ -99,7 +79,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Verify Evidence",
       subtitle: "Independent receipt and proof validator",
-      icon: <IconShieldCheck className="w-4 h-4 text-[var(--color-verified)]" />,
+      icon: <IconShieldCheck className="w-4 h-4 text-[color:var(--color-verified)]" />,
       action: () => { navigate("/dashboard/verify"); onClose(); },
     },
     {
@@ -107,7 +87,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Settings",
       subtitle: "Account profile, branding and notary key",
-      icon: <IconSettings className="w-4 h-4 text-neutral-500" />,
+      icon: <IconSettings className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => { navigate("/dashboard/settings"); onClose(); },
     },
   ];
@@ -118,6 +98,56 @@ export function CommandPalette({
       (i.subtitle && i.subtitle.toLowerCase().includes(query.toLowerCase())) ||
       i.category.toLowerCase().includes(query.toLowerCase())
   );
+
+  const getFocusable = useCallback(() => {
+    if (!dialogRef.current) return [];
+    return Array.from(
+      dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => !el.hasAttribute("disabled") && el.tabIndex >= 0);
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      previousActiveRef.current = document.activeElement;
+      setQuery("");
+      setSelectedIndex(0);
+      const t = setTimeout(() => inputRef.current?.focus(), 50);
+      return () => clearTimeout(t);
+    } else {
+      if (previousActiveRef.current instanceof HTMLElement) {
+        previousActiveRef.current.focus();
+      }
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!open) return;
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+      }
+      if (e.key === "Tab") {
+        const focusable = getFocusable();
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose, getFocusable]);
+
+  const activeId = filtered[selectedIndex]?.id;
 
   const handleKeyDownList = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
@@ -131,13 +161,17 @@ export function CommandPalette({
       if (filtered[selectedIndex]) {
         filtered[selectedIndex].action();
       }
-    } else if (e.key === "Escape") {
-      onClose();
     }
   };
 
+  if (!open) return null;
+
   return (
     <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
       className="fixed inset-0 z-50 bg-[var(--fg)]/40 backdrop-blur-xs flex items-start justify-center pt-24 px-4 sm:px-6 animate-fade-in"
       onClick={onClose}
     >
@@ -159,6 +193,9 @@ export function CommandPalette({
             }}
             placeholder="Search actions, agents, receipts, or navigate (⌘K)..."
             className="w-full text-sm outline-none text-[color:var(--fg)] placeholder:text-[color:var(--muted)] bg-transparent"
+            aria-autocomplete="list"
+            aria-controls="command-palette-results"
+            aria-activedescendant={activeId}
           />
           <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[11px] font-mono text-[color:var(--muted)] bg-[var(--secondary)] border border-[color:var(--border)] rounded">
             ESC
@@ -166,9 +203,13 @@ export function CommandPalette({
         </div>
 
         {/* Results list */}
-        <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+        <div
+          id="command-palette-results"
+          role="listbox"
+          className="max-h-80 overflow-y-auto p-2 space-y-1"
+        >
           {filtered.length === 0 ? (
-            <div className="py-8 text-center text-xs text-[color:var(--muted)] font-mono">
+            <div className="py-8 text-center text-xs text-[color:var(--muted)] font-mono" role="status" aria-live="polite">
               No matching records or commands found.
             </div>
           ) : (
@@ -177,6 +218,9 @@ export function CommandPalette({
               return (
                 <button
                   key={item.id}
+                  id={item.id}
+                  role="option"
+                  aria-selected={isSelected}
                   onClick={item.action}
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`w-full text-left px-3 py-2.5 rounded-babit flex items-center justify-between transition-colors cursor-pointer ${
@@ -209,6 +253,8 @@ export function CommandPalette({
             <span>↑↓ to navigate</span>
             <span>•</span>
             <span>↵ to select</span>
+            <span>•</span>
+            <span>Tab to cycle</span>
           </div>
           <span>Babit FastSearch</span>
         </div>

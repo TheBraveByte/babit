@@ -40,20 +40,20 @@ export function AnchorGlobe({ className = "" }: { className?: string }) {
     const mo = new MutationObserver(() => { theme = getTheme(); });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
-    // Anchor points (lat, lon) — major cities
+    // Anchor points (lat, lon) — abstract representation of global anchoring
     const ANCHORS = [
-      { lat: 40.7, lon: -74.0, label: "NYC" },
-      { lat: 51.5, lon: -0.1, label: "LDN" },
-      { lat: 35.7, lon: 139.7, label: "TYO" },
-      { lat: 1.3, lon: 103.8, label: "SGP" },
-      { lat: 52.5, lon: 13.4, label: "BER" },
-      { lat: -33.9, lon: 151.2, label: "SYD" },
-      { lat: 37.8, lon: -122.4, label: "SF" },
-      { lat: 19.1, lon: 72.9, label: "MUM" },
-      { lat: 55.8, lon: 37.6, label: "MOW" },
-      { lat: -23.5, lon: -46.6, label: "SAO" },
-      { lat: 30.0, lon: 31.2, label: "CAI" },
-      { lat: 49.3, lon: -123.1, label: "VAN" },
+      { lat: 40.7, lon: -74.0 },
+      { lat: 51.5, lon: -0.1 },
+      { lat: 35.7, lon: 139.7 },
+      { lat: 1.3, lon: 103.8 },
+      { lat: 52.5, lon: 13.4 },
+      { lat: -33.9, lon: 151.2 },
+      { lat: 37.8, lon: -122.4 },
+      { lat: 19.1, lon: 72.9 },
+      { lat: 55.8, lon: 37.6 },
+      { lat: -23.5, lon: -46.6 },
+      { lat: 30.0, lon: 31.2 },
+      { lat: 49.3, lon: -123.1 },
     ];
 
     // Connection arcs between anchors
@@ -80,7 +80,6 @@ export function AnchorGlobe({ className = "" }: { className?: string }) {
 
       const isDark = theme === "dark";
       const accent = isDark ? "45, 212, 191" : "13, 148, 136";
-      const muted = isDark ? "138, 144, 140" : "100, 116, 139";
 
       // Clear with subtle background
       ctx.clearRect(0, 0, w, h);
@@ -179,12 +178,6 @@ export function AnchorGlobe({ className = "" }: { className?: string }) {
         ctx.strokeStyle = `rgba(${accent}, 0.3)`;
         ctx.lineWidth = 1;
         ctx.stroke();
-
-        // Label
-        ctx.fillStyle = `rgba(${muted}, 0.7)`;
-        ctx.font = "500 9px ui-monospace, monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(a.label, p.x, p.y - 12);
       });
 
       // Rotate

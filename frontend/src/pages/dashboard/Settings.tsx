@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
+import { BabitLogo } from "@/lib/icons";
 import { Copyable, PageHeader, Field, TextInput, Select, Button, Error } from "@/lib/ui";
 import { IconShieldCheck, IconKey, IconBuilding, IconCheck } from "@/lib/icons";
 import { api, errText } from "@/api/client";
@@ -48,6 +49,7 @@ export function Settings() {
   const [keyId, setKeyId] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [keyError, setKeyError] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   const [orgName, setOrgName] = useState("");
   const [orgDomain, setOrgDomain] = useState("");
@@ -231,15 +233,19 @@ export function Settings() {
                   style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
                 >
                   <div className="flex items-center gap-3">
-                    {branding.logo_url && (
+                    {branding.logo_url && !logoError ? (
                       <img
                         src={branding.logo_url}
                         alt="Logo"
                         className="w-8 h-8 rounded border p-0.5 bg-[var(--surface)] object-contain"
                         style={{ borderColor: "var(--border)" }}
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                        onError={() => setLogoError(true)}
                       />
-                    )}
+                    ) : branding.logo_url && logoError ? (
+                      <div className="w-8 h-8 rounded border p-0.5 bg-[var(--secondary)] object-contain flex items-center justify-center" style={{ borderColor: "var(--border)" }}>
+                        <BabitLogo className="w-4 h-4 text-[color:var(--muted)]" />
+                      </div>
+                    ) : null}
                     <div>
                       <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>{branding.company_name || user?.org_domain}</span>
                       {branding.brand_color && (

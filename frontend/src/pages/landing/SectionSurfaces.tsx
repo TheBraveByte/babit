@@ -1,5 +1,5 @@
 import { IconMonitor, IconTerminal, IconCpu, IconLayers } from "@/lib/icons";
-import { Section, SectionHeader, LandingCard, CardIcon } from "./Section";
+import { Section, SectionHeader, CardGrid, FlushCard, LandingCard, CardIcon } from "./Section";
 
 const SURFACES = [
   {
@@ -42,10 +42,10 @@ export function SectionSurfaces() {
         lead="Browser, sandbox, or desktop, you reach it the same way every time."
       />
 
-      <div className="mt-14">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <CardGrid cols={3} className="lg:col-span-3">
           {SURFACES.map((s) => (
-            <LandingCard key={s.tag} className="space-y-4">
+            <FlushCard key={s.tag} className="space-y-4">
               <div className="flex items-center justify-between">
                 <CardIcon>
                   <s.Icon className="w-4 h-4" />
@@ -56,8 +56,9 @@ export function SectionSurfaces() {
                 {s.title}
               </h3>
               <p className="type-body">{s.body}</p>
-            </LandingCard>
+            </FlushCard>
           ))}
+        </CardGrid>
 
           {/* Dominant tile: any language, one HTTP call */}
           <LandingCard emphasis="raised" className="space-y-5 lg:col-span-2">
@@ -125,7 +126,6 @@ export function SectionSurfaces() {
             </div>
           </LandingCard>
         </div>
-      </div>
     </Section>
   );
 }

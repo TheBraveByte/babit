@@ -1,4 +1,4 @@
-import { Section, SectionHeader, LandingCard } from "./Section";
+import { Section, SectionHeader, CardGrid, FlushCard } from "./Section";
 
 const SECTORS = [
   {
@@ -42,9 +42,9 @@ export function SectionWhoItsFor() {
         lead="For teams that answer to regulators, auditors, customers, or courts."
       />
 
-      <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <CardGrid cols={3} className="mt-14">
         {SECTORS.map((s) => (
-          <LandingCard key={s.sector}>
+          <FlushCard key={s.sector}>
             <div className="flex flex-col h-full">
               <h3 className="type-h3" style={{ color: "var(--fg)" }}>
                 {s.sector}
@@ -57,9 +57,9 @@ export function SectionWhoItsFor() {
                 {s.benefit}
               </p>
             </div>
-          </LandingCard>
+          </FlushCard>
         ))}
-      </div>
+      </CardGrid>
     </Section>
   );
 }

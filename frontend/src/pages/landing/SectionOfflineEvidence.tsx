@@ -6,14 +6,12 @@ interface CliOutput {
   sig: string;
   chain: string;
   auth: string;
-  duration: string;
 }
 
 const RESULT: CliOutput = {
   sig: "signature matches babit's public key",
   chain: "record is unchanged",
   auth: "stayed within what was allowed",
-  duration: "0.9ms",
 };
 
 const POINTS = [
@@ -196,7 +194,7 @@ export function SectionOfflineEvidence() {
                       </div>
                     ))}
                     <div className="pt-2 text-[11px] border-t" style={{ color: "var(--muted)", borderColor: "var(--border)" }}>
-                      Checked offline in {output.duration}. No network calls to babit.
+                      Checked offline. No network calls to babit.
                     </div>
                   </div>
                 )}
