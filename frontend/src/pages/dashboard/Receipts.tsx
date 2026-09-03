@@ -59,7 +59,7 @@ export function Receipts() {
     <div className="space-y-6">
       <PageHeader
         title="Receipts"
-        description="Retrieve the sealed inclusion proof for any recorded action. Click Fetch Proof to get the cryptographic receipt."
+        description="Retrieve the cryptographic inclusion proof for any recorded action. Click Fetch Proof to get the signed receipt."
       />
 
       {error && <ErrorBox message={error} />}
@@ -77,7 +77,7 @@ export function Receipts() {
           <EmptyState
             icon={<IconFileText className="w-5 h-5" />}
             title="No events recorded yet"
-            description="Record an agent action to generate a sealed inclusion proof you can verify offline."
+            description="Record an agent action to generate a cryptographic inclusion proof you can verify offline."
           />
         ) : (
           <>

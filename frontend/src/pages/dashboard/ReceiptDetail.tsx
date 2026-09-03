@@ -68,7 +68,7 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
 
   const summary = event.action_type
     ? `${event.action_type}${event.surface ? ` · ${event.surface}` : ""}`
-    : "Sealed action event";
+    : "Notarized action event";
 
   return (
     <div className="space-y-6 font-sans">
@@ -186,7 +186,7 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
             className="inline-flex items-center gap-1.5 text-[11px] font-mono"
             style={{ color: "var(--color-verified)" }}
           >
-            <IconShieldCheck className="w-3.5 h-3.5" /> Sealed
+            <IconShieldCheck className="w-3.5 h-3.5" /> Notarized
           </span>
         }
       >

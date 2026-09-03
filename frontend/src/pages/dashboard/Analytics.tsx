@@ -315,7 +315,7 @@ export function Analytics() {
           <Panel
             flagship
             title="Actions notarized over time"
-            subtitle="Sealed action events per day"
+            subtitle="Notarized action events per day"
             icon={<IconActivity className="w-4 h-4" />}
           >
             {loading || !hasTime ? (
