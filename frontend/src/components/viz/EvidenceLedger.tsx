@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { vizPalette, prefersReducedMotion } from "./tokens";
+import { prefersReducedMotion, vizPalette } from "./tokens";
 
 /**
  * EvidenceLedger — an ambient canvas that depicts babit's real append-only chain:

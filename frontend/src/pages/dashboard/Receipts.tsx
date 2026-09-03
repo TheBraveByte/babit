@@ -1,11 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
-import { ReceiptDetail } from "./ReceiptDetail";
-import { PageHeader, Card, Error as ErrorBox, TableSkeleton, EmptyState } from "@/lib/ui";
-import { IconShieldCheck, IconFileText } from "@/lib/icons";
+import { useCallback, useEffect, useState } from "react";
 import { api, errText } from "@/api/client";
-import { usePagination } from "@/lib/usePagination";
-import { LoadMoreButton } from "@/components/LoadMoreButton";
 import type { components } from "@/api/schema";
+import { LoadMoreButton } from "@/components/LoadMoreButton";
+import { IconFileText, IconShieldCheck } from "@/lib/icons";
+import { Card, EmptyState, Error as ErrorBox, PageHeader, TableSkeleton } from "@/lib/ui";
+import { usePagination } from "@/lib/usePagination";
+import { ReceiptDetail } from "./ReceiptDetail";
 
 type Proof = components["schemas"]["v1Proof"];
 type ActionEvent = components["schemas"]["v1ActionEvent"];

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { IconCheck, IconRefresh, IconArrowRight } from "@/lib/icons";
-import { Section, SectionHeader, LandingCard } from "./Section";
+import { IconArrowRight, IconCheck, IconRefresh } from "@/lib/icons";
+import { LandingCard, Section, SectionHeader } from "./Section";
 
 interface CliOutput {
   sig: string;

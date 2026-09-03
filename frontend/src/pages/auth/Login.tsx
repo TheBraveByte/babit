@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { AuthLayout } from "./AuthLayout";
 import { useAuth } from "@/lib/auth";
-import { useRouter, Link } from "@/lib/router";
-import { Button, Field, TextInput, Error } from "@/lib/ui";
+import { Link, useRouter } from "@/lib/router";
+import { Button, Error, Field, TextInput } from "@/lib/ui";
+import { AuthLayout } from "./AuthLayout";
 
 export function Login() {
   const { login } = useAuth();

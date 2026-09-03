@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, type ReactNode } from "react";
-import { IconCopy, IconCheck, IconAlertCircle, IconShieldCheck } from "./icons";
+import React, { type ReactNode, useEffect, useRef, useState } from "react";
+import { IconAlertCircle, IconCheck, IconCopy, IconShieldCheck } from "./icons";
 
 /* ─── PageHeader (dashboard) ────────────────────────────────────────────────── */
 export function PageHeader({

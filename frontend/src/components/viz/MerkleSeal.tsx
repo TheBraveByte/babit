@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { vizPalette, prefersReducedMotion } from "./tokens";
+import { prefersReducedMotion, vizPalette } from "./tokens";
 
 /**
  * MerkleSeal — depicts babit's real inclusion proof (Proof model):

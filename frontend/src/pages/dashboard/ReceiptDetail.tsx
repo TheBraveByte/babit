@@ -1,7 +1,7 @@
-import { Card, StatusPill, MonospaceHash, Button, Json } from "@/lib/ui";
-import { IconShieldCheck } from "@/lib/icons";
-import type { components } from "@/api/schema";
 import type { ReactNode } from "react";
+import type { components } from "@/api/schema";
+import { IconShieldCheck } from "@/lib/icons";
+import { Button, Card, Json, MonospaceHash, StatusPill } from "@/lib/ui";
 
 type Proof = components["schemas"]["v1Proof"];
 

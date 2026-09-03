@@ -47,12 +47,6 @@ export function SectionGlobalAnchor() {
           <Suspense fallback={null}>
             <AnchorGlobe className="w-full h-full" />
           </Suspense>
-          <p
-            className="absolute bottom-2 right-2 text-[11px] font-mono"
-            style={{ color: "var(--muted)", opacity: 0.7 }}
-          >
-            Illustration. Not live data.
-          </p>
         </div>
       </div>
     </Section>

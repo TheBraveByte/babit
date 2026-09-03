@@ -1,5 +1,6 @@
-import { IconUser, IconActivity, IconLock, IconShieldCheck, IconArrowRight } from "@/lib/icons";
-import { Section, SectionHeader, LandingCard, CardIcon } from "./Section";
+import { IconActivity, IconArrowRight, IconLock, IconShieldCheck, IconUser } from "@/lib/icons";
+import { CardIcon, LandingCard, Section, SectionHeader } from "./Section";
+
 const STEPS = [
   {
     label: "Authority",

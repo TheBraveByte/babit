@@ -1,6 +1,6 @@
 import { BabitLogo } from "@/lib/icons";
-import { Link } from "@/lib/router";
 import { docsUrl } from "@/lib/links";
+import { Link } from "@/lib/router";
 
 export function Footer() {
   return (

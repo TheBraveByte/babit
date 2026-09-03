@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth";
 import { BabitLogo } from "@/lib/icons";
 import { Link, useRouter } from "@/lib/router";
-import { useAuth } from "@/lib/auth";
 import { ThemeToggle } from "@/lib/ThemeToggle";
 
 export function Nav() {

@@ -1,8 +1,8 @@
-import { Nav } from "./landing/Nav";
-import { Footer } from "./landing/Footer";
-import { Section, SectionHeader, CardGrid, FlushCard } from "./landing/Section";
+import { IconActivity, IconCheck, IconLock, IconShieldCheck } from "@/lib/icons";
 import { Link } from "@/lib/router";
-import { IconShieldCheck, IconLock, IconActivity, IconCheck } from "@/lib/icons";
+import { Footer } from "./landing/Footer";
+import { Nav } from "./landing/Nav";
+import { CardGrid, FlushCard, Section, SectionHeader } from "./landing/Section";
 
 const CONTROLS = [
   {
@@ -92,9 +92,7 @@ export function SecurityPage() {
                     style={{
                       color: s.state === "Available" ? "var(--color-verified)" : "var(--muted)",
                       backgroundColor:
-                        s.state === "Available"
-                          ? "var(--color-verified-bg)"
-                          : "var(--secondary)",
+                        s.state === "Available" ? "var(--color-verified-bg)" : "var(--secondary)",
                       borderRadius: "4px",
                     }}
                   >

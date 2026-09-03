@@ -1,21 +1,20 @@
-import { useEffect, useState, useCallback } from "react";
-import {
-  PageHeader,
-  Card,
-  StatusPill,
-  Button,
-  Error as ErrorBox,
-  TableSkeleton,
-  EmptyState,
-  ConfirmDialog,
-} from "@/lib/ui";
-import { IconShieldCheck, IconCheck, IconGitBranch } from "@/lib/icons";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { api, errText } from "@/api/client";
-import { usePagination } from "@/lib/usePagination";
-import { LoadMoreButton } from "@/components/LoadMoreButton";
 import type { components } from "@/api/schema";
+import { LoadMoreButton } from "@/components/LoadMoreButton";
 import { AuthorityGraph, chainToGraph, type GrantRole } from "@/components/viz/AuthorityGraph";
-import { Suspense } from "react";
+import { IconCheck, IconGitBranch, IconShieldCheck } from "@/lib/icons";
+import {
+  Button,
+  Card,
+  ConfirmDialog,
+  EmptyState,
+  Error as ErrorBox,
+  PageHeader,
+  StatusPill,
+  TableSkeleton,
+} from "@/lib/ui";
+import { usePagination } from "@/lib/usePagination";
 
 type VerifyChain = components["schemas"]["v1VerifyChainResponse"];
 type Grant = components["schemas"]["v1Grant"];

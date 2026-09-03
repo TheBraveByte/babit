@@ -1,30 +1,30 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import {
-  ResponsiveContainer,
-  AreaChart,
   Area,
-  BarChart,
+  AreaChart,
   Bar,
-  PieChart,
-  Pie,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
 } from "recharts";
-import { PageHeader, Card, MetricCard, EmptyState } from "@/lib/ui";
-import {
-  IconActivity,
-  IconLayers,
-  IconGitBranch,
-  IconShieldCheck,
-  IconAlertCircle,
-  IconMonitor,
-} from "@/lib/icons";
-import { useAuth } from "@/lib/auth";
 import { api } from "@/api/client";
 import type { components } from "@/api/schema";
+import { useAuth } from "@/lib/auth";
+import {
+  IconActivity,
+  IconAlertCircle,
+  IconGitBranch,
+  IconLayers,
+  IconMonitor,
+  IconShieldCheck,
+} from "@/lib/icons";
+import { Card, EmptyState, MetricCard, PageHeader } from "@/lib/ui";
 
 /* Analytics is driven entirely by real ledger aggregates from GET /v1/analytics/overview.
    Counts arrive as int64 strings, coerced via num(). A series with no data renders an

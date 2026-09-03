@@ -1,17 +1,18 @@
-import { Nav } from "./landing/Nav";
-import { Hero } from "./landing/Hero";
-import { ProductPreview } from "./landing/ProductPreview";
-import { SectionHowItWorks } from "./landing/SectionHowItWorks";
-import { SectionWhoItsFor } from "./landing/SectionWhoItsFor";
-import { SectionSurfaces } from "./landing/SectionSurfaces";
-import { SectionLogsVsEvidence } from "./landing/SectionLogsVsEvidence";
-import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
-import { SectionVerifyRecord } from "./landing/SectionVerifyRecord";
-import { SectionBuiltForEngineers } from "./landing/SectionBuiltForEngineers";
-import { SectionOfflineEvidence } from "./landing/SectionOfflineEvidence";
-import { SectionGlobalAnchor } from "./landing/SectionGlobalAnchor";
 import { FinalCTA } from "./landing/FinalCTA";
 import { Footer } from "./landing/Footer";
+import { Hero } from "./landing/Hero";
+import { Nav } from "./landing/Nav";
+import { ProductPreview } from "./landing/ProductPreview";
+import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
+import { SectionBuiltForEngineers } from "./landing/SectionBuiltForEngineers";
+import { SectionGlobalAnchor } from "./landing/SectionGlobalAnchor";
+import { SectionHowItWorks } from "./landing/SectionHowItWorks";
+import { SectionLogsVsEvidence } from "./landing/SectionLogsVsEvidence";
+import { SectionOfflineEvidence } from "./landing/SectionOfflineEvidence";
+import { SectionReceiptCenterpiece } from "./landing/SectionReceiptCenterpiece";
+import { SectionSurfaces } from "./landing/SectionSurfaces";
+import { SectionVerifyRecord } from "./landing/SectionVerifyRecord";
+import { SectionWhoItsFor } from "./landing/SectionWhoItsFor";
 
 export function Landing() {
   return (
@@ -30,6 +31,7 @@ export function Landing() {
         <SectionWhoItsFor />
         <SectionSurfaces />
         <SectionAuthorityChain />
+        <SectionReceiptCenterpiece />
         <SectionVerifyRecord />
         <SectionBuiltForEngineers />
         <SectionOfflineEvidence />

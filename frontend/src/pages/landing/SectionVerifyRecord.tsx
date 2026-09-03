@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconCheck, IconRefresh, IconXCircle } from "@/lib/icons";
-import { Section, SectionHeader, LandingCard } from "./Section";
+import { LandingCard, Section, SectionHeader } from "./Section";
 
 export function SectionVerifyRecord() {
   const [tampered, setTampered] = useState(false);

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { AuthLayout } from "./AuthLayout";
-import { Link } from "@/lib/router";
-import { Button, Field, TextInput, Error } from "@/lib/ui";
 import { IconCheck } from "@/lib/icons";
+import { Link } from "@/lib/router";
+import { Button, Error, Field, TextInput } from "@/lib/ui";
+import { AuthLayout } from "./AuthLayout";
 
 export function ForgotPassword() {
   const [email, setEmail] = useState("");

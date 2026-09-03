@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { AuthLayout } from "./AuthLayout";
 import { useAuth } from "@/lib/auth";
-import { useRouter, Link } from "@/lib/router";
-import { Button, Field, TextInput, Select, Error } from "@/lib/ui";
-import { IconUser, IconBuilding, IconSparkles } from "@/lib/icons";
+import { IconBuilding, IconSparkles, IconUser } from "@/lib/icons";
+import { Link, useRouter } from "@/lib/router";
+import { Button, Error, Field, Select, TextInput } from "@/lib/ui";
+import { AuthLayout } from "./AuthLayout";
 
 const INDUSTRIES = [
   "Technology & Software",
