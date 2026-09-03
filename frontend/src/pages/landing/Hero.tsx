@@ -3,6 +3,7 @@ import { useRouter } from "@/lib/router";
 import { IconCheck, IconRefresh, IconCopy } from "@/lib/icons";
 import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
 import { docsUrl } from "@/lib/links";
+import { EvidenceLedger } from "@/components/viz/EvidenceLedger";
 
 
 const SCENARIO = {
@@ -54,7 +55,14 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden pt-32 pb-0 sm:pt-40" style={{ backgroundColor: "var(--bg)" }}>
-      <div className="absolute inset-0 grid-fade pointer-events-none" />
+      {/* Layered background: dot grid + radial accent glow + animated evidence chain */}
+      <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 60% 50% at 70% 30%, var(--brand-accent-subtle), transparent 70%)",
+        }}
+      />
 
        <div className="container-babit relative z-10">
         <div className="grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-14 lg:gap-20 items-center">
@@ -226,6 +234,17 @@ export function Hero() {
             </div>
           ))}
         </dl>
+
+        {/* Animated evidence chain drifting along the base of the hero */}
+        <div
+          className="mt-16 h-20 pointer-events-none"
+          style={{
+            maskImage: "linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)",
+            WebkitMaskImage: "linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)",
+          }}
+        >
+          <EvidenceLedger className="w-full h-full" />
+        </div>
       </div>
     </section>
   );

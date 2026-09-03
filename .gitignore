@@ -20,3 +20,4 @@ dev/http-client.env.json
 dev/http-client.private.env.json
 /research/
 dev/qa-shots/
+dev/console-shots/

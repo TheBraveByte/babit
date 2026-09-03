@@ -1,5 +1,6 @@
 import { Nav } from "./landing/Nav";
 import { Hero } from "./landing/Hero";
+import { ProductPreview } from "./landing/ProductPreview";
 import { SectionHowItWorks } from "./landing/SectionHowItWorks";
 import { SectionWhoItsFor } from "./landing/SectionWhoItsFor";
 import { SectionSurfaces } from "./landing/SectionSurfaces";
@@ -20,6 +21,9 @@ export function Landing() {
       <main>
         {/* Hero */}
         <Hero />
+
+        {/* Real product screenshot */}
+        <ProductPreview />
 
         {/* How it works — the four plain steps */}
         <SectionHowItWorks />
