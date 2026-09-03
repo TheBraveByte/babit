@@ -10,8 +10,8 @@ export function SectionLogsVsEvidence() {
     <Section id="product">
       <SectionHeader
         eyebrow="Logs vs evidence"
-        title="A log can be quietly changed. Evidence can't."
-        lead="Try editing the log below. Nothing stops you and nothing shows it changed."
+        title="A log can be quietly changed. Evidence cannot."
+        lead="The same event in an ordinary system and in babit."
       />
 
       <div className="mt-14">
@@ -76,19 +76,19 @@ export function SectionLogsVsEvidence() {
                 <span className="shrink-0 font-semibold" style={{ color: "var(--color-failed)" }}>
                   ✗
                 </span>
-                <span>It doesn't say who allowed the action, only that something ran.</span>
+                <span>It does not say who allowed the action, only that something ran.</span>
               </li>
             </ul>
           </LandingCard>
 
-          {/* Right: the babit receipt for the same action */}
+          {/* Right: the real babit Activity dashboard */}
           <LandingCard emphasis="raised" className="space-y-4">
             <div
               className="flex items-center justify-between pb-3"
               style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
               <span className="type-eyebrow" style={{ color: "var(--fg)" }}>
-                A babit receipt
+                A babit activity stream
               </span>
               <span
                 className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full"
@@ -99,60 +99,29 @@ export function SectionLogsVsEvidence() {
                 }}
               >
                 <IconCheck className="w-3 h-3" />
-                <span>Verified</span>
+                <span>Real dashboard data</span>
               </span>
             </div>
 
-            {/* Plain-language summary first */}
-            <div className="space-y-3">
-              <div>
-                <span className="type-eyebrow block mb-1">What happened</span>
-                <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
-                  Approved a $4,200 payout on claim CLM-48102
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <span className="type-eyebrow block mb-1">Who did it</span>
-                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
-                    claims-agent
-                  </span>
-                </div>
-                <div>
-                  <span className="type-eyebrow block mb-1">Who allowed it</span>
-                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
-                    Alice, Risk Supervisor
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* The seal, secondary detail */}
-            <div
-              className="rounded-babit px-3.5 py-2.5 flex items-center justify-between gap-3 font-mono text-[11px]"
-              style={{
-                backgroundColor: "var(--secondary)",
-                border: "1px solid var(--border-subtle)",
-              }}
-            >
-              <span style={{ color: "var(--muted)" }}>seal 0xd8291a84…fe120934</span>
-              <span className="font-semibold" style={{ color: "var(--color-verified)" }}>
-                OK
-              </span>
-            </div>
+            <img
+              src="/dashboard-shots/activity.png"
+              alt="Babit Activity dashboard showing recorded action events with IDs, action types, sessions and timestamps"
+              className="rounded-babit w-full border"
+              style={{ borderColor: "var(--border-subtle)" }}
+            />
 
             <ul className="space-y-2 text-sm" style={{ color: "var(--muted)" }}>
               <li className="flex gap-2">
-                <span className="shrink-0" style={{ color: "var(--color-verified)" }}>
-                  <IconCheck className="w-4 h-4" />
+                <span className="shrink-0 font-semibold" style={{ color: "var(--color-verified)" }}>
+                  ✓
                 </span>
-                <span>Change one character and the seal breaks, so tampering is obvious.</span>
+                <span>Every row is signed by the notary and bound to a grant.</span>
               </li>
               <li className="flex gap-2">
-                <span className="shrink-0" style={{ color: "var(--color-verified)" }}>
-                  <IconCheck className="w-4 h-4" />
+                <span className="shrink-0 font-semibold" style={{ color: "var(--color-verified)" }}>
+                  ✓
                 </span>
-                <span>It names who authorized the action, all the way back to a person.</span>
+                <span>Click any event to inspect its session, content hash and signature.</span>
               </li>
             </ul>
           </LandingCard>

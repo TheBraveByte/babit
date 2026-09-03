@@ -18,8 +18,8 @@ const SCENARIO = {
 };
 
 const STATS = [
-  { value: "Ed25519", label: "signatures" },
-  { value: "Merkle", label: "anchored roots" },
+  { value: "Signed", label: "receipts" },
+  { value: "Merkle", label: "inclusion roots" },
 ];
 
 export function Hero() {
@@ -164,7 +164,7 @@ export function Hero() {
               style={{ borderBottom: "1px solid var(--border)" }}
             >
               <span className="type-eyebrow" style={{ color: "var(--muted)" }}>
-                Live receipt
+                Simulated receipt
               </span>
               <span className="font-mono text-[11px]" style={{ color: "var(--muted)" }}>
                 {SCENARIO.grantId}

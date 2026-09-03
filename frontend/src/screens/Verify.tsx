@@ -99,7 +99,7 @@ export function Verify() {
     <div className="space-y-6">
       <PageHeader
         title="Verify a receipt"
-        description="Don't trust us. Verify it yourself. Recompute a receipt's cryptographic proofs against the notary's public key and its external anchor, right here in your browser."
+        description="Verify it yourself. Recompute a receipt's cryptographic proofs against the notary's public key and its external anchor, right here in your browser."
       />
 
       {/* Primary: verify by event ID */}

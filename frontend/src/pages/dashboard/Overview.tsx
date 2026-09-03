@@ -79,7 +79,7 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
       {
         tab: "receipts",
         title: "Receipts",
-        desc: "Fetch sealed proof by action ID.",
+        desc: "Fetch cryptographic proof by action ID.",
         icon: <IconFileText className="w-4 h-4" />,
       },
       {
@@ -164,7 +164,7 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
       >
         <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
         <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>
-          Use this key to verify evidence offline. Signatures on every sealed receipt trace back to
+          Use this key to verify evidence offline. Signatures on every signed receipt trace back to
           it.
         </p>
         {publicKey ? (

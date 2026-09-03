@@ -88,7 +88,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       id: "nav-receipts",
       category: "Navigation",
       title: "Receipts",
-      subtitle: "Fetch a sealed inclusion proof by event ID",
+      subtitle: "Fetch a cryptographic inclusion proof by event ID",
       icon: <IconShieldCheck className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => {
         navigate("/dashboard/receipts");
