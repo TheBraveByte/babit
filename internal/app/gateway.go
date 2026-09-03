@@ -89,12 +89,15 @@ func withAuthCookies(h http.Handler) http.Handler {
 					Value:    token,
 					Path:     "/",
 					HttpOnly: true,
-					// SameSite=None is required for cross-origin credentialed requests
-					// from the Vercel frontend to the Render backend. Secure is enforced
-					// because SameSite=None only works over HTTPS.
-					Secure:   r.URL.Scheme == "https" || strings.HasPrefix(r.Host, "localhost") == false,
-					SameSite: http.SameSiteNoneMode,
 					MaxAge:   86400 * 7, // 7 days
+				}
+				// Cross-origin production needs SameSite=None+Secure; localhost can use Lax+non-secure.
+				if r.URL.Scheme == "https" || !strings.HasPrefix(r.Host, "localhost") {
+					cookie.Secure = true
+					cookie.SameSite = http.SameSiteNoneMode
+				} else {
+					cookie.Secure = false
+					cookie.SameSite = http.SameSiteLaxMode
 				}
 				http.SetCookie(w, cookie)
 			}

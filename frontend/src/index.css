@@ -11,14 +11,14 @@
 
 /* ─── Semantic Design Tokens ────────────────────────────────────────────────── */
 :root {
-  /* Light palette — warm editorial off-white */
-  --bg:           #FCFCFB;
+  /* Light palette — warm, lived-in off-whites with confident contrast */
+  --bg:           #FAFAF7;
   --surface:      #FFFFFF;
-  --secondary:    #F5F5F3;
-  --fg:           #111111;
-  --muted:        #5F5F5F;
-  --border:       #EFEFEC;
-  --border-subtle: #F4F4F1;
+  --secondary:    #F4F3EF;
+  --fg:           #0E0E0D;
+  --muted:        #5A5A57;
+  --border:       #E9E8E4;
+  --border-subtle: #F1F0EC;
 
   /* Brand accent — deep teal, passes WCAG AA on white (4.8:1) */
   --brand-accent:        #0F766E;
@@ -46,13 +46,13 @@
 }
 
 .dark {
-  --bg:           #090A0A;
-  --surface:      #101212;
-  --secondary:    #181B1A;
-  --fg:           #F5F6F4;
-  --muted:        #8A908C;
-  --border:       #262A28;
-  --border-subtle: #1E2220;
+  --bg:           #0B0C0B;
+  --surface:      #141514;
+  --secondary:    #1B1C1A;
+  --fg:           #F5F5F3;
+  --muted:        #A8AAA4;
+  --border:       #2C2D2A;
+  --border-subtle: #222321;
 
   --brand-accent:        #2DD4BF;
   --brand-accent-hover:  #5EEAD4;
