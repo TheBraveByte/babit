@@ -235,7 +235,7 @@ export function Settings() {
                       <img
                         src={branding.logo_url}
                         alt="Logo"
-                        className="w-8 h-8 rounded border p-0.5 bg-white object-contain"
+                        className="w-8 h-8 rounded border p-0.5 bg-[var(--surface)] object-contain"
                         style={{ borderColor: "var(--border)" }}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                       />

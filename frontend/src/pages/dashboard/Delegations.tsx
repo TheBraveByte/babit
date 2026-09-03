@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
-import { PageHeader, Card, StatusPill, Button, Error, TableSkeleton, EmptyState, ConfirmDialog } from "@/lib/ui";
+import { useEffect, useState, useCallback } from "react";
+import { PageHeader, Card, StatusPill, Button, Error as ErrorBox, TableSkeleton, EmptyState, ConfirmDialog } from "@/lib/ui";
 import { IconShieldCheck, IconCheck, IconGitBranch } from "@/lib/icons";
 import { api, errText } from "@/api/client";
+import { usePagination } from "@/lib/usePagination";
+import { LoadMoreButton } from "@/components/LoadMoreButton";
 import type { components } from "@/api/schema";
 import { AuthorityGraph, chainToGraph, type GrantRole } from "@/components/viz/AuthorityGraph";
 import { Suspense } from "react";
 
 type VerifyChain = components["schemas"]["v1VerifyChainResponse"];
 type Grant = components["schemas"]["v1Grant"];
+
+const PAGE_SIZE = 50;
 
 function grantsToGraph(chain: Grant[]) {
   return chainToGraph(
@@ -28,9 +32,6 @@ function grantsToGraph(chain: Grant[]) {
 }
 
 export function Delegations() {
-  const [grants, setGrants] = useState<Grant[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Grant | null>(null);
   const [chain, setChain] = useState<VerifyChain | null>(null);
   const [chainLoading, setChainLoading] = useState(false);
@@ -39,19 +40,17 @@ export function Delegations() {
   const [revokeError, setRevokeError] = useState<string | null>(null);
   const [revoked, setRevoked] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { items: grants, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<Grant>();
+
+  const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
+    const res = await api.GET("/v1/grants", { params: { query: params } });
+    if (res.error) throw new Error(errText(res.error));
+    return { items: res.data?.grants ?? [], next_page_token: res.data?.next_page_token };
+  }, []);
 
   useEffect(() => {
-    let active = true;
-    (async () => {
-      setLoading(true);
-      const res = await api.GET("/v1/grants", { params: { query: { limit: 50 } } });
-      if (!active) return;
-      if (res.error) setError(errText(res.error));
-      else setGrants(res.data?.grants ?? []);
-      setLoading(false);
-    })();
-    return () => { active = false; };
-  }, []);
+    refresh(fetcher, PAGE_SIZE);
+  }, [refresh, fetcher]);
 
   // Verify chain when a grant is selected
   useEffect(() => {
@@ -81,7 +80,7 @@ export function Delegations() {
         description="Issue and verify capability grants. Authority attenuates monotonically from a root principal down each signed delegation. Click a grant to verify its chain."
       />
 
-      {error && <Error message={error} />}
+      {error && <ErrorBox message={error} />}
 
       {selected ? (
         <Card
@@ -193,7 +192,7 @@ export function Delegations() {
                   Revoke this grant
                 </Button>
               )}
-              {revokeError && <div className="mt-3"><Error message={revokeError} /></div>}
+              {revokeError && <div className="mt-3"><ErrorBox message={revokeError} /></div>}
             </div>
 
             <ConfirmDialog
@@ -222,8 +221,10 @@ export function Delegations() {
       ) : (
         <Card>
           <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
-          {loading ? (
+          {loading && !hasInitialLoaded ? (
             <TableSkeleton rows={8} cols={4} />
+          ) : error ? (
+            <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>Couldn't load grants. Try refreshing.</p>
           ) : grants.length === 0 ? (
             <EmptyState
               icon={<IconGitBranch className="w-5 h-5" />}
@@ -270,6 +271,7 @@ export function Delegations() {
             <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
               Showing {grants.length} grant{grants.length !== 1 ? "s" : ""}.
             </p>
+            <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
             </>
           )}
         </Card>

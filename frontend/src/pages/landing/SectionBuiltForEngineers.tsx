@@ -105,7 +105,7 @@ export function SectionBuiltForEngineers() {
       <SectionHeader
         eyebrow="Built for engineers"
         title="Wire it in with a few HTTP calls."
-        lead="Record an action with one call. Verify the receipt with another. REST and gRPC, no SDK required."
+        lead="One call to record. One call to verify. REST and gRPC, no SDK required."
       />
 
       <div className="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -116,7 +116,7 @@ export function SectionBuiltForEngineers() {
             style={{
               backgroundColor: "var(--surface)",
               border: "1px solid var(--border)",
-              boxShadow: "0 30px 70px -24px rgba(0,0,0,0.12)",
+              boxShadow: "0 30px 70px -24px color-mix(in srgb, var(--fg) 10%, transparent)",
             }}
           >
             {/* Header tabs bar */}
@@ -194,7 +194,7 @@ export function SectionBuiltForEngineers() {
             <Link
               to="/api"
               className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-pill transition-all hover:opacity-90"
-              style={{ backgroundColor: "var(--brand-accent)", color: "#fff" }}
+              style={{ backgroundColor: "var(--brand-accent)", color: "var(--surface)" }}
             >
               <span>Open the API reference</span>
               <IconArrowUpRight className="w-4 h-4" />

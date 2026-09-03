@@ -201,7 +201,8 @@ func (x *GetInclusionProofResponse) GetProof() *Proof {
 
 type ListEventsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -236,16 +237,24 @@ func (*ListEventsRequest) Descriptor() ([]byte, []int) {
 	return file_solari_ledger_v1_ledger_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *ListEventsRequest) GetLimit() int32 {
+func (x *ListEventsRequest) GetPageSize() int32 {
 	if x != nil {
-		return x.Limit
+		return x.PageSize
 	}
 	return 0
+}
+
+func (x *ListEventsRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
 }
 
 type ListEventsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Events        []*ActionEvent         `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -287,6 +296,13 @@ func (x *ListEventsResponse) GetEvents() []*ActionEvent {
 	return nil
 }
 
+func (x *ListEventsResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
 var File_solari_ledger_v1_ledger_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_ledger_proto_rawDesc = "" +
@@ -299,11 +315,14 @@ const file_solari_ledger_v1_ledger_proto_rawDesc = "" +
 	"\x18GetInclusionProofRequest\x12\x19\n" +
 	"\bevent_id\x18\x01 \x01(\tR\aeventId\"J\n" +
 	"\x19GetInclusionProofResponse\x12-\n" +
-	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof\")\n" +
-	"\x11ListEventsRequest\x12\x14\n" +
-	"\x05limit\x18\x01 \x01(\x05R\x05limit\"K\n" +
+	"\x05proof\x18\x01 \x01(\v2\x17.solari.ledger.v1.ProofR\x05proof\"O\n" +
+	"\x11ListEventsRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\"s\n" +
 	"\x12ListEventsResponse\x125\n" +
-	"\x06events\x18\x01 \x03(\v2\x1d.solari.ledger.v1.ActionEventR\x06events2\x8c\x04\n" +
+	"\x06events\x18\x01 \x03(\v2\x1d.solari.ledger.v1.ActionEventR\x06events\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\x8c\x04\n" +
 	"\rLedgerService\x12\x8f\x01\n" +
 	"\bGetEvent\x12!.solari.ledger.v1.GetEventRequest\x1a\".solari.ledger.v1.GetEventResponse\"<\x92A\x1c\x12\x1aRead a sealed action event\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/events/{event_id}\x12\xc1\x01\n" +
 	"\x11GetInclusionProof\x12*.solari.ledger.v1.GetInclusionProofRequest\x1a+.solari.ledger.v1.GetInclusionProofResponse\"S\x92A-\x12+Build an offline-verifiable inclusion proof\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/events/{event_id}:proof\x12\xa4\x01\n" +

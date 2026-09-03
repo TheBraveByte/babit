@@ -49,5 +49,6 @@ SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities,
        resource_globs, max_value_cents, max_depth, expires_at, parent_signature
 FROM grants
 WHERE user_id = $1
+  AND ($2::text = '' OR grant_id < $2::text)
 ORDER BY grant_id DESC
-LIMIT $2;
+LIMIT $3;

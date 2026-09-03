@@ -175,31 +175,37 @@ func (_c *MockAPIKeyStore_GetByHash_Call) RunAndReturn(run func(ctx context.Cont
 }
 
 // ListByProject provides a mock function for the type MockAPIKeyStore
-func (_mock *MockAPIKeyStore) ListByProject(ctx context.Context, projectID string) ([]*ports.APIKey, error) {
-	ret := _mock.Called(ctx, projectID)
+func (_mock *MockAPIKeyStore) ListByProject(ctx context.Context, projectID string, pageSize int32, pageToken string) ([]*ports.APIKey, string, error) {
+	ret := _mock.Called(ctx, projectID, pageSize, pageToken)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListByProject")
 	}
 
 	var r0 []*ports.APIKey
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) ([]*ports.APIKey, error)); ok {
-		return returnFunc(ctx, projectID)
+	var r1 string
+	var r2 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, int32, string) ([]*ports.APIKey, string, error)); ok {
+		return returnFunc(ctx, projectID, pageSize, pageToken)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) []*ports.APIKey); ok {
-		r0 = returnFunc(ctx, projectID)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, int32, string) []*ports.APIKey); ok {
+		r0 = returnFunc(ctx, projectID, pageSize, pageToken)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*ports.APIKey)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = returnFunc(ctx, projectID)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, int32, string) string); ok {
+		r1 = returnFunc(ctx, projectID, pageSize, pageToken)
 	} else {
-		r1 = ret.Error(1)
+		r1 = ret.Get(1).(string)
 	}
-	return r0, r1
+	if returnFunc, ok := ret.Get(2).(func(context.Context, string, int32, string) error); ok {
+		r2 = returnFunc(ctx, projectID, pageSize, pageToken)
+	} else {
+		r2 = ret.Error(2)
+	}
+	return r0, r1, r2
 }
 
 // MockAPIKeyStore_ListByProject_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListByProject'
@@ -210,11 +216,13 @@ type MockAPIKeyStore_ListByProject_Call struct {
 // ListByProject is a helper method to define mock.On call
 //   - ctx context.Context
 //   - projectID string
-func (_e *MockAPIKeyStore_Expecter) ListByProject(ctx any, projectID any) *MockAPIKeyStore_ListByProject_Call {
-	return &MockAPIKeyStore_ListByProject_Call{Call: _e.mock.On("ListByProject", ctx, projectID)}
+//   - pageSize int32
+//   - pageToken string
+func (_e *MockAPIKeyStore_Expecter) ListByProject(ctx any, projectID any, pageSize any, pageToken any) *MockAPIKeyStore_ListByProject_Call {
+	return &MockAPIKeyStore_ListByProject_Call{Call: _e.mock.On("ListByProject", ctx, projectID, pageSize, pageToken)}
 }
 
-func (_c *MockAPIKeyStore_ListByProject_Call) Run(run func(ctx context.Context, projectID string)) *MockAPIKeyStore_ListByProject_Call {
+func (_c *MockAPIKeyStore_ListByProject_Call) Run(run func(ctx context.Context, projectID string, pageSize int32, pageToken string)) *MockAPIKeyStore_ListByProject_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -224,20 +232,30 @@ func (_c *MockAPIKeyStore_ListByProject_Call) Run(run func(ctx context.Context, 
 		if args[1] != nil {
 			arg1 = args[1].(string)
 		}
+		var arg2 int32
+		if args[2] != nil {
+			arg2 = args[2].(int32)
+		}
+		var arg3 string
+		if args[3] != nil {
+			arg3 = args[3].(string)
+		}
 		run(
 			arg0,
 			arg1,
+			arg2,
+			arg3,
 		)
 	})
 	return _c
 }
 
-func (_c *MockAPIKeyStore_ListByProject_Call) Return(aPIKeys []*ports.APIKey, err error) *MockAPIKeyStore_ListByProject_Call {
-	_c.Call.Return(aPIKeys, err)
+func (_c *MockAPIKeyStore_ListByProject_Call) Return(aPIKeys []*ports.APIKey, s string, err error) *MockAPIKeyStore_ListByProject_Call {
+	_c.Call.Return(aPIKeys, s, err)
 	return _c
 }
 
-func (_c *MockAPIKeyStore_ListByProject_Call) RunAndReturn(run func(ctx context.Context, projectID string) ([]*ports.APIKey, error)) *MockAPIKeyStore_ListByProject_Call {
+func (_c *MockAPIKeyStore_ListByProject_Call) RunAndReturn(run func(ctx context.Context, projectID string, pageSize int32, pageToken string) ([]*ports.APIKey, string, error)) *MockAPIKeyStore_ListByProject_Call {
 	_c.Call.Return(run)
 	return _c
 }

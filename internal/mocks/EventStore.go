@@ -300,31 +300,37 @@ func (_c *MockEventStore_Last_Call) RunAndReturn(run func(ctx context.Context, s
 }
 
 // List provides a mock function for the type MockEventStore
-func (_mock *MockEventStore) List(ctx context.Context, limit int32) ([]*ledgerv1.ActionEvent, error) {
-	ret := _mock.Called(ctx, limit)
+func (_mock *MockEventStore) List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.ActionEvent, string, error) {
+	ret := _mock.Called(ctx, pageSize, pageToken)
 
 	if len(ret) == 0 {
 		panic("no return value specified for List")
 	}
 
 	var r0 []*ledgerv1.ActionEvent
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, int32) ([]*ledgerv1.ActionEvent, error)); ok {
-		return returnFunc(ctx, limit)
+	var r1 string
+	var r2 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int32, string) ([]*ledgerv1.ActionEvent, string, error)); ok {
+		return returnFunc(ctx, pageSize, pageToken)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, int32) []*ledgerv1.ActionEvent); ok {
-		r0 = returnFunc(ctx, limit)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int32, string) []*ledgerv1.ActionEvent); ok {
+		r0 = returnFunc(ctx, pageSize, pageToken)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*ledgerv1.ActionEvent)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, int32) error); ok {
-		r1 = returnFunc(ctx, limit)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, int32, string) string); ok {
+		r1 = returnFunc(ctx, pageSize, pageToken)
 	} else {
-		r1 = ret.Error(1)
+		r1 = ret.Get(1).(string)
 	}
-	return r0, r1
+	if returnFunc, ok := ret.Get(2).(func(context.Context, int32, string) error); ok {
+		r2 = returnFunc(ctx, pageSize, pageToken)
+	} else {
+		r2 = ret.Error(2)
+	}
+	return r0, r1, r2
 }
 
 // MockEventStore_List_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'List'
@@ -334,12 +340,13 @@ type MockEventStore_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-//   - limit int32
-func (_e *MockEventStore_Expecter) List(ctx any, limit any) *MockEventStore_List_Call {
-	return &MockEventStore_List_Call{Call: _e.mock.On("List", ctx, limit)}
+//   - pageSize int32
+//   - pageToken string
+func (_e *MockEventStore_Expecter) List(ctx any, pageSize any, pageToken any) *MockEventStore_List_Call {
+	return &MockEventStore_List_Call{Call: _e.mock.On("List", ctx, pageSize, pageToken)}
 }
 
-func (_c *MockEventStore_List_Call) Run(run func(ctx context.Context, limit int32)) *MockEventStore_List_Call {
+func (_c *MockEventStore_List_Call) Run(run func(ctx context.Context, pageSize int32, pageToken string)) *MockEventStore_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -349,20 +356,25 @@ func (_c *MockEventStore_List_Call) Run(run func(ctx context.Context, limit int3
 		if args[1] != nil {
 			arg1 = args[1].(int32)
 		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
 }
 
-func (_c *MockEventStore_List_Call) Return(actionEvents []*ledgerv1.ActionEvent, err error) *MockEventStore_List_Call {
-	_c.Call.Return(actionEvents, err)
+func (_c *MockEventStore_List_Call) Return(actionEvents []*ledgerv1.ActionEvent, s string, err error) *MockEventStore_List_Call {
+	_c.Call.Return(actionEvents, s, err)
 	return _c
 }
 
-func (_c *MockEventStore_List_Call) RunAndReturn(run func(ctx context.Context, limit int32) ([]*ledgerv1.ActionEvent, error)) *MockEventStore_List_Call {
+func (_c *MockEventStore_List_Call) RunAndReturn(run func(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.ActionEvent, string, error)) *MockEventStore_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

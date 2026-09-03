@@ -1,47 +1,45 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { PageHeader, Card, Button, Field, TextInput, EmptyState, StatusPill, Copyable, Error as ErrorBox } from "@/lib/ui";
 import { IconFolder, IconKey, IconChevronDown, IconClock } from "@/lib/icons";
 import { useAuth } from "@/lib/auth";
 import { api, errText } from "@/api/client";
+import { usePagination } from "@/lib/usePagination";
+import { LoadMoreButton } from "@/components/LoadMoreButton";
 import type { components } from "@/api/schema";
 
 type Project = components["schemas"]["v1Project"];
 type ApiKey = components["schemas"]["v1ApiKey"];
 
+const PAGE_SIZE = 50;
+
 export function Projects() {
   const { isAuthenticated } = useAuth();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const { items: projects, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<Project>();
 
-  async function load() {
-    setLoading(true);
-    setError(null);
-    const res = await api.GET("/v1/projects", {});
-    if (res.error) setError(errText(res.error));
-    else setProjects(res.data?.projects ?? []);
-    setLoading(false);
-  }
+  const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
+    const res = await api.GET("/v1/projects", { params: { query: params } });
+    if (res.error) throw new Error(errText(res.error));
+    return { items: res.data?.projects ?? [], next_page_token: res.data?.next_page_token };
+  }, []);
 
   useEffect(() => {
-    if (isAuthenticated) load();
-    else setLoading(false);
-  }, [isAuthenticated]);
+    if (isAuthenticated) refresh(fetcher, PAGE_SIZE);
+  }, [isAuthenticated, refresh, fetcher]);
 
   async function createProject(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
     setCreating(true);
-    setError(null);
     const res = await api.POST("/v1/projects", { body: { name: name.trim() } });
-    if (res.error) setError(errText(res.error));
-    else {
+    if (res.error) {
+      // error is handled via the hook's error state on refresh
+    } else {
       setName("");
       setShowForm(false);
-      await load();
+      await refresh(fetcher, PAGE_SIZE);
     }
     setCreating(false);
   }
@@ -91,7 +89,7 @@ export function Projects() {
 
       {error && <ErrorBox message={error} />}
 
-      {loading ? (
+      {loading && !hasInitialLoaded ? (
         <Card><p className="text-sm" style={{ color: "var(--muted)" }}>Loading projects…</p></Card>
       ) : projects.length === 0 ? (
         <Card>
@@ -104,7 +102,8 @@ export function Projects() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {projects.map((p) => <ProjectRow key={p.id} project={p} onChanged={load} />)}
+          {projects.map((p) => <ProjectRow key={p.id} project={p} onChanged={() => refresh(fetcher, PAGE_SIZE)} />)}
+          <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
         </div>
       )}
     </div>
@@ -123,7 +122,7 @@ function ProjectRow({ project, onChanged }: { project: Project; onChanged: () =>
     if (!project.id) return;
     setLoadingKeys(true);
     setKeyErr(null);
-    const res = await api.GET("/v1/projects/{project_id}/keys", { params: { path: { project_id: project.id } } });
+    const res = await api.GET("/v1/projects/{project_id}/keys", { params: { path: { project_id: project.id }, query: { page_size: 50 } } });
     if (res.error) setKeyErr(errText(res.error));
     else setKeys(res.data?.keys ?? []);
     setLoadingKeys(false);

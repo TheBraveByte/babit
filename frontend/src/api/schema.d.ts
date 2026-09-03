@@ -623,18 +623,23 @@ export interface components {
         };
         v1ListApiKeysResponse: {
             keys?: components["schemas"]["v1ApiKey"][];
+            next_page_token?: string;
         };
         v1ListEventsResponse: {
             events?: components["schemas"]["v1ActionEvent"][];
+            next_page_token?: string;
         };
         v1ListGrantsResponse: {
             grants?: components["schemas"]["v1Grant"][];
+            next_page_token?: string;
         };
         v1ListProjectsResponse: {
             projects?: components["schemas"]["v1Project"][];
+            next_page_token?: string;
         };
         v1ListSessionsResponse: {
             sessions?: components["schemas"]["v1Session"][];
+            next_page_token?: string;
         };
         /**
          * @example {
@@ -944,7 +949,8 @@ export interface operations {
     LedgerService_ListEvents: {
         parameters: {
             query?: {
-                limit?: number;
+                page_size?: number;
+                page_token?: string;
             };
             header?: never;
             path?: never;
@@ -1037,7 +1043,8 @@ export interface operations {
     DelegationService_ListGrants: {
         parameters: {
             query?: {
-                limit?: number;
+                page_size?: number;
+                page_token?: string;
             };
             header?: never;
             path?: never;
@@ -1263,7 +1270,10 @@ export interface operations {
     };
     ProjectService_ListProjects: {
         parameters: {
-            query?: never;
+            query?: {
+                page_size?: number;
+                page_token?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1325,7 +1335,10 @@ export interface operations {
     };
     ApiKeyService_ListApiKeys: {
         parameters: {
-            query?: never;
+            query?: {
+                page_size?: number;
+                page_token?: string;
+            };
             header?: never;
             path: {
                 project_id: string;
@@ -1425,7 +1438,8 @@ export interface operations {
     CaptureService_ListSessions: {
         parameters: {
             query?: {
-                limit?: number;
+                page_size?: number;
+                page_token?: string;
             };
             header?: never;
             path?: never;

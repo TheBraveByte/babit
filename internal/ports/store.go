@@ -13,7 +13,7 @@ type EventStore interface {
 	Last(ctx context.Context, sessionID string) (*ledgerv1.ActionEvent, error)
 	BySession(ctx context.Context, sessionID string) ([]*ledgerv1.ActionEvent, error)
 	Range(ctx context.Context, fromSeq, toSeq int64) ([]*ledgerv1.ActionEvent, error)
-	List(ctx context.Context, limit int32) ([]*ledgerv1.ActionEvent, error)
+	List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.ActionEvent, string, error)
 }
 
 type GrantStore interface {
@@ -22,7 +22,7 @@ type GrantStore interface {
 	Chain(ctx context.Context, grantID string) ([]*ledgerv1.Grant, error)
 	Revoke(ctx context.Context, grantID, reason string) error
 	IsRevoked(ctx context.Context, grantID string) (bool, error)
-	List(ctx context.Context, limit int32) ([]*ledgerv1.Grant, error)
+	List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.Grant, string, error)
 }
 
 type SessionStore interface {
@@ -30,5 +30,5 @@ type SessionStore interface {
 	Get(ctx context.Context, sessionID string) (*ledgerv1.Session, error)
 	End(ctx context.Context, sessionID string, at time.Time) (*ledgerv1.Session, error)
 	NextSequence(ctx context.Context, sessionID string) (int64, error)
-	List(ctx context.Context, limit int32) ([]*ledgerv1.Session, error)
+	List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.Session, string, error)
 }

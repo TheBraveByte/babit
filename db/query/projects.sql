@@ -12,7 +12,9 @@ SELECT
     (SELECT count(*) FROM api_keys k WHERE k.project_id = p.id AND k.revoked_at IS NULL) AS active_keys
 FROM projects p
 WHERE p.user_id = $1
-ORDER BY p.created_at DESC;
+  AND ($2::text = '' OR p.id < $2::text)
+ORDER BY p.id DESC
+LIMIT $3;
 
 -- name: GetProjectForUser :one
 SELECT * FROM projects WHERE id = $1 AND user_id = $2;
@@ -23,7 +25,11 @@ VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 
 -- name: ListApiKeysByProject :many
-SELECT * FROM api_keys WHERE project_id = $1 ORDER BY created_at DESC;
+SELECT * FROM api_keys
+WHERE project_id = $1
+  AND ($2::text = '' OR id < $2::text)
+ORDER BY id DESC
+LIMIT $3;
 
 -- name: GetApiKeyByHash :one
 SELECT * FROM api_keys WHERE key_hash = $1 AND revoked_at IS NULL;

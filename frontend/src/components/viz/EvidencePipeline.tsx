@@ -7,10 +7,7 @@ import { prefersReducedMotion } from "./tokens";
  * NOTARY-SEALED (with a flash), and append to the LEDGER on the right as
  * hash-linked blocks.
  *
- * This is NOT decorative floating. It is a structured pipeline with labeled
- * stages. You can read it in 3 seconds and understand what babit does.
- *
- * Dark background, teal accents, subtle motion. Always dark (cinematic hero).
+ * Theme-aware: renders in light or dark mode by reading CSS variables.
  */
 export function EvidencePipeline({ className = "" }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,6 +20,15 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
     if (!ctx) return;
 
     const reduced = prefersReducedMotion();
+
+    // ── Theme detection ────────────────────────────────────────────
+    const getTheme = () => document.documentElement.classList.contains("dark") ? "dark" : "light";
+    let theme = getTheme();
+
+    // Read CSS custom properties for theme-aware colors
+    const refreshTheme = () => {
+      theme = getTheme();
+    };
 
     // ── Setup ──────────────────────────────────────────────────────
     let w = 0;
@@ -42,8 +48,55 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
+    // Watch for theme changes
+    const mo = new MutationObserver(() => { refreshTheme(); });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+    // ── Color palettes ─────────────────────────────────────────────
+    const colors = () => {
+      if (theme === "dark") {
+        return {
+          bgInner: "#0a1413",
+          bgMid: "#070b0a",
+          bgOuter: "#050807",
+          accent: "#2dd4bf",
+          accentDim: "rgba(45, 212, 191, 0.4)",
+          accentFaint: "rgba(45, 212, 191, 0.04)",
+          lineFaint: "rgba(45, 212, 191, 0.12)",
+          lineFlow: "rgba(45, 212, 191, 0.25)",
+          nodeIdle: "rgba(45, 212, 191, 0.4)",
+          label: "rgba(245, 246, 244, 0.7)",
+          subLabel: "rgba(138, 144, 140, 0.6)",
+          particleIdle: "rgba(148, 163, 184, 0.8)",
+          particleTrail: "rgba(148, 163, 184, 0.4)",
+          ledgerFill: "rgba(45, 212, 191, 0.08)",
+          ledgerStroke: "rgba(45, 212, 191, 0.25)",
+          ledgerText: "rgba(45, 212, 191, 0.6)",
+          ledgerLink: "rgba(45, 212, 191, 0.15)",
+        };
+      }
+      return {
+        bgInner: "#f0fdfa",
+        bgMid: "#f8fafc",
+        bgOuter: "#ffffff",
+        accent: "#0d9488",
+        accentDim: "rgba(13, 148, 136, 0.5)",
+        accentFaint: "rgba(13, 148, 136, 0.06)",
+        lineFaint: "rgba(13, 148, 136, 0.15)",
+        lineFlow: "rgba(13, 148, 136, 0.3)",
+        nodeIdle: "rgba(13, 148, 136, 0.5)",
+        label: "rgba(15, 23, 42, 0.7)",
+        subLabel: "rgba(100, 116, 139, 0.7)",
+        particleIdle: "rgba(100, 116, 139, 0.8)",
+        particleTrail: "rgba(100, 116, 139, 0.4)",
+        ledgerFill: "rgba(13, 148, 136, 0.06)",
+        ledgerStroke: "rgba(13, 148, 136, 0.2)",
+        ledgerText: "rgba(13, 148, 136, 0.7)",
+        ledgerLink: "rgba(13, 148, 136, 0.12)",
+      };
+    };
+
     // ── Pipeline stages ────────────────────────────────────────────
-    // 4 stages evenly distributed across the width
     const STAGES = [
       { label: "ACTION", sub: "agent acts" },
       { label: "AUTHORIZE", sub: "human approves" },
@@ -54,16 +107,14 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
     const stageX = (i: number) => w * (0.12 + (i / (STAGES.length - 1)) * 0.76);
     const stageY = () => h * 0.5;
 
-    // ── Particles (agent actions flowing through the pipeline) ─────
+    // ── Particles ──────────────────────────────────────────────────
     interface Particle {
-      stage: number; // 0..3
+      stage: number;
       x: number;
       y: number;
       speed: number;
-      hue: number; // 0 = neutral, 1 = sealed (teal)
       label: string;
       sealed: boolean;
-      life: number;
     }
 
     const ACTIONS = [
@@ -80,32 +131,22 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
     const particles: Particle[] = [];
     let spawnTimer = 0;
 
-    const spawnParticle = (): Particle => {
-      return {
-        stage: 0,
-        x: stageX(0),
-        y: stageY() + (Math.random() - 0.5) * 40,
-        speed: 0.4 + Math.random() * 0.3,
-        hue: 0,
-        label: ACTIONS[Math.floor(Math.random() * ACTIONS.length)],
-        sealed: false,
-        life: 1,
-      };
-    };
+    const spawnParticle = (): Particle => ({
+      stage: 0,
+      x: stageX(0),
+      y: stageY() + (Math.random() - 0.5) * 40,
+      speed: 0.5 + Math.random() * 0.4,
+      label: ACTIONS[Math.floor(Math.random() * ACTIONS.length)],
+      sealed: false,
+    });
 
-    // ── Ledger blocks (append at the end) ──────────────────────────
-    interface LedgerBlock {
-      x: number;
-      y: number;
-      hash: string;
-      age: number;
-    }
+    // ── Ledger blocks ──────────────────────────────────────────────
+    interface LedgerBlock { hash: string; age: number; }
     const ledger: LedgerBlock[] = [];
 
-    // ── Stage glow timers (flash when a particle passes) ───────────
+    // ── Stage glow timers ──────────────────────────────────────────
     const stageGlow = [0, 0, 0, 0];
 
-    // ── Hash generator ─────────────────────────────────────────────
     const fakeHash = () => {
       const chars = "0123456789abcdef";
       let s = "";
@@ -116,16 +157,16 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
     // ── Draw functions ─────────────────────────────────────────────
 
     const drawBackground = () => {
-      // Dark cinematic gradient
+      const c = colors();
       const grad = ctx.createRadialGradient(w * 0.5, h * 0.4, 0, w * 0.5, h * 0.4, w * 0.7);
-      grad.addColorStop(0, "#0a1413");
-      grad.addColorStop(0.5, "#070b0a");
-      grad.addColorStop(1, "#050807");
+      grad.addColorStop(0, c.bgInner);
+      grad.addColorStop(0.5, c.bgMid);
+      grad.addColorStop(1, c.bgOuter);
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
       // Subtle dot grid
-      ctx.fillStyle = "rgba(45, 212, 191, 0.04)";
+      ctx.fillStyle = c.accentFaint;
       const spacing = 32;
       for (let x = 0; x < w; x += spacing) {
         for (let y = 0; y < h; y += spacing) {
@@ -135,18 +176,19 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
     };
 
     const drawPipeline = (t: number) => {
+      const c = colors();
       const sy = stageY();
 
-      // Draw connecting line between stages
-      ctx.strokeStyle = "rgba(45, 212, 191, 0.12)";
+      // Connecting line
+      ctx.strokeStyle = c.lineFaint;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(stageX(0), sy);
       ctx.lineTo(stageX(STAGES.length - 1), sy);
       ctx.stroke();
 
-      // Draw flowing dashes along the pipeline
-      ctx.strokeStyle = "rgba(45, 212, 191, 0.25)";
+      // Flowing dashes
+      ctx.strokeStyle = c.lineFlow;
       ctx.lineWidth = 1.5;
       ctx.setLineDash([4, 12]);
       ctx.lineDashOffset = -t * 0.03;
@@ -156,16 +198,21 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Draw stage nodes
+      // Stage nodes
       STAGES.forEach((stage, i) => {
         const x = stageX(i);
         const glow = stageGlow[i];
 
-        // Glow ring (pulses when particle passes)
+        // Glow ring
         if (glow > 0) {
           const glowGrad = ctx.createRadialGradient(x, sy, 0, x, sy, 60);
-          glowGrad.addColorStop(0, `rgba(45, 212, 191, ${glow * 0.3})`);
-          glowGrad.addColorStop(1, "rgba(45, 212, 191, 0)");
+          if (theme === "dark") {
+            glowGrad.addColorStop(0, `rgba(45, 212, 191, ${glow * 0.3})`);
+            glowGrad.addColorStop(1, "rgba(45, 212, 191, 0)");
+          } else {
+            glowGrad.addColorStop(0, `rgba(13, 148, 136, ${glow * 0.2})`);
+            glowGrad.addColorStop(1, "rgba(13, 148, 136, 0)");
+          }
           ctx.fillStyle = glowGrad;
           ctx.fillRect(x - 60, sy - 60, 120, 120);
         }
@@ -173,35 +220,39 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
         // Node circle
         ctx.beginPath();
         ctx.arc(x, sy, 5, 0, Math.PI * 2);
-        ctx.fillStyle = glow > 0 ? "#2dd4bf" : "rgba(45, 212, 191, 0.4)";
+        ctx.fillStyle = glow > 0 ? c.accent : c.nodeIdle;
         ctx.fill();
 
         // Node ring
         ctx.beginPath();
         ctx.arc(x, sy, 10, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(45, 212, 191, ${0.15 + glow * 0.3})`;
+        ctx.strokeStyle = theme === "dark"
+          ? `rgba(45, 212, 191, ${0.15 + glow * 0.3})`
+          : `rgba(13, 148, 136, ${0.2 + glow * 0.3})`;
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Label above
-        ctx.fillStyle = "rgba(245, 246, 244, 0.7)";
+        // Label
+        ctx.fillStyle = c.label;
         ctx.font = "600 10px ui-monospace, monospace";
         ctx.textAlign = "center";
         ctx.fillText(stage.label, x, sy - 28);
 
-        // Sub-label below
-        ctx.fillStyle = "rgba(138, 144, 140, 0.6)";
+        // Sub-label
+        ctx.fillStyle = c.subLabel;
         ctx.font = "400 9px ui-monospace, monospace";
         ctx.fillText(stage.sub, x, sy + 38);
       });
     };
 
     const drawParticle = (p: Particle) => {
-      // Trail
+      const c = colors();
       const trailLen = 30;
       const grad = ctx.createLinearGradient(p.x - trailLen, p.y, p.x, p.y);
-      grad.addColorStop(0, "rgba(45, 212, 191, 0)");
-      grad.addColorStop(1, p.sealed ? "rgba(45, 212, 191, 0.6)" : "rgba(148, 163, 184, 0.4)");
+      grad.addColorStop(0, theme === "dark" ? "rgba(45, 212, 191, 0)" : "rgba(13, 148, 136, 0)");
+      grad.addColorStop(1, p.sealed
+        ? (theme === "dark" ? "rgba(45, 212, 191, 0.6)" : "rgba(13, 148, 136, 0.6)")
+        : c.particleTrail);
       ctx.strokeStyle = grad;
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -212,20 +263,25 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
       // Head dot
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.sealed ? 3 : 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = p.sealed ? "#2dd4bf" : "rgba(148, 163, 184, 0.8)";
+      ctx.fillStyle = p.sealed ? c.accent : c.particleIdle;
       ctx.fill();
 
-      // Glow around sealed particles
+      // Glow for sealed particles
       if (p.sealed) {
         const glowGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 12);
-        glowGrad.addColorStop(0, "rgba(45, 212, 191, 0.4)");
-        glowGrad.addColorStop(1, "rgba(45, 212, 191, 0)");
+        if (theme === "dark") {
+          glowGrad.addColorStop(0, "rgba(45, 212, 191, 0.4)");
+          glowGrad.addColorStop(1, "rgba(45, 212, 191, 0)");
+        } else {
+          glowGrad.addColorStop(0, "rgba(13, 148, 136, 0.3)");
+          glowGrad.addColorStop(1, "rgba(13, 148, 136, 0)");
+        }
         ctx.fillStyle = glowGrad;
         ctx.fillRect(p.x - 12, p.y - 12, 24, 24);
       }
 
-      // Label floating above the particle
-      ctx.fillStyle = "rgba(148, 163, 184, 0.5)";
+      // Label
+      ctx.fillStyle = c.particleTrail;
       ctx.font = "400 8px ui-monospace, monospace";
       ctx.textAlign = "center";
       ctx.fillText(p.label, p.x, p.y - 12);
@@ -237,31 +293,34 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
       const lx = stageX(STAGES.length - 1);
       const ly = stageY();
 
-      // Draw recent ledger blocks stacked below the LEDGER stage
       ledger.forEach((block, i) => {
         const blockY = ly + 60 + i * 22;
         const opacity = Math.max(0, 1 - block.age / 8000);
-
         if (opacity <= 0) return;
 
-        // Block
-        ctx.fillStyle = `rgba(45, 212, 191, ${opacity * 0.08})`;
-        ctx.strokeStyle = `rgba(45, 212, 191, ${opacity * 0.25})`;
+        ctx.fillStyle = theme === "dark"
+          ? `rgba(45, 212, 191, ${opacity * 0.08})`
+          : `rgba(13, 148, 136, ${opacity * 0.06})`;
+        ctx.strokeStyle = theme === "dark"
+          ? `rgba(45, 212, 191, ${opacity * 0.25})`
+          : `rgba(13, 148, 136, ${opacity * 0.2})`;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.roundRect(lx - 60, blockY, 120, 18, 4);
         ctx.fill();
         ctx.stroke();
 
-        // Hash text
-        ctx.fillStyle = `rgba(45, 212, 191, ${opacity * 0.6})`;
+        ctx.fillStyle = theme === "dark"
+          ? `rgba(45, 212, 191, ${opacity * 0.6})`
+          : `rgba(13, 148, 136, ${opacity * 0.7})`;
         ctx.font = "400 8px ui-monospace, monospace";
         ctx.textAlign = "center";
         ctx.fillText(`0x${block.hash}…`, lx, blockY + 12);
 
-        // Chain link to previous block
         if (i < ledger.length - 1) {
-          ctx.strokeStyle = `rgba(45, 212, 191, ${opacity * 0.15})`;
+          ctx.strokeStyle = theme === "dark"
+            ? `rgba(45, 212, 191, ${opacity * 0.15})`
+            : `rgba(13, 148, 136, ${opacity * 0.12})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(lx, blockY + 18);
@@ -278,7 +337,6 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
       const dt = Math.min(now - lastTime, 50);
       lastTime = now;
 
-      // Clear
       drawBackground();
 
       // Spawn particles
@@ -286,9 +344,7 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
         spawnTimer += dt;
         if (spawnTimer > 800) {
           spawnTimer = 0;
-          if (particles.length < 6) {
-            particles.push(spawnParticle());
-          }
+          if (particles.length < 6) particles.push(spawnParticle());
         }
       }
 
@@ -297,27 +353,16 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
         const p = particles[i];
         const nextX = stageX(Math.min(p.stage + 1, STAGES.length - 1));
 
-        // Move toward next stage
         p.x += p.speed * (dt / 16);
 
-        // Reached next stage?
         if (p.x >= nextX) {
           p.stage = Math.min(p.stage + 1, STAGES.length - 1);
           stageGlow[p.stage] = 1;
 
-          // SEAL stage: flash + mark as sealed
-          if (p.stage === 2 && !p.sealed) {
-            p.sealed = true;
-          }
+          if (p.stage === 2 && !p.sealed) p.sealed = true;
 
-          // LEDGER stage: append a block + remove particle
           if (p.stage === 3) {
-            ledger.unshift({
-              x: stageX(3),
-              y: stageY(),
-              hash: fakeHash(),
-              age: 0,
-            });
+            ledger.unshift({ hash: fakeHash(), age: 0 });
             if (ledger.length > 5) ledger.pop();
             particles.splice(i, 1);
             continue;
@@ -338,14 +383,13 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
         if (ledger[i].age > 8000) ledger.splice(i, 1);
       }
 
-      // Draw pipeline + ledger
       drawPipeline(now);
       drawLedger();
 
       rafRef.current = requestAnimationFrame(tick);
     };
 
-    // Initial particles for visual richness
+    // Initial particles
     if (!reduced) {
       for (let i = 0; i < 3; i++) {
         const p = spawnParticle();
@@ -360,6 +404,7 @@ export function EvidencePipeline({ className = "" }: { className?: string }) {
     return () => {
       cancelAnimationFrame(rafRef.current);
       ro.disconnect();
+      mo.disconnect();
     };
   }, []);
 

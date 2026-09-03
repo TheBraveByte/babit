@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
-import { PageHeader, Card, Button, Error, Copyable, MonospaceHash, StatusPill, TableSkeleton, EmptyState } from "@/lib/ui";
+import { useEffect, useState, useCallback } from "react";
+import { PageHeader, Card, Button, Error as ErrorBox, Copyable, MonospaceHash, StatusPill, TableSkeleton, EmptyState } from "@/lib/ui";
 import { IconSearch, IconActivity } from "@/lib/icons";
 import { api, errText } from "@/api/client";
+import { usePagination } from "@/lib/usePagination";
+import { LoadMoreButton } from "@/components/LoadMoreButton";
 import type { components } from "@/api/schema";
 
 type ActionEvent = components["schemas"]["v1ActionEvent"];
@@ -17,24 +19,21 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
+const PAGE_SIZE = 50;
+
 export function Activity() {
-  const [events, setEvents] = useState<ActionEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<ActionEvent | null>(null);
+  const { items: events, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<ActionEvent>();
+
+  const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
+    const res = await api.GET("/v1/events", { params: { query: params } });
+    if (res.error) throw new Error(errText(res.error));
+    return { items: res.data?.events ?? [], next_page_token: res.data?.next_page_token };
+  }, []);
 
   useEffect(() => {
-    let active = true;
-    (async () => {
-      setLoading(true);
-      const res = await api.GET("/v1/events", { params: { query: { limit: 50 } } });
-      if (!active) return;
-      if (res.error) setError(errText(res.error));
-      else setEvents(res.data?.events ?? []);
-      setLoading(false);
-    })();
-    return () => { active = false; };
-  }, []);
+    refresh(fetcher, PAGE_SIZE);
+  }, [refresh, fetcher]);
 
   return (
     <div className="space-y-6">
@@ -43,7 +42,7 @@ export function Activity() {
         description="Every recorded action event, newest first. Click any row to inspect its full record."
       />
 
-      {error && <Error message={error} />}
+      {error && <ErrorBox message={error} />}
 
       {selected ? (
         <Card
@@ -73,8 +72,10 @@ export function Activity() {
       ) : (
         <Card>
           <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
-          {loading ? (
+          {loading && !hasInitialLoaded ? (
             <TableSkeleton rows={8} cols={5} />
+          ) : error ? (
+            <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>Couldn't load events. Try refreshing.</p>
           ) : events.length === 0 ? (
             <EmptyState
               icon={<IconActivity className="w-5 h-5" />}
@@ -119,6 +120,7 @@ export function Activity() {
               <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
                 Showing {events.length} event{events.length !== 1 ? "s" : ""}.
               </p>
+              <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
             </>
           )}
         </Card>

@@ -19,15 +19,15 @@ const RESULT: CliOutput = {
 const POINTS = [
   {
     title: "Save the receipt",
-    body: "Download the receipt as a plain file from the console or the API.",
+    body: "Download it as a plain file.",
   },
   {
     title: "Get the public key",
-    body: "Fetch babit's public key once and keep it wherever you need it, even offline.",
+    body: "Fetch it once, keep it anywhere.",
   },
   {
     title: "Check it anywhere",
-    body: "Confirm the receipt is genuine and unchanged with the open babit verify tool.",
+    body: "Verify offline with the open tool.",
   },
 ];
 

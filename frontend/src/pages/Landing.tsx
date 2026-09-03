@@ -9,6 +9,8 @@ import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
 import { SectionVerifyRecord } from "./landing/SectionVerifyRecord";
 import { SectionBuiltForEngineers } from "./landing/SectionBuiltForEngineers";
 import { SectionOfflineEvidence } from "./landing/SectionOfflineEvidence";
+import { SectionGlobalAnchor } from "./landing/SectionGlobalAnchor";
+import { SectionTestimonials } from "./landing/SectionTestimonials";
 import { FinalCTA } from "./landing/FinalCTA";
 import { Footer } from "./landing/Footer";
 
@@ -27,14 +29,17 @@ export function Landing() {
         {/* How it works — the four plain steps */}
         <SectionHowItWorks />
 
+        {/* id="product" — ordinary log vs babit evidence (the key "why") */}
+        <SectionLogsVsEvidence />
+
+        {/* Global anchoring network — globe visualization (visual punch early) */}
+        <SectionGlobalAnchor />
+
         {/* id="who" — sectors that need agent evidence, honest use cases */}
         <SectionWhoItsFor />
 
         {/* id="surfaces" — where babit records: browser, sandbox, desktop, REST */}
         <SectionSurfaces />
-
-        {/* id="product" — ordinary log vs babit evidence */}
-        <SectionLogsVsEvidence />
 
         {/* Authority chain — person to agent to sub-agent */}
         <SectionAuthorityChain />
@@ -45,8 +50,11 @@ export function Landing() {
         {/* Built for engineers (carries id="developers") */}
         <SectionBuiltForEngineers />
 
-        {/* Section 7: Offline verification */}
+        {/* Section: Offline verification */}
         <SectionOfflineEvidence />
+
+        {/* Testimonials — social proof */}
+        <SectionTestimonials />
 
         {/* Final CTA */}
         <FinalCTA />

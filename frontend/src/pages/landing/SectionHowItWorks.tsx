@@ -5,25 +5,25 @@ const STEPS = [
     label: "Authority",
     Icon: IconUser,
     title: "A person gives permission.",
-    body: "Someone allows an agent to do one specific thing, and only that thing.",
+    body: "One specific thing, nothing more.",
   },
   {
     label: "Action",
     Icon: IconActivity,
     title: "The agent acts.",
-    body: "It does the work: clicks in a browser, runs code, or moves money.",
+    body: "Clicks, code, or money movement.",
   },
   {
     label: "Evidence",
     Icon: IconLock,
-    title: "babit records and seals it.",
-    body: "It writes down what happened and who allowed it, then seals the record so it cannot be changed later.",
+    title: "babit seals it.",
+    body: "Sealed. Can't be changed.",
   },
   {
     label: "Verification",
     Icon: IconShieldCheck,
     title: "Anyone can check it.",
-    body: "Anyone can confirm the record is real and unchanged, without taking babit's word for it.",
+    body: "No trust in babit required.",
   },
 ];
 
@@ -33,7 +33,7 @@ export function SectionHowItWorks() {
       <SectionHeader
         eyebrow="How it works"
         title="From permission to proof."
-        lead="babit ties what an agent did to the person who allowed it, then turns it into evidence anyone can check."
+        lead="Tie what an agent did to who allowed it. Turn it into evidence anyone can check."
       />
 
      <div className="mt-14">
@@ -45,10 +45,10 @@ export function SectionHowItWorks() {
               The flow
             </span>
             <h3 className="type-h3" style={{ color: "var(--fg)" }}>
-  One thread, from the moment someone says yes.
+  One thread, from yes to proof.
             </h3>
             <p className="type-body">
-              The link to who allowed it follows every step, so the result is evidence, not just a log.
+              Who allowed it follows every step. The result is evidence, not just a log.
             </p>
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {STEPS.map((s, i) => (

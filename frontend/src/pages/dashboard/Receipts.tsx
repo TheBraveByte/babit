@@ -1,33 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { ReceiptDetail } from "./ReceiptDetail";
-import { PageHeader, Card, Error, TableSkeleton, EmptyState } from "@/lib/ui";
+import { PageHeader, Card, Error as ErrorBox, TableSkeleton, EmptyState } from "@/lib/ui";
 import { IconShieldCheck, IconFileText } from "@/lib/icons";
 import { api, errText } from "@/api/client";
+import { usePagination } from "@/lib/usePagination";
+import { LoadMoreButton } from "@/components/LoadMoreButton";
 import type { components } from "@/api/schema";
 
 type Proof = components["schemas"]["v1Proof"];
 type ActionEvent = components["schemas"]["v1ActionEvent"];
 
+const PAGE_SIZE = 50;
+
 export function Receipts() {
-  const [events, setEvents] = useState<ActionEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [proof, setProof] = useState<Proof | null>(null);
   const [fetchingProof, setFetchingProof] = useState(false);
   const [proofError, setProofError] = useState<string | null>(null);
+  const { items: events, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<ActionEvent>();
+
+  const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
+    const res = await api.GET("/v1/events", { params: { query: params } });
+    if (res.error) throw new Error(errText(res.error));
+    return { items: res.data?.events ?? [], next_page_token: res.data?.next_page_token };
+  }, []);
 
   useEffect(() => {
-    let active = true;
-    (async () => {
-      setLoading(true);
-      const res = await api.GET("/v1/events", { params: { query: { limit: 50 } } });
-      if (!active) return;
-      if (res.error) setError(errText(res.error));
-      else setEvents(res.data?.events ?? []);
-      setLoading(false);
-    })();
-    return () => { active = false; };
-  }, []);
+    refresh(fetcher, PAGE_SIZE);
+  }, [refresh, fetcher]);
 
   async function fetchProof(eventId: string) {
     setFetchingProof(true);
@@ -55,13 +54,15 @@ export function Receipts() {
         description="Retrieve the sealed inclusion proof for any recorded action. Click Fetch Proof to get the cryptographic receipt."
       />
 
-      {error && <Error message={error} />}
-      {proofError && <Error message={proofError} />}
+      {error && <ErrorBox message={error} />}
+      {proofError && <ErrorBox message={proofError} />}
 
       <Card>
         <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
-        {loading ? (
+        {loading && !hasInitialLoaded ? (
           <TableSkeleton rows={8} cols={4} />
+        ) : error ? (
+          <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>Couldn't load events. Try refreshing.</p>
         ) : events.length === 0 ? (
           <EmptyState
             icon={<IconFileText className="w-5 h-5" />}
@@ -109,6 +110,7 @@ export function Receipts() {
           <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
             Showing {events.length} event{events.length !== 1 ? "s" : ""}.
           </p>
+          <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
           </>
         )}
       </Card>

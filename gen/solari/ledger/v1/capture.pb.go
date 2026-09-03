@@ -361,7 +361,8 @@ func (x *EndSessionResponse) GetSession() *Session {
 
 type ListSessionsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -396,16 +397,24 @@ func (*ListSessionsRequest) Descriptor() ([]byte, []int) {
 	return file_solari_ledger_v1_capture_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *ListSessionsRequest) GetLimit() int32 {
+func (x *ListSessionsRequest) GetPageSize() int32 {
 	if x != nil {
-		return x.Limit
+		return x.PageSize
 	}
 	return 0
+}
+
+func (x *ListSessionsRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
 }
 
 type ListSessionsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Sessions      []*Session             `protobuf:"bytes,1,rep,name=sessions,proto3" json:"sessions,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -447,6 +456,13 @@ func (x *ListSessionsResponse) GetSessions() []*Session {
 	return nil
 }
 
+func (x *ListSessionsResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
 var File_solari_ledger_v1_capture_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_capture_proto_rawDesc = "" +
@@ -476,11 +492,14 @@ const file_solari_ledger_v1_capture_proto_rawDesc = "" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"I\n" +
 	"\x12EndSessionResponse\x123\n" +
-	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"+\n" +
-	"\x13ListSessionsRequest\x12\x14\n" +
-	"\x05limit\x18\x01 \x01(\x05R\x05limit\"M\n" +
+	"\asession\x18\x01 \x01(\v2\x19.solari.ledger.v1.SessionR\asession\"Q\n" +
+	"\x13ListSessionsRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\"u\n" +
 	"\x14ListSessionsResponse\x125\n" +
-	"\bsessions\x18\x01 \x03(\v2\x19.solari.ledger.v1.SessionR\bsessions2\xc6\x05\n" +
+	"\bsessions\x18\x01 \x03(\v2\x19.solari.ledger.v1.SessionR\bsessions\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\xc6\x05\n" +
 	"\x0eCaptureService\x12\xa7\x01\n" +
 	"\fBeginSession\x12%.solari.ledger.v1.BeginSessionRequest\x1a&.solari.ledger.v1.BeginSessionResponse\"H\x92A.\x12,Open a capture session bound to a root grant\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/sessions\x12\xb7\x01\n" +
 	"\fRecordAction\x12%.solari.ledger.v1.RecordActionRequest\x1a&.solari.ledger.v1.RecordActionResponse\"X\x92A)\x12'Record and notarize one executed action\x82\xd3\xe4\x93\x02&:\x01*\"!/v1/sessions/{session_id}/actions\x12\x9d\x01\n" +

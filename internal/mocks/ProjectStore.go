@@ -187,31 +187,37 @@ func (_c *MockProjectStore_GetForUser_Call) RunAndReturn(run func(ctx context.Co
 }
 
 // ListByUser provides a mock function for the type MockProjectStore
-func (_mock *MockProjectStore) ListByUser(ctx context.Context, userID string) ([]*ports.Project, error) {
-	ret := _mock.Called(ctx, userID)
+func (_mock *MockProjectStore) ListByUser(ctx context.Context, userID string, pageSize int32, pageToken string) ([]*ports.Project, string, error) {
+	ret := _mock.Called(ctx, userID, pageSize, pageToken)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListByUser")
 	}
 
 	var r0 []*ports.Project
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) ([]*ports.Project, error)); ok {
-		return returnFunc(ctx, userID)
+	var r1 string
+	var r2 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, int32, string) ([]*ports.Project, string, error)); ok {
+		return returnFunc(ctx, userID, pageSize, pageToken)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) []*ports.Project); ok {
-		r0 = returnFunc(ctx, userID)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, int32, string) []*ports.Project); ok {
+		r0 = returnFunc(ctx, userID, pageSize, pageToken)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*ports.Project)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = returnFunc(ctx, userID)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, int32, string) string); ok {
+		r1 = returnFunc(ctx, userID, pageSize, pageToken)
 	} else {
-		r1 = ret.Error(1)
+		r1 = ret.Get(1).(string)
 	}
-	return r0, r1
+	if returnFunc, ok := ret.Get(2).(func(context.Context, string, int32, string) error); ok {
+		r2 = returnFunc(ctx, userID, pageSize, pageToken)
+	} else {
+		r2 = ret.Error(2)
+	}
+	return r0, r1, r2
 }
 
 // MockProjectStore_ListByUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListByUser'
@@ -222,11 +228,13 @@ type MockProjectStore_ListByUser_Call struct {
 // ListByUser is a helper method to define mock.On call
 //   - ctx context.Context
 //   - userID string
-func (_e *MockProjectStore_Expecter) ListByUser(ctx any, userID any) *MockProjectStore_ListByUser_Call {
-	return &MockProjectStore_ListByUser_Call{Call: _e.mock.On("ListByUser", ctx, userID)}
+//   - pageSize int32
+//   - pageToken string
+func (_e *MockProjectStore_Expecter) ListByUser(ctx any, userID any, pageSize any, pageToken any) *MockProjectStore_ListByUser_Call {
+	return &MockProjectStore_ListByUser_Call{Call: _e.mock.On("ListByUser", ctx, userID, pageSize, pageToken)}
 }
 
-func (_c *MockProjectStore_ListByUser_Call) Run(run func(ctx context.Context, userID string)) *MockProjectStore_ListByUser_Call {
+func (_c *MockProjectStore_ListByUser_Call) Run(run func(ctx context.Context, userID string, pageSize int32, pageToken string)) *MockProjectStore_ListByUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -236,20 +244,30 @@ func (_c *MockProjectStore_ListByUser_Call) Run(run func(ctx context.Context, us
 		if args[1] != nil {
 			arg1 = args[1].(string)
 		}
+		var arg2 int32
+		if args[2] != nil {
+			arg2 = args[2].(int32)
+		}
+		var arg3 string
+		if args[3] != nil {
+			arg3 = args[3].(string)
+		}
 		run(
 			arg0,
 			arg1,
+			arg2,
+			arg3,
 		)
 	})
 	return _c
 }
 
-func (_c *MockProjectStore_ListByUser_Call) Return(projects []*ports.Project, err error) *MockProjectStore_ListByUser_Call {
-	_c.Call.Return(projects, err)
+func (_c *MockProjectStore_ListByUser_Call) Return(projects []*ports.Project, s string, err error) *MockProjectStore_ListByUser_Call {
+	_c.Call.Return(projects, s, err)
 	return _c
 }
 
-func (_c *MockProjectStore_ListByUser_Call) RunAndReturn(run func(ctx context.Context, userID string) ([]*ports.Project, error)) *MockProjectStore_ListByUser_Call {
+func (_c *MockProjectStore_ListByUser_Call) RunAndReturn(run func(ctx context.Context, userID string, pageSize int32, pageToken string) ([]*ports.Project, string, error)) *MockProjectStore_ListByUser_Call {
 	_c.Call.Return(run)
 	return _c
 }

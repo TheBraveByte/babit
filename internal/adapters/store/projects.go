@@ -6,6 +6,7 @@ import (
 
 	storedb "github.com/babit/nal/db/sqlc"
 	"github.com/babit/nal/internal/errs"
+	"github.com/babit/nal/internal/pagination"
 	"github.com/babit/nal/internal/ports"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -39,14 +40,28 @@ func (s *projectStore) Create(ctx context.Context, userID, name string) (*ports.
 	return &ports.Project{ID: uuidString(row.ID), Name: row.Name, CreatedAt: row.CreatedAt.Time}, nil
 }
 
-func (s *projectStore) ListByUser(ctx context.Context, userID string) ([]*ports.Project, error) {
+func (s *projectStore) ListByUser(ctx context.Context, userID string, pageSize int32, pageToken string) ([]*ports.Project, string, error) {
 	uid, err := parseUUID(userID)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
-	rows, err := s.q.ListProjectsByUser(ctx, uid)
+	pageSize = pagination.ClampPageSize(pageSize, 100)
+	cur, err := pagination.Decode(pageToken)
 	if err != nil {
-		return nil, opErr(err, "list projects")
+		return nil, "", opErr(err, "list projects")
+	}
+	rows, err := s.q.ListProjectsByUser(ctx, storedb.ListProjectsByUserParams{
+		UserID:  uid,
+		Column2: cur.Value,
+		Limit:   pageSize + 1,
+	})
+	if err != nil {
+		return nil, "", opErr(err, "list projects")
+	}
+	var next string
+	if len(rows) > int(pageSize) {
+		next = pagination.Cursor{Value: uuidString(rows[pageSize-1].ID)}.Encode()
+		rows = rows[:pageSize]
 	}
 	out := make([]*ports.Project, 0, len(rows))
 	for _, r := range rows {
@@ -57,7 +72,7 @@ func (s *projectStore) ListByUser(ctx context.Context, userID string) ([]*ports.
 			CreatedAt:  r.CreatedAt.Time,
 		})
 	}
-	return out, nil
+	return out, next, nil
 }
 
 func (s *projectStore) GetForUser(ctx context.Context, id, userID string) (*ports.Project, error) {
@@ -107,20 +122,34 @@ func (s *apiKeyStore) Create(ctx context.Context, in ports.APIKeyCreate) (*ports
 	return apiKeyFromRow(row), nil
 }
 
-func (s *apiKeyStore) ListByProject(ctx context.Context, projectID string) ([]*ports.APIKey, error) {
+func (s *apiKeyStore) ListByProject(ctx context.Context, projectID string, pageSize int32, pageToken string) ([]*ports.APIKey, string, error) {
 	pid, err := parseUUID(projectID)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
-	rows, err := s.q.ListApiKeysByProject(ctx, pid)
+	pageSize = pagination.ClampPageSize(pageSize, 100)
+	cur, err := pagination.Decode(pageToken)
 	if err != nil {
-		return nil, opErr(err, "list api keys")
+		return nil, "", opErr(err, "list api keys")
+	}
+	rows, err := s.q.ListApiKeysByProject(ctx, storedb.ListApiKeysByProjectParams{
+		ProjectID: pid,
+		Column2:   cur.Value,
+		Limit:     pageSize + 1,
+	})
+	if err != nil {
+		return nil, "", opErr(err, "list api keys")
+	}
+	var next string
+	if len(rows) > int(pageSize) {
+		next = pagination.Cursor{Value: uuidString(rows[pageSize-1].ID)}.Encode()
+		rows = rows[:pageSize]
 	}
 	out := make([]*ports.APIKey, 0, len(rows))
 	for _, r := range rows {
 		out = append(out, apiKeyFromRow(r))
 	}
-	return out, nil
+	return out, next, nil
 }
 
 func (s *apiKeyStore) GetByHash(ctx context.Context, keyHash string) (*ports.APIKey, error) {

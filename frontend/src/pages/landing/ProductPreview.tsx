@@ -16,7 +16,7 @@ export function ProductPreview() {
         style={{
           backgroundColor: "var(--surface)",
           border: "1px solid var(--border)",
-          boxShadow: "0 2px 8px -2px rgba(0,0,0,0.08), 0 40px 80px -32px rgba(0,0,0,0.25)",
+          boxShadow: "0 2px 8px -2px color-mix(in srgb, var(--fg) 6%, transparent), 0 40px 80px -32px color-mix(in srgb, var(--fg) 18%, transparent)",
         }}
       >
         {/* Browser top bar */}
@@ -54,7 +54,7 @@ export function ProductPreview() {
           style={{
             backgroundColor: "var(--surface)",
             border: "1px solid var(--border)",
-            boxShadow: "0 2px 8px -2px rgba(0,0,0,0.06), 0 24px 48px -24px rgba(0,0,0,0.18)",
+            boxShadow: "0 2px 8px -2px color-mix(in srgb, var(--fg) 5%, transparent), 0 24px 48px -24px color-mix(in srgb, var(--fg) 14%, transparent)",
           }}
         >
           <div
@@ -87,7 +87,7 @@ export function ProductPreview() {
           style={{
             backgroundColor: "var(--surface)",
             border: "1px solid var(--border)",
-            boxShadow: "0 2px 8px -2px rgba(0,0,0,0.06), 0 24px 48px -24px rgba(0,0,0,0.18)",
+            boxShadow: "0 2px 8px -2px color-mix(in srgb, var(--fg) 5%, transparent), 0 24px 48px -24px color-mix(in srgb, var(--fg) 14%, transparent)",
           }}
         >
           <div

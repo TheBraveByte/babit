@@ -93,17 +93,19 @@ func (q *Queries) GetSession(ctx context.Context, sessionID string) (Session, er
 const listSessionsByUser = `-- name: ListSessionsByUser :many
 SELECT session_id, root_grant_id, surface, started_at, ended_at, event_count, uuid, user_id FROM sessions
 WHERE user_id = $1
-ORDER BY started_at DESC
-LIMIT $2
+  AND ($2::text = '' OR session_id < $2::text)
+ORDER BY session_id DESC
+LIMIT $3
 `
 
 type ListSessionsByUserParams struct {
-	UserID pgtype.UUID
-	Limit  int32
+	UserID  pgtype.UUID
+	Column2 string
+	Limit   int32
 }
 
 func (q *Queries) ListSessionsByUser(ctx context.Context, arg ListSessionsByUserParams) ([]Session, error) {
-	rows, err := q.db.Query(ctx, listSessionsByUser, arg.UserID, arg.Limit)
+	rows, err := q.db.Query(ctx, listSessionsByUser, arg.UserID, arg.Column2, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

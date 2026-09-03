@@ -70,9 +70,9 @@ func (l *Ledger) ListEvents(ctx context.Context, req *ledgerv1.ListEventsRequest
 	if auth.UserID(ctx) == "" {
 		return nil, errs.New(errs.Unauthenticated, "not authenticated")
 	}
-	events, err := l.events.List(ctx, req.GetLimit())
+	events, next, err := l.events.List(ctx, req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
-	return &ledgerv1.ListEventsResponse{Events: events}, nil
+	return &ledgerv1.ListEventsResponse{Events: events, NextPageToken: next}, nil
 }

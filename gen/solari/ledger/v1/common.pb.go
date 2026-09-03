@@ -663,6 +663,105 @@ func (x *Session) GetEventCount() int64 {
 	return 0
 }
 
+// Pagination cursor — opaque to the client, returned by the server.
+// Pass page_token from a previous response to fetch the next page.
+// page_size is advisory; the server may return fewer items.
+type PageRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PageRequest) Reset() {
+	*x = PageRequest{}
+	mi := &file_solari_ledger_v1_common_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PageRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PageRequest) ProtoMessage() {}
+
+func (x *PageRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_common_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PageRequest.ProtoReflect.Descriptor instead.
+func (*PageRequest) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_common_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *PageRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *PageRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+type PageResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	NextPageToken string                 `protobuf:"bytes,1,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PageResponse) Reset() {
+	*x = PageResponse{}
+	mi := &file_solari_ledger_v1_common_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PageResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PageResponse) ProtoMessage() {}
+
+func (x *PageResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_solari_ledger_v1_common_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PageResponse.ProtoReflect.Descriptor instead.
+func (*PageResponse) Descriptor() ([]byte, []int) {
+	return file_solari_ledger_v1_common_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *PageResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
 var File_solari_ledger_v1_common_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_common_proto_rawDesc = "" +
@@ -730,7 +829,13 @@ const file_solari_ledger_v1_common_proto_rawDesc = "" +
 	"started_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x125\n" +
 	"\bended_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\aendedAt\x12\x1f\n" +
 	"\vevent_count\x18\x06 \x01(\x03R\n" +
-	"eventCount*a\n" +
+	"eventCount\"I\n" +
+	"\vPageRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\"6\n" +
+	"\fPageResponse\x12&\n" +
+	"\x0fnext_page_token\x18\x01 \x01(\tR\rnextPageToken*a\n" +
 	"\aSurface\x12\x17\n" +
 	"\x13SURFACE_UNSPECIFIED\x10\x00\x12\x13\n" +
 	"\x0fSURFACE_BROWSER\x10\x01\x12\x13\n" +
@@ -751,7 +856,7 @@ func file_solari_ledger_v1_common_proto_rawDescGZIP() []byte {
 }
 
 var file_solari_ledger_v1_common_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_solari_ledger_v1_common_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_solari_ledger_v1_common_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_solari_ledger_v1_common_proto_goTypes = []any{
 	(Surface)(0),                  // 0: solari.ledger.v1.Surface
 	(Anchor_Kind)(0),              // 1: solari.ledger.v1.Anchor.Kind
@@ -761,21 +866,23 @@ var file_solari_ledger_v1_common_proto_goTypes = []any{
 	(*Proof)(nil),                 // 5: solari.ledger.v1.Proof
 	(*Anchor)(nil),                // 6: solari.ledger.v1.Anchor
 	(*Session)(nil),               // 7: solari.ledger.v1.Session
-	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
+	(*PageRequest)(nil),           // 8: solari.ledger.v1.PageRequest
+	(*PageResponse)(nil),          // 9: solari.ledger.v1.PageResponse
+	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
 }
 var file_solari_ledger_v1_common_proto_depIdxs = []int32{
 	3,  // 0: solari.ledger.v1.Grant.scope:type_name -> solari.ledger.v1.Scope
-	8,  // 1: solari.ledger.v1.Grant.expires_at:type_name -> google.protobuf.Timestamp
+	10, // 1: solari.ledger.v1.Grant.expires_at:type_name -> google.protobuf.Timestamp
 	0,  // 2: solari.ledger.v1.ActionEvent.surface:type_name -> solari.ledger.v1.Surface
-	8,  // 3: solari.ledger.v1.ActionEvent.occurred_at:type_name -> google.protobuf.Timestamp
+	10, // 3: solari.ledger.v1.ActionEvent.occurred_at:type_name -> google.protobuf.Timestamp
 	4,  // 4: solari.ledger.v1.Proof.event:type_name -> solari.ledger.v1.ActionEvent
 	6,  // 5: solari.ledger.v1.Proof.anchor:type_name -> solari.ledger.v1.Anchor
 	2,  // 6: solari.ledger.v1.Proof.delegation_chain:type_name -> solari.ledger.v1.Grant
 	1,  // 7: solari.ledger.v1.Anchor.kind:type_name -> solari.ledger.v1.Anchor.Kind
-	8,  // 8: solari.ledger.v1.Anchor.anchored_at:type_name -> google.protobuf.Timestamp
+	10, // 8: solari.ledger.v1.Anchor.anchored_at:type_name -> google.protobuf.Timestamp
 	0,  // 9: solari.ledger.v1.Session.surface:type_name -> solari.ledger.v1.Surface
-	8,  // 10: solari.ledger.v1.Session.started_at:type_name -> google.protobuf.Timestamp
-	8,  // 11: solari.ledger.v1.Session.ended_at:type_name -> google.protobuf.Timestamp
+	10, // 10: solari.ledger.v1.Session.started_at:type_name -> google.protobuf.Timestamp
+	10, // 11: solari.ledger.v1.Session.ended_at:type_name -> google.protobuf.Timestamp
 	12, // [12:12] is the sub-list for method output_type
 	12, // [12:12] is the sub-list for method input_type
 	12, // [12:12] is the sub-list for extension type_name
@@ -794,7 +901,7 @@ func file_solari_ledger_v1_common_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_solari_ledger_v1_common_proto_rawDesc), len(file_solari_ledger_v1_common_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

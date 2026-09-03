@@ -110,10 +110,10 @@ func (c *Capture) ListSessions(ctx context.Context, req *ledgerv1.ListSessionsRe
 	if auth.UserID(ctx) == "" {
 		return nil, errs.New(errs.Unauthenticated, "not authenticated")
 	}
-	sessions, err := c.sessions.List(ctx, req.GetLimit())
+	sessions, next, err := c.sessions.List(ctx, req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
-	return &ledgerv1.ListSessionsResponse{Sessions: sessions}, nil
+	return &ledgerv1.ListSessionsResponse{Sessions: sessions, NextPageToken: next}, nil
 }
 

@@ -23,5 +23,6 @@ RETURNING event_count;
 -- name: ListSessionsByUser :many
 SELECT * FROM sessions
 WHERE user_id = $1
-ORDER BY started_at DESC
-LIMIT $2;
+  AND ($2::text = '' OR session_id < $2::text)
+ORDER BY session_id DESC
+LIMIT $3;

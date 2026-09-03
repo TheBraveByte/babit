@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
-import { PageHeader, Card, StatusPill, Copyable, MonospaceHash, Button, Error, TableSkeleton, EmptyState } from "@/lib/ui";
+import { useEffect, useState, useCallback } from "react";
+import { PageHeader, Card, StatusPill, Copyable, MonospaceHash, Button, Error as ErrorBox, TableSkeleton, EmptyState } from "@/lib/ui";
 import { IconLayers } from "@/lib/icons";
 import { api, errText } from "@/api/client";
+import { usePagination } from "@/lib/usePagination";
+import { LoadMoreButton } from "@/components/LoadMoreButton";
 import type { components } from "@/api/schema";
 
 type Anchor = components["schemas"]["v1Anchor"];
 type Session = components["schemas"]["v1Session"];
+
+const PAGE_SIZE = 50;
 
 const ANCHOR_KIND_LABEL: Record<string, string> = {
   KIND_UNSPECIFIED: "Unspecified",
@@ -28,26 +32,21 @@ function Meta({ label, children, mono = true }: { label: string; children: React
 }
 
 export function Sessions() {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Session | null>(null);
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const [anchorLoading, setAnchorLoading] = useState(false);
   const [anchorError, setAnchorError] = useState<string | null>(null);
+  const { items: sessions, loading, error, hasMore, hasInitialLoaded, refresh, loadMore } = usePagination<Session>();
+
+  const fetcher = useCallback(async (params: { page_size: number; page_token: string }) => {
+    const res = await api.GET("/v1/sessions", { params: { query: params } });
+    if (res.error) throw new Error(errText(res.error));
+    return { items: res.data?.sessions ?? [], next_page_token: res.data?.next_page_token };
+  }, []);
 
   useEffect(() => {
-    let active = true;
-    (async () => {
-      setLoading(true);
-      const res = await api.GET("/v1/sessions", { params: { query: { limit: 50 } } });
-      if (!active) return;
-      if (res.error) setError(errText(res.error));
-      else setSessions(res.data?.sessions ?? []);
-      setLoading(false);
-    })();
-    return () => { active = false; };
-  }, []);
+    refresh(fetcher, PAGE_SIZE);
+  }, [refresh, fetcher]);
 
   // Fetch anchor when a session is selected
   useEffect(() => {
@@ -77,7 +76,7 @@ export function Sessions() {
         description="Capture sessions bind executed actions to a root grant and seal them under an external anchor. Click a session to inspect its anchor."
       />
 
-      {error && <Error message={error} />}
+      {error && <ErrorBox message={error} />}
 
       {selected ? (
         <Card
@@ -126,8 +125,10 @@ export function Sessions() {
       ) : (
         <Card>
           <div className="h-px accent-hairline -mx-5 -mt-5 mb-5" />
-          {loading ? (
+          {loading && !hasInitialLoaded ? (
             <TableSkeleton rows={8} cols={5} />
+          ) : error ? (
+            <p className="text-sm py-8 text-center" style={{ color: "var(--muted)" }}>Couldn't load sessions. Try refreshing.</p>
           ) : sessions.length === 0 ? (
             <EmptyState
               icon={<IconLayers className="w-5 h-5" />}
@@ -174,6 +175,7 @@ export function Sessions() {
             <p className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
               Showing {sessions.length} session{sessions.length !== 1 ? "s" : ""}.
             </p>
+            <LoadMoreButton onClick={() => loadMore(fetcher, PAGE_SIZE)} loading={loading} disabled={!hasMore} />
             </>
           )}
         </Card>

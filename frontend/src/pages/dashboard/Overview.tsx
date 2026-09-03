@@ -49,7 +49,7 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
   const workspace = branding?.company_name || user?.org_name || "your workspace";
 
   const quickActions: { tab: DashboardTab; title: string; desc: string; icon: React.ReactNode }[] = [
-    { tab: "verify", title: "Verify evidence", desc: "Validate receipts and proofs.", icon: <IconShieldCheck className="w-4 h-4 text-emerald-700" /> },
+    { tab: "verify", title: "Verify evidence", desc: "Validate receipts and proofs.", icon: <span style={{ color: "var(--color-verified)" }}><IconShieldCheck className="w-4 h-4" /></span> },
     { tab: "receipts", title: "Receipts", desc: "Fetch sealed proof by action ID.", icon: <IconFileText className="w-4 h-4" /> },
     { tab: "projects", title: "Projects", desc: "Track work tied to ledger actions.", icon: <IconFolder className="w-4 h-4" /> },
     { tab: "settings", title: "Settings", desc: "Edit account and workspace details.", icon: <IconGitBranch className="w-4 h-4" /> },
