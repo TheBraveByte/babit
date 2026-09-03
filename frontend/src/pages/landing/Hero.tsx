@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useRouter } from "@/lib/router";
-import { IconCheck, IconRefresh, IconCopy } from "@/lib/icons";
+import { IconCheck, IconRefresh } from "@/lib/icons";
 import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
 import { docsUrl } from "@/lib/links";
-import { SealingStream } from "@/components/viz/SealingStream";
+
+const EvidencePipeline = lazy(() =>
+  import("@/components/viz/EvidencePipeline").then((m) => ({ default: m.EvidencePipeline })),
+);
 
 const SCENARIO = {
   action: "Approved a $4,200 insurance payout",
@@ -14,21 +17,21 @@ const SCENARIO = {
   amount: 4200.0,
 };
 
-const GUARANTEES = [
-  { k: "Signatures", v: "Notary-signed per action" },
-  { k: "Ledger", v: "Append-only, Merkle-sealed" },
-  { k: "Anchoring", v: "Public, independent witness" },
-  { k: "Verification", v: "Offline, without babit" },
+const STATS = [
+  { value: "< 1ms", label: "seal time" },
+  { value: "100%", label: "offline verifiable" },
+  { value: "0", label: "trust required" },
 ];
 
 export function Hero() {
   const { navigate } = useRouter();
   const [liveEvent, setLiveEvent] = useState<LiveSimulatedEvent | null>(null);
   const [computing, setComputing] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [sealed, setSealed] = useState(false);
 
   const generateReceipt = async () => {
     setComputing(true);
+    setSealed(false);
     const result = await computeLiveReceipt({
       actionName: SCENARIO.action,
       agent: SCENARIO.agent,
@@ -39,178 +42,222 @@ export function Hero() {
     });
     setLiveEvent(result);
     setComputing(false);
+    setTimeout(() => setSealed(true), 400);
   };
 
   useEffect(() => {
     generateReceipt();
   }, []);
 
-  const handleCopyReceipt = () => {
-    if (!liveEvent) return;
-    navigator.clipboard?.writeText(JSON.stringify(liveEvent, null, 2));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-
   return (
     <section
-      className="relative overflow-hidden"
-      style={{ backgroundColor: "var(--bg)", minHeight: "100vh" }}
+      className="dark-section relative overflow-hidden"
+      style={{ backgroundColor: "var(--dark-section-bg)" }}
     >
-      {/* Full-bleed SealingStream as the hero canvas */}
+      {/* ── Full-bleed cinematic evidence pipeline ──────────────────── */}
       <div className="absolute inset-0">
-        <SealingStream className="w-full h-full" />
+        <Suspense fallback={null}>
+          <EvidencePipeline className="w-full h-full" />
+        </Suspense>
       </div>
 
-      {/* Radial glow for depth */}
+      {/* Vignette overlay for text legibility */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 70% 50% at 50% 30%, rgba(45, 212, 191, 0.08), transparent 60%)",
+          background:
+            "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(5, 8, 7, 0.7) 0%, transparent 60%)",
         }}
       />
 
-      {/* Hero content — centered, confident, one-liner */}
-      <div className="relative z-10 container-babit flex flex-col items-center justify-center min-h-[100vh] pt-28 pb-20 text-center">
-        <p className="type-eyebrow mb-6" style={{ color: "var(--brand-accent)" }}>
-          Chain of custody for AI agents
-        </p>
-
-        <h1
-          className="type-display max-w-3xl"
-          style={{ color: "var(--fg)" }}
-        >
-          Proof for autonomous action.
-        </h1>
-
-        <p
-          className="type-lead mt-6 max-w-xl"
-          style={{ color: "var(--muted)" }}
-        >
-          Every action an agent takes, bound to the person who allowed it and sealed as evidence anyone can verify, without trusting babit.
-        </p>
-
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <button
-            onClick={() => navigate("/signup")}
-            className="rounded-pill px-5 py-2.5 text-[15px] font-medium transition-opacity cursor-pointer hover:opacity-90"
-            style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
-          >
-            Start recording actions
-          </button>
-          <a
-            href={docsUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-pill px-5 py-2.5 text-[15px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5"
-            style={{ color: "var(--fg)", border: "1px solid var(--border)" }}
-          >
-            <span>Read the docs</span>
-            <span style={{ color: "var(--muted)" }}>↗</span>
-          </a>
-        </div>
-
-        {/* Monospace metadata strip — Cloudflare-style */}
-        <div
-          className="mt-16 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[11px] tracking-wide"
-          style={{ color: "var(--muted)" }}
-        >
-          {GUARANTEES.map((g, i) => (
-            <span key={g.k} className="flex items-center gap-2">
-              {i > 0 && <span style={{ color: "var(--border)" }}>·</span>}
-              <span style={{ color: "var(--brand-accent)" }}>{g.k}</span>
-              <span>{g.v}</span>
+      {/* ── Content ─────────────────────────────────────────────────── */}
+      <div className="relative z-10 container-babit min-h-[100vh] flex flex-col justify-center pt-28 pb-20 lg:pt-28 lg:pb-24">
+        <div className="max-w-2xl">
+          {/* Eyebrow */}
+          <div className="inline-flex items-center gap-2 mb-8">
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: "#2dd4bf", boxShadow: "0 0 8px #2dd4bf" }}
+            />
+            <span
+              className="type-eyebrow"
+              style={{ color: "var(--brand-accent)", letterSpacing: "0.08em" }}
+            >
+              Chain of custody for AI agents
             </span>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Interactive receipt below the fold ──────────────────────── */}
-      <div className="relative z-10 container-babit py-24 lg:py-32">
-        <div className="grid lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] gap-14 items-center">
-          {/* Left: explanation */}
-          <div>
-            <p className="type-eyebrow mb-4" style={{ color: "var(--brand-accent)" }}>Try it yourself</p>
-            <h2 className="type-h2" style={{ color: "var(--fg)" }}>
-              A receipt computed in your browser.
-            </h2>
-            <p className="type-lead mt-4" style={{ color: "var(--muted)" }}>
-              This receipt is real — the hash and signature are computed live, right now,
-              using the same crypto babit uses to seal agent actions.
-            </p>
           </div>
 
-          {/* Right: the interactive receipt card */}
-          <div
-            className="rounded-babit-md overflow-hidden"
+          {/* Bold headline — confident, not abstract */}
+          <h1
+            className="font-medium tracking-[-0.035em] leading-[1.05]"
             style={{
-              backgroundColor: "var(--surface)",
-              border: "1px solid var(--border)",
-              boxShadow: "0 1px 3px 0 rgba(0,0,0,0.04), 0 32px 64px -32px rgba(0,0,0,0.12)",
+              color: "var(--dark-section-fg)",
+              fontSize: "clamp(2.5rem, 5.5vw, 4rem)",
             }}
           >
+            Every agent action,
+            <br />
+            <span style={{ color: "#2dd4bf" }}>sealed as evidence.</span>
+          </h1>
+
+          {/* Subhead */}
+          <p
+            className="mt-7 max-w-lg leading-relaxed"
+            style={{
+              color: "var(--dark-section-muted)",
+              fontSize: "clamp(1.0625rem, 1.4vw, 1.25rem)",
+            }}
+          >
+            Babit binds every autonomous action to the person who authorized it,
+            notary-seals it, and appends it to a ledger anyone can verify —
+            without trusting babit.
+          </p>
+
+          {/* CTAs */}
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => navigate("/signup")}
+              className="rounded-pill px-6 py-3 text-[15px] font-medium transition-all cursor-pointer hover:scale-[1.02]"
+              style={{
+                backgroundColor: "#2dd4bf",
+                color: "#050807",
+                boxShadow: "0 0 24px rgba(45, 212, 191, 0.3)",
+              }}
+            >
+              Start recording actions
+            </button>
+            <a
+              href={docsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-pill px-6 py-3 text-[15px] font-medium transition-colors cursor-pointer inline-flex items-center gap-2"
+              style={{
+                color: "var(--dark-section-fg)",
+                border: "1px solid var(--dark-section-border)",
+                backgroundColor: "rgba(19, 22, 21, 0.6)",
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              <span>Read the docs</span>
+              <span style={{ color: "var(--dark-section-muted)" }}>↗</span>
+            </a>
+          </div>
+
+          {/* Stats strip */}
+          <div className="mt-16 flex items-center gap-10">
+            {STATS.map((s) => (
+              <div key={s.label}>
+                <div
+                  className="text-[28px] font-medium tracking-tight tnum"
+                  style={{ color: "var(--dark-section-fg)" }}
+                >
+                  {s.value}
+                </div>
+                <div
+                  className="text-[11px] font-mono uppercase tracking-wider mt-0.5"
+                  style={{ color: "var(--dark-section-muted)" }}
+                >
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Live receipt card (bottom-right, floating) ─────────────── */}
+        <div className="hidden lg:block absolute right-[5%] bottom-[12%] w-[380px]">
+          <div
+            className="rounded-babit-md overflow-hidden transition-all duration-500"
+            style={{
+              backgroundColor: "rgba(19, 22, 21, 0.85)",
+              backdropFilter: "blur(12px)",
+              border: sealed
+                ? "1px solid rgba(45, 212, 191, 0.4)"
+                : "1px solid var(--dark-section-border)",
+              boxShadow: "0 24px 48px -12px rgba(0, 0, 0, 0.6)",
+            }}
+          >
+            {/* Header */}
             <div
               className="px-5 py-3 flex items-center justify-between gap-3"
-              style={{ borderBottom: "1px solid var(--border)", backgroundColor: "var(--secondary)" }}
+              style={{ borderBottom: "1px solid var(--dark-section-border)" }}
             >
-              <span className="type-eyebrow" style={{ color: "var(--muted)" }}>Evidence receipt</span>
-              <span className="font-mono text-[11px]" style={{ color: "var(--muted)" }}>
+              <span
+                className="type-eyebrow"
+                style={{ color: "var(--dark-section-muted)" }}
+              >
+                Live receipt
+              </span>
+              <span
+                className="font-mono text-[11px]"
+                style={{ color: "var(--dark-section-muted)" }}
+              >
                 {SCENARIO.grantId}
               </span>
             </div>
 
-            <div className="p-6 space-y-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1.5">
-                  <span className="type-eyebrow block" style={{ color: "var(--muted)" }}>Action</span>
-                  <p className="text-[17px] font-medium leading-snug" style={{ color: "var(--fg)" }}>
+            {/* Body */}
+            <div className="p-5 space-y-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1 min-w-0">
+                  <span
+                    className="type-eyebrow block"
+                    style={{ color: "var(--dark-section-muted)" }}
+                  >
+                    Action
+                  </span>
+                  <p
+                    className="text-[14px] font-medium leading-snug truncate"
+                    style={{ color: "var(--dark-section-fg)" }}
+                  >
                     {SCENARIO.action}
                   </p>
                 </div>
                 <div
-                  className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full shrink-0"
+                  className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full shrink-0 transition-all duration-500"
                   style={{
-                    backgroundColor: "var(--color-verified-bg)",
-                    color: "var(--color-verified)",
-                    border: "1px solid var(--color-verified-border)",
+                    backgroundColor: sealed
+                      ? "rgba(45, 212, 191, 0.15)"
+                      : "rgba(255, 255, 255, 0.05)",
+                    color: sealed ? "#2dd4bf" : "var(--dark-section-muted)",
+                    border: sealed
+                      ? "1px solid rgba(45, 212, 191, 0.3)"
+                      : "1px solid var(--dark-section-border)",
                   }}
                 >
-                  <IconCheck className="w-3.5 h-3.5" />
-                  <span>Verified</span>
+                  {sealed ? (
+                    <>
+                      <IconCheck className="w-3 h-3" />
+                      <span>Verified</span>
+                    </>
+                  ) : (
+                    <span>{computing ? "Sealing…" : "Pending"}</span>
+                  )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-4 gap-y-5">
-                <div className="space-y-1">
-                  <span className="type-eyebrow block" style={{ color: "var(--muted)" }}>Agent</span>
-                  <span className="text-sm font-mono" style={{ color: "var(--fg)" }}>
-                    {SCENARIO.agent}
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <span className="type-eyebrow block" style={{ color: "var(--muted)" }}>Authorized by</span>
-                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
-                    {SCENARIO.principal}
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <span className="type-eyebrow block" style={{ color: "var(--muted)" }}>Resource</span>
-                  <span className="text-sm font-mono" style={{ color: "var(--fg)" }}>
-                    {SCENARIO.resource}
-                  </span>
-                </div>
-                <div className="space-y-1">
-                  <span className="type-eyebrow block" style={{ color: "var(--muted)" }}>Value</span>
-                  <span className="text-sm font-mono tnum" style={{ color: "var(--fg)" }}>
-                    ${SCENARIO.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
+              {/* Seal line animation */}
+              <div
+                className="relative h-px overflow-hidden"
+                style={{ backgroundColor: "var(--dark-section-border)" }}
+              >
+                <div
+                  className="absolute inset-y-0 left-0 transition-all duration-700 ease-out"
+                  style={{
+                    width: sealed ? "100%" : "0%",
+                    backgroundColor: "#2dd4bf",
+                  }}
+                />
               </div>
 
+              {/* Hash rows */}
               {liveEvent && (
                 <div
                   className="rounded-babit-sm divide-y animate-fade-in"
-                  style={{ border: "1px solid var(--border)", backgroundColor: "var(--secondary)" }}
+                  style={{
+                    border: "1px solid var(--dark-section-border)",
+                    backgroundColor: "rgba(5, 8, 7, 0.5)",
+                  }}
                 >
                   {[
                     { label: "digest", value: liveEvent.eventHash },
@@ -218,43 +265,46 @@ export function Hero() {
                   ].map((row) => (
                     <div
                       key={row.label}
-                      className="flex items-center justify-between gap-3 px-3.5 py-2.5 font-mono text-[11px]"
-                      style={{ borderColor: "var(--border)" }}
+                      className="flex items-center justify-between gap-3 px-3 py-2 font-mono text-[10px]"
+                      style={{ borderColor: "var(--dark-section-border)" }}
                     >
-                      <span style={{ color: "var(--muted)" }}>{row.label}</span>
-                      <span className="truncate" style={{ color: "var(--fg)" }}>
-                        {row.value.slice(0, 28)}…
+                      <span style={{ color: "var(--dark-section-muted)" }}>
+                        {row.label}
                       </span>
-                      <span className="shrink-0" style={{ color: "var(--color-verified)" }}>✓</span>
+                      <span
+                        className="truncate"
+                        style={{ color: "var(--dark-section-fg)" }}
+                      >
+                        {row.value.slice(0, 24)}…
+                      </span>
+                      <span style={{ color: "#2dd4bf" }}>✓</span>
                     </div>
                   ))}
                 </div>
               )}
 
+              {/* Footer */}
               <div className="flex items-center justify-between pt-1">
-                <span className="text-[12px]" style={{ color: "var(--muted)" }}>
-                  Computed and verified in your browser.
+                <span
+                  className="text-[10px] font-mono"
+                  style={{ color: "var(--dark-section-muted)" }}
+                >
+                  computed in your browser
                 </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleCopyReceipt}
-                    disabled={!liveEvent}
-                    className="inline-flex items-center gap-1.5 text-[12px] px-2.5 py-1.5 rounded-babit-sm transition-colors cursor-pointer"
-                    style={{ color: "var(--fg)", border: "1px solid var(--border)" }}
-                  >
-                    <IconCopy className="w-3 h-3" />
-                    <span>{copied ? "Copied" : "Copy"}</span>
-                  </button>
-                  <button
-                    onClick={generateReceipt}
-                    disabled={computing}
-                    className="rounded-pill px-3 py-1.5 text-[12px] font-medium inline-flex items-center gap-1.5 transition-opacity cursor-pointer hover:opacity-90"
-                    style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
-                  >
-                    <IconRefresh className={`w-3 h-3 ${computing ? "animate-spin" : ""}`} />
-                    <span>{computing ? "Working…" : "New receipt"}</span>
-                  </button>
-                </div>
+                <button
+                  onClick={generateReceipt}
+                  disabled={computing}
+                  className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-babit-sm transition-opacity cursor-pointer hover:opacity-80"
+                  style={{
+                    color: "#2dd4bf",
+                    border: "1px solid rgba(45, 212, 191, 0.2)",
+                  }}
+                >
+                  <IconRefresh
+                    className={`w-3 h-3 ${computing ? "animate-spin" : ""}`}
+                  />
+                  <span>new</span>
+                </button>
               </div>
             </div>
           </div>

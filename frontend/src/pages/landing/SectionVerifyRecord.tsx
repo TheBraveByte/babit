@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { IconCheck, IconRefresh } from "@/lib/icons";
-import { MerkleSeal } from "@/components/viz/MerkleSeal";
+import { IconCheck, IconRefresh, IconXCircle } from "@/lib/icons";
 import { Section, SectionHeader, LandingCard } from "./Section";
 
 export function SectionVerifyRecord() {
@@ -49,18 +48,92 @@ export function SectionVerifyRecord() {
       />
 
       <div className="mt-14 space-y-5">
-        {/* Merkle inclusion-proof visual: leaves (content_hash) hash up to a single
-            merkle_root that is anchored to a transparency log; a tamper is shown
-            propagating up the path until the root no longer matches. */}
+        {/* Merkle inclusion-proof visual: static tree showing how
+            content_hash values combine up to a single merkle_root. */}
         <div className="max-w-2xl mx-auto">
           <LandingCard className="!p-5">
-            <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center justify-between mb-4">
               <span className="type-eyebrow">Inclusion proof</span>
               <span className="text-[11px] font-mono" style={{ color: "var(--muted)" }}>
                 content_hash → merkle_root → anchor
               </span>
             </div>
-            <MerkleSeal className="w-full h-[180px]" />
+
+            {/* Static Merkle tree */}
+            <div className="flex flex-col items-center gap-3 py-2">
+              {/* Root */}
+              <div
+                className="px-3 py-1.5 rounded-babit-sm font-mono text-[11px]"
+                style={{
+                  backgroundColor: tampered ? "var(--color-failed-bg)" : "var(--color-verified-bg)",
+                  border: `1px solid ${tampered ? "var(--color-failed-border)" : "var(--color-verified-border)"}`,
+                  color: tampered ? "var(--color-failed)" : "var(--color-verified)",
+                }}
+              >
+                merkle_root · 0x{tampered ? "a4f1…e302" : "9e1d…c4a0"}
+              </div>
+
+              {/* Connector */}
+              <div className="w-px h-4" style={{ backgroundColor: "var(--border)" }} />
+
+              {/* Mid level */}
+              <div className="flex gap-8">
+                {["0x7a3f…b29c", "0x3c8e…d150"].map((h, i) => (
+                  <div key={h} className="flex flex-col items-center gap-2">
+                    <div
+                      className="px-2.5 py-1 rounded-babit-sm font-mono text-[10px]"
+                      style={{
+                        backgroundColor: "var(--secondary)",
+                        border: "1px solid var(--border)",
+                        color: tampered && i === 0 ? "var(--color-failed)" : "var(--fg)",
+                      }}
+                    >
+                      {h}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Connectors */}
+              <div className="flex gap-8">
+                {[0, 1].map((i) => (
+                  <div key={i} className="flex flex-col items-center">
+                    <div className="w-px h-3" style={{ backgroundColor: "var(--border)" }} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Leaves */}
+              <div className="flex gap-4">
+                {[
+                  { label: "action", hash: "0x1b2c…", tampered: false },
+                  { label: "amount", hash: "0x4d5e…", tampered: tampered },
+                  { label: "agent", hash: "0x7f8a…", tampered: false },
+                  { label: "auth", hash: "0xa1b2…", tampered: false },
+                ].map((leaf) => (
+                  <div key={leaf.label} className="flex flex-col items-center gap-1">
+                    <div
+                      className="px-2 py-0.5 rounded-babit-sm font-mono text-[9px]"
+                      style={{
+                        backgroundColor: leaf.tampered ? "var(--color-failed-bg)" : "var(--secondary)",
+                        border: `1px solid ${leaf.tampered ? "var(--color-failed-border)" : "var(--border)"}`,
+                        color: leaf.tampered ? "var(--color-failed)" : "var(--muted)",
+                      }}
+                    >
+                      {leaf.hash}
+                    </div>
+                    <span className="text-[9px] font-mono" style={{ color: "var(--muted)" }}>
+                      {leaf.label}
+                    </span>
+                    {leaf.tampered ? (
+                      <span style={{ color: "var(--color-failed)" }}><IconXCircle className="w-3 h-3" /></span>
+                    ) : (
+                      <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3 h-3" /></span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </LandingCard>
         </div>
 
