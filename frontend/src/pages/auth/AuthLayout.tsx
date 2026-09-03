@@ -112,17 +112,19 @@ function AuthVisual() {
 /** A static, non-interactive evidence receipt in the Verified state. */
 function ReceiptShowcase() {
   return (
-    <div className="glass rounded-babit-lg overflow-hidden relative animate-float-up" style={{ animationDelay: "120ms" }}>
-      <div className="h-px accent-hairline" />
+    <div
+      className="rounded-babit-lg overflow-hidden"
+      style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)" }}
+    >
+
       <div
         className="px-5 py-3.5 flex items-center justify-between gap-3"
         style={{ borderBottom: "1px solid var(--border-subtle)" }}
       >
-        <span className="text-[11px] font-mono font-semibold uppercase tracking-[0.12em]" style={{ color: "var(--muted)" }}>
-          Evidence receipt
-        </span>
+          <span className="type-eyebrow">Evidence receipt</span>
+
         <span
-          className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full"
+          className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full"
           style={{ backgroundColor: "var(--color-verified-bg)", color: "var(--color-verified)", border: "1px solid var(--color-verified-border)" }}
         >
           <IconCheck className="w-3 h-3" />
