@@ -57,17 +57,16 @@ export function AnchorGlobe({ className = "", size = 480 }: { className?: string
         theta: 0.28,
         dark: isDark ? 1 : 0,
         diffuse: 1.1,
-        mapSamples: 16000,
-        mapBrightness: isDark ? 5.2 : 7.5,
-        mapBaseBrightness: isDark ? 0.06 : 0.14,
+        mapSamples: 28000,
+        mapBrightness: isDark ? 6.0 : 8.5,
+        mapBaseBrightness: isDark ? 0.08 : 0.16,
         baseColor: base,
         markerColor: accent,
         glowColor: accent,
-        opacity: 0.85,
+        opacity: 0.92,
         markers: ANCHOR_MARKERS.map((m) => ({ location: [...m.location] as [number, number], size: m.size })),
         onRender: (state: Record<string, number>) => {
-          // Slow auto-rotation; a single static frame when reduced-motion is requested.
-          if (!reduced) phi += 0.0025;
+          if (!reduced) phi += 0.002;
           state.phi = phi;
           state.width = width * 2;
           state.height = width * 2;

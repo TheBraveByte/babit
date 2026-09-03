@@ -3,8 +3,7 @@ import { useRouter } from "@/lib/router";
 import { IconCheck, IconRefresh, IconCopy } from "@/lib/icons";
 import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
 import { docsUrl } from "@/lib/links";
-import { EvidenceLedger } from "@/components/viz/EvidenceLedger";
-
+import { SealingStream } from "@/components/viz/SealingStream";
 
 const SCENARIO = {
   action: "Approved a $4,200 insurance payout",
@@ -15,7 +14,6 @@ const SCENARIO = {
   amount: 4200.0,
 };
 
-/** The hero closes on the guarantees, not on decoration. */
 const GUARANTEES = [
   { k: "Signatures", v: "Notary-signed per action" },
   { k: "Ledger", v: "Append-only, Merkle-sealed" },
@@ -43,40 +41,44 @@ export function Hero() {
     setComputing(false);
   };
 
-
   useEffect(() => {
     generateReceipt();
   }, []);
+
   const handleCopyReceipt = () => {
     if (!liveEvent) return;
     navigator.clipboard?.writeText(JSON.stringify(liveEvent, null, 2));
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500);  };
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   return (
-    <section className="relative overflow-hidden pt-32 pb-0 sm:pt-40" style={{ backgroundColor: "var(--bg)" }}>
-      {/* Layered background: dot grid + radial accent glow + animated evidence chain */}
-      <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse 60% 50% at 70% 30%, var(--brand-accent-subtle), transparent 70%)",
-        }}
-      />
+    <section
+      className="relative overflow-hidden"
+      style={{ backgroundColor: "var(--bg)" }}
+    >
+      {/* Full-bleed two-column: message left, live sealing stream right */}
+      <div className="relative grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] min-h-[100vh]">
+        {/* ── Left: message ────────────────────────────────────────── */}
+        <div className="relative flex flex-col justify-center px-6 py-32 sm:px-10 lg:px-20">
+          {/* Subtle dot grid background */}
+          <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse 80% 60% at 30% 40%, var(--brand-accent-subtle), transparent 70%)",
+            }}
+          />
 
-       <div className="container-babit relative z-10">
-        <div className="grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-14 lg:gap-20 items-center">
-          {/* Message */}
-          <div className="max-w-xl">
+          <div className="relative z-10 max-w-xl">
             <p className="type-eyebrow mb-6">Chain of custody for AI agents</p>
 
-
             <h1 className="type-display" style={{ color: "var(--fg)" }}>
-                Proof for autonomous action.
+              Proof for autonomous action.
             </h1>
             <p className="type-lead mt-6">
-                Every action an agent takes, bound to the person who allowed it and sealed as
-                evidence anyone can verify, without trusting babit.
+              Every action an agent takes, bound to the person who allowed it and sealed as
+              evidence anyone can verify, without trusting babit.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -98,9 +100,65 @@ export function Hero() {
                 <span style={{ color: "var(--muted)" }}>↗</span>
               </a>
             </div>
+
+            {/* Guarantee strip — inline, not a separate band */}
+            <dl className="mt-14 grid grid-cols-2 gap-x-8 gap-y-5">
+              {GUARANTEES.map((g) => (
+                <div key={g.k}>
+                  <dt className="type-eyebrow">{g.k}</dt>
+                  <dd className="mt-1.5 text-[14px] font-medium" style={{ color: "var(--fg)" }}>
+                    {g.v}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+
+        {/* ── Right: live SealingStream, full-height, dark ─────────── */}
+        <div
+          className="dark relative overflow-hidden hidden lg:block"
+          style={{ backgroundColor: "var(--bg)", borderLeft: "1px solid var(--border)" }}
+        >
+          <SealingStream className="absolute inset-0 w-full h-full" />
+
+          {/* Top-left label overlay */}
+          <div className="absolute top-0 left-0 right-0 p-10 pointer-events-none">
+            <p className="type-eyebrow" style={{ color: "var(--muted)" }}>
+              Live · evidence pipeline
+            </p>
+            <h2
+              className="mt-3 text-[22px] font-semibold tracking-[-0.02em] leading-tight max-w-[300px]"
+              style={{ color: "var(--fg)" }}
+            >
+              Every agent action, sealed as it happens.
+            </h2>
           </div>
 
-          {/* Product surface: a receipt computed in the browser */}
+          {/* Bottom fade */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+            style={{ background: "linear-gradient(to top, var(--bg) 0%, transparent 100%)" }}
+          />
+        </div>
+      </div>
+
+      {/* ── Interactive receipt below the fold ──────────────────────── */}
+      <div className="container-babit py-24 lg:py-32">
+        <div className="grid lg:grid-cols-[minmax(0,0.4fr)_minmax(0,0.6fr)] gap-14 items-center">
+          {/* Left: explanation */}
+          <div>
+            <p className="type-eyebrow mb-4">Try it yourself</p>
+            <h2 className="type-h2" style={{ color: "var(--fg)" }}>
+              A receipt computed in your browser.
+            </h2>
+            <p className="type-lead mt-4">
+              This receipt is real — the hash and signature are computed live, right now,
+              using the same crypto babit uses to seal agent actions.
+            </p>
+          </div>
+
+          {/* Right: the interactive receipt card */}
           <div
             className="rounded-babit-lg overflow-hidden"
             style={{
@@ -138,17 +196,16 @@ export function Hero() {
                   <IconCheck className="w-3.5 h-3.5" />
                   <span>Verified</span>
                 </div>
-                </div>
+              </div>
 
-                <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-5">
                 <div className="space-y-1">
                   <span className="type-eyebrow block">Agent</span>
                   <span className="text-sm font-mono" style={{ color: "var(--fg)" }}>
                     {SCENARIO.agent}
                   </span>
-
                 </div>
-                  <div className="space-y-1">
+                <div className="space-y-1">
                   <span className="type-eyebrow block">Authorized by</span>
                   <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
                     {SCENARIO.principal}
@@ -168,7 +225,7 @@ export function Hero() {
                 </div>
               </div>
 
-               {liveEvent && (
+              {liveEvent && (
                 <div
                   className="rounded-babit divide-y animate-fade-in"
                   style={{ border: "1px solid var(--border-subtle)", backgroundColor: "var(--secondary)" }}
@@ -186,15 +243,13 @@ export function Hero() {
                       <span className="truncate" style={{ color: "var(--fg)" }}>
                         {row.value.slice(0, 28)}…
                       </span>
-                      <span className="shrink-0" style={{ color: "var(--color-verified)" }}>
-                        ✓
-                      </span>
+                      <span className="shrink-0" style={{ color: "var(--color-verified)" }}>✓</span>
                     </div>
-                    ))}
+                  ))}
                 </div>
               )}
 
-               <div className="flex items-center justify-between pt-1">
+              <div className="flex items-center justify-between pt-1">
                 <span className="text-[12px]" style={{ color: "var(--muted)" }}>
                   Computed and verified in your browser.
                 </span>
@@ -221,29 +276,6 @@ export function Hero() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Guarantee strip closes the hero */}
-        <dl className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-px" style={{ backgroundColor: "var(--border)" }}>
-          {GUARANTEES.map((g) => (
-            <div key={g.k} className="px-5 py-5" style={{ backgroundColor: "var(--bg)" }}>
-              <dt className="type-eyebrow">{g.k}</dt>
-              <dd className="mt-2 text-[14px] font-medium" style={{ color: "var(--fg)" }}>
-                {g.v}
-              </dd>
-            </div>
-          ))}
-        </dl>
-
-        {/* Animated evidence chain drifting along the base of the hero */}
-        <div
-          className="mt-16 h-20 pointer-events-none"
-          style={{
-            maskImage: "linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)",
-            WebkitMaskImage: "linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)",
-          }}
-        >
-          <EvidenceLedger className="w-full h-full" />
         </div>
       </div>
     </section>
