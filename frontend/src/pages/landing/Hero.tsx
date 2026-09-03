@@ -51,8 +51,8 @@ export function Hero() {
 
   return (
     <section
-      className="dark-section relative overflow-hidden"
-      style={{ backgroundColor: "var(--dark-section-bg)" }}
+      className="relative overflow-hidden"
+      style={{ backgroundColor: "var(--bg)" }}
     >
       {/* ── Full-bleed cinematic evidence pipeline ──────────────────── */}
       <div className="absolute inset-0">
@@ -61,12 +61,11 @@ export function Hero() {
         </Suspense>
       </div>
 
-      {/* Vignette overlay for text legibility */}
+      {/* Subtle gradient overlay for text legibility (theme-aware) */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 30% 50%, rgba(5, 8, 7, 0.7) 0%, transparent 60%)",
+          background: "linear-gradient(to right, color-mix(in srgb, var(--bg) 80%, transparent) 0%, color-mix(in srgb, var(--bg) 40%, transparent) 40%, transparent 70%)",
         }}
       />
 
@@ -77,7 +76,7 @@ export function Hero() {
           <div className="inline-flex items-center gap-2 mb-8">
             <span
               className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: "#2dd4bf", boxShadow: "0 0 8px #2dd4bf" }}
+              style={{ backgroundColor: "var(--brand-accent)", boxShadow: "0 0 8px var(--brand-accent)" }}
             />
             <span
               className="type-eyebrow"
@@ -91,20 +90,20 @@ export function Hero() {
           <h1
             className="font-medium tracking-[-0.035em] leading-[1.05]"
             style={{
-              color: "var(--dark-section-fg)",
+              color: "var(--fg)",
               fontSize: "clamp(2.5rem, 5.5vw, 4rem)",
             }}
           >
             Every agent action,
             <br />
-            <span style={{ color: "#2dd4bf" }}>sealed as evidence.</span>
+            <span style={{ color: "var(--brand-accent)" }}>sealed as evidence.</span>
           </h1>
 
           {/* Subhead */}
           <p
             className="mt-7 max-w-lg leading-relaxed"
             style={{
-              color: "var(--dark-section-muted)",
+              color: "var(--muted)",
               fontSize: "clamp(1.0625rem, 1.4vw, 1.25rem)",
             }}
           >
@@ -119,9 +118,9 @@ export function Hero() {
               onClick={() => navigate("/signup")}
               className="rounded-pill px-6 py-3 text-[15px] font-medium transition-all cursor-pointer hover:scale-[1.02]"
               style={{
-                backgroundColor: "#2dd4bf",
-                color: "#050807",
-                boxShadow: "0 0 24px rgba(45, 212, 191, 0.3)",
+                backgroundColor: "var(--brand-accent)",
+                color: "var(--surface)",
+                boxShadow: "0 0 24px color-mix(in srgb, var(--brand-accent) 30%, transparent)",
               }}
             >
               Start recording actions
@@ -132,14 +131,14 @@ export function Hero() {
               rel="noreferrer"
               className="rounded-pill px-6 py-3 text-[15px] font-medium transition-colors cursor-pointer inline-flex items-center gap-2"
               style={{
-                color: "var(--dark-section-fg)",
-                border: "1px solid var(--dark-section-border)",
-                backgroundColor: "rgba(19, 22, 21, 0.6)",
+                color: "var(--fg)",
+                border: "1px solid var(--border)",
+                backgroundColor: "var(--surface)",
                 backdropFilter: "blur(8px)",
               }}
             >
               <span>Read the docs</span>
-              <span style={{ color: "var(--dark-section-muted)" }}>↗</span>
+              <span style={{ color: "var(--muted)" }}>↗</span>
             </a>
           </div>
 
@@ -149,13 +148,13 @@ export function Hero() {
               <div key={s.label}>
                 <div
                   className="text-[28px] font-medium tracking-tight tnum"
-                  style={{ color: "var(--dark-section-fg)" }}
+                  style={{ color: "var(--fg)" }}
                 >
                   {s.value}
                 </div>
                 <div
                   className="text-[11px] font-mono uppercase tracking-wider mt-0.5"
-                  style={{ color: "var(--dark-section-muted)" }}
+                  style={{ color: "var(--muted)" }}
                 >
                   {s.label}
                 </div>
@@ -169,28 +168,28 @@ export function Hero() {
           <div
             className="rounded-babit-md overflow-hidden transition-all duration-500"
             style={{
-              backgroundColor: "rgba(19, 22, 21, 0.85)",
+              backgroundColor: "color-mix(in srgb, var(--surface) 90%, transparent)",
               backdropFilter: "blur(12px)",
               border: sealed
-                ? "1px solid rgba(45, 212, 191, 0.4)"
-                : "1px solid var(--dark-section-border)",
-              boxShadow: "0 24px 48px -12px rgba(0, 0, 0, 0.6)",
+                ? "1px solid color-mix(in srgb, var(--brand-accent) 40%, transparent)"
+                : "1px solid var(--border)",
+              boxShadow: "0 24px 48px -12px color-mix(in srgb, var(--fg) 30%, transparent)",
             }}
           >
             {/* Header */}
             <div
               className="px-5 py-3 flex items-center justify-between gap-3"
-              style={{ borderBottom: "1px solid var(--dark-section-border)" }}
+              style={{ borderBottom: "1px solid var(--border)" }}
             >
               <span
                 className="type-eyebrow"
-                style={{ color: "var(--dark-section-muted)" }}
+                style={{ color: "var(--muted)" }}
               >
                 Live receipt
               </span>
               <span
                 className="font-mono text-[11px]"
-                style={{ color: "var(--dark-section-muted)" }}
+                style={{ color: "var(--muted)" }}
               >
                 {SCENARIO.grantId}
               </span>
@@ -202,13 +201,13 @@ export function Hero() {
                 <div className="space-y-1 min-w-0">
                   <span
                     className="type-eyebrow block"
-                    style={{ color: "var(--dark-section-muted)" }}
+                    style={{ color: "var(--muted)" }}
                   >
                     Action
                   </span>
                   <p
                     className="text-[14px] font-medium leading-snug truncate"
-                    style={{ color: "var(--dark-section-fg)" }}
+                    style={{ color: "var(--fg)" }}
                   >
                     {SCENARIO.action}
                   </p>
@@ -217,12 +216,12 @@ export function Hero() {
                   className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full shrink-0 transition-all duration-500"
                   style={{
                     backgroundColor: sealed
-                      ? "rgba(45, 212, 191, 0.15)"
+                      ? "color-mix(in srgb, var(--brand-accent) 15%, transparent)"
                       : "rgba(255, 255, 255, 0.05)",
-                    color: sealed ? "#2dd4bf" : "var(--dark-section-muted)",
+                    color: sealed ? "var(--brand-accent)" : "var(--muted)",
                     border: sealed
-                      ? "1px solid rgba(45, 212, 191, 0.3)"
-                      : "1px solid var(--dark-section-border)",
+                      ? "1px solid color-mix(in srgb, var(--brand-accent) 30%, transparent)"
+                      : "1px solid var(--border)",
                   }}
                 >
                   {sealed ? (
@@ -239,13 +238,13 @@ export function Hero() {
               {/* Seal line animation */}
               <div
                 className="relative h-px overflow-hidden"
-                style={{ backgroundColor: "var(--dark-section-border)" }}
+                style={{ backgroundColor: "var(--border)" }}
               >
                 <div
                   className="absolute inset-y-0 left-0 transition-all duration-700 ease-out"
                   style={{
                     width: sealed ? "100%" : "0%",
-                    backgroundColor: "#2dd4bf",
+                    backgroundColor: "var(--brand-accent)",
                   }}
                 />
               </div>
@@ -255,8 +254,8 @@ export function Hero() {
                 <div
                   className="rounded-babit-sm divide-y animate-fade-in"
                   style={{
-                    border: "1px solid var(--dark-section-border)",
-                    backgroundColor: "rgba(5, 8, 7, 0.5)",
+                    border: "1px solid var(--border)",
+                    backgroundColor: "color-mix(in srgb, var(--bg) 50%, transparent)",
                   }}
                 >
                   {[
@@ -266,18 +265,18 @@ export function Hero() {
                     <div
                       key={row.label}
                       className="flex items-center justify-between gap-3 px-3 py-2 font-mono text-[10px]"
-                      style={{ borderColor: "var(--dark-section-border)" }}
+                      style={{ borderColor: "var(--border)" }}
                     >
-                      <span style={{ color: "var(--dark-section-muted)" }}>
+                      <span style={{ color: "var(--muted)" }}>
                         {row.label}
                       </span>
                       <span
                         className="truncate"
-                        style={{ color: "var(--dark-section-fg)" }}
+                        style={{ color: "var(--fg)" }}
                       >
                         {row.value.slice(0, 24)}…
                       </span>
-                      <span style={{ color: "#2dd4bf" }}>✓</span>
+                      <span style={{ color: "var(--brand-accent)" }}>✓</span>
                     </div>
                   ))}
                 </div>
@@ -287,7 +286,7 @@ export function Hero() {
               <div className="flex items-center justify-between pt-1">
                 <span
                   className="text-[10px] font-mono"
-                  style={{ color: "var(--dark-section-muted)" }}
+                  style={{ color: "var(--muted)" }}
                 >
                   computed in your browser
                 </span>
@@ -296,7 +295,7 @@ export function Hero() {
                   disabled={computing}
                   className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-babit-sm transition-opacity cursor-pointer hover:opacity-80"
                   style={{
-                    color: "#2dd4bf",
+                    color: "var(--brand-accent)",
                     border: "1px solid rgba(45, 212, 191, 0.2)",
                   }}
                 >

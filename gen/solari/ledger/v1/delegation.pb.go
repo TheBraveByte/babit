@@ -433,7 +433,8 @@ func (x *RevokeResponse) GetRevoked() bool {
 
 type ListGrantsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -468,16 +469,24 @@ func (*ListGrantsRequest) Descriptor() ([]byte, []int) {
 	return file_solari_ledger_v1_delegation_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *ListGrantsRequest) GetLimit() int32 {
+func (x *ListGrantsRequest) GetPageSize() int32 {
 	if x != nil {
-		return x.Limit
+		return x.PageSize
 	}
 	return 0
+}
+
+func (x *ListGrantsRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
 }
 
 type ListGrantsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Grants        []*Grant               `protobuf:"bytes,1,rep,name=grants,proto3" json:"grants,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -519,6 +528,13 @@ func (x *ListGrantsResponse) GetGrants() []*Grant {
 	return nil
 }
 
+func (x *ListGrantsResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
 var File_solari_ledger_v1_delegation_proto protoreflect.FileDescriptor
 
 const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
@@ -547,11 +563,14 @@ const file_solari_ledger_v1_delegation_proto_rawDesc = "" +
 	"\bgrant_id\x18\x01 \x01(\tR\agrantId\x12\x16\n" +
 	"\x06reason\x18\x02 \x01(\tR\x06reason\"*\n" +
 	"\x0eRevokeResponse\x12\x18\n" +
-	"\arevoked\x18\x01 \x01(\bR\arevoked\")\n" +
-	"\x11ListGrantsRequest\x12\x14\n" +
-	"\x05limit\x18\x01 \x01(\x05R\x05limit\"E\n" +
+	"\arevoked\x18\x01 \x01(\bR\arevoked\"O\n" +
+	"\x11ListGrantsRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\"m\n" +
 	"\x12ListGrantsResponse\x12/\n" +
-	"\x06grants\x18\x01 \x03(\v2\x17.solari.ledger.v1.GrantR\x06grants2\xd4\x06\n" +
+	"\x06grants\x18\x01 \x03(\v2\x17.solari.ledger.v1.GrantR\x06grants\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\xd4\x06\n" +
 	"\x11DelegationService\x12\xac\x01\n" +
 	"\x0eIssueRootGrant\x12'.solari.ledger.v1.IssueRootGrantRequest\x1a(.solari.ledger.v1.IssueRootGrantResponse\"G\x92A*\x12(Issue a root grant for a human principal\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/grants:root\x12\x9f\x01\n" +
 	"\bDelegate\x12!.solari.ledger.v1.DelegateRequest\x1a\".solari.ledger.v1.DelegateResponse\"L\x92A4\x122Delegate scoped authority to an agent or sub-agent\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +

@@ -80,9 +80,13 @@ message CreateProjectResponse {
   Project project = 1;
 }
 
-message ListProjectsRequest {}
+message ListProjectsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
 message ListProjectsResponse {
   repeated Project projects = 1;
+  string next_page_token = 2;
 }
 
 message CreateApiKeyRequest {
@@ -96,9 +100,12 @@ message CreateApiKeyResponse {
 
 message ListApiKeysRequest {
   string project_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
 }
 message ListApiKeysResponse {
   repeated ApiKey keys = 1;
+  string next_page_token = 2;
 }
 
 message RevokeApiKeyRequest {

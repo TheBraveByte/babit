@@ -99,7 +99,7 @@ export function CommandPalette({
       category: "Navigation",
       title: "Verify Evidence",
       subtitle: "Independent receipt and proof validator",
-      icon: <IconShieldCheck className="w-4 h-4 text-emerald-600" />,
+      icon: <IconShieldCheck className="w-4 h-4 text-[var(--color-verified)]" />,
       action: () => { navigate("/dashboard/verify"); onClose(); },
     },
     {
@@ -138,7 +138,7 @@ export function CommandPalette({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-start justify-center pt-24 px-4 sm:px-6 animate-fade-in"
+      className="fixed inset-0 z-50 bg-[var(--fg)]/40 backdrop-blur-xs flex items-start justify-center pt-24 px-4 sm:px-6 animate-fade-in"
       onClick={onClose}
     >
       <div

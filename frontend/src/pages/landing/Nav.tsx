@@ -42,7 +42,7 @@ export function Nav() {
           : "border-b border-transparent"
       }`}
       style={{
-        height: 56,
+        height: 64,
         background: !scrolled
           ? "linear-gradient(to bottom, var(--bg) 0%, color-mix(in srgb, var(--bg) 72%, transparent) 70%, transparent 100%)"
           : undefined,

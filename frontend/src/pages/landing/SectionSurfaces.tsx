@@ -5,20 +5,20 @@ const SURFACES = [
   {
     Icon: IconMonitor,
     tag: "Browser",
-    title: "Agents in a web browser.",
-    body: "Clicks, navigation, and form fills get recorded as they happen, tied to the grant that allowed them.",
+    title: "Agents in a browser.",
+    body: "Clicks and forms, sealed live.",
   },
   {
     Icon: IconTerminal,
     tag: "Sandbox",
     title: "Agents running code.",
-    body: "Shell commands, file writes, and network calls inside an isolated sandbox each leave a sealed record.",
+    body: "Commands and writes, each sealed.",
   },
   {
     Icon: IconCpu,
     tag: "Desktop",
     title: "Agents driving an app.",
-    body: "When an agent controls a real desktop application, babit records what it did and who permitted it.",
+    body: "Desktop actions, with permission.",
   },
 ];
 

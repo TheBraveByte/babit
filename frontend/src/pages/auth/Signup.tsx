@@ -243,7 +243,7 @@ function AccountTypeCard({
         {icon}
         <span className="text-xs font-semibold">{label}</span>
       </div>
-      <span className="text-[11px] leading-tight" style={{ color: selected ? "var(--surface)" : "var(--muted)", opacity: selected ? 0.7 : 1 }}>
+      <span className="text-[11px] leading-tight" style={{ color: selected ? "var(--fg)" : "var(--muted)", opacity: selected ? 0.8 : 1 }}>
         {description}
       </span>
     </button>

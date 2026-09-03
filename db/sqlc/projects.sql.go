@@ -116,11 +116,21 @@ func (q *Queries) GetProjectForUser(ctx context.Context, arg GetProjectForUserPa
 }
 
 const listApiKeysByProject = `-- name: ListApiKeysByProject :many
-SELECT id, project_id, user_id, name, prefix, last4, key_hash, created_at, revoked_at FROM api_keys WHERE project_id = $1 ORDER BY created_at DESC
+SELECT id, project_id, user_id, name, prefix, last4, key_hash, created_at, revoked_at FROM api_keys
+WHERE project_id = $1
+  AND ($2::text = '' OR id < $2::text)
+ORDER BY id DESC
+LIMIT $3
 `
 
-func (q *Queries) ListApiKeysByProject(ctx context.Context, projectID pgtype.UUID) ([]ApiKey, error) {
-	rows, err := q.db.Query(ctx, listApiKeysByProject, projectID)
+type ListApiKeysByProjectParams struct {
+	ProjectID pgtype.UUID
+	Column2   string
+	Limit     int32
+}
+
+func (q *Queries) ListApiKeysByProject(ctx context.Context, arg ListApiKeysByProjectParams) ([]ApiKey, error) {
+	rows, err := q.db.Query(ctx, listApiKeysByProject, arg.ProjectID, arg.Column2, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -158,8 +168,16 @@ SELECT
     (SELECT count(*) FROM api_keys k WHERE k.project_id = p.id AND k.revoked_at IS NULL) AS active_keys
 FROM projects p
 WHERE p.user_id = $1
-ORDER BY p.created_at DESC
+  AND ($2::text = '' OR p.id < $2::text)
+ORDER BY p.id DESC
+LIMIT $3
 `
+
+type ListProjectsByUserParams struct {
+	UserID  pgtype.UUID
+	Column2 string
+	Limit   int32
+}
 
 type ListProjectsByUserRow struct {
 	ID         pgtype.UUID
@@ -169,8 +187,8 @@ type ListProjectsByUserRow struct {
 	ActiveKeys int64
 }
 
-func (q *Queries) ListProjectsByUser(ctx context.Context, userID pgtype.UUID) ([]ListProjectsByUserRow, error) {
-	rows, err := q.db.Query(ctx, listProjectsByUser, userID)
+func (q *Queries) ListProjectsByUser(ctx context.Context, arg ListProjectsByUserParams) ([]ListProjectsByUserRow, error) {
+	rows, err := q.db.Query(ctx, listProjectsByUser, arg.UserID, arg.Column2, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

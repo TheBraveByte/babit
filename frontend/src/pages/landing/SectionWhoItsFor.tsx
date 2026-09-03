@@ -3,39 +3,33 @@ import { Section, SectionHeader, LandingCard } from "./Section";
 const SECTORS = [
   {
     sector: "Financial services",
-    agentDoes: "Moves money, approves payouts, rebalances accounts.",
-    benefit:
-      "Every transfer carries the grant that authorized it and the supervisor behind that grant, so a disputed payment is settled with a receipt instead of an investigation.",
+    agentDoes: "Moves money, approves payouts.",
+    benefit: "Proof of who authorized it.",
   },
   {
     sector: "Insurance",
-    agentDoes: "Triages claims and settles them inside policy limits.",
-    benefit:
-      "Adjusters and regulators can replay a decision exactly as the agent made it, and confirm the limits it was allowed to work within.",
+    agentDoes: "Triages and settles claims.",
+    benefit: "Replay any decision exactly.",
   },
   {
     sector: "Healthcare",
-    agentDoes: "Handles prior authorization, scheduling, record requests.",
-    benefit:
-      "Access to a patient record is tied to a named clinician's authority, and the audit trail proves the scope was never exceeded.",
+    agentDoes: "Handles records and prior auth.",
+    benefit: "Tied to a named clinician.",
   },
   {
     sector: "Software teams",
-    agentDoes: "Ships code, runs migrations, touches production.",
-    benefit:
-      "A change window becomes an evidence trail: which agent deployed, under whose delegation, against which resource, sealed at the moment it happened.",
+    agentDoes: "Ships code, runs migrations.",
+    benefit: "Every deploy has a trail.",
   },
   {
     sector: "Legal and audit",
-    agentDoes: "Reviews contracts, exports records, files submissions.",
-    benefit:
-      "Receipts verify offline, years later, without a live babit account, in a format an auditor or opposing counsel can check independently.",
+    agentDoes: "Reviews contracts, exports records.",
+    benefit: "Verifies offline, years later.",
   },
   {
     sector: "Public sector",
-    agentDoes: "Processes benefits, licences and citizen requests.",
-    benefit:
-      "Delegated authority is explicit and revocable, and the public anchor lets an oversight body confirm no record was rewritten after the fact.",
+    agentDoes: "Processes benefits and licences.",
+    benefit: "Explicit, revocable, auditable.",
   },
 ];
 
@@ -45,7 +39,7 @@ export function SectionWhoItsFor() {
       <SectionHeader
         eyebrow="Who it's for"
         title="Where an agent's word isn't good enough."
-        lead="babit is built for teams that have to answer for what their agents did, to a regulator, an auditor, a customer, or a court."
+        lead="For teams that answer to regulators, auditors, customers, or courts."
       />
 
       <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

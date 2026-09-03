@@ -208,17 +208,19 @@ const listEventsByUser = `-- name: ListEventsByUser :many
 SELECT e.event_id, e.session_id, e.sequence, e.surface, e.action_type, e.action_payload, e.grant_id, e.pre_state_hash, e.post_state_hash, e.recording_ref, e.occurred_at, e.content_hash, e.prev_hash, e.notary_signature, e.uuid FROM events e
 JOIN sessions s ON e.session_id = s.session_id
 WHERE s.user_id = $1
-ORDER BY e.occurred_at DESC
-LIMIT $2
+  AND ($2::text = '' OR e.event_id < $2::text)
+ORDER BY e.event_id DESC
+LIMIT $3
 `
 
 type ListEventsByUserParams struct {
-	UserID pgtype.UUID
-	Limit  int32
+	UserID  pgtype.UUID
+	Column2 string
+	Limit   int32
 }
 
 func (q *Queries) ListEventsByUser(ctx context.Context, arg ListEventsByUserParams) ([]Event, error) {
-	rows, err := q.db.Query(ctx, listEventsByUser, arg.UserID, arg.Limit)
+	rows, err := q.db.Query(ctx, listEventsByUser, arg.UserID, arg.Column2, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

@@ -6,6 +6,7 @@ import (
 	storedb "github.com/babit/nal/db/sqlc"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	"github.com/babit/nal/internal/errs"
+	"github.com/babit/nal/internal/pagination"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -81,19 +82,30 @@ func (s *grantStore) IsRevoked(ctx context.Context, grantID string) (bool, error
 	return revoked, nil
 }
 
-func (s *grantStore) List(ctx context.Context, limit int32) ([]*ledgerv1.Grant, error) {
-	if limit <= 0 {
-		limit = 50
-	}
-	rows, err := s.q.ListGrantsByUser(ctx, storedb.ListGrantsByUserParams{UserID: ctxUserUUID(ctx), Limit: limit})
+func (s *grantStore) List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.Grant, string, error) {
+	pageSize = pagination.ClampPageSize(pageSize, 100)
+	cur, err := pagination.Decode(pageToken)
 	if err != nil {
-		return nil, opErr(err, "list grants")
+		return nil, "", opErr(err, "list grants")
+	}
+	rows, err := s.q.ListGrantsByUser(ctx, storedb.ListGrantsByUserParams{
+		UserID:  ctxUserUUID(ctx),
+		Column2: cur.Value,
+		Limit:   pageSize + 1,
+	})
+	if err != nil {
+		return nil, "", opErr(err, "list grants")
+	}
+	var next string
+	if len(rows) > int(pageSize) {
+		next = pagination.Cursor{Value: rows[pageSize-1].GrantID}.Encode()
+		rows = rows[:pageSize]
 	}
 	out := make([]*ledgerv1.Grant, 0, len(rows))
 	for _, row := range rows {
 		out = append(out, grantFromListRow(row))
 	}
-	return out, nil
+	return out, next, nil
 }
 
 func grantFromModel(row storedb.Grant) *ledgerv1.Grant {

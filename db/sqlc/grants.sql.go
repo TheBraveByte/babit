@@ -112,13 +112,15 @@ SELECT grant_id, parent_grant_id, principal_id, subject_id, capabilities,
        resource_globs, max_value_cents, max_depth, expires_at, parent_signature
 FROM grants
 WHERE user_id = $1
+  AND ($2::text = '' OR grant_id < $2::text)
 ORDER BY grant_id DESC
-LIMIT $2
+LIMIT $3
 `
 
 type ListGrantsByUserParams struct {
-	UserID pgtype.UUID
-	Limit  int32
+	UserID  pgtype.UUID
+	Column2 string
+	Limit   int32
 }
 
 type ListGrantsByUserRow struct {
@@ -135,7 +137,7 @@ type ListGrantsByUserRow struct {
 }
 
 func (q *Queries) ListGrantsByUser(ctx context.Context, arg ListGrantsByUserParams) ([]ListGrantsByUserRow, error) {
-	rows, err := q.db.Query(ctx, listGrantsByUser, arg.UserID, arg.Limit)
+	rows, err := q.db.Query(ctx, listGrantsByUser, arg.UserID, arg.Column2, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

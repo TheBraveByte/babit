@@ -172,11 +172,17 @@
         },
         "parameters": [
           {
-            "name": "limit",
+            "name": "page_size",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       }
@@ -257,11 +263,17 @@
         },
         "parameters": [
           {
-            "name": "limit",
+            "name": "page_size",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       },
@@ -461,7 +473,22 @@
               "$ref": "#/definitions/rpcStatus"
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ]
       },
       "post": {
         "summary": "Create a project to group API keys",
@@ -515,6 +542,19 @@
             "name": "project_id",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ]
@@ -604,11 +644,17 @@
         },
         "parameters": [
           {
-            "name": "limit",
+            "name": "page_size",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ]
       },
@@ -1299,6 +1345,9 @@
             "type": "object",
             "$ref": "#/definitions/v1ApiKey"
           }
+        },
+        "next_page_token": {
+          "type": "string"
         }
       }
     },
@@ -1311,6 +1360,9 @@
             "type": "object",
             "$ref": "#/definitions/v1ActionEvent"
           }
+        },
+        "next_page_token": {
+          "type": "string"
         }
       }
     },
@@ -1323,6 +1375,9 @@
             "type": "object",
             "$ref": "#/definitions/v1Grant"
           }
+        },
+        "next_page_token": {
+          "type": "string"
         }
       }
     },
@@ -1335,6 +1390,9 @@
             "type": "object",
             "$ref": "#/definitions/v1Project"
           }
+        },
+        "next_page_token": {
+          "type": "string"
         }
       }
     },
@@ -1347,6 +1405,9 @@
             "type": "object",
             "$ref": "#/definitions/v1Session"
           }
+        },
+        "next_page_token": {
+          "type": "string"
         }
       }
     },

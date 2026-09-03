@@ -41,12 +41,12 @@ func (s *ProjectSvc) CreateProject(ctx context.Context, req *ledgerv1.CreateProj
 	return &ledgerv1.CreateProjectResponse{Project: toProtoProject(p)}, nil
 }
 
-func (s *ProjectSvc) ListProjects(ctx context.Context, _ *ledgerv1.ListProjectsRequest) (*ledgerv1.ListProjectsResponse, error) {
+func (s *ProjectSvc) ListProjects(ctx context.Context, req *ledgerv1.ListProjectsRequest) (*ledgerv1.ListProjectsResponse, error) {
 	uid := auth.UserID(ctx)
 	if uid == "" {
 		return nil, errs.New(errs.Unauthenticated, "not authenticated")
 	}
-	list, err := s.projects.ListByUser(ctx, uid)
+	list, next, err := s.projects.ListByUser(ctx, uid, req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (s *ProjectSvc) ListProjects(ctx context.Context, _ *ledgerv1.ListProjectsR
 	for _, p := range list {
 		out = append(out, toProtoProject(p))
 	}
-	return &ledgerv1.ListProjectsResponse{Projects: out}, nil
+	return &ledgerv1.ListProjectsResponse{Projects: out, NextPageToken: next}, nil
 }
 
 
@@ -104,7 +104,7 @@ func (s *APIKeySvc) ListApiKeys(ctx context.Context, req *ledgerv1.ListApiKeysRe
 	if _, err := s.projects.GetForUser(ctx, projectID, uid); err != nil {
 		return nil, err
 	}
-	list, err := s.keys.ListByProject(ctx, projectID)
+	list, next, err := s.keys.ListByProject(ctx, projectID, req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (s *APIKeySvc) ListApiKeys(ctx context.Context, req *ledgerv1.ListApiKeysRe
 	for _, k := range list {
 		out = append(out, toProtoAPIKey(k))
 	}
-	return &ledgerv1.ListApiKeysResponse{Keys: out}, nil
+	return &ledgerv1.ListApiKeysResponse{Keys: out, NextPageToken: next}, nil
 }
 
 func (s *APIKeySvc) RevokeApiKey(ctx context.Context, req *ledgerv1.RevokeApiKeyRequest) (*ledgerv1.RevokeApiKeyResponse, error) {

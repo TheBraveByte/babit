@@ -166,9 +166,9 @@ export function Button({
   const variants = {
     primary:   "rounded-pill bg-[var(--fg)] text-[var(--surface)] hover:opacity-85 active:opacity-75 shadow-xs",
     secondary: "rounded-babit bg-[var(--surface)] text-[var(--fg)] border border-[var(--border)] hover:bg-[var(--secondary)] shadow-xs",
-    danger:    "rounded-pill bg-[var(--color-failed)] text-white hover:opacity-90 active:opacity-80 shadow-xs",
+    danger:    "rounded-pill bg-[var(--color-failed)] text-[var(--surface)] hover:opacity-90 active:opacity-80 shadow-xs",
     ghost:     "rounded-babit bg-transparent text-[var(--muted)] hover:bg-[var(--secondary)] hover:text-[var(--fg)]",
-    brand:     "rounded-pill bg-[var(--brand-accent)] text-white hover:bg-[var(--brand-accent-hover)] active:opacity-90 shadow-xs",
+    brand:     "rounded-pill bg-[var(--brand-accent)] text-[var(--surface)] hover:bg-[var(--brand-accent-hover)] active:opacity-90 shadow-xs",
   };
 
   return (
@@ -212,7 +212,7 @@ export function Copyable({ value, truncate = false }: { value: string; truncate?
     >
       <span className="truncate max-w-[200px]">{displayValue}</span>
       <span style={{ color: "var(--muted)" }} className="shrink-0">
-        {copied ? <IconCheck className="w-3 h-3 text-emerald-600" /> : <IconCopy className="w-3 h-3" />}
+        {copied ? <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3 h-3" /></span> : <IconCopy className="w-3 h-3" />}
       </span>
     </button>
   );
@@ -433,10 +433,10 @@ export function ConfirmDialog({
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fade-in-fast">
-      <div className="absolute inset-0" style={{ backgroundColor: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)" }} onClick={onCancel} />
+      <div className="absolute inset-0" style={{ backgroundColor: "color-mix(in srgb, var(--fg) 40%, transparent)", backdropFilter: "blur(4px)" }} onClick={onCancel} />
       <div
         className="relative rounded-babit-md p-6 max-w-md w-full"
-        style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", boxShadow: "0 24px 60px -20px rgba(0,0,0,0.3)" }}
+        style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", boxShadow: "0 24px 60px -20px color-mix(in srgb, var(--fg) 20%, transparent)" }}
       >
         <div className="flex items-start gap-3 mb-4">
           {danger && (

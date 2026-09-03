@@ -6,6 +6,7 @@ import (
 
 	storedb "github.com/babit/nal/db/sqlc"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/pagination"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -55,19 +56,30 @@ func (s *sessionStore) NextSequence(ctx context.Context, sessionID string) (int6
 	return seq, nil
 }
 
-func (s *sessionStore) List(ctx context.Context, limit int32) ([]*ledgerv1.Session, error) {
-	if limit <= 0 {
-		limit = 50
-	}
-	rows, err := s.q.ListSessionsByUser(ctx, storedb.ListSessionsByUserParams{UserID: ctxUserUUID(ctx), Limit: limit})
+func (s *sessionStore) List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.Session, string, error) {
+	pageSize = pagination.ClampPageSize(pageSize, 100)
+	cur, err := pagination.Decode(pageToken)
 	if err != nil {
-		return nil, opErr(err, "list sessions")
+		return nil, "", opErr(err, "list sessions")
+	}
+	rows, err := s.q.ListSessionsByUser(ctx, storedb.ListSessionsByUserParams{
+		UserID:  ctxUserUUID(ctx),
+		Column2: cur.Value,
+		Limit:   pageSize + 1,
+	})
+	if err != nil {
+		return nil, "", opErr(err, "list sessions")
+	}
+	var next string
+	if len(rows) > int(pageSize) {
+		next = pagination.Cursor{Value: rows[pageSize-1].SessionID}.Encode()
+		rows = rows[:pageSize]
 	}
 	out := make([]*ledgerv1.Session, 0, len(rows))
 	for _, row := range rows {
 		out = append(out, sessionFromRow(row))
 	}
-	return out, nil
+	return out, next, nil
 }
 
 func sessionFromRow(row storedb.Session) *ledgerv1.Session {

@@ -5,6 +5,7 @@ import (
 
 	storedb "github.com/babit/nal/db/sqlc"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
+	"github.com/babit/nal/internal/pagination"
 )
 
 type eventStore struct {
@@ -73,19 +74,30 @@ func (s *eventStore) Range(ctx context.Context, fromSeq, toSeq int64) ([]*ledger
 	return out, nil
 }
 
-func (s *eventStore) List(ctx context.Context, limit int32) ([]*ledgerv1.ActionEvent, error) {
-	if limit <= 0 {
-		limit = 50
-	}
-	rows, err := s.q.ListEventsByUser(ctx, storedb.ListEventsByUserParams{UserID: ctxUserUUID(ctx), Limit: limit})
+func (s *eventStore) List(ctx context.Context, pageSize int32, pageToken string) ([]*ledgerv1.ActionEvent, string, error) {
+	pageSize = pagination.ClampPageSize(pageSize, 100)
+	cur, err := pagination.Decode(pageToken)
 	if err != nil {
-		return nil, opErr(err, "list events")
+		return nil, "", opErr(err, "list events")
+	}
+	rows, err := s.q.ListEventsByUser(ctx, storedb.ListEventsByUserParams{
+		UserID:  ctxUserUUID(ctx),
+		Column2: cur.Value,
+		Limit:   pageSize + 1,
+	})
+	if err != nil {
+		return nil, "", opErr(err, "list events")
+	}
+	var next string
+	if len(rows) > int(pageSize) {
+		next = pagination.Cursor{Value: rows[pageSize-1].EventID}.Encode()
+		rows = rows[:pageSize]
 	}
 	out := make([]*ledgerv1.ActionEvent, 0, len(rows))
 	for _, row := range rows {
 		out = append(out, eventFromRow(row))
 	}
-	return out, nil
+	return out, next, nil
 }
 
 func eventFromRow(row storedb.Event) *ledgerv1.ActionEvent {

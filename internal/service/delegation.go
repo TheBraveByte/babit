@@ -88,11 +88,11 @@ func (d *Delegation) ListGrants(ctx context.Context, req *ledgerv1.ListGrantsReq
 	if auth.UserID(ctx) == "" {
 		return nil, errs.New(errs.Unauthenticated, "not authenticated")
 	}
-	grants, err := d.grants.List(ctx, req.GetLimit())
+	grants, next, err := d.grants.List(ctx, req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
-	return &ledgerv1.ListGrantsResponse{Grants: grants}, nil
+	return &ledgerv1.ListGrantsResponse{Grants: grants, NextPageToken: next}, nil
 }
 
 func (d *Delegation) sign(g *ledgerv1.Grant) error {

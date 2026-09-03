@@ -46,9 +46,11 @@ message GetInclusionProofResponse {
 }
 
 message ListEventsRequest {
-  int32 limit = 1;
+  int32 page_size = 1;
+  string page_token = 2;
 }
 
 message ListEventsResponse {
   repeated ActionEvent events = 1;
+  string next_page_token = 2;
 }

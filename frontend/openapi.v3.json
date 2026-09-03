@@ -213,12 +213,20 @@
                 },
                 "parameters": [
                     {
-                        "name": "limit",
+                        "name": "page_size",
                         "in": "query",
                         "required": false,
                         "schema": {
                             "type": "integer",
                             "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "page_token",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ]
@@ -328,12 +336,20 @@
                 },
                 "parameters": [
                     {
-                        "name": "limit",
+                        "name": "page_size",
                         "in": "query",
                         "required": false,
                         "schema": {
                             "type": "integer",
                             "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "page_token",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ]
@@ -600,7 +616,26 @@
                             }
                         }
                     }
-                }
+                },
+                "parameters": [
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "page_token",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
             },
             "post": {
                 "summary": "Create a project to group API keys",
@@ -670,6 +705,23 @@
                         "name": "project_id",
                         "in": "path",
                         "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "page_token",
+                        "in": "query",
+                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -789,12 +841,20 @@
                 },
                 "parameters": [
                     {
-                        "name": "limit",
+                        "name": "page_size",
                         "in": "query",
                         "required": false,
                         "schema": {
                             "type": "integer",
                             "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "page_token",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ]
@@ -1535,6 +1595,9 @@
                         "items": {
                             "$ref": "#/components/schemas/v1ApiKey"
                         }
+                    },
+                    "next_page_token": {
+                        "type": "string"
                     }
                 }
             },
@@ -1546,6 +1609,9 @@
                         "items": {
                             "$ref": "#/components/schemas/v1ActionEvent"
                         }
+                    },
+                    "next_page_token": {
+                        "type": "string"
                     }
                 }
             },
@@ -1557,6 +1623,9 @@
                         "items": {
                             "$ref": "#/components/schemas/v1Grant"
                         }
+                    },
+                    "next_page_token": {
+                        "type": "string"
                     }
                 }
             },
@@ -1568,6 +1637,9 @@
                         "items": {
                             "$ref": "#/components/schemas/v1Project"
                         }
+                    },
+                    "next_page_token": {
+                        "type": "string"
                     }
                 }
             },
@@ -1579,6 +1651,9 @@
                         "items": {
                             "$ref": "#/components/schemas/v1Session"
                         }
+                    },
+                    "next_page_token": {
+                        "type": "string"
                     }
                 }
             },

@@ -270,7 +270,7 @@ export function DashboardLayout({
               }}
               title="Sign out"
               aria-label="Sign out"
-              className="p-1.5 rounded-babit-sm text-red-600 hover:text-red-700 hover:bg-[var(--surface)] transition-colors cursor-pointer"
+              className="p-1.5 rounded-babit-sm text-[var(--color-failed)] hover:text-[var(--color-failed)] hover:bg-[var(--surface)] transition-colors cursor-pointer"
             >
               <IconLogOut className="w-4 h-4" />
             </button>
@@ -301,7 +301,7 @@ export function DashboardLayout({
                     logout();
                     navigate("/login");
                   }}
-                  className="text-red-600 hover:text-red-700 font-medium flex items-center gap-1 cursor-pointer text-xs"
+                  className="text-[var(--color-failed)] hover:text-[var(--color-failed)] font-medium flex items-center gap-1 cursor-pointer text-xs"
                 >
                   <IconLogOut className="w-3 h-3" />
                   <span>Sign out</span>

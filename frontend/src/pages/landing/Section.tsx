@@ -72,11 +72,11 @@ export function LandingCard({
 }) {
   return (
     <div
-      className={`rounded-babit-md h-full ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
+      className={`rounded-babit-sm h-full transition-colors duration-200 ${padding === "default" ? "p-6 sm:p-7" : ""} ${className}`}
       style={{
         backgroundColor: "var(--surface)",
-        border: "1px solid var(--border)",
-        boxShadow: emphasis === "raised" ? "0 1px 3px 0 rgba(0,0,0,0.06), 0 12px 32px -20px rgba(0,0,0,0.35)" : "none",
+        border: "1px solid var(--border-subtle)",
+        boxShadow: emphasis === "raised" ? "0 1px 2px 0 color-mix(in srgb, var(--fg) 3%, transparent)" : "none",
       }}
     >
       {children}
@@ -87,8 +87,8 @@ export function LandingCard({
 export function CardIcon({ children }: { children: ReactNode }) {
   return (
     <div
-      className="w-9 h-9 rounded-babit flex items-center justify-center"
-      style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border-subtle)", color: "var(--fg)" }}
+      className="w-8 h-8 rounded-babit-sm flex items-center justify-center"
+      style={{ backgroundColor: "transparent", border: "none", color: "var(--brand-accent)" }}
     >
       {children}
     </div>

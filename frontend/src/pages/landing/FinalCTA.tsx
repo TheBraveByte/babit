@@ -13,7 +13,7 @@ export function FinalCTA() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(45, 212, 191, 0.08), transparent 70%)",
+          background: "radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--brand-accent) 8%, transparent), transparent 70%)",
         }}
       />
 

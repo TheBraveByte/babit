@@ -274,6 +274,8 @@ func (x *CreateProjectResponse) GetProject() *Project {
 
 type ListProjectsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -308,9 +310,24 @@ func (*ListProjectsRequest) Descriptor() ([]byte, []int) {
 	return file_solari_ledger_v1_project_proto_rawDescGZIP(), []int{4}
 }
 
+func (x *ListProjectsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListProjectsRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
 type ListProjectsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Projects      []*Project             `protobuf:"bytes,1,rep,name=projects,proto3" json:"projects,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -350,6 +367,13 @@ func (x *ListProjectsResponse) GetProjects() []*Project {
 		return x.Projects
 	}
 	return nil
+}
+
+func (x *ListProjectsResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
 }
 
 type CreateApiKeyRequest struct {
@@ -459,6 +483,8 @@ func (x *CreateApiKeyResponse) GetSecret() string {
 type ListApiKeysRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ProjectId     string                 `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -500,9 +526,24 @@ func (x *ListApiKeysRequest) GetProjectId() string {
 	return ""
 }
 
+func (x *ListApiKeysRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListApiKeysRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
 type ListApiKeysResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Keys          []*ApiKey              `protobuf:"bytes,1,rep,name=keys,proto3" json:"keys,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -542,6 +583,13 @@ func (x *ListApiKeysResponse) GetKeys() []*ApiKey {
 		return x.Keys
 	}
 	return nil
+}
+
+func (x *ListApiKeysResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
 }
 
 type RevokeApiKeyRequest struct {
@@ -657,22 +705,30 @@ const file_solari_ledger_v1_project_proto_rawDesc = "" +
 	"\x14CreateProjectRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name:\x1a\x92A\x172\x15{\"name\":\"Production\"}\"L\n" +
 	"\x15CreateProjectResponse\x123\n" +
-	"\aproject\x18\x01 \x01(\v2\x19.solari.ledger.v1.ProjectR\aproject\"\x15\n" +
-	"\x13ListProjectsRequest\"M\n" +
+	"\aproject\x18\x01 \x01(\v2\x19.solari.ledger.v1.ProjectR\aproject\"Q\n" +
+	"\x13ListProjectsRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\"u\n" +
 	"\x14ListProjectsResponse\x125\n" +
-	"\bprojects\x18\x01 \x03(\v2\x19.solari.ledger.v1.ProjectR\bprojects\"H\n" +
+	"\bprojects\x18\x01 \x03(\v2\x19.solari.ledger.v1.ProjectR\bprojects\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"H\n" +
 	"\x13CreateApiKeyRequest\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"Z\n" +
 	"\x14CreateApiKeyResponse\x12*\n" +
 	"\x03key\x18\x01 \x01(\v2\x18.solari.ledger.v1.ApiKeyR\x03key\x12\x16\n" +
-	"\x06secret\x18\x02 \x01(\tR\x06secret\"3\n" +
+	"\x06secret\x18\x02 \x01(\tR\x06secret\"o\n" +
 	"\x12ListApiKeysRequest\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\tR\tprojectId\"C\n" +
+	"project_id\x18\x01 \x01(\tR\tprojectId\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x03 \x01(\tR\tpageToken\"k\n" +
 	"\x13ListApiKeysResponse\x12,\n" +
-	"\x04keys\x18\x01 \x03(\v2\x18.solari.ledger.v1.ApiKeyR\x04keys\",\n" +
+	"\x04keys\x18\x01 \x03(\v2\x18.solari.ledger.v1.ApiKeyR\x04keys\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\",\n" +
 	"\x13RevokeApiKeyRequest\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\"0\n" +
 	"\x14RevokeApiKeyResponse\x12\x18\n" +

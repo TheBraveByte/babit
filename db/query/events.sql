@@ -30,5 +30,6 @@ ORDER BY sequence;
 SELECT e.* FROM events e
 JOIN sessions s ON e.session_id = s.session_id
 WHERE s.user_id = $1
-ORDER BY e.occurred_at DESC
-LIMIT $2;
+  AND ($2::text = '' OR e.event_id < $2::text)
+ORDER BY e.event_id DESC
+LIMIT $3;

@@ -1,107 +1,206 @@
 import { useEffect, useRef } from "react";
-import createGlobe from "cobe";
-import { vizPalette, prefersReducedMotion } from "./tokens";
+import { prefersReducedMotion } from "./tokens";
 
 /**
- * AnchorGlobe — a restrained rotating globe standing for babit's honest anchoring model:
- * each sealed root is published to a PUBLIC transparency log / public chain
- * (Anchor.KIND_TRANSPARENCY_LOG | PUBLIC_CHAIN), so a receipt is verifiable anywhere
- * without trusting babit. The globe depicts that public, distributed verification surface —
- * NOT customer traffic or scale. Markers are generic public-anchor nodes, not real cities,
- * and there are no traffic arcs. Honours prefers-reduced-motion (renders one static frame).
+ * AnchorGlobe — a rotating wireframe globe with glowing anchor points
+ * representing the public anchoring network. Evidence is witnessed
+ * across the globe, not just in one place.
+ *
+ * Theme-aware: adapts colors for light and dark mode.
  */
-
-// cobe wants RGB channels in 0..1. Parse #rgb / #rrggbb tokens; fall back to grey.
-function hexToRgb(hex: string): [number, number, number] {
-  let h = hex.trim().replace("#", "");
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-  if (h.length !== 6) return [0.5, 0.5, 0.5];
-  const n = parseInt(h, 16);
-  return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
-}
-
-// Generic public-anchor nodes — deliberately abstract, not a claim about where customers are.
-const ANCHOR_MARKERS = [
-  { location: [37.77, -122.41], size: 0.03 },
-  { location: [51.5, -0.12], size: 0.03 },
-  { location: [1.35, 103.82], size: 0.03 },
-  { location: [-23.55, -46.63], size: 0.03 },
-  { location: [35.68, 139.69], size: 0.03 },
-] as const;
-
-export function AnchorGlobe({ className = "", size = 480 }: { className?: string; size?: number }) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+export function AnchorGlobe({ className = "" }: { className?: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     const reduced = prefersReducedMotion();
-    let globe: { destroy: () => void } | null = null;
-    let phi = 0;
-    let width = size;
+    const getTheme = () => document.documentElement.classList.contains("dark") ? "dark" : "light";
+    let theme = getTheme();
 
-    const build = () => {
-      const p = vizPalette();
-      const isDark = document.documentElement.classList.contains("dark");
-      const accent = hexToRgb(p.accent);
-      const base = hexToRgb(p.fg);
+    let w = 0, h = 0, dpr = 1;
 
-      width = canvas.offsetWidth || size;
-
-      globe = createGlobe(canvas, {
-        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-        width: width * 2,
-        height: width * 2,
-        phi: 0,
-        theta: 0.28,
-        dark: isDark ? 1 : 0,
-        diffuse: 1.1,
-        mapSamples: 28000,
-        mapBrightness: isDark ? 6.0 : 8.5,
-        mapBaseBrightness: isDark ? 0.08 : 0.16,
-        baseColor: base,
-        markerColor: accent,
-        glowColor: accent,
-        opacity: 0.92,
-        markers: ANCHOR_MARKERS.map((m) => ({ location: [...m.location] as [number, number], size: m.size })),
-        onRender: (state: Record<string, number>) => {
-          if (!reduced) phi += 0.002;
-          state.phi = phi;
-          state.width = width * 2;
-          state.height = width * 2;
-        },
-      } as Parameters<typeof createGlobe>[1]);
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      w = rect.width;
+      h = rect.height;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
-
-    build();
-
-    const ro = new ResizeObserver(() => {
-      width = canvas.offsetWidth || size;
-    });
+    resize();
+    const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    // Re-create on theme change so token-derived colors follow light/dark.
-    const mo = new MutationObserver(() => {
-      globe?.destroy();
-      phi = 0;
-      build();
-    });
+    const mo = new MutationObserver(() => { theme = getTheme(); });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
+    // Anchor points (lat, lon) — major cities
+    const ANCHORS = [
+      { lat: 40.7, lon: -74.0, label: "NYC" },
+      { lat: 51.5, lon: -0.1, label: "LDN" },
+      { lat: 35.7, lon: 139.7, label: "TYO" },
+      { lat: 1.3, lon: 103.8, label: "SGP" },
+      { lat: 52.5, lon: 13.4, label: "BER" },
+      { lat: -33.9, lon: 151.2, label: "SYD" },
+      { lat: 37.8, lon: -122.4, label: "SF" },
+      { lat: 19.1, lon: 72.9, label: "MUM" },
+      { lat: 55.8, lon: 37.6, label: "MOW" },
+      { lat: -23.5, lon: -46.6, label: "SAO" },
+      { lat: 30.0, lon: 31.2, label: "CAI" },
+      { lat: 49.3, lon: -123.1, label: "VAN" },
+    ];
+
+    // Connection arcs between anchors
+    const ARCS = [
+      [0, 1], [1, 4], [4, 5], [0, 6], [6, 2], [2, 3], [3, 7], [7, 8], [1, 8], [0, 9], [3, 10], [6, 11],
+    ];
+
+    let rotation = 0;
+
+    // Project lat/lon to 3D point on sphere
+    const project = (lat: number, lon: number, r: number, cx: number, cy: number) => {
+      const latR = (lat * Math.PI) / 180;
+      const lonR = ((lon + rotation) * Math.PI) / 180;
+      const x = r * Math.cos(latR) * Math.cos(lonR);
+      const y = r * Math.sin(latR);
+      const z = r * Math.cos(latR) * Math.sin(lonR);
+      return { x: cx + x, y: cy - y, z, visible: z > -r * 0.3 };
+    };
+
+    const tick = () => {
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = Math.min(w, h) * 0.38;
+
+      const isDark = theme === "dark";
+      const accent = isDark ? "45, 212, 191" : "13, 148, 136";
+      const muted = isDark ? "138, 144, 140" : "100, 116, 139";
+
+      // Clear with subtle background
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw sphere background circle
+      const sphereGrad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, 0, cx, cy, r);
+      if (isDark) {
+        sphereGrad.addColorStop(0, "rgba(10, 20, 19, 0.8)");
+        sphereGrad.addColorStop(1, "rgba(5, 8, 7, 0.4)");
+      } else {
+        sphereGrad.addColorStop(0, "rgba(240, 253, 250, 0.6)");
+        sphereGrad.addColorStop(1, "rgba(248, 250, 252, 0.3)");
+      }
+      ctx.fillStyle = sphereGrad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw latitude lines
+      ctx.strokeStyle = `rgba(${accent}, 0.08)`;
+      ctx.lineWidth = 1;
+      for (let lat = -60; lat <= 60; lat += 30) {
+        ctx.beginPath();
+        const points: { x: number; y: number; z: number }[] = [];
+        for (let lon = 0; lon <= 360; lon += 4) {
+          const p = project(lat, lon - 180, r, cx, cy);
+          points.push(p);
+        }
+        for (let i = 0; i < points.length - 1; i++) {
+          if (points[i].z > -r * 0.2 && points[i + 1].z > -r * 0.2) {
+            if (i === 0) ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(points[i + 1].x, points[i + 1].y);
+          }
+        }
+        ctx.stroke();
+      }
+
+      // Draw longitude lines
+      for (let lon = 0; lon < 360; lon += 30) {
+        ctx.beginPath();
+        const points: { x: number; y: number; z: number }[] = [];
+        for (let lat = -90; lat <= 90; lat += 4) {
+          const p = project(lat, lon - 180, r, cx, cy);
+          points.push(p);
+        }
+        for (let i = 0; i < points.length - 1; i++) {
+          if (points[i].z > -r * 0.2 && points[i + 1].z > -r * 0.2) {
+            if (i === 0) ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(points[i + 1].x, points[i + 1].y);
+          }
+        }
+        ctx.stroke();
+      }
+
+      // Draw connection arcs
+      ARCS.forEach(([from, to]) => {
+        const p1 = project(ANCHORS[from].lat, ANCHORS[from].lon, r, cx, cy);
+        const p2 = project(ANCHORS[to].lat, ANCHORS[to].lon, r, cx, cy);
+        if (!p1.visible || !p2.visible) return;
+
+        // Arc midpoint (raised above surface)
+        const midLat = (ANCHORS[from].lat + ANCHORS[to].lat) / 2;
+        const midLon = (ANCHORS[from].lon + ANCHORS[to].lon) / 2;
+        const midR = r * 1.15;
+        const mid = project(midLat, midLon, midR, cx, cy);
+
+        ctx.strokeStyle = `rgba(${accent}, 0.2)`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.quadraticCurveTo(mid.x, mid.y, p2.x, p2.y);
+        ctx.stroke();
+      });
+
+      // Draw anchor points
+      ANCHORS.forEach((a) => {
+        const p = project(a.lat, a.lon, r, cx, cy);
+        if (!p.visible) return;
+
+        // Glow
+        const glowGrad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 16);
+        glowGrad.addColorStop(0, `rgba(${accent}, 0.4)`);
+        glowGrad.addColorStop(1, `rgba(${accent}, 0)`);
+        ctx.fillStyle = glowGrad;
+        ctx.fillRect(p.x - 16, p.y - 16, 32, 32);
+
+        // Dot
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${accent}, 0.9)`;
+        ctx.fill();
+
+        // Ring
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${accent}, 0.3)`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = `rgba(${muted}, 0.7)`;
+        ctx.font = "500 9px ui-monospace, monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(a.label, p.x, p.y - 12);
+      });
+
+      // Rotate
+      if (!reduced) rotation += 0.15;
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
     return () => {
+      cancelAnimationFrame(rafRef.current);
       ro.disconnect();
       mo.disconnect();
-      globe?.destroy();
     };
-  }, [size]);
+  }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      className={className}
-      style={{ width: size, height: size, flexShrink: 0 }}
-    />
-  );
+  return <canvas ref={canvasRef} className={className} />;
 }

@@ -94,3 +94,12 @@ message Session {
   google.protobuf.Timestamp ended_at = 5;
   int64 event_count = 6;
 }
+
+message PageRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message PageResponse {
+  string next_page_token = 1;
+}
