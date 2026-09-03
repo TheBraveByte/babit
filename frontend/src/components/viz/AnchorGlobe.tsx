@@ -102,7 +102,7 @@ export function AnchorGlobe({ className = "", size = 480 }: { className?: string
       ref={canvasRef}
       aria-hidden="true"
       className={className}
-      style={{ width: size, height: size, maxWidth: "100%", aspectRatio: "1" }}
+      style={{ width: size, height: size, flexShrink: 0 }}
     />
   );
 }

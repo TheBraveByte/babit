@@ -50,7 +50,7 @@ export function SectionOfflineEvidence() {
   };
 
   return (
-    <Section>
+    <Section id="offline">
       <SectionHeader
         eyebrow="Offline verification"
         title="Evidence that stands on its own."
@@ -73,8 +73,10 @@ export function SectionOfflineEvidence() {
             </p>
           </div>
           <div className="flex-1 flex items-center justify-center px-6 pt-4 pb-2">
-            <Suspense fallback={<div style={{ height: 340 }} />}>
-              <AnchorGlobe size={340} />
+            <Suspense fallback={<div style={{ width: 340, height: 340 }} />}>
+              <div style={{ width: 340, height: 340, flexShrink: 0 }}>
+                <AnchorGlobe size={340} />
+              </div>
             </Suspense>
           </div>
         </LandingCard>

@@ -95,7 +95,7 @@ const HOW_TO_READ = [
 
 export function SectionAuthorityChain() {
   return (
-    <Section>
+    <Section id="authority">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         {/* Left: heading + how to read it */}
         <div className="space-y-8">
