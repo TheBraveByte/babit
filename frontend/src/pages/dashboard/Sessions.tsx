@@ -3,6 +3,8 @@ import { PageHeader, Card, StatusPill, Copyable, MonospaceHash, Button, Field, T
 import { IconLayers, IconCheck, IconPlay } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
+import { useRecentLookups } from "@/lib/useRecentLookups";
+import { RecentTable } from "@/components/RecentTable";
 
 type Anchor = components["schemas"]["v1Anchor"];
 type Session = components["schemas"]["v1Session"];
@@ -76,6 +78,7 @@ function AnchorPanel() {
   const [error, setError] = useState<string | null>(null);
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const [searched, setSearched] = useState(false);
+  const { entries, addLookup } = useRecentLookups("sessions");
 
   async function run(e: React.FormEvent) {
     e.preventDefault();
@@ -89,7 +92,11 @@ function AnchorPanel() {
         params: { path: { session_id: sessionId.trim() } },
       });
       if (res.error) setError(errText(res.error) || "Session anchor not found.");
-      else setAnchor(res.data?.anchor ?? null);
+      else {
+        setAnchor(res.data?.anchor ?? null);
+        const a = res.data?.anchor;
+        addLookup(sessionId.trim(), `${ANCHOR_KIND_LABEL[a?.kind ?? ""] ?? a?.kind ?? "—"} · ${a?.anchored_at?.slice(0, 10) ?? ""}`);
+      }
     } catch (err) {
       setError(errText(err));
     } finally {
@@ -97,6 +104,14 @@ function AnchorPanel() {
       setLoading(false);
     }
   }
+
+  const selectRecent = (id: string) => {
+    setSessionId(id);
+    setTimeout(() => {
+      const form = document.querySelector("form");
+      if (form) form.requestSubmit();
+    }, 50);
+  };
 
   const hasAnchor = anchor && (anchor.kind || anchor.root || anchor.anchor_receipt || anchor.anchored_at);
 
@@ -145,11 +160,13 @@ function AnchorPanel() {
         )}
 
         {!searched && !error && (
-          <EmptyState
-            title="No session loaded"
-            description="Enter a session ID to fetch its external anchor. There is no session listing endpoint, so sessions are inspected individually by ID."
-            icon={<IconLayers className="w-5 h-5" />}
-          />
+          <div className="space-y-3">
+            <div>
+              <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>Recent sessions</span>
+              <p className="text-[11px] mt-0.5" style={{ color: "var(--muted)" }}>Click a row to fetch its anchor.</p>
+            </div>
+            <RecentTable entries={entries} onSelect={selectRecent} emptyLabel="Look up a session ID above to start building history." />
+          </div>
         )}
       </div>
     </Card>

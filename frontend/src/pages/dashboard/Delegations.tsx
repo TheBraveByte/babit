@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { StatusPill, Copyable, Button, Field, TextInput, Error, EmptyState, PageHeader } from "@/lib/ui";
-import { IconGitBranch, IconCheck, IconShieldCheck } from "@/lib/icons";
+import { StatusPill, Copyable, Button, Field, TextInput, Error, PageHeader } from "@/lib/ui";
+import { IconCheck, IconShieldCheck } from "@/lib/icons";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { AuthorityGraph, chainToGraph, type GrantRole } from "@/components/viz/AuthorityGraph";
+import { useRecentLookups } from "@/lib/useRecentLookups";
+import { RecentTable } from "@/components/RecentTable";
 
 type VerifyChain = components["schemas"]["v1VerifyChainResponse"];
 type Grant = components["schemas"]["v1Grant"];
@@ -109,6 +111,7 @@ function VerifyChainPanel() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<VerifyChain | null>(null);
+  const { entries, addLookup } = useRecentLookups("grants");
 
   async function run(e: React.FormEvent) {
     e.preventDefault();
@@ -121,13 +124,26 @@ function VerifyChainPanel() {
         params: { path: { grant_id: grantId.trim() } },
       });
       if (res.error || !res.data) setError(errText(res.error) || "Grant not found.");
-      else setResult(res.data);
+      else {
+        setResult(res.data);
+        const chain = res.data.chain ?? [];
+        const leaf = chain[chain.length - 1];
+        addLookup(grantId.trim(), `${leaf?.subject_id ?? "grant"} · ${res.data.valid ? "VALID" : "INVALID"}`);
+      }
     } catch (err) {
       setError(errText(err));
     } finally {
       setLoading(false);
     }
   }
+
+  const selectRecent = (id: string) => {
+    setGrantId(id);
+    setTimeout(() => {
+      const form = document.querySelector("form");
+      if (form) form.requestSubmit();
+    }, 50);
+  };
 
   return (
     <Panel>
@@ -190,11 +206,13 @@ function VerifyChainPanel() {
       )}
 
       {!result && !error && (
-        <EmptyState
-          title="No grant loaded"
-          description="Enter a grant ID to verify its signature chain and delegation authority. There is no grant listing endpoint yet, so grants are verified individually by ID."
-          icon={<IconGitBranch className="w-5 h-5" />}
-        />
+        <div className="space-y-3">
+          <div>
+            <span className="text-xs font-semibold" style={{ color: "var(--fg)" }}>Recent grants</span>
+            <p className="text-[11px] mt-0.5" style={{ color: "var(--muted)" }}>Click a row to verify its chain.</p>
+          </div>
+          <RecentTable entries={entries} onSelect={selectRecent} emptyLabel="Look up a grant ID above to start building history." />
+        </div>
       )}
     </Panel>
   );
