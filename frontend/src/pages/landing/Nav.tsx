@@ -19,20 +19,12 @@ export function Nav() {
   }, []);
 
   const navLinks = [
-    { label: "How it works", href: "#how" },
-    { label: "Who it's for", href: "#who" },
-    { label: "Developers", href: "#developers" },
-    { label: "Verify", href: "#security" },
+    { label: "How it works", href: "/#how" },
+    { label: "Who it's for", href: "/#who" },
+    { label: "Developers", href: "/#developers" },
+    { label: "Security", href: "/security" },
+    { label: "Pricing", href: "/pricing" },
   ];
-
-  const scrollTo = (hash: string) => {
-    setMobileMenuOpen(false);
-    const id = hash.replace("#", "");
-    const elem = document.getElementById(id);
-    if (elem) {
-      elem.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <header
@@ -60,13 +52,13 @@ export function Nav() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-7">
           {navLinks.map((item) => (
-            <button
+            <a
               key={item.label}
-              onClick={() => scrollTo(item.href)}
-              className="text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors cursor-pointer"
+              href={item.href}
+              className="text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--fg)] transition-colors"
             >
               {item.label}
-            </button>
+            </a>
           ))}
           <Link
             to="/api"
@@ -115,9 +107,19 @@ export function Nav() {
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {mobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               )}
             </svg>
           </button>
@@ -132,13 +134,14 @@ export function Nav() {
           style={{ borderTop: "1px solid var(--border-subtle)" }}
         >
           {navLinks.map((item) => (
-            <button
+            <a
               key={item.label}
-              onClick={() => scrollTo(item.href)}
+              href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
               className="block w-full text-left py-2.5 text-[14px] text-[color:var(--fg)] font-medium"
             >
               {item.label}
-            </button>
+            </a>
           ))}
           <Link
             to="/api"

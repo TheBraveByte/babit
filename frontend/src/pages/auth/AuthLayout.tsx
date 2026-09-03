@@ -39,11 +39,17 @@ export function AuthLayout({
         {/* Centered form */}
         <div className="flex-1 flex flex-col justify-center py-12">
           <div className="w-full max-w-[380px] mx-auto">
-            <h1 className="text-[26px] font-medium tracking-[-0.025em] text-center" style={{ color: "var(--fg)" }}>
+            <h1
+              className="text-[26px] font-medium tracking-[-0.025em] text-center"
+              style={{ color: "var(--fg)" }}
+            >
               {title}
             </h1>
             {subtitle && (
-              <p className="mt-2 text-[14px] leading-relaxed text-center" style={{ color: "var(--muted)" }}>
+              <p
+                className="mt-2 text-[14px] leading-relaxed text-center"
+                style={{ color: "var(--muted)" }}
+              >
                 {subtitle}
               </p>
             )}
@@ -73,7 +79,7 @@ export function AuthLayout({
 function AuthVisual() {
   const benefits = [
     "Every agent action is recorded with proof",
-    "Anyone can verify what happened without trusting us",
+    "Anyone can verify what happened. Independently auditable.",
     "Works with any agent, any language, any platform",
   ];
 
@@ -115,7 +121,9 @@ function AuthVisual() {
                 border: "1px solid var(--color-verified-border)",
               }}
             >
-              <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span>
+              <span style={{ color: "var(--color-verified)" }}>
+                <IconCheck className="w-3.5 h-3.5" />
+              </span>
             </div>
             <p className="text-[15px] leading-relaxed" style={{ color: "var(--fg)" }}>
               {b}

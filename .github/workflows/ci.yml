@@ -62,3 +62,17 @@ jobs:
           (cd db && sqlc generate)
           mockery
           git diff --exit-code
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install
+        run: cd frontend && bun install
+      - name: Lint
+        run: cd frontend && bun run lint
+      - name: Build
+        run: cd frontend && bun run build

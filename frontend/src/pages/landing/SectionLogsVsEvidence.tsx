@@ -28,8 +28,16 @@ export function SectionLogsVsEvidence() {
                 className="text-[11px] px-2.5 py-1 rounded-babit-sm cursor-pointer transition-colors font-medium"
                 style={
                   logTampered
-                    ? { backgroundColor: "var(--color-failed-bg)", color: "var(--color-failed)", border: "1px solid var(--color-failed-border)" }
-                    : { backgroundColor: "var(--secondary)", color: "var(--fg)", border: "1px solid var(--border)" }
+                    ? {
+                        backgroundColor: "var(--color-failed-bg)",
+                        color: "var(--color-failed)",
+                        border: "1px solid var(--color-failed-border)",
+                      }
+                    : {
+                        backgroundColor: "var(--secondary)",
+                        color: "var(--fg)",
+                        border: "1px solid var(--border)",
+                      }
                 }
               >
                 {logTampered ? "Restore" : "Tamper with it"}
@@ -38,24 +46,36 @@ export function SectionLogsVsEvidence() {
 
             <div
               className="rounded-babit p-4 font-mono text-[12px] leading-relaxed space-y-1"
-              style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border-subtle)", color: "var(--muted)" }}
+              style={{
+                backgroundColor: "var(--secondary)",
+                border: "1px solid var(--border-subtle)",
+                color: "var(--muted)",
+              }}
             >
               <div>2026-09-01 14:32:08 worker-pool-4: executing payout</div>
               <div>
                 2026-09-01 14:32:08 worker-pool-4: amount=
-                <span style={{ color: logTampered ? "var(--color-failed)" : "var(--fg)" }}>{amount}</span>
-                {" "}claim=CLM-48102
+                <span style={{ color: logTampered ? "var(--color-failed)" : "var(--fg)" }}>
+                  {amount}
+                </span>{" "}
+                claim=CLM-48102
               </div>
               <div>2026-09-01 14:32:08 worker-pool-4: request completed (200 OK)</div>
             </div>
 
             <ul className="space-y-2 text-sm" style={{ color: "var(--muted)" }}>
               <li className="flex gap-2">
-                <span className="shrink-0 font-semibold" style={{ color: "var(--color-failed)" }}>✗</span>
-                <span>Anyone with database access can change it, and nothing shows it was changed.</span>
+                <span className="shrink-0 font-semibold" style={{ color: "var(--color-failed)" }}>
+                  ✗
+                </span>
+                <span>
+                  Anyone with database access can change it, and nothing shows it was changed.
+                </span>
               </li>
               <li className="flex gap-2">
-                <span className="shrink-0 font-semibold" style={{ color: "var(--color-failed)" }}>✗</span>
+                <span className="shrink-0 font-semibold" style={{ color: "var(--color-failed)" }}>
+                  ✗
+                </span>
                 <span>It doesn't say who allowed the action, only that something ran.</span>
               </li>
             </ul>
@@ -67,10 +87,16 @@ export function SectionLogsVsEvidence() {
               className="flex items-center justify-between pb-3"
               style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
-              <span className="type-eyebrow" style={{ color: "var(--fg)" }}>A babit receipt</span>
+              <span className="type-eyebrow" style={{ color: "var(--fg)" }}>
+                A babit receipt
+              </span>
               <span
                 className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full"
-                style={{ backgroundColor: "var(--color-verified-bg)", color: "var(--color-verified)", border: "1px solid var(--color-verified-border)" }}
+                style={{
+                  backgroundColor: "var(--color-verified-bg)",
+                  color: "var(--color-verified)",
+                  border: "1px solid var(--color-verified-border)",
+                }}
               >
                 <IconCheck className="w-3 h-3" />
                 <span>Verified</span>
@@ -88,11 +114,15 @@ export function SectionLogsVsEvidence() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <span className="type-eyebrow block mb-1">Who did it</span>
-                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>claims-agent</span>
+                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+                    claims-agent
+                  </span>
                 </div>
                 <div>
                   <span className="type-eyebrow block mb-1">Who allowed it</span>
-                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>Alice, Risk Supervisor</span>
+                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+                    Alice, Risk Supervisor
+                  </span>
                 </div>
               </div>
             </div>
@@ -100,19 +130,28 @@ export function SectionLogsVsEvidence() {
             {/* The seal, secondary detail */}
             <div
               className="rounded-babit px-3.5 py-2.5 flex items-center justify-between gap-3 font-mono text-[11px]"
-              style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border-subtle)" }}
+              style={{
+                backgroundColor: "var(--secondary)",
+                border: "1px solid var(--border-subtle)",
+              }}
             >
               <span style={{ color: "var(--muted)" }}>seal 0xd8291a84…fe120934</span>
-              <span className="font-semibold" style={{ color: "var(--color-verified)" }}>OK</span>
+              <span className="font-semibold" style={{ color: "var(--color-verified)" }}>
+                OK
+              </span>
             </div>
 
             <ul className="space-y-2 text-sm" style={{ color: "var(--muted)" }}>
               <li className="flex gap-2">
-                <span className="shrink-0" style={{ color: "var(--color-verified)" }}><IconCheck className="w-4 h-4" /></span>
+                <span className="shrink-0" style={{ color: "var(--color-verified)" }}>
+                  <IconCheck className="w-4 h-4" />
+                </span>
                 <span>Change one character and the seal breaks, so tampering is obvious.</span>
               </li>
               <li className="flex gap-2">
-                <span className="shrink-0" style={{ color: "var(--color-verified)" }}><IconCheck className="w-4 h-4" /></span>
+                <span className="shrink-0" style={{ color: "var(--color-verified)" }}>
+                  <IconCheck className="w-4 h-4" />
+                </span>
                 <span>It names who authorized the action, all the way back to a person.</span>
               </li>
             </ul>

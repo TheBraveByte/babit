@@ -4,7 +4,12 @@ import { api, setAuthToken, getAuthToken, clearSessionCookie, errText } from "@/
 export interface User {
   id?: string;
   email?: string;
-  account_type?: "ACCOUNT_TYPE_UNSPECIFIED" | "ACCOUNT_TYPE_PERSONAL" | "ACCOUNT_TYPE_ORGANIZATION" | number | string;
+  account_type?:
+    | "ACCOUNT_TYPE_UNSPECIFIED"
+    | "ACCOUNT_TYPE_PERSONAL"
+    | "ACCOUNT_TYPE_ORGANIZATION"
+    | number
+    | string;
   org_name?: string;
   org_domain?: string;
   industry?: string;
@@ -64,14 +69,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const color = branding?.brand_color;
     if (color && isValidHexColor(color)) {
       document.documentElement.style.setProperty("--brand-accent", color);
-      document.documentElement.style.setProperty(
-        "--brand-accent-subtle",
-        `${color}14`,
-      );
-      document.documentElement.style.setProperty(
-        "--brand-accent-border",
-        `${color}33`,
-      );
+      document.documentElement.style.setProperty("--brand-accent-subtle", `${color}14`);
+      document.documentElement.style.setProperty("--brand-accent-border", `${color}33`);
     } else {
       document.documentElement.style.removeProperty("--brand-accent");
       document.documentElement.style.removeProperty("--brand-accent-subtle");
@@ -90,8 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setBranding(b);
         return;
       }
-    } catch {
-    }
+    } catch {}
     setAuthToken(null);
     setTokenState(null);
     setUser(null);

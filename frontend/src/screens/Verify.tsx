@@ -2,16 +2,38 @@ import { useState } from "react";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { PageHeader, Card, Button, Error, StatusPill, TextArea, TextInput, Field } from "@/lib/ui";
-import { IconCheck, IconShieldCheck, IconShieldAlert, IconFileText, IconChevronDown } from "@/lib/icons";
+import {
+  IconCheck,
+  IconShieldCheck,
+  IconShieldAlert,
+  IconFileText,
+  IconChevronDown,
+} from "@/lib/icons";
 
 type Proof = components["schemas"]["v1Proof"];
 type VResp = components["schemas"]["v1VerifyProofResponse"];
 
 const checks: { key: keyof VResp; label: string; desc: string }[] = [
-  { key: "signature_valid", label: "Notary signature", desc: "Signature matches the notary's public key" },
-  { key: "chain_intact", label: "Hash chain", desc: "Each entry links to the one before it with an unbroken SHA-256 chain" },
-  { key: "authority_valid", label: "Delegation authority", desc: "The action stays within the granted resource scope and depth limits" },
-  { key: "anchored", label: "External anchor", desc: "An independent timestamp confirms when the receipt was recorded" },
+  {
+    key: "signature_valid",
+    label: "Notary signature",
+    desc: "Signature matches the notary's public key",
+  },
+  {
+    key: "chain_intact",
+    label: "Hash chain",
+    desc: "Each entry links to the one before it with an unbroken SHA-256 chain",
+  },
+  {
+    key: "authority_valid",
+    label: "Delegation authority",
+    desc: "The action stays within the granted resource scope and depth limits",
+  },
+  {
+    key: "anchored",
+    label: "External anchor",
+    desc: "An independent timestamp confirms when the receipt was recorded",
+  },
 ];
 
 export function Verify() {
@@ -41,7 +63,9 @@ export function Verify() {
 
   async function fetchAndVerify() {
     setError(null);
-    const res = await api.GET("/v1/events/{event_id}:proof", { params: { path: { event_id: eventId } } });
+    const res = await api.GET("/v1/events/{event_id}:proof", {
+      params: { path: { event_id: eventId } },
+    });
     if (res.error || !res.data?.proof) {
       setError(errText(res.error) || "No inclusion proof found for that event ID.");
       return;
@@ -84,7 +108,9 @@ export function Verify() {
           <div className="h-px accent-hairline -mx-5 -mt-5" />
 
           <div className="space-y-1">
-            <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Verify by event ID</h2>
+            <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
+              Verify by event ID
+            </h2>
             <p className="text-xs" style={{ color: "var(--muted)" }}>
               Enter an event ID and we'll pull its proof from the ledger and check it for you.
             </p>
@@ -96,7 +122,9 @@ export function Verify() {
                 <TextInput
                   value={eventId}
                   onChange={(e) => setEventId(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter" && eventId.trim()) void fetchAndVerify(); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && eventId.trim()) void fetchAndVerify();
+                  }}
                   placeholder="e.g. BAL-778812"
                 />
               </Field>
@@ -120,15 +148,23 @@ export function Verify() {
       <Card>
         <div className="space-y-4">
           <div className="space-y-1">
-            <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Upload a receipt file</h2>
+            <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
+              Upload a receipt file
+            </h2>
             <p className="text-xs" style={{ color: "var(--muted)" }}>
               Have a receipt saved as a file? Drop it here to verify it locally.
             </p>
           </div>
 
           <label
-            onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-            onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragActive(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              setDragActive(false);
+            }}
             onDrop={(e) => {
               e.preventDefault();
               setDragActive(false);
@@ -176,14 +212,20 @@ export function Verify() {
           className="w-full flex items-center justify-between gap-3 text-left cursor-pointer"
         >
           <div className="space-y-0.5">
-            <span className="text-sm font-semibold" style={{ color: "var(--fg)" }}>Paste receipt JSON</span>
+            <span className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
+              Paste receipt JSON
+            </span>
             <p className="text-xs" style={{ color: "var(--muted)" }}>
               For advanced use. Paste the raw receipt or proof JSON directly.
             </p>
           </div>
           <span
             className="shrink-0 transition-transform"
-            style={{ color: "var(--muted)", transform: showPaste ? "rotate(180deg)" : "none", display: "inline-flex" }}
+            style={{
+              color: "var(--muted)",
+              transform: showPaste ? "rotate(180deg)" : "none",
+              display: "inline-flex",
+            }}
           >
             <IconChevronDown className="w-4 h-4" />
           </span>
@@ -224,7 +266,10 @@ function VerificationReport({ result }: { result: VResp }) {
   const verdictColor = result.valid ? "var(--color-verified)" : "var(--color-failed)";
 
   return (
-    <Card title="Verification report" subtitle="Recomputed independently, so no trust in Babit is required.">
+    <Card
+      title="Verification report"
+      subtitle="Recomputed independently, so no trust in Babit is required."
+    >
       <div className="space-y-5">
         {/* Verdict banner */}
         <div
@@ -235,7 +280,11 @@ function VerificationReport({ result }: { result: VResp }) {
             border: `1px solid color-mix(in srgb, ${verdictColor} 30%, transparent)`,
           }}
         >
-          {result.valid ? <IconShieldCheck className="w-5 h-5 shrink-0" /> : <IconShieldAlert className="w-5 h-5 shrink-0" />}
+          {result.valid ? (
+            <IconShieldCheck className="w-5 h-5 shrink-0" />
+          ) : (
+            <IconShieldAlert className="w-5 h-5 shrink-0" />
+          )}
           <div>
             <div className="text-sm font-semibold">
               {result.valid ? "Verified. All checks passed." : "Verification failed"}
@@ -259,8 +308,12 @@ function VerificationReport({ result }: { result: VResp }) {
                 style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
               >
                 <div className="min-w-0">
-                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>{c.label}</span>
-                  <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{c.desc}</p>
+                  <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+                    {c.label}
+                  </span>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
+                    {c.desc}
+                  </p>
                 </div>
                 <StatusPill ok={ok} label={ok ? "VALID" : "FAILED"} />
               </div>
@@ -270,8 +323,13 @@ function VerificationReport({ result }: { result: VResp }) {
 
         {result.reason && <Error message={`Failure reason: ${result.reason}`} />}
 
-        <div className="pt-3 flex items-center justify-end gap-1.5 text-[11px]" style={{ borderTop: "1px solid var(--border-subtle)", color: "var(--muted)" }}>
-          <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span>
+        <div
+          className="pt-3 flex items-center justify-end gap-1.5 text-[11px]"
+          style={{ borderTop: "1px solid var(--border-subtle)", color: "var(--muted)" }}
+        >
+          <span style={{ color: "var(--color-verified)" }}>
+            <IconCheck className="w-3.5 h-3.5" />
+          </span>
           <span>Independent verification complete</span>
         </div>
       </div>

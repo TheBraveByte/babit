@@ -1,6 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "./router";
-import { IconSearch, IconActivity, IconCpu, IconGitBranch, IconFileText, IconShieldCheck, IconSettings, IconLayers } from "./icons";
+import {
+  IconSearch,
+  IconActivity,
+  IconCpu,
+  IconGitBranch,
+  IconFileText,
+  IconShieldCheck,
+  IconSettings,
+  IconLayers,
+} from "./icons";
 
 interface CommandItem {
   id: string;
@@ -11,13 +20,7 @@ interface CommandItem {
   action: () => void;
 }
 
-export function CommandPalette({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+export function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { navigate } = useRouter();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -32,7 +35,10 @@ export function CommandPalette({
       title: "Overview",
       subtitle: "Workspace summary and notary key",
       icon: <IconActivity className="w-4 h-4 text-[color:var(--muted)]" />,
-      action: () => { navigate("/dashboard/overview"); onClose(); },
+      action: () => {
+        navigate("/dashboard/overview");
+        onClose();
+      },
     },
     {
       id: "nav-activity",
@@ -40,7 +46,10 @@ export function CommandPalette({
       title: "Activity",
       subtitle: "Look up an action event by ID",
       icon: <IconFileText className="w-4 h-4 text-[color:var(--muted)]" />,
-      action: () => { navigate("/dashboard/activity"); onClose(); },
+      action: () => {
+        navigate("/dashboard/activity");
+        onClose();
+      },
     },
     {
       id: "nav-agents",
@@ -48,7 +57,10 @@ export function CommandPalette({
       title: "Agents",
       subtitle: "Autonomous subjects under delegated authority",
       icon: <IconCpu className="w-4 h-4 text-[color:var(--muted)]" />,
-      action: () => { navigate("/dashboard/agents"); onClose(); },
+      action: () => {
+        navigate("/dashboard/agents");
+        onClose();
+      },
     },
     {
       id: "nav-delegations",
@@ -56,7 +68,10 @@ export function CommandPalette({
       title: "Delegations",
       subtitle: "Issue, delegate, verify and revoke grants",
       icon: <IconGitBranch className="w-4 h-4 text-[color:var(--muted)]" />,
-      action: () => { navigate("/dashboard/delegations"); onClose(); },
+      action: () => {
+        navigate("/dashboard/delegations");
+        onClose();
+      },
     },
     {
       id: "nav-sessions",
@@ -64,7 +79,10 @@ export function CommandPalette({
       title: "Sessions",
       subtitle: "Inspect a capture session's external anchor",
       icon: <IconLayers className="w-4 h-4 text-[color:var(--muted)]" />,
-      action: () => { navigate("/dashboard/sessions"); onClose(); },
+      action: () => {
+        navigate("/dashboard/sessions");
+        onClose();
+      },
     },
     {
       id: "nav-receipts",
@@ -72,7 +90,10 @@ export function CommandPalette({
       title: "Receipts",
       subtitle: "Fetch a sealed inclusion proof by event ID",
       icon: <IconShieldCheck className="w-4 h-4 text-[color:var(--muted)]" />,
-      action: () => { navigate("/dashboard/receipts"); onClose(); },
+      action: () => {
+        navigate("/dashboard/receipts");
+        onClose();
+      },
     },
     {
       id: "nav-verify",
@@ -80,7 +101,10 @@ export function CommandPalette({
       title: "Verify Evidence",
       subtitle: "Independent receipt and proof validator",
       icon: <IconShieldCheck className="w-4 h-4 text-[color:var(--color-verified)]" />,
-      action: () => { navigate("/dashboard/verify"); onClose(); },
+      action: () => {
+        navigate("/dashboard/verify");
+        onClose();
+      },
     },
     {
       id: "nav-settings",
@@ -88,7 +112,10 @@ export function CommandPalette({
       title: "Settings",
       subtitle: "Account profile, branding and notary key",
       icon: <IconSettings className="w-4 h-4 text-[color:var(--muted)]" />,
-      action: () => { navigate("/dashboard/settings"); onClose(); },
+      action: () => {
+        navigate("/dashboard/settings");
+        onClose();
+      },
     },
   ];
 
@@ -96,15 +123,15 @@ export function CommandPalette({
     (i) =>
       i.title.toLowerCase().includes(query.toLowerCase()) ||
       (i.subtitle && i.subtitle.toLowerCase().includes(query.toLowerCase())) ||
-      i.category.toLowerCase().includes(query.toLowerCase())
+      i.category.toLowerCase().includes(query.toLowerCase()),
   );
 
   const getFocusable = useCallback(() => {
     if (!dialogRef.current) return [];
     return Array.from(
       dialogRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
     ).filter((el) => !el.hasAttribute("disabled") && el.tabIndex >= 0);
   }, []);
 
@@ -209,7 +236,11 @@ export function CommandPalette({
           className="max-h-80 overflow-y-auto p-2 space-y-1"
         >
           {filtered.length === 0 ? (
-            <div className="py-8 text-center text-xs text-[color:var(--muted)] font-mono" role="status" aria-live="polite">
+            <div
+              className="py-8 text-center text-xs text-[color:var(--muted)] font-mono"
+              role="status"
+              aria-live="polite"
+            >
               No matching records or commands found.
             </div>
           ) : (
@@ -224,7 +255,9 @@ export function CommandPalette({
                   onClick={item.action}
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`w-full text-left px-3 py-2.5 rounded-babit flex items-center justify-between transition-colors cursor-pointer ${
-                    isSelected ? "bg-[var(--secondary)] text-[color:var(--fg)]" : "text-[color:var(--fg)] hover:bg-[var(--secondary)]"
+                    isSelected
+                      ? "bg-[var(--secondary)] text-[color:var(--fg)]"
+                      : "text-[color:var(--fg)] hover:bg-[var(--secondary)]"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -234,7 +267,9 @@ export function CommandPalette({
                     <div>
                       <div className="text-[13px] font-medium leading-snug">{item.title}</div>
                       {item.subtitle && (
-                        <div className="text-[11px] text-[color:var(--muted)] leading-tight">{item.subtitle}</div>
+                        <div className="text-[11px] text-[color:var(--muted)] leading-tight">
+                          {item.subtitle}
+                        </div>
                       )}
                     </div>
                   </div>

@@ -5,15 +5,14 @@ export function FinalCTA() {
   const { navigate } = useRouter();
 
   return (
-    <section
-      className="dark-section relative overflow-hidden section-y-lg"
-    >
+    <section className="dark-section relative overflow-hidden section-y-lg">
       {/* Layered background */}
       <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--brand-accent) 8%, transparent), transparent 70%)",
+          background:
+            "radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--brand-accent) 8%, transparent), transparent 70%)",
         }}
       />
 
@@ -26,8 +25,11 @@ export function FinalCTA() {
             Know what your agents did, and prove it.
           </h2>
 
-          <p className="type-lead mt-6 max-w-xl mx-auto" style={{ color: "var(--dark-section-muted)" }}>
-            Record what your agents do, tie it to who allowed it, and let anyone verify it.
+          <p
+            className="type-lead mt-6 max-w-xl mx-auto"
+            style={{ color: "var(--dark-section-muted)" }}
+          >
+            Bind agent actions to who authorized them. Cryptographically signed, independently auditable.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -36,14 +38,27 @@ export function FinalCTA() {
               className="rounded-pill px-5 py-2.5 text-[15px] font-medium transition-opacity cursor-pointer hover:opacity-90"
               style={{ backgroundColor: "var(--dark-section-fg)", color: "var(--dark-section-bg)" }}
             >
-              Start recording actions
+              Get started free
+            </button>
+            <button
+              onClick={() => navigate("/contact")}
+              className="rounded-pill px-5 py-2.5 text-[15px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5"
+              style={{
+                color: "var(--dark-section-fg)",
+                border: "1px solid var(--dark-section-border)",
+              }}
+            >
+              <span>Talk to us</span>
             </button>
             <a
               href={docsUrl}
               target="_blank"
               rel="noreferrer"
               className="rounded-pill px-5 py-2.5 text-[15px] font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5"
-              style={{ color: "var(--dark-section-fg)", border: "1px solid var(--dark-section-border)" }}
+              style={{
+                color: "var(--dark-section-fg)",
+                border: "1px solid var(--dark-section-border)",
+              }}
             >
               <span>Read the docs</span>
               <span style={{ color: "var(--dark-section-muted)" }}>↗</span>

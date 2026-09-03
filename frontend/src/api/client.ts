@@ -3,7 +3,6 @@ import type { paths } from "./schema";
 
 const apiKey = import.meta.env.VITE_API_KEY as string | undefined;
 
-
 let authToken: string | null = null;
 
 export function setAuthToken(token: string | null) {

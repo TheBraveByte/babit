@@ -29,11 +29,7 @@ export function RouterProvider({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
   };
 
-  return (
-    <RouterContext.Provider value={{ path, navigate }}>
-      {children}
-    </RouterContext.Provider>
-  );
+  return <RouterContext.Provider value={{ path, navigate }}>{children}</RouterContext.Provider>;
 }
 
 export function useRouter() {

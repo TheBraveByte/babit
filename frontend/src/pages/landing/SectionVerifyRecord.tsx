@@ -25,7 +25,8 @@ export function SectionVerifyRecord() {
           sig: false,
           chain: false,
           auth: true,
-          error: "The amount was changed, so the fingerprint no longer matches and babit's signature no longer fits. The receipt is rejected.",
+          error:
+            "The amount was changed, so the fingerprint no longer matches and babit's signature no longer fits. The receipt is rejected.",
         });
       } else {
         setVerifiedResult({
@@ -43,7 +44,7 @@ export function SectionVerifyRecord() {
       <SectionHeader
         eyebrow="Verification"
         align="center"
-        title="Don't trust us. Verify it yourself."
+        title="Independently auditable."
         lead="Try changing this receipt, then run the check."
       />
 
@@ -115,7 +116,9 @@ export function SectionVerifyRecord() {
                     <div
                       className="px-2 py-0.5 rounded-babit-sm font-mono text-[9px]"
                       style={{
-                        backgroundColor: leaf.tampered ? "var(--color-failed-bg)" : "var(--secondary)",
+                        backgroundColor: leaf.tampered
+                          ? "var(--color-failed-bg)"
+                          : "var(--secondary)",
                         border: `1px solid ${leaf.tampered ? "var(--color-failed-border)" : "var(--border)"}`,
                         color: leaf.tampered ? "var(--color-failed)" : "var(--muted)",
                       }}
@@ -126,9 +129,13 @@ export function SectionVerifyRecord() {
                       {leaf.label}
                     </span>
                     {leaf.tampered ? (
-                      <span style={{ color: "var(--color-failed)" }}><IconXCircle className="w-3 h-3" /></span>
+                      <span style={{ color: "var(--color-failed)" }}>
+                        <IconXCircle className="w-3 h-3" />
+                      </span>
                     ) : (
-                      <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3 h-3" /></span>
+                      <span style={{ color: "var(--color-verified)" }}>
+                        <IconCheck className="w-3 h-3" />
+                      </span>
                     )}
                   </div>
                 ))}
@@ -147,7 +154,9 @@ export function SectionVerifyRecord() {
             >
               <div>
                 <span className="type-eyebrow block">The receipt</span>
-                <span className="font-mono text-sm mt-1 block" style={{ color: "var(--fg)" }}>rcpt_BAL_778812</span>
+                <span className="font-mono text-sm mt-1 block" style={{ color: "var(--fg)" }}>
+                  rcpt_BAL_778812
+                </span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -182,9 +191,27 @@ export function SectionVerifyRecord() {
             {/* Verification checks */}
             <div className="space-y-3 text-sm">
               {[
-                { title: "babit's signature", note: "matches babit's public key", ok: verifiedResult?.sig, okLabel: "Valid", badLabel: "Doesn't match" },
-                { title: "The record is unchanged", note: "nothing added or edited", ok: verifiedResult?.chain, okLabel: "Intact", badLabel: "Changed" },
-                { title: "Stayed within permission", note: "inside what Alice allowed", ok: verifiedResult?.auth, okLabel: "In bounds", badLabel: "Out of bounds" },
+                {
+                  title: "babit's signature",
+                  note: "matches babit's public key",
+                  ok: verifiedResult?.sig,
+                  okLabel: "Valid",
+                  badLabel: "Doesn't match",
+                },
+                {
+                  title: "The record is unchanged",
+                  note: "nothing added or edited",
+                  ok: verifiedResult?.chain,
+                  okLabel: "Intact",
+                  badLabel: "Changed",
+                },
+                {
+                  title: "Stayed within permission",
+                  note: "inside what Alice allowed",
+                  ok: verifiedResult?.auth,
+                  okLabel: "In bounds",
+                  badLabel: "Out of bounds",
+                },
               ].map((check) => (
                 <div
                   key={check.title}
@@ -192,15 +219,25 @@ export function SectionVerifyRecord() {
                   style={{ backgroundColor: "var(--secondary)", border: "1px solid var(--border)" }}
                 >
                   <div>
-                    <span className="font-medium" style={{ color: "var(--fg)" }}>{check.title}</span>
-                    <span className="text-[12px] ml-2" style={{ color: "var(--muted)" }}>({check.note})</span>
+                    <span className="font-medium" style={{ color: "var(--fg)" }}>
+                      {check.title}
+                    </span>
+                    <span className="text-[12px] ml-2" style={{ color: "var(--muted)" }}>
+                      ({check.note})
+                    </span>
                   </div>
                   {verifiedResult && (
                     <span
                       className="font-semibold text-[13px] inline-flex items-center gap-1 shrink-0"
                       style={{ color: check.ok ? "var(--color-verified)" : "var(--color-failed)" }}
                     >
-                      {check.ok ? <><IconCheck className="w-3.5 h-3.5" /> {check.okLabel}</> : check.badLabel}
+                      {check.ok ? (
+                        <>
+                          <IconCheck className="w-3.5 h-3.5" /> {check.okLabel}
+                        </>
+                      ) : (
+                        check.badLabel
+                      )}
                     </span>
                   )}
                 </div>

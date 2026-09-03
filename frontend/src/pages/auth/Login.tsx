@@ -63,7 +63,11 @@ export function Login() {
         <Field
           label="Password"
           hint={
-            <Link to="/forgot-password" className="transition-colors hover:opacity-80" style={{ color: "var(--muted)" }}>
+            <Link
+              to="/forgot-password"
+              className="transition-colors hover:opacity-80"
+              style={{ color: "var(--muted)" }}
+            >
               Forgot password?
             </Link>
           }

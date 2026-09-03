@@ -25,7 +25,9 @@ export function Signup() {
   const { signup } = useAuth();
   const { navigate } = useRouter();
 
-  const [accountType, setAccountType] = useState<"ACCOUNT_TYPE_PERSONAL" | "ACCOUNT_TYPE_ORGANIZATION">("ACCOUNT_TYPE_ORGANIZATION");
+  const [accountType, setAccountType] = useState<
+    "ACCOUNT_TYPE_PERSONAL" | "ACCOUNT_TYPE_ORGANIZATION"
+  >("ACCOUNT_TYPE_ORGANIZATION");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -40,7 +42,10 @@ export function Signup() {
   const handleEmailBlur = () => {
     if (email.includes("@") && !orgDomain) {
       const parts = email.split("@");
-      if (parts[1] && !["gmail.com", "yahoo.com", "hotmail.com", "outlook.com"].includes(parts[1])) {
+      if (
+        parts[1] &&
+        !["gmail.com", "yahoo.com", "hotmail.com", "outlook.com"].includes(parts[1])
+      ) {
         setOrgDomain(parts[1]);
         if (!orgName) {
           const compName = parts[1].split(".")[0];
@@ -101,7 +106,9 @@ export function Signup() {
 
         {/* Account Type Selector */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--fg)" }}>Account structure</label>
+          <label className="text-xs font-medium" style={{ color: "var(--fg)" }}>
+            Account structure
+          </label>
           <div className="grid grid-cols-2 gap-2.5">
             <AccountTypeCard
               selected={accountType === "ACCOUNT_TYPE_ORGANIZATION"}
@@ -144,7 +151,13 @@ export function Signup() {
 
         <Field
           label="Password"
-          hint={password.length > 0 ? (password.length >= 8 ? "Strong password" : "Min 8 chars") : undefined}
+          hint={
+            password.length > 0
+              ? password.length >= 8
+                ? "Strong password"
+                : "Min 8 chars"
+              : undefined
+          }
         >
           <TextInput
             type="password"
@@ -157,10 +170,17 @@ export function Signup() {
         </Field>
 
         {accountType === "ACCOUNT_TYPE_ORGANIZATION" && (
-          <div className="pt-2 space-y-3 animate-fade-in" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+          <div
+            className="pt-2 space-y-3 animate-fade-in"
+            style={{ borderTop: "1px solid var(--border-subtle)" }}
+          >
             <div
               className="flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1.5 rounded-md"
-              style={{ color: "var(--brand-accent)", backgroundColor: "var(--brand-accent-subtle)", border: "1px solid var(--brand-accent-border)" }}
+              style={{
+                color: "var(--brand-accent)",
+                backgroundColor: "var(--brand-accent-subtle)",
+                border: "1px solid var(--brand-accent-border)",
+              }}
             >
               <IconSparkles className="w-3.5 h-3.5 shrink-0" />
               <span>We'll pull your logo and colours from your domain to brand the console.</span>
@@ -187,10 +207,7 @@ export function Signup() {
             </div>
 
             <Field label="Industry sector">
-              <Select
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-              >
+              <Select value={industry} onChange={(e) => setIndustry(e.target.value)}>
                 {INDUSTRIES.map((ind) => (
                   <option key={ind} value={ind}>
                     {ind}
@@ -236,7 +253,11 @@ function AccountTypeCard({
       className="p-3 rounded-babit border text-left flex flex-col gap-1 transition-all cursor-pointer"
       style={
         selected
-          ? { borderColor: "var(--brand-accent)", backgroundColor: "var(--brand-accent-subtle)", color: "var(--fg)" }
+          ? {
+              borderColor: "var(--brand-accent)",
+              backgroundColor: "var(--brand-accent-subtle)",
+              color: "var(--fg)",
+            }
           : { borderColor: "var(--border)", backgroundColor: "var(--surface)", color: "var(--fg)" }
       }
     >
@@ -244,7 +265,10 @@ function AccountTypeCard({
         {icon}
         <span className="text-xs font-semibold">{label}</span>
       </div>
-      <span className="text-[11px] leading-tight" style={{ color: selected ? "var(--fg)" : "var(--muted)", opacity: selected ? 0.8 : 1 }}>
+      <span
+        className="text-[11px] leading-tight"
+        style={{ color: selected ? "var(--fg)" : "var(--muted)", opacity: selected ? 0.8 : 1 }}
+      >
         {description}
       </span>
     </button>

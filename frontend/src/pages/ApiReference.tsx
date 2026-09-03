@@ -11,21 +11,33 @@ export function ApiReference() {
       setScalar(() => m.ApiReferenceReact);
       import("@scalar/api-reference-react/style.css");
     });
-    fetch("/openapi.v3.json").then((r) => r.json()).then(setSpec).catch(() => {
-      import("../../openapi.v3.json").then((m) => setSpec(m.default as Record<string, unknown>));
-    });
+    fetch("/openapi.v3.json")
+      .then((r) => r.json())
+      .then(setSpec)
+      .catch(() => {
+        import("../../openapi.v3.json").then((m) => setSpec(m.default as Record<string, unknown>));
+      });
   }, []);
 
   return (
-    <div id="main-content" tabIndex={-1} className="min-h-screen" style={{ backgroundColor: "var(--bg)" }}>
+    <div
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--bg)" }}
+    >
       <header
         className="h-14 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50 glass-subtle"
         style={{ borderBottom: "1px solid var(--border)" }}
       >
         <Link to="/" className="flex items-center gap-2.5">
           <BabitLogo className="w-5 h-5 text-[color:var(--fg)]" />
-          <span className="font-semibold text-[15px] tracking-tight font-mono text-[color:var(--fg)]">babit</span>
-          <span className="text-[13px] font-mono" style={{ color: "var(--muted)" }}>/ API</span>
+          <span className="font-semibold text-[15px] tracking-tight font-mono text-[color:var(--fg)]">
+            babit
+          </span>
+          <span className="text-[13px] font-mono" style={{ color: "var(--muted)" }}>
+            / API
+          </span>
         </Link>
         <Link
           to="/"

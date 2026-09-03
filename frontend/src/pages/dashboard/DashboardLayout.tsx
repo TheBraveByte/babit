@@ -1,5 +1,21 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { BabitLogo, IconActivity, IconShieldCheck, IconGitBranch, IconCpu, IconSettings, IconLogOut, IconFileText, IconSearch, IconLayers, IconBarChart, IconFolder, IconKey, IconUser, IconChevronRight } from "@/lib/icons";
+import {
+  BabitLogo,
+  IconActivity,
+  IconShieldCheck,
+  IconGitBranch,
+  IconCpu,
+  IconSettings,
+  IconLogOut,
+  IconFileText,
+  IconSearch,
+  IconLayers,
+  IconBarChart,
+  IconFolder,
+  IconKey,
+  IconUser,
+  IconChevronRight,
+} from "@/lib/icons";
 import { useAuth } from "@/lib/auth";
 import { useRouter, Link } from "@/lib/router";
 import { CommandPalette } from "@/lib/CommandPalette";
@@ -87,7 +103,9 @@ export function DashboardLayout({
   const orgName =
     branding?.company_name ||
     user?.org_name ||
-    (user?.account_type === "ACCOUNT_TYPE_ORGANIZATION" ? "Organization" : user?.email?.split("@")[0] || "babit");
+    (user?.account_type === "ACCOUNT_TYPE_ORGANIZATION"
+      ? "Organization"
+      : user?.email?.split("@")[0] || "babit");
   const logoUrl = branding?.logo_url;
 
   const allNav = [...mainNav, ...devNav, ...secondaryNav];
@@ -103,7 +121,9 @@ export function DashboardLayout({
         onError={() => setAvatarError(true)}
       />
     ) : (
-      <div className={`${sizeClass} rounded-full flex items-center justify-center shrink-0 bg-[var(--secondary)] border border-[color:var(--border)] text-[color:var(--fg)]`}>
+      <div
+        className={`${sizeClass} rounded-full flex items-center justify-center shrink-0 bg-[var(--secondary)] border border-[color:var(--border)] text-[color:var(--fg)]`}
+      >
         {avatarInitial ? (
           <span className="font-mono text-xs font-bold">{avatarInitial}</span>
         ) : (
@@ -121,7 +141,10 @@ export function DashboardLayout({
       <CommandPalette open={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col justify-between min-h-screen sticky top-0 h-screen overflow-y-auto overflow-x-hidden" style={{ backgroundColor: "var(--surface)", borderRight: "1px solid var(--border)" }}>
+      <aside
+        className="hidden md:flex flex-col justify-between min-h-screen sticky top-0 h-screen overflow-y-auto overflow-x-hidden"
+        style={{ backgroundColor: "var(--surface)", borderRight: "1px solid var(--border)" }}
+      >
         <div>
           {/* Brand Header + collapse toggle */}
           {collapsed ? (
@@ -213,7 +236,11 @@ export function DashboardLayout({
               <nav
                 key={gi}
                 className="space-y-0.5"
-                style={gi > 0 ? { borderTop: "1px solid var(--border-subtle)", paddingTop: "0.75rem" } : undefined}
+                style={
+                  gi > 0
+                    ? { borderTop: "1px solid var(--border-subtle)", paddingTop: "0.75rem" }
+                    : undefined
+                }
               >
                 {group.map((n) => {
                   const isActive = activeTab === n.key;
@@ -226,15 +253,19 @@ export function DashboardLayout({
                       }}
                       title={collapsed ? n.label : undefined}
                       className={`w-full flex items-center rounded-babit-sm text-[13px] font-medium transition-all cursor-pointer ${collapsed ? "justify-center px-0 py-2" : "gap-2.5 px-2.5 py-1.5"}`}
-                      style={isActive ? {
-                        backgroundColor: "var(--brand-accent-subtle)",
-                        color: "var(--brand-accent)",
-                        fontWeight: 600,
-                        border: "1px solid var(--brand-accent-border)",
-                      } : {
-                        color: "var(--muted)",
-                        border: "1px solid transparent",
-                      }}
+                      style={
+                        isActive
+                          ? {
+                              backgroundColor: "var(--brand-accent-subtle)",
+                              color: "var(--brand-accent)",
+                              fontWeight: 600,
+                              border: "1px solid var(--brand-accent-border)",
+                            }
+                          : {
+                              color: "var(--muted)",
+                              border: "1px solid transparent",
+                            }
+                      }
                     >
                       <span>{n.icon}</span>
                       {!collapsed && <span>{n.label}</span>}
@@ -311,7 +342,13 @@ export function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex flex-col min-w-0">
         {/* Header Bar */}
-        <header className="h-14 px-6 border-b border-[color:var(--border)] sticky top-0 z-30 flex items-center justify-between gap-4" style={{ backgroundColor: "color-mix(in srgb, var(--surface) 80%, transparent)", backdropFilter: "blur(12px)" }}>
+        <header
+          className="h-14 px-6 border-b border-[color:var(--border)] sticky top-0 z-30 flex items-center justify-between gap-4"
+          style={{
+            backgroundColor: "color-mix(in srgb, var(--surface) 80%, transparent)",
+            backdropFilter: "blur(12px)",
+          }}
+        >
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
@@ -321,12 +358,20 @@ export function DashboardLayout({
               aria-controls="mobile-nav-drawer"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
 
             {/* Breadcrumb: workspace then current page */}
-            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 font-mono text-xs min-w-0">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex items-center gap-1.5 font-mono text-xs min-w-0"
+            >
               <span className="text-[color:var(--muted)] truncate">{orgName}</span>
               <IconChevronRight className="w-3 h-3 text-[color:var(--muted)] shrink-0" />
               <span className="font-medium text-[color:var(--fg)] truncate">{currentLabel}</span>
@@ -347,7 +392,10 @@ export function DashboardLayout({
 
         {/* Mobile Navigation Drawer */}
         {mobileDrawerOpen && (
-          <div id="mobile-nav-drawer" className="md:hidden bg-[var(--surface)] border-b border-[color:var(--border)] p-4 space-y-2 animate-fade-in shadow-lg">
+          <div
+            id="mobile-nav-drawer"
+            className="md:hidden bg-[var(--surface)] border-b border-[color:var(--border)] p-4 space-y-2 animate-fade-in shadow-lg"
+          >
             <div className="grid grid-cols-2 gap-2">
               {mainNav.concat(devNav, secondaryNav).map((n) => (
                 <button
@@ -358,7 +406,9 @@ export function DashboardLayout({
                     setMobileDrawerOpen(false);
                   }}
                   className={`p-2.5 rounded text-xs text-left font-medium flex items-center gap-2 ${
-                    activeTab === n.key ? "bg-[var(--fg)] text-[var(--surface)]" : "bg-[var(--secondary)] text-[color:var(--fg)]"
+                    activeTab === n.key
+                      ? "bg-[var(--fg)] text-[var(--surface)]"
+                      : "bg-[var(--secondary)] text-[color:var(--fg)]"
                   }`}
                 >
                   {n.icon}
@@ -370,9 +420,7 @@ export function DashboardLayout({
         )}
 
         {/* Inner Content Page */}
-        <main className="p-6 sm:p-8 max-w-6xl w-full mx-auto space-y-6">
-          {children}
-        </main>
+        <main className="p-6 sm:p-8 max-w-6xl w-full mx-auto space-y-6">{children}</main>
       </div>
     </div>
   );

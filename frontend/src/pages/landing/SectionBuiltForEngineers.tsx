@@ -139,7 +139,13 @@ export function SectionBuiltForEngineers() {
                       color: activeLang === lang ? "var(--fg)" : "var(--muted)",
                     }}
                   >
-                    {lang === "curl" ? "cURL" : lang === "typescript" ? "TypeScript" : lang === "python" ? "Python" : "Go"}
+                    {lang === "curl"
+                      ? "cURL"
+                      : lang === "typescript"
+                        ? "TypeScript"
+                        : lang === "python"
+                          ? "Python"
+                          : "Go"}
                   </button>
                 ))}
               </div>
@@ -150,13 +156,22 @@ export function SectionBuiltForEngineers() {
                 className="inline-flex items-center gap-1.5 px-3 py-1 rounded-babit-sm text-xs font-mono transition-colors cursor-pointer"
                 style={{ color: "var(--muted)" }}
               >
-                {copied ? <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-3.5 h-3.5" /></span> : <IconCopy className="w-3.5 h-3.5" />}
+                {copied ? (
+                  <span style={{ color: "var(--color-verified)" }}>
+                    <IconCheck className="w-3.5 h-3.5" />
+                  </span>
+                ) : (
+                  <IconCopy className="w-3.5 h-3.5" />
+                )}
                 <span>{copied ? "Copied" : "Copy"}</span>
               </button>
             </div>
 
             {/* Code content */}
-            <div className="p-6 overflow-x-auto font-mono text-xs leading-relaxed" style={{ color: "var(--fg)" }}>
+            <div
+              className="p-6 overflow-x-auto font-mono text-xs leading-relaxed"
+              style={{ color: "var(--fg)" }}
+            >
               <pre tabIndex={0} className="outline-none">
                 <code>{CODE_EXAMPLES[activeLang]}</code>
               </pre>
@@ -171,7 +186,7 @@ export function SectionBuiltForEngineers() {
                 color: "var(--muted)",
               }}
             >
-              <span>POST /v1/sessions/{'{session_id}'}/actions</span>
+              <span>POST /v1/sessions/{"{session_id}"}/actions</span>
               <span>REST + gRPC · OpenAPI</span>
             </div>
           </div>
@@ -187,7 +202,8 @@ export function SectionBuiltForEngineers() {
               Every endpoint, documented.
             </h3>
             <p className="type-body">
-              Auth, grants, sessions, events, and verification, with request and response examples you can run.
+              Auth, grants, sessions, events, and verification, with request and response examples
+              you can run.
             </p>
           </div>
           <div className="mt-auto">

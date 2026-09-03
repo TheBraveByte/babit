@@ -41,7 +41,8 @@ export async function computeLiveReceipt(params: {
   const timestamp = new Date().toISOString();
   const actionId = `act_${Math.random().toString(36).substring(2, 10)}`;
   const receiptId = `rcpt_BAL_${Math.floor(100000 + Math.random() * 900000)}`;
-  const prevHash = params.prevHash || "0x44d019ac77102948192ba4810294810244d019ac77102948192ba48102948102";
+  const prevHash =
+    params.prevHash || "0x44d019ac77102948192ba4810294810244d019ac77102948192ba48102948102";
 
   const payload = params.customPayload || {
     action: params.actionName,

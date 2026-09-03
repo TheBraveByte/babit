@@ -19,10 +19,12 @@ export function SealingStream({ className = "" }: { className?: string }) {
     if (!ctx) return;
 
     const reduced = prefersReducedMotion();
-    const getTheme = () => document.documentElement.classList.contains("dark") ? "dark" : "light";
+    const getTheme = () => (document.documentElement.classList.contains("dark") ? "dark" : "light");
     let theme = getTheme();
 
-    let w = 0, h = 0, dpr = 1;
+    let w = 0,
+      h = 0,
+      dpr = 1;
 
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -37,7 +39,9 @@ export function SealingStream({ className = "" }: { className?: string }) {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    const mo = new MutationObserver(() => { theme = getTheme(); });
+    const mo = new MutationObserver(() => {
+      theme = getTheme();
+    });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
     // ── Actions that flow in ────────────────────────────────────────

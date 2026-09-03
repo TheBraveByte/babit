@@ -77,7 +77,7 @@ export function EvidenceLedger({ className = "" }: { className?: string }) {
       for (let i = 0; i < count; i++) {
         const x = i * NODE_GAP - offset;
         const idx = baseIndex + i;
-        const nodeT = reduced ? 1 : Math.min(1, ((t * speed) - (idx * NODE_GAP - width)) / 60);
+        const nodeT = reduced ? 1 : Math.min(1, (t * speed - (idx * NODE_GAP - width)) / 60);
         // Seal pulse: strongest when the node is fresh (near right edge), fading left.
         const life = Math.max(0, Math.min(1, x / width));
         const sealing = !reduced && life > 0.82;
@@ -140,7 +140,10 @@ export function EvidenceLedger({ className = "" }: { className?: string }) {
     raf = requestAnimationFrame(draw);
     // In reduced-motion mode the rAF loop stops after one frame, but a resize
     // clears the bitmap — repaint the static frame so the canvas never goes blank.
-    const ro = new ResizeObserver(() => { resize(); if (reduced) draw(0); });
+    const ro = new ResizeObserver(() => {
+      resize();
+      if (reduced) draw(0);
+    });
     ro.observe(canvas);
 
     return () => {
@@ -152,7 +155,14 @@ export function EvidenceLedger({ className = "" }: { className?: string }) {
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }
 
-function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.arcTo(x + w, y, x + w, y + h, r);

@@ -4,1635 +4,1642 @@
  */
 
 export interface paths {
-    "/v1/analytics/overview": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Aggregate activity across the ledger (events, sessions, grants) */
-        get: operations["AnalyticsService_GetOverview"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/v1/analytics/overview": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Authenticate and return a session token */
-        post: operations["AuthService_Login"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Aggregate activity across the ledger (events, sessions, grants) */
+    get: operations["AnalyticsService_GetOverview"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/login": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/auth/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Return the current user and organization branding */
-        get: operations["AuthService_Me"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Update your profile details */
-        patch: operations["AuthService_UpdateProfile"];
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Authenticate and return a session token */
+    post: operations["AuthService_Login"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/auth/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/auth/signup": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create an account and return a session token */
-        post: operations["AuthService_Signup"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Return the current user and organization branding */
+    get: operations["AuthService_Me"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update your profile details */
+    patch: operations["AuthService_UpdateProfile"];
+    trace?: never;
+  };
+  "/v1/auth/signup": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List recent action events for the authenticated user */
-        get: operations["LedgerService_ListEvents"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Create an account and return a session token */
+    post: operations["AuthService_Signup"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/events": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/events/{event_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Read a sealed action event */
-        get: operations["LedgerService_GetEvent"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** List recent action events for the authenticated user */
+    get: operations["LedgerService_ListEvents"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/events/{event_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/events/{event_id}:proof": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Build an offline-verifiable inclusion proof */
-        get: operations["LedgerService_GetInclusionProof"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Read a sealed action event */
+    get: operations["LedgerService_GetEvent"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/events/{event_id}:proof": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/grants": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List recent grants for the authenticated user */
-        get: operations["DelegationService_ListGrants"];
-        put?: never;
-        /** Delegate scoped authority to an agent or sub-agent */
-        post: operations["DelegationService_Delegate"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Build an offline-verifiable inclusion proof */
+    get: operations["LedgerService_GetInclusionProof"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/grants": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/grants/{grant_id}/revoke": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Revoke a grant and its descendants */
-        post: operations["DelegationService_Revoke"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** List recent grants for the authenticated user */
+    get: operations["DelegationService_ListGrants"];
+    put?: never;
+    /** Delegate scoped authority to an agent or sub-agent */
+    post: operations["DelegationService_Delegate"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/grants/{grant_id}/revoke": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/grants/{grant_id}:verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Verify a delegation chain back to its root */
-        get: operations["DelegationService_VerifyChain"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Revoke a grant and its descendants */
+    post: operations["DelegationService_Revoke"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/grants/{grant_id}:verify": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/grants:root": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Issue a root grant for a human principal */
-        post: operations["DelegationService_IssueRootGrant"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Verify a delegation chain back to its root */
+    get: operations["DelegationService_VerifyChain"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/grants:root": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/keys/{key_id}/revoke": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Revoke an API key */
-        post: operations["ApiKeyService_RevokeApiKey"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Issue a root grant for a human principal */
+    post: operations["DelegationService_IssueRootGrant"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/keys/{key_id}/revoke": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/notary/public-key": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Fetch the notary public key for offline verification */
-        get: operations["NotaryService_GetPublicKey"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Revoke an API key */
+    post: operations["ApiKeyService_RevokeApiKey"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/notary/public-key": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/projects": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List your projects */
-        get: operations["ProjectService_ListProjects"];
-        put?: never;
-        /** Create a project to group API keys */
-        post: operations["ProjectService_CreateProject"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Fetch the notary public key for offline verification */
+    get: operations["NotaryService_GetPublicKey"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/projects": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/projects/{project_id}/keys": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List API keys in a project (masked) */
-        get: operations["ApiKeyService_ListApiKeys"];
-        put?: never;
-        /** Create an API key in a project (the secret is returned once) */
-        post: operations["ApiKeyService_CreateApiKey"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** List your projects */
+    get: operations["ProjectService_ListProjects"];
+    put?: never;
+    /** Create a project to group API keys */
+    post: operations["ProjectService_CreateProject"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/projects/{project_id}/keys": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/proofs:verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Verify chain, signature, anchor and authority of a proof */
-        post: operations["VerifyService_VerifyProof"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** List API keys in a project (masked) */
+    get: operations["ApiKeyService_ListApiKeys"];
+    put?: never;
+    /** Create an API key in a project (the secret is returned once) */
+    post: operations["ApiKeyService_CreateApiKey"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/proofs:verify": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/sessions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List recent capture sessions for the authenticated user */
-        get: operations["CaptureService_ListSessions"];
-        put?: never;
-        /** Open a capture session bound to a root grant */
-        post: operations["CaptureService_BeginSession"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Verify chain, signature, anchor and authority of a proof */
+    post: operations["VerifyService_VerifyProof"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/sessions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/sessions/{session_id}/actions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Record and notarize one executed action */
-        post: operations["CaptureService_RecordAction"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** List recent capture sessions for the authenticated user */
+    get: operations["CaptureService_ListSessions"];
+    put?: never;
+    /** Open a capture session bound to a root grant */
+    post: operations["CaptureService_BeginSession"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/sessions/{session_id}/actions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/sessions/{session_id}/anchor": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Fetch the external anchor for a session */
-        get: operations["NotaryService_GetAnchor"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Record and notarize one executed action */
+    post: operations["CaptureService_RecordAction"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/sessions/{session_id}/anchor": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/sessions/{session_id}/end": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Close a capture session */
-        post: operations["CaptureService_EndSession"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Fetch the external anchor for a session */
+    get: operations["NotaryService_GetAnchor"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/sessions/{session_id}/end": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/v1/sessions/{session_id}:replay": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Stream a deterministic session replay */
-        get: operations["ReplayService_GetReplay"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Close a capture session */
+    post: operations["CaptureService_EndSession"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/sessions/{session_id}:replay": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    /** Stream a deterministic session replay */
+    get: operations["ReplayService_GetReplay"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        /**
-         * @default KIND_UNSPECIFIED
-         * @enum {string}
-         */
-        AnchorKind: "KIND_UNSPECIFIED" | "KIND_RFC3161_TSA" | "KIND_TRANSPARENCY_LOG" | "KIND_PUBLIC_CHAIN";
-        ApiKeyServiceCreateApiKeyBody: {
-            name?: string;
-        };
-        ApiKeyServiceRevokeApiKeyBody: Record<string, never>;
-        CaptureServiceEndSessionBody: Record<string, never>;
-        /**
-         * @example {
-         *       "grant_id": "BAL-417849",
-         *       "action_type": "browser.click",
-         *       "resource": "https://shop.example.com/cart",
-         *       "recording_ref": "slr://session/demo"
-         *     }
-         */
-        CaptureServiceRecordActionBody: {
-            grant_id?: string;
-            action_type?: string;
-            /** Format: byte */
-            action_payload?: string;
-            /** Format: byte */
-            pre_state_hash?: string;
-            /** Format: byte */
-            post_state_hash?: string;
-            recording_ref?: string;
-            resource?: string;
-            /** Format: int64 */
-            value_cents?: string;
-        };
-        DelegationServiceRevokeBody: {
-            reason?: string;
-        };
-        protobufAny: {
-            "@type"?: string;
-        } & {
-            [key: string]: unknown;
-        };
-        rpcStatus: {
-            /** Format: int32 */
-            code?: number;
-            message?: string;
-            details?: components["schemas"]["protobufAny"][];
-        };
-        /**
-         * @default ACCOUNT_TYPE_UNSPECIFIED
-         * @enum {string}
-         */
-        v1AccountType: "ACCOUNT_TYPE_UNSPECIFIED" | "ACCOUNT_TYPE_PERSONAL" | "ACCOUNT_TYPE_ORGANIZATION";
-        /**
-         * @example {
-         *       "event_id": "BAL-778812",
-         *       "session_id": "BAL-4a1055",
-         *       "sequence": 7,
-         *       "surface": "SURFACE_BROWSER",
-         *       "action_type": "browser.click",
-         *       "grant_id": "BAL-417849",
-         *       "recording_ref": "slr://session/demo",
-         *       "occurred_at": "2026-09-01T12:03:11Z"
-         *     }
-         */
-        v1ActionEvent: {
-            event_id?: string;
-            session_id?: string;
-            /** Format: int64 */
-            sequence?: string;
-            surface?: components["schemas"]["v1Surface"];
-            action_type?: string;
-            /** Format: byte */
-            action_payload?: string;
-            grant_id?: string;
-            /** Format: byte */
-            pre_state_hash?: string;
-            /** Format: byte */
-            post_state_hash?: string;
-            recording_ref?: string;
-            /** Format: date-time */
-            occurred_at?: string;
-            /** Format: byte */
-            content_hash?: string;
-            /** Format: byte */
-            prev_hash?: string;
-            /** Format: byte */
-            notary_signature?: string;
-        };
-        v1Anchor: {
-            kind?: components["schemas"]["AnchorKind"];
-            /** Format: byte */
-            root?: string;
-            /** Format: byte */
-            anchor_receipt?: string;
-            /** Format: date-time */
-            anchored_at?: string;
-        };
-        v1ApiKey: {
-            id?: string;
-            project_id?: string;
-            name?: string;
-            prefix?: string;
-            last4?: string;
-            revoked?: boolean;
-            /** Format: date-time */
-            created_at?: string;
-        };
-        /**
-         * @example {
-         *       "root_grant_id": "BAL-417849",
-         *       "surface": "SURFACE_BROWSER"
-         *     }
-         */
-        v1BeginSessionRequest: {
-            root_grant_id?: string;
-            surface?: components["schemas"]["v1Surface"];
-        };
-        v1BeginSessionResponse: {
-            session?: components["schemas"]["v1Session"];
-        };
-        v1Branding: {
-            company_name?: string;
-            logo_url?: string;
-            brand_color?: string;
-        };
-        v1CreateApiKeyResponse: {
-            key?: components["schemas"]["v1ApiKey"];
-            secret?: string;
-        };
-        /**
-         * @example {
-         *       "name": "Production"
-         *     }
-         */
-        v1CreateProjectRequest: {
-            name?: string;
-        };
-        v1CreateProjectResponse: {
-            project?: components["schemas"]["v1Project"];
-        };
-        v1DayCount: {
-            date?: string;
-            /** Format: int64 */
-            count?: string;
-        };
-        /**
-         * @example {
-         *       "parent_grant_id": "BAL-417849",
-         *       "subject_id": "agt_shopper",
-         *       "capabilities": [
-         *         "browser.click",
-         *         "browser.type"
-         *       ],
-         *       "scope": {
-         *         "resource_globs": [
-         *           "https://shop.example.com/*"
-         *         ],
-         *         "max_value_cents": 50000,
-         *         "max_depth": 2
-         *       }
-         *     }
-         */
-        v1DelegateRequest: {
-            parent_grant_id?: string;
-            subject_id?: string;
-            capabilities?: string[];
-            scope?: components["schemas"]["v1Scope"];
-        };
-        v1DelegateResponse: {
-            grant?: components["schemas"]["v1Grant"];
-        };
-        v1EndSessionResponse: {
-            session?: components["schemas"]["v1Session"];
-        };
-        v1GetAnchorResponse: {
-            anchor?: components["schemas"]["v1Anchor"];
-        };
-        v1GetEventResponse: {
-            event?: components["schemas"]["v1ActionEvent"];
-        };
-        v1GetInclusionProofResponse: {
-            proof?: components["schemas"]["v1Proof"];
-        };
-        v1GetOverviewResponse: {
-            /** Format: int64 */
-            total_events?: string;
-            /** Format: int64 */
-            total_sessions?: string;
-            /** Format: int64 */
-            total_grants?: string;
-            /** Format: int64 */
-            revoked_grants?: string;
-            by_surface?: components["schemas"]["v1SurfaceCount"][];
-            over_time?: components["schemas"]["v1DayCount"][];
-        };
-        v1GetPublicKeyResponse: {
-            key_id?: string;
-            /** Format: byte */
-            public_key?: string;
-        };
-        v1GetReplayResponse: {
-            event?: components["schemas"]["v1ActionEvent"];
-            /** Format: byte */
-            frame?: string;
-        };
-        /**
-         * @example {
-         *       "grant_id": "BAL-417849",
-         *       "parent_grant_id": "BAL-100200",
-         *       "principal_id": "usr_alice",
-         *       "subject_id": "agt_shopper",
-         *       "capabilities": [
-         *         "browser.click",
-         *         "browser.type"
-         *       ],
-         *       "scope": {
-         *         "resource_globs": [
-         *           "https://shop.example.com/*"
-         *         ],
-         *         "max_value_cents": 50000,
-         *         "max_depth": 2
-         *       },
-         *       "expires_at": "2026-09-01T18:00:00Z"
-         *     }
-         */
-        v1Grant: {
-            grant_id?: string;
-            parent_grant_id?: string;
-            principal_id?: string;
-            subject_id?: string;
-            capabilities?: string[];
-            scope?: components["schemas"]["v1Scope"];
-            /** Format: date-time */
-            expires_at?: string;
-            /** Format: byte */
-            parent_signature?: string;
-        };
-        /**
-         * @example {
-         *       "principal_id": "usr_alice",
-         *       "scope": {
-         *         "max_depth": 3
-         *       }
-         *     }
-         */
-        v1IssueRootGrantRequest: {
-            principal_id?: string;
-            scope?: components["schemas"]["v1Scope"];
-        };
-        v1IssueRootGrantResponse: {
-            grant?: components["schemas"]["v1Grant"];
-        };
-        v1ListApiKeysResponse: {
-            keys?: components["schemas"]["v1ApiKey"][];
-            next_page_token?: string;
-        };
-        v1ListEventsResponse: {
-            events?: components["schemas"]["v1ActionEvent"][];
-            next_page_token?: string;
-        };
-        v1ListGrantsResponse: {
-            grants?: components["schemas"]["v1Grant"][];
-            next_page_token?: string;
-        };
-        v1ListProjectsResponse: {
-            projects?: components["schemas"]["v1Project"][];
-            next_page_token?: string;
-        };
-        v1ListSessionsResponse: {
-            sessions?: components["schemas"]["v1Session"][];
-            next_page_token?: string;
-        };
-        /**
-         * @example {
-         *       "email": "alice@acme.com",
-         *       "password": "correct-horse"
-         *     }
-         */
-        v1LoginRequest: {
-            email?: string;
-            password?: string;
-        };
-        v1LoginResponse: {
-            token?: string;
-            user?: components["schemas"]["v1User"];
-        };
-        v1MeResponse: {
-            user?: components["schemas"]["v1User"];
-            branding?: components["schemas"]["v1Branding"];
-        };
-        v1Project: {
-            id?: string;
-            name?: string;
-            /** Format: int64 */
-            active_keys?: string;
-            /** Format: date-time */
-            created_at?: string;
-        };
-        v1Proof: {
-            event?: components["schemas"]["v1ActionEvent"];
-            merkle_path?: string[];
-            /** Format: byte */
-            merkle_root?: string;
-            anchor?: components["schemas"]["v1Anchor"];
-            delegation_chain?: components["schemas"]["v1Grant"][];
-        };
-        v1RecordActionResponse: {
-            event?: components["schemas"]["v1ActionEvent"];
-        };
-        v1RevokeApiKeyResponse: {
-            revoked?: boolean;
-        };
-        v1RevokeResponse: {
-            revoked?: boolean;
-        };
-        v1Scope: {
-            resource_globs?: string[];
-            /** Format: int64 */
-            max_value_cents?: string;
-            /** Format: int32 */
-            max_depth?: number;
-        };
-        v1Session: {
-            session_id?: string;
-            root_grant_id?: string;
-            surface?: components["schemas"]["v1Surface"];
-            /** Format: date-time */
-            started_at?: string;
-            /** Format: date-time */
-            ended_at?: string;
-            /** Format: int64 */
-            event_count?: string;
-        };
-        /**
-         * @example {
-         *       "email": "alice@acme.com",
-         *       "password": "correct-horse",
-         *       "account_type": "ACCOUNT_TYPE_ORGANIZATION",
-         *       "org_name": "Acme",
-         *       "org_domain": "acme.com",
-         *       "industry": "software"
-         *     }
-         */
-        v1SignupRequest: {
-            email?: string;
-            password?: string;
-            account_type?: components["schemas"]["v1AccountType"];
-            org_name?: string;
-            org_domain?: string;
-            industry?: string;
-        };
-        v1SignupResponse: {
-            token?: string;
-            user?: components["schemas"]["v1User"];
-        };
-        /**
-         * @default SURFACE_UNSPECIFIED
-         * @enum {string}
-         */
-        v1Surface: "SURFACE_UNSPECIFIED" | "SURFACE_BROWSER" | "SURFACE_SANDBOX" | "SURFACE_DESKTOP";
-        v1SurfaceCount: {
-            surface?: string;
-            /** Format: int64 */
-            count?: string;
-        };
-        v1UpdateProfileRequest: {
-            org_name?: string;
-            org_domain?: string;
-            industry?: string;
-        };
-        v1UpdateProfileResponse: {
-            user?: components["schemas"]["v1User"];
-        };
-        v1User: {
-            id?: string;
-            email?: string;
-            account_type?: components["schemas"]["v1AccountType"];
-            org_name?: string;
-            org_domain?: string;
-            industry?: string;
-            /** Format: date-time */
-            created_at?: string;
-        };
-        v1VerifyChainResponse: {
-            valid?: boolean;
-            chain?: components["schemas"]["v1Grant"][];
-            reason?: string;
-        };
-        v1VerifyProofRequest: {
-            proof?: components["schemas"]["v1Proof"];
-        };
-        /**
-         * @example {
-         *       "valid": true,
-         *       "chain_intact": true,
-         *       "signature_valid": true,
-         *       "anchored": true,
-         *       "authority_valid": true,
-         *       "reason": ""
-         *     }
-         */
-        v1VerifyProofResponse: {
-            valid?: boolean;
-            chain_intact?: boolean;
-            signature_valid?: boolean;
-            anchored?: boolean;
-            authority_valid?: boolean;
-            reason?: string;
-        };
+  schemas: {
+    /**
+     * @default KIND_UNSPECIFIED
+     * @enum {string}
+     */
+    AnchorKind:
+      | "KIND_UNSPECIFIED"
+      | "KIND_RFC3161_TSA"
+      | "KIND_TRANSPARENCY_LOG"
+      | "KIND_PUBLIC_CHAIN";
+    ApiKeyServiceCreateApiKeyBody: {
+      name?: string;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    ApiKeyServiceRevokeApiKeyBody: Record<string, never>;
+    CaptureServiceEndSessionBody: Record<string, never>;
+    /**
+     * @example {
+     *       "grant_id": "BAL-417849",
+     *       "action_type": "browser.click",
+     *       "resource": "https://shop.example.com/cart",
+     *       "recording_ref": "slr://session/demo"
+     *     }
+     */
+    CaptureServiceRecordActionBody: {
+      grant_id?: string;
+      action_type?: string;
+      /** Format: byte */
+      action_payload?: string;
+      /** Format: byte */
+      pre_state_hash?: string;
+      /** Format: byte */
+      post_state_hash?: string;
+      recording_ref?: string;
+      resource?: string;
+      /** Format: int64 */
+      value_cents?: string;
+    };
+    DelegationServiceRevokeBody: {
+      reason?: string;
+    };
+    protobufAny: {
+      "@type"?: string;
+    } & {
+      [key: string]: unknown;
+    };
+    rpcStatus: {
+      /** Format: int32 */
+      code?: number;
+      message?: string;
+      details?: components["schemas"]["protobufAny"][];
+    };
+    /**
+     * @default ACCOUNT_TYPE_UNSPECIFIED
+     * @enum {string}
+     */
+    v1AccountType:
+      | "ACCOUNT_TYPE_UNSPECIFIED"
+      | "ACCOUNT_TYPE_PERSONAL"
+      | "ACCOUNT_TYPE_ORGANIZATION";
+    /**
+     * @example {
+     *       "event_id": "BAL-778812",
+     *       "session_id": "BAL-4a1055",
+     *       "sequence": 7,
+     *       "surface": "SURFACE_BROWSER",
+     *       "action_type": "browser.click",
+     *       "grant_id": "BAL-417849",
+     *       "recording_ref": "slr://session/demo",
+     *       "occurred_at": "2026-09-01T12:03:11Z"
+     *     }
+     */
+    v1ActionEvent: {
+      event_id?: string;
+      session_id?: string;
+      /** Format: int64 */
+      sequence?: string;
+      surface?: components["schemas"]["v1Surface"];
+      action_type?: string;
+      /** Format: byte */
+      action_payload?: string;
+      grant_id?: string;
+      /** Format: byte */
+      pre_state_hash?: string;
+      /** Format: byte */
+      post_state_hash?: string;
+      recording_ref?: string;
+      /** Format: date-time */
+      occurred_at?: string;
+      /** Format: byte */
+      content_hash?: string;
+      /** Format: byte */
+      prev_hash?: string;
+      /** Format: byte */
+      notary_signature?: string;
+    };
+    v1Anchor: {
+      kind?: components["schemas"]["AnchorKind"];
+      /** Format: byte */
+      root?: string;
+      /** Format: byte */
+      anchor_receipt?: string;
+      /** Format: date-time */
+      anchored_at?: string;
+    };
+    v1ApiKey: {
+      id?: string;
+      project_id?: string;
+      name?: string;
+      prefix?: string;
+      last4?: string;
+      revoked?: boolean;
+      /** Format: date-time */
+      created_at?: string;
+    };
+    /**
+     * @example {
+     *       "root_grant_id": "BAL-417849",
+     *       "surface": "SURFACE_BROWSER"
+     *     }
+     */
+    v1BeginSessionRequest: {
+      root_grant_id?: string;
+      surface?: components["schemas"]["v1Surface"];
+    };
+    v1BeginSessionResponse: {
+      session?: components["schemas"]["v1Session"];
+    };
+    v1Branding: {
+      company_name?: string;
+      logo_url?: string;
+      brand_color?: string;
+    };
+    v1CreateApiKeyResponse: {
+      key?: components["schemas"]["v1ApiKey"];
+      secret?: string;
+    };
+    /**
+     * @example {
+     *       "name": "Production"
+     *     }
+     */
+    v1CreateProjectRequest: {
+      name?: string;
+    };
+    v1CreateProjectResponse: {
+      project?: components["schemas"]["v1Project"];
+    };
+    v1DayCount: {
+      date?: string;
+      /** Format: int64 */
+      count?: string;
+    };
+    /**
+     * @example {
+     *       "parent_grant_id": "BAL-417849",
+     *       "subject_id": "agt_shopper",
+     *       "capabilities": [
+     *         "browser.click",
+     *         "browser.type"
+     *       ],
+     *       "scope": {
+     *         "resource_globs": [
+     *           "https://shop.example.com/*"
+     *         ],
+     *         "max_value_cents": 50000,
+     *         "max_depth": 2
+     *       }
+     *     }
+     */
+    v1DelegateRequest: {
+      parent_grant_id?: string;
+      subject_id?: string;
+      capabilities?: string[];
+      scope?: components["schemas"]["v1Scope"];
+    };
+    v1DelegateResponse: {
+      grant?: components["schemas"]["v1Grant"];
+    };
+    v1EndSessionResponse: {
+      session?: components["schemas"]["v1Session"];
+    };
+    v1GetAnchorResponse: {
+      anchor?: components["schemas"]["v1Anchor"];
+    };
+    v1GetEventResponse: {
+      event?: components["schemas"]["v1ActionEvent"];
+    };
+    v1GetInclusionProofResponse: {
+      proof?: components["schemas"]["v1Proof"];
+    };
+    v1GetOverviewResponse: {
+      /** Format: int64 */
+      total_events?: string;
+      /** Format: int64 */
+      total_sessions?: string;
+      /** Format: int64 */
+      total_grants?: string;
+      /** Format: int64 */
+      revoked_grants?: string;
+      by_surface?: components["schemas"]["v1SurfaceCount"][];
+      over_time?: components["schemas"]["v1DayCount"][];
+    };
+    v1GetPublicKeyResponse: {
+      key_id?: string;
+      /** Format: byte */
+      public_key?: string;
+    };
+    v1GetReplayResponse: {
+      event?: components["schemas"]["v1ActionEvent"];
+      /** Format: byte */
+      frame?: string;
+    };
+    /**
+     * @example {
+     *       "grant_id": "BAL-417849",
+     *       "parent_grant_id": "BAL-100200",
+     *       "principal_id": "usr_alice",
+     *       "subject_id": "agt_shopper",
+     *       "capabilities": [
+     *         "browser.click",
+     *         "browser.type"
+     *       ],
+     *       "scope": {
+     *         "resource_globs": [
+     *           "https://shop.example.com/*"
+     *         ],
+     *         "max_value_cents": 50000,
+     *         "max_depth": 2
+     *       },
+     *       "expires_at": "2026-09-01T18:00:00Z"
+     *     }
+     */
+    v1Grant: {
+      grant_id?: string;
+      parent_grant_id?: string;
+      principal_id?: string;
+      subject_id?: string;
+      capabilities?: string[];
+      scope?: components["schemas"]["v1Scope"];
+      /** Format: date-time */
+      expires_at?: string;
+      /** Format: byte */
+      parent_signature?: string;
+    };
+    /**
+     * @example {
+     *       "principal_id": "usr_alice",
+     *       "scope": {
+     *         "max_depth": 3
+     *       }
+     *     }
+     */
+    v1IssueRootGrantRequest: {
+      principal_id?: string;
+      scope?: components["schemas"]["v1Scope"];
+    };
+    v1IssueRootGrantResponse: {
+      grant?: components["schemas"]["v1Grant"];
+    };
+    v1ListApiKeysResponse: {
+      keys?: components["schemas"]["v1ApiKey"][];
+      next_page_token?: string;
+    };
+    v1ListEventsResponse: {
+      events?: components["schemas"]["v1ActionEvent"][];
+      next_page_token?: string;
+    };
+    v1ListGrantsResponse: {
+      grants?: components["schemas"]["v1Grant"][];
+      next_page_token?: string;
+    };
+    v1ListProjectsResponse: {
+      projects?: components["schemas"]["v1Project"][];
+      next_page_token?: string;
+    };
+    v1ListSessionsResponse: {
+      sessions?: components["schemas"]["v1Session"][];
+      next_page_token?: string;
+    };
+    /**
+     * @example {
+     *       "email": "alice@acme.com",
+     *       "password": "correct-horse"
+     *     }
+     */
+    v1LoginRequest: {
+      email?: string;
+      password?: string;
+    };
+    v1LoginResponse: {
+      token?: string;
+      user?: components["schemas"]["v1User"];
+    };
+    v1MeResponse: {
+      user?: components["schemas"]["v1User"];
+      branding?: components["schemas"]["v1Branding"];
+    };
+    v1Project: {
+      id?: string;
+      name?: string;
+      /** Format: int64 */
+      active_keys?: string;
+      /** Format: date-time */
+      created_at?: string;
+    };
+    v1Proof: {
+      event?: components["schemas"]["v1ActionEvent"];
+      merkle_path?: string[];
+      /** Format: byte */
+      merkle_root?: string;
+      anchor?: components["schemas"]["v1Anchor"];
+      delegation_chain?: components["schemas"]["v1Grant"][];
+    };
+    v1RecordActionResponse: {
+      event?: components["schemas"]["v1ActionEvent"];
+    };
+    v1RevokeApiKeyResponse: {
+      revoked?: boolean;
+    };
+    v1RevokeResponse: {
+      revoked?: boolean;
+    };
+    v1Scope: {
+      resource_globs?: string[];
+      /** Format: int64 */
+      max_value_cents?: string;
+      /** Format: int32 */
+      max_depth?: number;
+    };
+    v1Session: {
+      session_id?: string;
+      root_grant_id?: string;
+      surface?: components["schemas"]["v1Surface"];
+      /** Format: date-time */
+      started_at?: string;
+      /** Format: date-time */
+      ended_at?: string;
+      /** Format: int64 */
+      event_count?: string;
+    };
+    /**
+     * @example {
+     *       "email": "alice@acme.com",
+     *       "password": "correct-horse",
+     *       "account_type": "ACCOUNT_TYPE_ORGANIZATION",
+     *       "org_name": "Acme",
+     *       "org_domain": "acme.com",
+     *       "industry": "software"
+     *     }
+     */
+    v1SignupRequest: {
+      email?: string;
+      password?: string;
+      account_type?: components["schemas"]["v1AccountType"];
+      org_name?: string;
+      org_domain?: string;
+      industry?: string;
+    };
+    v1SignupResponse: {
+      token?: string;
+      user?: components["schemas"]["v1User"];
+    };
+    /**
+     * @default SURFACE_UNSPECIFIED
+     * @enum {string}
+     */
+    v1Surface: "SURFACE_UNSPECIFIED" | "SURFACE_BROWSER" | "SURFACE_SANDBOX" | "SURFACE_DESKTOP";
+    v1SurfaceCount: {
+      surface?: string;
+      /** Format: int64 */
+      count?: string;
+    };
+    v1UpdateProfileRequest: {
+      org_name?: string;
+      org_domain?: string;
+      industry?: string;
+    };
+    v1UpdateProfileResponse: {
+      user?: components["schemas"]["v1User"];
+    };
+    v1User: {
+      id?: string;
+      email?: string;
+      account_type?: components["schemas"]["v1AccountType"];
+      org_name?: string;
+      org_domain?: string;
+      industry?: string;
+      /** Format: date-time */
+      created_at?: string;
+    };
+    v1VerifyChainResponse: {
+      valid?: boolean;
+      chain?: components["schemas"]["v1Grant"][];
+      reason?: string;
+    };
+    v1VerifyProofRequest: {
+      proof?: components["schemas"]["v1Proof"];
+    };
+    /**
+     * @example {
+     *       "valid": true,
+     *       "chain_intact": true,
+     *       "signature_valid": true,
+     *       "anchored": true,
+     *       "authority_valid": true,
+     *       "reason": ""
+     *     }
+     */
+    v1VerifyProofResponse: {
+      valid?: boolean;
+      chain_intact?: boolean;
+      signature_valid?: boolean;
+      anchored?: boolean;
+      authority_valid?: boolean;
+      reason?: string;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    AnalyticsService_GetOverview: {
-        parameters: {
-            query?: {
-                days?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1GetOverviewResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  AnalyticsService_GetOverview: {
+    parameters: {
+      query?: {
+        days?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    AuthService_Login: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["v1LoginRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["v1GetOverviewResponse"];
         };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1LoginResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    AuthService_Me: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1MeResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  AuthService_Login: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    AuthService_UpdateProfile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["v1UpdateProfileRequest"];
-            };
-        };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1UpdateProfileResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["v1LoginRequest"];
+      };
     };
-    AuthService_Signup: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["v1SignupRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["v1LoginResponse"];
         };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1SignupResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    LedgerService_ListEvents: {
-        parameters: {
-            query?: {
-                page_size?: number;
-                page_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1ListEventsResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  AuthService_Me: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    LedgerService_GetEvent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                event_id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1GetEventResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["v1MeResponse"];
         };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    LedgerService_GetInclusionProof: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                event_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1GetInclusionProofResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  AuthService_UpdateProfile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    DelegationService_ListGrants: {
-        parameters: {
-            query?: {
-                page_size?: number;
-                page_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1ListGrantsResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["v1UpdateProfileRequest"];
+      };
     };
-    DelegationService_Delegate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["v1DelegateRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["v1UpdateProfileResponse"];
         };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1DelegateResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    DelegationService_Revoke: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                grant_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DelegationServiceRevokeBody"];
-            };
-        };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1RevokeResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  AuthService_Signup: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    DelegationService_VerifyChain: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                grant_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1VerifyChainResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["v1SignupRequest"];
+      };
     };
-    DelegationService_IssueRootGrant: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["v1IssueRootGrantRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["v1SignupResponse"];
         };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1IssueRootGrantResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    ApiKeyService_RevokeApiKey: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                key_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApiKeyServiceRevokeApiKeyBody"];
-            };
-        };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1RevokeApiKeyResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  LedgerService_ListEvents: {
+    parameters: {
+      query?: {
+        page_size?: number;
+        page_token?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    NotaryService_GetPublicKey: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1GetPublicKeyResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["v1ListEventsResponse"];
         };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    ProjectService_ListProjects: {
-        parameters: {
-            query?: {
-                page_size?: number;
-                page_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1ListProjectsResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  LedgerService_GetEvent: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        event_id: string;
+      };
+      cookie?: never;
     };
-    ProjectService_CreateProject: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["v1CreateProjectRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["v1GetEventResponse"];
         };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1CreateProjectResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    ApiKeyService_ListApiKeys: {
-        parameters: {
-            query?: {
-                page_size?: number;
-                page_token?: string;
-            };
-            header?: never;
-            path: {
-                project_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1ListApiKeysResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  LedgerService_GetInclusionProof: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        event_id: string;
+      };
+      cookie?: never;
     };
-    ApiKeyService_CreateApiKey: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                project_id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApiKeyServiceCreateApiKeyBody"];
-            };
+        content: {
+          "application/json": components["schemas"]["v1GetInclusionProofResponse"];
         };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1CreateApiKeyResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    VerifyService_VerifyProof: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["v1VerifyProofRequest"];
-            };
-        };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1VerifyProofResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  DelegationService_ListGrants: {
+    parameters: {
+      query?: {
+        page_size?: number;
+        page_token?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CaptureService_ListSessions: {
-        parameters: {
-            query?: {
-                page_size?: number;
-                page_token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1ListSessionsResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["v1ListGrantsResponse"];
         };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    CaptureService_BeginSession: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["v1BeginSessionRequest"];
-            };
-        };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1BeginSessionResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  DelegationService_Delegate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CaptureService_RecordAction: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                session_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CaptureServiceRecordActionBody"];
-            };
-        };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1RecordActionResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["v1DelegateRequest"];
+      };
     };
-    NotaryService_GetAnchor: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                session_id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1GetAnchorResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["v1DelegateResponse"];
         };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
     };
-    CaptureService_EndSession: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                session_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CaptureServiceEndSessionBody"];
-            };
-        };
-        responses: {
-            /** @description A successful response. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["v1EndSessionResponse"];
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+  };
+  DelegationService_Revoke: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        grant_id: string;
+      };
+      cookie?: never;
     };
-    ReplayService_GetReplay: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                session_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description A successful response.(streaming responses) */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        result?: components["schemas"]["v1GetReplayResponse"];
-                        error?: components["schemas"]["rpcStatus"];
-                    };
-                };
-            };
-            /** @description An unexpected error response. */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["rpcStatus"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DelegationServiceRevokeBody"];
+      };
     };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1RevokeResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  DelegationService_VerifyChain: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        grant_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1VerifyChainResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  DelegationService_IssueRootGrant: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["v1IssueRootGrantRequest"];
+      };
+    };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1IssueRootGrantResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  ApiKeyService_RevokeApiKey: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ApiKeyServiceRevokeApiKeyBody"];
+      };
+    };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1RevokeApiKeyResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  NotaryService_GetPublicKey: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1GetPublicKeyResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  ProjectService_ListProjects: {
+    parameters: {
+      query?: {
+        page_size?: number;
+        page_token?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1ListProjectsResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  ProjectService_CreateProject: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["v1CreateProjectRequest"];
+      };
+    };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1CreateProjectResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  ApiKeyService_ListApiKeys: {
+    parameters: {
+      query?: {
+        page_size?: number;
+        page_token?: string;
+      };
+      header?: never;
+      path: {
+        project_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1ListApiKeysResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  ApiKeyService_CreateApiKey: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        project_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ApiKeyServiceCreateApiKeyBody"];
+      };
+    };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1CreateApiKeyResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  VerifyService_VerifyProof: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["v1VerifyProofRequest"];
+      };
+    };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1VerifyProofResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  CaptureService_ListSessions: {
+    parameters: {
+      query?: {
+        page_size?: number;
+        page_token?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1ListSessionsResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  CaptureService_BeginSession: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["v1BeginSessionRequest"];
+      };
+    };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1BeginSessionResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  CaptureService_RecordAction: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        session_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CaptureServiceRecordActionBody"];
+      };
+    };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1RecordActionResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  NotaryService_GetAnchor: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        session_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1GetAnchorResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  CaptureService_EndSession: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        session_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CaptureServiceEndSessionBody"];
+      };
+    };
+    responses: {
+      /** @description A successful response. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["v1EndSessionResponse"];
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
+  ReplayService_GetReplay: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        session_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description A successful response.(streaming responses) */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            result?: components["schemas"]["v1GetReplayResponse"];
+            error?: components["schemas"]["rpcStatus"];
+          };
+        };
+      };
+      /** @description An unexpected error response. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["rpcStatus"];
+        };
+      };
+    };
+  };
 }

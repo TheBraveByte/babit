@@ -94,7 +94,7 @@ export function MerkleSeal({ className = "" }: { className?: string }) {
 
       // --- Tamper state machine ---
       // depth: 0 none · 1 leaf · 2 parent · 3 root · 4 anchor(fail)
-      const cyclePhase = reduced ? 0 : (t % CYCLE);
+      const cyclePhase = reduced ? 0 : t % CYCLE;
       const tamperLeaf = reduced ? -1 : Math.floor(t / CYCLE) % LEAVES;
       const tamperParent = tamperLeaf >= 0 ? Math.floor(tamperLeaf / 2) : -1;
 
@@ -182,7 +182,11 @@ export function MerkleSeal({ className = "" }: { className?: string }) {
         ctx.fill();
         // Short hash (mutated seed when tampered)
         ctx.fillStyle = tampered ? mix(bad, p.muted, resetMix) : p.muted;
-        ctx.fillText(shortHash(tampered ? seed ^ 0x9e3779b9 : seed), pt.x + 18, pt.y + NODE_H / 2 + 0.5);
+        ctx.fillText(
+          shortHash(tampered ? seed ^ 0x9e3779b9 : seed),
+          pt.x + 18,
+          pt.y + NODE_H / 2 + 0.5,
+        );
       };
 
       for (let i = 0; i < LEAVES; i++) {
@@ -236,7 +240,10 @@ export function MerkleSeal({ className = "" }: { className?: string }) {
 
     raf = requestAnimationFrame(draw);
     // Reduced-motion draws once; repaint after a resize clears the bitmap.
-    const ro = new ResizeObserver(() => { resize(); if (reduced) draw(0); });
+    const ro = new ResizeObserver(() => {
+      resize();
+      if (reduced) draw(0);
+    });
     ro.observe(canvas);
 
     return () => {
@@ -275,7 +282,14 @@ function hexToRgb(hex: string): [number, number, number] | null {
   return null;
 }
 
-function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number,
+) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.arcTo(x + w, y, x + w, y + h, r);

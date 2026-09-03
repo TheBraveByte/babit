@@ -30,7 +30,7 @@ const POINTS = [
 ];
 
 const ANCHOR_STEPS = [
-  { time: "14:32:08", label: "Session sealed", hash: "0x7a3f…b29c" },
+  { time: "14:32:08", label: "Session notarized", hash: "0x7a3f…b29c" },
   { time: "14:32:09", label: "Merkle root computed", hash: "0x9e1d…c4a0" },
   { time: "14:32:10", label: "Published to transparency log", hash: "0x2b8e…f731" },
   { time: "14:32:11", label: "Anchored independently", hash: "0x4c5a…e892" },
@@ -52,16 +52,14 @@ export function SectionOfflineEvidence() {
   return (
     <>
       {/* ── Public anchoring section ──────────────────────────────────── */}
-      <section
-        id="offline-globe"
-        className="dark-section relative overflow-hidden section-y-lg"
-      >
+      <section id="offline-globe" className="dark-section relative overflow-hidden section-y-lg">
         {/* Dot grid + radial glow background */}
         <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: "radial-gradient(circle at 50% 50%, rgba(45, 212, 191, 0.06) 0%, transparent 55%)",
+            background:
+              "radial-gradient(circle at 50% 50%, rgba(45, 212, 191, 0.06) 0%, transparent 55%)",
           }}
         />
 
@@ -76,12 +74,17 @@ export function SectionOfflineEvidence() {
                 Witnessed where babit can't reach.
               </h2>
               <p className="type-lead mt-5" style={{ color: "var(--dark-section-muted)" }}>
-                Each session's Merkle root is published to a public transparency log,
-                so a receipt can be checked against a record babit does not control.
+                Each session's Merkle root is published to a public transparency log, so a receipt
+                can be checked against a record babit does not control.
               </p>
 
-              <div className="mt-8 flex items-center gap-2 text-[12px] font-mono" style={{ color: "var(--dark-section-muted)" }}>
-                <span style={{ color: "var(--brand-accent)" }}><IconArrowRight className="w-3.5 h-3.5" /></span>
+              <div
+                className="mt-8 flex items-center gap-2 text-[12px] font-mono"
+                style={{ color: "var(--dark-section-muted)" }}
+              >
+                <span style={{ color: "var(--brand-accent)" }}>
+                  <IconArrowRight className="w-3.5 h-3.5" />
+                </span>
                 <span>No special access required · anyone can audit</span>
               </div>
             </div>
@@ -101,7 +104,10 @@ export function SectionOfflineEvidence() {
                 <span className="type-eyebrow" style={{ color: "var(--dark-section-muted)" }}>
                   Anchoring pipeline
                 </span>
-                <span className="font-mono text-[11px]" style={{ color: "var(--dark-section-muted)" }}>
+                <span
+                  className="font-mono text-[11px]"
+                  style={{ color: "var(--dark-section-muted)" }}
+                >
                   session · BAL-S-48102
                 </span>
               </div>
@@ -111,20 +117,35 @@ export function SectionOfflineEvidence() {
                   <div
                     key={step.label}
                     className="flex items-center gap-4 py-3"
-                    style={i < ANCHOR_STEPS.length - 1 ? { borderBottom: "1px solid var(--dark-section-border)" } : undefined}
+                    style={
+                      i < ANCHOR_STEPS.length - 1
+                        ? { borderBottom: "1px solid var(--dark-section-border)" }
+                        : undefined
+                    }
                   >
-                    <span className="font-mono text-[11px] shrink-0" style={{ color: "var(--dark-section-muted)" }}>
+                    <span
+                      className="font-mono text-[11px] shrink-0"
+                      style={{ color: "var(--dark-section-muted)" }}
+                    >
                       {step.time}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <span className="text-[13px] font-medium block" style={{ color: "var(--dark-section-fg)" }}>
+                      <span
+                        className="text-[13px] font-medium block"
+                        style={{ color: "var(--dark-section-fg)" }}
+                      >
                         {step.label}
                       </span>
-                      <span className="font-mono text-[11px]" style={{ color: "var(--dark-section-muted)" }}>
+                      <span
+                        className="font-mono text-[11px]"
+                        style={{ color: "var(--dark-section-muted)" }}
+                      >
                         {step.hash}
                       </span>
                     </div>
-                    <span style={{ color: "var(--color-verified)" }}><IconCheck className="w-4 h-4 shrink-0" /></span>
+                    <span style={{ color: "var(--color-verified)" }}>
+                      <IconCheck className="w-4 h-4 shrink-0" />
+                    </span>
                   </div>
                 ))}
               </div>
@@ -163,13 +184,18 @@ export function SectionOfflineEvidence() {
             >
               <div
                 className="px-4 py-2.5 flex items-center justify-between"
-                style={{ backgroundColor: "var(--surface)", borderBottom: "1px solid var(--border)" }}
+                style={{
+                  backgroundColor: "var(--surface)",
+                  borderBottom: "1px solid var(--border)",
+                }}
               >
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#333]" />
-                  <span className="ml-2 text-[11px]" style={{ color: "var(--muted)" }}>terminal</span>
+                  <span className="ml-2 text-[11px]" style={{ color: "var(--muted)" }}>
+                    terminal
+                  </span>
                 </div>
                 <button
                   onClick={runCli}
@@ -183,17 +209,28 @@ export function SectionOfflineEvidence() {
               </div>
 
               <div className="p-5 space-y-2" style={{ color: "var(--fg)" }}>
-                <div style={{ color: "var(--muted)" }}>$ babit verify rcpt_BAL_778812.json --public-key notary.pub</div>
-                {running && <div style={{ color: "var(--color-pending)" }}>Checking the receipt offline…</div>}
+                <div style={{ color: "var(--muted)" }}>
+                  $ babit verify rcpt_BAL_778812.json --public-key notary.pub
+                </div>
+                {running && (
+                  <div style={{ color: "var(--color-pending)" }}>Checking the receipt offline…</div>
+                )}
                 {output && (
                   <div className="space-y-1.5 pt-1 animate-fade-in">
                     {[output.sig, output.chain, output.auth].map((line) => (
-                      <div key={line} className="flex items-center gap-1.5" style={{ color: "var(--color-verified)" }}>
+                      <div
+                        key={line}
+                        className="flex items-center gap-1.5"
+                        style={{ color: "var(--color-verified)" }}
+                      >
                         <IconCheck className="w-3.5 h-3.5 shrink-0" />
                         <span>{line}</span>
                       </div>
                     ))}
-                    <div className="pt-2 text-[11px] border-t" style={{ color: "var(--muted)", borderColor: "var(--border)" }}>
+                    <div
+                      className="pt-2 text-[11px] border-t"
+                      style={{ color: "var(--muted)", borderColor: "var(--border)" }}
+                    >
                       Checked offline. No network calls to babit.
                     </div>
                   </div>
