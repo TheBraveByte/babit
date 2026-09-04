@@ -8,7 +8,6 @@ import { SectionAuthorityChain } from "./landing/SectionAuthorityChain";
 import { SectionBuiltForEngineers } from "./landing/SectionBuiltForEngineers";
 import { SectionGlobalAnchor } from "./landing/SectionGlobalAnchor";
 import { SectionHowItWorks } from "./landing/SectionHowItWorks";
-import { SectionLogsVsEvidence } from "./landing/SectionLogsVsEvidence";
 import { SectionOfflineEvidence } from "./landing/SectionOfflineEvidence";
 import { SectionReceiptCenterpiece } from "./landing/SectionReceiptCenterpiece";
 import { SectionSurfaces } from "./landing/SectionSurfaces";
@@ -32,7 +31,6 @@ export function Landing() {
         <SectionReceiptCenterpiece />
         <SectionVerifyRecord />
         <SectionGlobalAnchor />
-        <SectionLogsVsEvidence />
         <SectionBuiltForEngineers />
         <SectionApiSnippet />
         <SectionWhoItsFor />

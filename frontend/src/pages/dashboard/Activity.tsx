@@ -73,8 +73,8 @@ export function Activity() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Activity"
-        description="Every recorded action event, newest first. Click any row to inspect its full record."
+        title="Audit log"
+        description="Every recorded action, notarized and auditable. Each row is signed and bound to a grant."
       />
 
       {error && <ErrorBox message={error} />}

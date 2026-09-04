@@ -43,8 +43,8 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     {
       id: "nav-activity",
       category: "Navigation",
-      title: "Activity",
-      subtitle: "Look up an action event by ID",
+      title: "Audit log",
+      subtitle: "Every recorded action, with cryptographic proof",
       icon: <IconFileText className="w-4 h-4 text-[color:var(--muted)]" />,
       action: () => {
         navigate("/dashboard/activity");

@@ -45,7 +45,7 @@ interface NavItem {
 const mainNav: NavItem[] = [
   { key: "overview", label: "Overview", icon: <IconActivity className="w-4 h-4" /> },
   { key: "analytics", label: "Analytics", icon: <IconBarChart className="w-4 h-4" /> },
-  { key: "activity", label: "Activity", icon: <IconFileText className="w-4 h-4" /> },
+  { key: "activity", label: "Audit log", icon: <IconFileText className="w-4 h-4" /> },
   { key: "agents", label: "Agents", icon: <IconCpu className="w-4 h-4" /> },
   { key: "delegations", label: "Delegations", icon: <IconGitBranch className="w-4 h-4" /> },
   { key: "sessions", label: "Sessions", icon: <IconLayers className="w-4 h-4" /> },
