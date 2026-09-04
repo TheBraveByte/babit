@@ -1,8 +1,12 @@
-import { BabitLogo } from "@/lib/icons";
+import { useState } from "react";
+import { BabitLogo, IconXCircle } from "@/lib/icons";
 import { docsUrl } from "@/lib/links";
 import { Link } from "@/lib/router";
+import { Card } from "@/lib/ui";
 
 export function Footer() {
+  const [creditOpen, setCreditOpen] = useState(false);
+
   return (
     <footer
       style={{ backgroundColor: "var(--bg)", color: "var(--muted)" }}
@@ -135,18 +139,64 @@ export function Footer() {
           <div>© {new Date().getFullYear()} babit. Proof for autonomous actions.</div>
           <div className="flex items-center gap-2">
             <span>Inspired by</span>
-            <a
-              href="https://github.com/solari-sdk/solari-cookbook/"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-[var(--fg)] transition-colors"
+            <button
+              onClick={() => setCreditOpen(true)}
+              className="hover:text-[var(--fg)] transition-colors cursor-pointer"
               style={{ color: "var(--brand-accent)" }}
             >
               Solari and Pinetree Research
-            </a>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Credit modal */}
+      {creditOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-6"
+          style={{ backgroundColor: "color-mix(in srgb, var(--fg) 40%, transparent)" }}
+          onClick={() => setCreditOpen(false)}
+        >
+          <Card
+            title="Why this exists"
+            className="w-full max-w-md"
+            action={
+              <button
+                onClick={() => setCreditOpen(false)}
+                className="p-1 rounded-babit-sm hover:bg-[var(--secondary)] transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                <IconXCircle className="w-4 h-4 text-[var(--muted)]" />
+              </button>
+            }
+          >
+            <div className="space-y-4 text-sm" style={{ color: "var(--muted)" }}>
+              <p style={{ color: "var(--fg)" }}>
+                Babit was inspired by a challenge from Harry Chow and the Solari team at Pinetree
+                Research.
+              </p>
+              <p>
+                The challenge was simple. Fork Solari, build a real use case, and ship. Use AI if it
+                helps. We did exactly that.
+              </p>
+              <p style={{ color: "var(--fg)" }}>
+                Babit is our proof: signed receipts for autonomous actions. No resumes. Just code.
+              </p>
+              <div className="pt-2 flex items-center gap-3">
+                <a
+                  href="https://github.com/solari-sdk/solari-cookbook/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs font-medium hover:opacity-80"
+                  style={{ color: "var(--brand-accent)" }}
+                >
+                  View the Solari cookbook ↗
+                </a>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
     </footer>
   );
 }
