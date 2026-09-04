@@ -1,18 +1,25 @@
 import { BabitLogo } from "@/lib/icons";
+import { EvidencePipeline } from "@/components/viz/EvidencePipeline";
 
 /**
- * SplashScreen — a minimal branded loading surface shown while the auth
- * session is still being resolved. It appears on protected routes so the
- * landing page can render immediately.
+ * SplashScreen — a full-bleed animated intro for the first app load.
+ * The network canvas runs behind the centered logo and wordmark, then
+ * the app fades in once auth and routes are ready.
  */
 export function SplashScreen() {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
       style={{ backgroundColor: "var(--bg)" }}
     >
-      <div className="flex flex-col items-center gap-5">
-        <BabitLogo className="w-16 h-16" brandColor="var(--brand-accent)" />
+      {/* Animated network field */}
+      <div className="absolute inset-0 opacity-[0.22]">
+        <EvidencePipeline className="w-full h-full" />
+      </div>
+
+      {/* Centered brand lockup */}
+      <div className="relative z-10 flex flex-col items-center gap-5 animate-float-up">
+        <BabitLogo className="w-16 h-16 animate-glow-pulse" brandColor="var(--brand-accent)" />
         <div className="text-center space-y-1">
           <h1
             className="text-xl font-medium tracking-tight font-mono"

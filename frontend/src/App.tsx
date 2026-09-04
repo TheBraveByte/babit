@@ -1,4 +1,4 @@
-import { lazy, type ReactNode, Suspense } from "react";
+import { lazy, type ReactNode, Suspense, useEffect, useState } from "react";
 import { SplashScreen } from "@/components/SplashScreen";
 import { useAuth } from "@/lib/auth";
 import { useRouter } from "@/lib/router";
@@ -69,6 +69,18 @@ export function App() {
   const { path, navigate } = useRouter();
   const { isLoading } = useAuth();
   const route = path.split("?")[0]; // strip query string for matching
+
+  const [splashDone, setSplashDone] = useState(false);
+  const isLanding = route === "/" || route === "";
+
+  useEffect(() => {
+    const t = setTimeout(() => setSplashDone(true), 1200);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (!splashDone && isLanding) {
+    return <SplashScreen />;
+  }
 
   if (isLoading && route.startsWith("/dashboard")) {
     return <SplashScreen />;

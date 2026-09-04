@@ -1,12 +1,9 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { EvidencePipeline } from "@/components/viz/EvidencePipeline";
 import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
 import { IconCheck, IconRefresh } from "@/lib/icons";
 import { docsUrl } from "@/lib/links";
 import { useRouter } from "@/lib/router";
-
-const EvidencePipeline = lazy(() =>
-  import("@/components/viz/EvidencePipeline").then((m) => ({ default: m.EvidencePipeline })),
-);
 
 const SCENARIO = {
   action: "Approved a $4,200 insurance payout",
@@ -52,9 +49,7 @@ export function Hero() {
     <section className="relative overflow-hidden" style={{ backgroundColor: "var(--bg)" }}>
       {/* ── Full-bleed cinematic evidence pipeline ──────────────────── */}
       <div className="absolute inset-0">
-        <Suspense fallback={null}>
-          <EvidencePipeline className="w-full h-full" />
-        </Suspense>
+        <EvidencePipeline className="w-full h-full" />
       </div>
 
       {/* Subtle gradient overlay for text legibility (theme-aware) */}
