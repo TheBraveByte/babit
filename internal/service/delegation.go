@@ -4,7 +4,6 @@ import (
 	"context"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
-	"github.com/babit/nal/internal/core/auth"
 	"github.com/babit/nal/internal/core/canon"
 	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
@@ -13,17 +12,24 @@ import (
 type Delegation struct {
 	ledgerv1.UnimplementedDelegationServiceServer
 	grants   ports.GrantStore
+	projects ports.ProjectStore
 	signer   ports.Signer
 	verifier ports.DelegationVerifier
 	ids      ports.IDGen
 	clock    ports.Clock
 }
 
-func NewDelegation(grants ports.GrantStore, signer ports.Signer, verifier ports.DelegationVerifier, ids ports.IDGen, clock ports.Clock) *Delegation {
-	return &Delegation{grants: grants, signer: signer, verifier: verifier, ids: ids, clock: clock}
+func NewDelegation(grants ports.GrantStore, projects ports.ProjectStore, signer ports.Signer, verifier ports.DelegationVerifier, ids ports.IDGen, clock ports.Clock) *Delegation {
+	return &Delegation{grants: grants, projects: projects, signer: signer, verifier: verifier, ids: ids, clock: clock}
 }
 
 func (d *Delegation) IssueRootGrant(ctx context.Context, req *ledgerv1.IssueRootGrantRequest) (*ledgerv1.IssueRootGrantResponse, error) {
+	if _, err := requireUser(ctx); err != nil {
+		return nil, err
+	}
+	if err := ensureProjectAccess(ctx, req.GetProjectId(), d.projects); err != nil {
+		return nil, err
+	}
 	g := &ledgerv1.Grant{
 		GrantId:     d.ids.New(),
 		ProjectId:   req.GetProjectId(),
@@ -43,6 +49,9 @@ func (d *Delegation) IssueRootGrant(ctx context.Context, req *ledgerv1.IssueRoot
 func (d *Delegation) Delegate(ctx context.Context, req *ledgerv1.DelegateRequest) (*ledgerv1.DelegateResponse, error) {
 	parent, err := d.grants.Get(ctx, req.GetParentGrantId())
 	if err != nil {
+		return nil, err
+	}
+	if err := ensureProjectAccess(ctx, parent.GetProjectId(), d.projects); err != nil {
 		return nil, err
 	}
 	revoked, err := d.grants.IsRevoked(ctx, parent.GetGrantId())
@@ -80,6 +89,13 @@ func (d *Delegation) VerifyChain(ctx context.Context, req *ledgerv1.VerifyChainR
 }
 
 func (d *Delegation) Revoke(ctx context.Context, req *ledgerv1.RevokeRequest) (*ledgerv1.RevokeResponse, error) {
+	grant, err := d.grants.Get(ctx, req.GetGrantId())
+	if err != nil {
+		return nil, err
+	}
+	if err := ensureProjectAccess(ctx, grant.GetProjectId(), d.projects); err != nil {
+		return nil, err
+	}
 	if err := d.grants.Revoke(ctx, req.GetGrantId(), req.GetReason()); err != nil {
 		return nil, err
 	}
@@ -87,8 +103,13 @@ func (d *Delegation) Revoke(ctx context.Context, req *ledgerv1.RevokeRequest) (*
 }
 
 func (d *Delegation) ListGrants(ctx context.Context, req *ledgerv1.ListGrantsRequest) (*ledgerv1.ListGrantsResponse, error) {
-	if auth.UserID(ctx) == "" {
-		return nil, errs.New(errs.Unauthenticated, "not authenticated")
+	if err := requireAuth(ctx); err != nil {
+		return nil, err
+	}
+	if req.GetProjectId() != "" {
+		if err := ensureProjectAccess(ctx, req.GetProjectId(), d.projects); err != nil {
+			return nil, err
+		}
 	}
 	grants, next, err := d.grants.List(ctx, req.GetProjectId(), req.GetPageSize(), req.GetPageToken())
 	if err != nil {
