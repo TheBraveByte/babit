@@ -15,8 +15,18 @@ const SCENARIO = {
 };
 
 const STATS = [
-  { value: "Signed", label: "receipts", icon: IconShieldCheck },
-  { value: "Merkle", label: "inclusion roots", icon: IconGitBranch },
+  {
+    value: "Notarized",
+    label: "signed receipts",
+    icon: IconShieldCheck,
+    tooltip: "Every action is signed by Babit and bound to a cryptographic receipt.",
+  },
+  {
+    value: "Linked",
+    label: "inclusion roots",
+    icon: IconGitBranch,
+    tooltip: "Every event is linked into a Merkle inclusion root for offline verification.",
+  },
 ];
 
 export function Hero() {
@@ -129,7 +139,20 @@ export function Hero() {
             {STATS.map((s) => {
               const Icon = s.icon;
               return (
-                <div key={s.label}>
+                <div key={s.label} className="group relative">
+                  <div className="absolute bottom-full left-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20">
+                    <div
+                      className="rounded-babit-sm px-2.5 py-1.5 text-[11px] font-medium whitespace-nowrap"
+                      style={{
+                        backgroundColor: "var(--surface)",
+                        color: "var(--fg)",
+                        border: "1px solid var(--border)",
+                        boxShadow: "0 4px 12px color-mix(in srgb, var(--fg) 8%, transparent)",
+                      }}
+                    >
+                      {s.tooltip}
+                    </div>
+                  </div>
                   <div className="flex items-center gap-2">
                     <span style={{ color: "var(--brand-accent)", display: "inline-flex" }}>
                       <Icon className="w-5 h-5" />
