@@ -13,7 +13,8 @@ tmp/
 # private: not published to the public repository
 /skills/
 /.claude/
-/docs/
+/docs/*
+!/docs/architecture.md
 
 # local http-client config may hold secrets; keep only the template
 dev/http-client.env.json
