@@ -5,14 +5,6 @@ Proof of authority for autonomous agent actions.
 babit records what an agent did, binds the action to the signed delegation that authorized it,
 and produces a portable receipt that can be verified without the server.
 
-## What it does
-
-- **Delegation:** a person issues a root grant; agents receive scoped, signed sub-grants.
-- **Notarization:** each action is recorded against a grant, hash-chained, and signed with Ed25519.
-- **Anchoring:** events are folded into a Merkle root and committed to an external anchor.
-- **Verification:** a receipt contains the event, delegation chain, inclusion proof, anchor, and
-  public key. It can be checked offline.
-
 ## Flow
 
 ```mermaid
@@ -36,7 +28,6 @@ graph LR
     subgraph Ledger ["Ledger"]
         direction TB
         LedgerBlocks["[Block n]\n[Block n-1]\n[Block n-2]"]
-        Hashes["hash: 0x1a...\nhash: 0x4f...\nhash: 0x92..."]
     end
 
     Anchor["[External timestamp / anchor]\n(Cloud)"]
@@ -46,7 +37,6 @@ graph LR
     Anyone["[Anyone]"]
 
     BabitUI["[Babit Dashboard / API]\n(Monitor)"]
-    Annotation["Human grants authority. Agents act on any URL or surface. Babit notarizes. Anyone verifies."]
 
     %% Connections
     You --> Dashboard
@@ -89,8 +79,6 @@ graph LR
     style LedgerBlocks fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
     style Dashboard fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
     style BabitUI fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
-
-    style Annotation fill:none,stroke:none,font-size:16px
 
     classDef default font-family:monospace,font-size:13px
 ```
