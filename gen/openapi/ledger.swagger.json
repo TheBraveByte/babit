@@ -5,6 +5,38 @@
     "description": "Babit Notarized Action Ledger. A tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari.",
     "version": "1.0.0"
   },
+  "tags": [
+    {
+      "name": "AnalyticsService"
+    },
+    {
+      "name": "AuthService"
+    },
+    {
+      "name": "CaptureService"
+    },
+    {
+      "name": "DelegationService"
+    },
+    {
+      "name": "LedgerService"
+    },
+    {
+      "name": "NotaryService"
+    },
+    {
+      "name": "ProjectService"
+    },
+    {
+      "name": "ApiKeyService"
+    },
+    {
+      "name": "ReplayService"
+    },
+    {
+      "name": "VerifyService"
+    }
+  ],
   "schemes": [
     "https"
   ],
@@ -41,6 +73,9 @@
             "type": "integer",
             "format": "int32"
           }
+        ],
+        "tags": [
+          "AnalyticsService"
         ]
       }
     },
@@ -71,6 +106,9 @@
               "$ref": "#/definitions/v1LoginRequest"
             }
           }
+        ],
+        "tags": [
+          "AuthService"
         ]
       }
     },
@@ -91,7 +129,10 @@
               "$ref": "#/definitions/rpcStatus"
             }
           }
-        }
+        },
+        "tags": [
+          "AuthService"
+        ]
       },
       "patch": {
         "summary": "Update your profile details",
@@ -119,6 +160,9 @@
               "$ref": "#/definitions/v1UpdateProfileRequest"
             }
           }
+        ],
+        "tags": [
+          "AuthService"
         ]
       }
     },
@@ -149,6 +193,9 @@
               "$ref": "#/definitions/v1SignupRequest"
             }
           }
+        ],
+        "tags": [
+          "AuthService"
         ]
       }
     },
@@ -190,6 +237,9 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "LedgerService"
         ]
       }
     },
@@ -218,6 +268,9 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "tags": [
+          "LedgerService"
         ]
       }
     },
@@ -246,6 +299,9 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "tags": [
+          "LedgerService"
         ]
       }
     },
@@ -287,6 +343,9 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "DelegationService"
         ]
       },
       "post": {
@@ -315,6 +374,9 @@
               "$ref": "#/definitions/v1DelegateRequest"
             }
           }
+        ],
+        "tags": [
+          "DelegationService"
         ]
       }
     },
@@ -351,6 +413,9 @@
               "$ref": "#/definitions/DelegationServiceRevokeBody"
             }
           }
+        ],
+        "tags": [
+          "DelegationService"
         ]
       }
     },
@@ -379,6 +444,9 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "tags": [
+          "DelegationService"
         ]
       }
     },
@@ -409,6 +477,9 @@
               "$ref": "#/definitions/v1IssueRootGrantRequest"
             }
           }
+        ],
+        "tags": [
+          "DelegationService"
         ]
       }
     },
@@ -445,6 +516,9 @@
               "$ref": "#/definitions/ApiKeyServiceRevokeApiKeyBody"
             }
           }
+        ],
+        "tags": [
+          "ApiKeyService"
         ]
       }
     },
@@ -465,7 +539,10 @@
               "$ref": "#/definitions/rpcStatus"
             }
           }
-        }
+        },
+        "tags": [
+          "NotaryService"
+        ]
       }
     },
     "/v1/projects": {
@@ -500,6 +577,9 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "ProjectService"
         ]
       },
       "post": {
@@ -528,6 +608,9 @@
               "$ref": "#/definitions/v1CreateProjectRequest"
             }
           }
+        ],
+        "tags": [
+          "ProjectService"
         ]
       }
     },
@@ -569,6 +652,9 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "ApiKeyService"
         ]
       },
       "post": {
@@ -603,6 +689,9 @@
               "$ref": "#/definitions/ApiKeyServiceCreateApiKeyBody"
             }
           }
+        ],
+        "tags": [
+          "ApiKeyService"
         ]
       }
     },
@@ -633,6 +722,9 @@
               "$ref": "#/definitions/v1VerifyProofRequest"
             }
           }
+        ],
+        "tags": [
+          "VerifyService"
         ]
       }
     },
@@ -674,6 +766,9 @@
             "required": false,
             "type": "string"
           }
+        ],
+        "tags": [
+          "CaptureService"
         ]
       },
       "post": {
@@ -702,6 +797,9 @@
               "$ref": "#/definitions/v1BeginSessionRequest"
             }
           }
+        ],
+        "tags": [
+          "CaptureService"
         ]
       }
     },
@@ -738,6 +836,9 @@
               "$ref": "#/definitions/CaptureServiceRecordActionBody"
             }
           }
+        ],
+        "tags": [
+          "CaptureService"
         ]
       }
     },
@@ -766,6 +867,9 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "tags": [
+          "NotaryService"
         ]
       }
     },
@@ -802,6 +906,9 @@
               "$ref": "#/definitions/CaptureServiceEndSessionBody"
             }
           }
+        ],
+        "tags": [
+          "CaptureService"
         ]
       }
     },
@@ -839,6 +946,9 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "tags": [
+          "ReplayService"
         ]
       }
     }
