@@ -6,6 +6,7 @@ import { IconFileText, IconShieldCheck } from "@/lib/icons";
 import { Card, EmptyState, Error as ErrorBox, PageHeader, TableSkeleton } from "@/lib/ui";
 import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
+import { useRequireAuth } from "@/lib/auth";
 import { ReceiptDetail } from "./ReceiptDetail";
 
 type Proof = components["schemas"]["v1Proof"];
@@ -14,6 +15,7 @@ type ActionEvent = components["schemas"]["v1ActionEvent"];
 const PAGE_SIZE = 50;
 
 export function Receipts() {
+  useRequireAuth();
   const [proof, setProof] = useState<Proof | null>(null);
   const [fetchingProof, setFetchingProof] = useState(false);
   const [proofError, setProofError] = useState<string | null>(null);

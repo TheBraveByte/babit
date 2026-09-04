@@ -437,7 +437,7 @@ export function EmptyState({
   icon,
 }: {
   title: string;
-  description: string;
+  description?: string;
   action?: ReactNode;
   icon?: ReactNode;
 }) {
@@ -457,9 +457,11 @@ export function EmptyState({
       <h3 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
         {title}
       </h3>
-      <p className="mt-1 text-xs max-w-sm mx-auto" style={{ color: "var(--muted)" }}>
-        {description}
-      </p>
+      {description && (
+        <p className="mt-1 text-xs max-w-sm mx-auto" style={{ color: "var(--muted)" }}>
+          {description}
+        </p>
+      )}
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

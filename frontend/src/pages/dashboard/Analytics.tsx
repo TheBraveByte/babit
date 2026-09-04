@@ -15,7 +15,7 @@ import {
 } from "recharts";
 import { api } from "@/api/client";
 import type { components } from "@/api/schema";
-import { useAuth } from "@/lib/auth";
+import { useAuth, useRequireAuth } from "@/lib/auth";
 import {
   IconActivity,
   IconAlertCircle,
@@ -96,8 +96,8 @@ function EmptyChart({ height = 220 }: { height?: number }) {
       className="rounded-babit flex items-center justify-center text-center px-6"
       style={{ height, backgroundColor: "var(--secondary)", border: "1px dashed var(--border)" }}
     >
-      <span className="text-[12px]" style={{ color: "var(--muted)" }}>
-        No data yet. This fills in as actions are recorded.
+      <span className="text-[12px] font-mono" style={{ color: "var(--muted)" }}>
+        —
       </span>
     </div>
   );
@@ -137,37 +137,6 @@ function Panel({
   );
 }
 
-function RoadmapTile({ title, note, icon }: { title: string; note: string; icon: ReactNode }) {
-  return (
-    <div
-      className="rounded-babit-md p-5 flex flex-col gap-2"
-      style={{
-        border: "1px dashed var(--border)",
-        backgroundColor: "color-mix(in srgb, var(--secondary) 50%, transparent)",
-      }}
-    >
-      <div className="flex items-center justify-between">
-        <span style={{ color: "var(--muted)" }}>{icon}</span>
-        <span
-          className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded"
-          style={{
-            color: "var(--brand-accent)",
-            backgroundColor: "color-mix(in srgb, var(--brand-accent) 10%, transparent)",
-          }}
-        >
-          Planned
-        </span>
-      </div>
-      <h3 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
-        {title}
-      </h3>
-      <p className="text-xs leading-relaxed" style={{ color: "var(--muted)" }}>
-        {note}
-      </p>
-    </div>
-  );
-}
-
 function LegendRow({ color, label, value }: { color: string; label: string; value: number }) {
   return (
     <div className="flex items-center gap-2 text-sm">
@@ -183,6 +152,7 @@ function LegendRow({ color, label, value }: { color: string; label: string; valu
 /* ─── Page ───────────────────────────────────────────────────────────────────── */
 
 export function Analytics() {
+  useRequireAuth();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [data, setData] = useState<Overview | null>(null);
   const [loading, setLoading] = useState(true);
@@ -190,10 +160,7 @@ export function Analytics() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!isAuthenticated) {
-      setLoading(false);
-      return;
-    }
+    if (!isAuthenticated) return;
     let active = true;
     (async () => {
       setLoading(true);
@@ -208,22 +175,8 @@ export function Analytics() {
     };
   }, [isAuthenticated, authLoading]);
 
-  if (!authLoading && !isAuthenticated) {
-    return (
-      <div className="space-y-6">
-        <PageHeader
-          title="Analytics"
-          description="Activity across your notarized actions, delegations, and verifications."
-        />
-        <Card>
-          <EmptyState
-            icon={<IconActivity className="w-5 h-5" />}
-            title="Sign in to view analytics"
-            description="Analytics are tied to your account. Sign in to see your activity."
-          />
-        </Card>
-      </div>
-    );
+  if (authLoading || !isAuthenticated) {
+    return null;
   }
 
   const totalEvents = num(data?.total_events);
@@ -267,8 +220,6 @@ export function Analytics() {
     notes.push(
       `${fmt(activeGrants)} active grant${activeGrants === 1 ? "" : "s"}, ${fmt(revokedGrants)} revoked.`,
     );
-  if (notes.length === 0)
-    notes.push("Activity summaries appear here as your agents record actions.");
 
   return (
     <div className="space-y-6">
@@ -544,24 +495,6 @@ export function Analytics() {
               </div>
             </div>
           </Card>
-
-          <div>
-            <h2 className="text-sm font-semibold mb-3" style={{ color: "var(--fg)" }}>
-              Planned breakdowns
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <RoadmapTile
-                title="By browser"
-                note="Which browser an agent used. Needs the browser captured on each action, which is on the roadmap."
-                icon={<IconMonitor className="w-4 h-4" />}
-              />
-              <RoadmapTile
-                title="By country"
-                note="Where actions originate. Needs location captured at record time, which is on the roadmap."
-                icon={<IconActivity className="w-4 h-4" />}
-              />
-            </div>
-          </div>
         </>
       )}
     </div>

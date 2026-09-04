@@ -16,6 +16,7 @@ import {
 } from "@/lib/ui";
 import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
+import { useRequireAuth } from "@/lib/auth";
 
 type Anchor = components["schemas"]["v1Anchor"];
 type Session = components["schemas"]["v1Session"];
@@ -54,6 +55,7 @@ function Meta({
 }
 
 export function Sessions() {
+  useRequireAuth();
   const [selected, setSelected] = useState<Session | null>(null);
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const [anchorLoading, setAnchorLoading] = useState(false);

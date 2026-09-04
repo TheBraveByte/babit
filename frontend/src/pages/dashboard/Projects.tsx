@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
-import { useAuth } from "@/lib/auth";
+import { useAuth, useRequireAuth } from "@/lib/auth";
 import { IconChevronDown, IconClock, IconFolder, IconKey } from "@/lib/icons";
 import {
   Button,
@@ -24,7 +24,8 @@ type ApiKey = components["schemas"]["v1ApiKey"];
 const PAGE_SIZE = 50;
 
 export function Projects() {
-  const { isAuthenticated } = useAuth();
+  useRequireAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -63,19 +64,8 @@ export function Projects() {
     setCreating(false);
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Projects" description="Group your agents and API keys by project." />
-        <Card>
-          <EmptyState
-            icon={<IconFolder className="w-5 h-5" />}
-            title="Sign in to manage projects"
-            description="Projects and their API keys are tied to your account. Sign in to create and view them."
-          />
-        </Card>
-      </div>
-    );
+  if (isLoading || !isAuthenticated) {
+    return null;
   }
 
   return (
