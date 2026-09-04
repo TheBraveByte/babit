@@ -30,7 +30,7 @@ function grantsToGraph(chain: Grant[]) {
       const role: GrantRole = i === 0 ? "principal" : i === 1 ? "agent" : "subagent";
       const scopeParts: string[] = [];
       const globs = g.scope?.resource_globs;
-      if (globs && globs.length) scopeParts.push(globs.slice(0, 2).join(", "));
+      if (globs?.length) scopeParts.push(globs.slice(0, 2).join(", "));
       if (g.scope?.max_value_cents)
         scopeParts.push(`≤ $${(Number(g.scope.max_value_cents) / 100).toLocaleString()}`);
       return {

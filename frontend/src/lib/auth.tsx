@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { api, clearSessionCookie, errText, getAuthToken, setAuthToken } from "@/api/client";
 import { useRouter } from "@/lib/router";
 
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [branding]);
 
-  const refreshMe = async () => {
+  const refreshMe = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await api.GET("/v1/auth/me", {});
@@ -102,11 +102,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     refreshMe();
-  }, []);
+  }, [refreshMe]);
 
   const login = async (email: string, password: string) => {
     try {

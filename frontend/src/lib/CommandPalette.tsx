@@ -122,7 +122,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const filtered = items.filter(
     (i) =>
       i.title.toLowerCase().includes(query.toLowerCase()) ||
-      (i.subtitle && i.subtitle.toLowerCase().includes(query.toLowerCase())) ||
+      i.subtitle?.toLowerCase().includes(query.toLowerCase()) ||
       i.category.toLowerCase().includes(query.toLowerCase()),
   );
 
