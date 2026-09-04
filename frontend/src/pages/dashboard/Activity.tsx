@@ -16,6 +16,7 @@ import {
 } from "@/lib/ui";
 import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
+import { useRequireAuth } from "@/lib/auth";
 
 type ActionEvent = components["schemas"]["v1ActionEvent"];
 
@@ -41,6 +42,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 const PAGE_SIZE = 50;
 
 export function Activity() {
+  useRequireAuth();
   const [selected, setSelected] = useState<ActionEvent | null>(null);
   const { selected: project } = useProject();
   const {

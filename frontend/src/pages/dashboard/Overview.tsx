@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/api/client";
 import type { components } from "@/api/schema";
-import { useAuth } from "@/lib/auth";
+import { useAuth, useRequireAuth } from "@/lib/auth";
 import {
   IconActivity,
   IconArrowRight,
@@ -21,7 +21,8 @@ const n = (v: unknown) => {
 };
 
 export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => void }) {
-  const { user, branding, isAuthenticated } = useAuth();
+  useRequireAuth();
+  const { user, branding, isAuthenticated, isLoading } = useAuth();
   const [keyId, setKeyId] = useState<string | null>(null);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [keyError, setKeyError] = useState(false);
@@ -95,6 +96,10 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
         icon: <IconGitBranch className="w-4 h-4" />,
       },
     ];
+
+  if (isLoading || !isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">

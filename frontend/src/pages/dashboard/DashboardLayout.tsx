@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react";
-import { useAuth } from "@/lib/auth";
+import { useAuth, useRequireAuth } from "@/lib/auth";
 import { CommandPalette } from "@/lib/CommandPalette";
 import {
   BabitLogo,
@@ -74,6 +74,7 @@ export function DashboardLayout({
   children: ReactNode;
 }) {
   const { user, branding, logout } = useAuth();
+  useRequireAuth();
   const { navigate } = useRouter();
   const { projects, selected, selectProject } = useProject();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);

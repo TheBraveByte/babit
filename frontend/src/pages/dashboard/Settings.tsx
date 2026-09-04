@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, errText } from "@/api/client";
-import { useAuth } from "@/lib/auth";
+import { useAuth, useRequireAuth } from "@/lib/auth";
 import { BabitLogo, IconBuilding, IconCheck, IconKey, IconShieldCheck } from "@/lib/icons";
 import { Button, Copyable, Error, Field, PageHeader, Select, TextInput } from "@/lib/ui";
 
@@ -67,6 +67,7 @@ function SectionHead({
 }
 
 export function Settings() {
+  useRequireAuth();
   const { user, branding, refreshMe } = useAuth();
   const [section, setSection] = useState<Section>("general");
   const [keyId, setKeyId] = useState<string | null>(null);

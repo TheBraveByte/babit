@@ -18,6 +18,7 @@ import {
 } from "@/lib/ui";
 import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
+import { useRequireAuth } from "@/lib/auth";
 
 type VerifyChain = components["schemas"]["v1VerifyChainResponse"];
 type Grant = components["schemas"]["v1Grant"];
@@ -44,6 +45,7 @@ function grantsToGraph(chain: Grant[]) {
 }
 
 export function Delegations() {
+  useRequireAuth();
   const [selected, setSelected] = useState<Grant | null>(null);
   const [chain, setChain] = useState<VerifyChain | null>(null);
   const [chainLoading, setChainLoading] = useState(false);

@@ -1,5 +1,6 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import { api, clearSessionCookie, errText, getAuthToken, setAuthToken } from "@/api/client";
+import { useRouter } from "@/lib/router";
 
 export interface User {
   id?: string;
@@ -185,4 +186,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   return useContext(AuthContext);
+}
+
+export function useRequireAuth() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const { navigate } = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 }

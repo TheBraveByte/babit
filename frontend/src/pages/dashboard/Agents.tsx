@@ -1,8 +1,10 @@
 import { IconCpu, IconGitBranch, IconShieldCheck } from "@/lib/icons";
+import { useRequireAuth } from "@/lib/auth";
 import { Button, EmptyState, PageHeader } from "@/lib/ui";
 import type { DashboardTab } from "./DashboardLayout";
 
 export function Agents({ onNavigate }: { onNavigate?: (tab: DashboardTab) => void }) {
+  useRequireAuth();
   return (
     <div className="space-y-6">
       <PageHeader
@@ -13,7 +15,6 @@ export function Agents({ onNavigate }: { onNavigate?: (tab: DashboardTab) => voi
       <EmptyState
         icon={<IconCpu className="w-5 h-5" />}
         title="No agent registry yet"
-        description="Babit does not expose an agent listing endpoint. Agents exist only as the subject_id of the grants that authorize them. Verify a grant chain to inspect an agent's authority, or look up an action event or receipt by ID to see what it did."
         action={
           onNavigate && (
             <div className="flex items-center justify-center gap-2">
