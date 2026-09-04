@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"time"
@@ -42,6 +43,9 @@ func authContext(ctx context.Context, cfg *config.Config, conn *grpc.ClientConn)
 }
 
 func main() {
+	url := flag.String("url", "https://example.com", "URL to navigate")
+	flag.Parse()
+
 	ctx := context.Background()
 	cfg, err := config.Load()
 	if err != nil {
@@ -93,7 +97,7 @@ func main() {
 		}
 	}()
 
-	ev, err := br.Navigate(ctx, "https://example.com")
+	ev, err := br.Navigate(ctx, *url)
 	if err != nil {
 		log.Fatalf("navigate: %v", err)
 	}

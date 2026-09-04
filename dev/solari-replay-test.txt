@@ -1,0 +1,15 @@
+Solari replay test data.
+
+After deploying the gRPC max message size fix, call the replay endpoint for:
+
+babitsession: BAL-304637
+babitevent:   BAL-531942
+recording_ref: slr://session/ip-10-0-10-40:7732aa26-fddb-4d0a-9e95-3d279f8880e2:cmtigwnz301cco101zzac0wuz:1788508586436.rc3hSEtOxo6ViMNomV71Gg
+url:          https://github.com/TheBraveByte/babit
+
+Command:
+  curl -s -H "Authorization: Bearer $TOKEN" \
+    "https://babit-1-0y9x.onrender.com/v1/sessions/BAL-304637:replay" \
+    -o replay.ndjson
+
+If the replay endpoint returns a non-empty "frame" field, the Solari integration is fully end-to-end.
