@@ -1,19 +1,19 @@
 const HOW_TO_READ = [
   {
     title: "Principal",
-    body: "A person with authority, such as Yusuf Akinleye, Operations Lead.",
+    body: "A real person with real authority.",
   },
   {
     title: "Grant",
-    body: "A signed permission ticket with a scope, capabilities and an expiry. BAL-998258 is the root grant.",
+    body: "A signed permission slip that says what, where, and for how long. BAL-998258 is the root grant.",
   },
   {
     title: "Delegation",
-    body: "A principal or agent hands a narrower slice to a subject. Each child carries the parent's signature.",
+    body: "Permission can be narrowed and passed down. Each child carries the parent's signature.",
   },
   {
     title: "Chain check",
-    body: "Revoke or tamper with any link and the whole subtree below it fails verification.",
+    body: "Break one link and the whole branch below turns red.",
   },
 ];
 
@@ -36,11 +36,11 @@ export function SectionAuthorityChain() {
                 Authority
               </p>
               <h2 className="type-h2" style={{ color: "var(--dark-section-fg)" }}>
-                Every action traces back to a person.
+                Every action has a name attached.
               </h2>
               <p className="type-lead mt-5" style={{ color: "var(--dark-section-muted)" }}>
-                A principal authorizes an agent, which can hand a narrower slice to a sub-agent.
-                Revoke a grant and every grant beneath it goes dark.
+                A person gives permission. An agent can pass a narrower slice to another agent.
+                Revoke one grant and the whole branch dies.
               </p>
             </div>
 

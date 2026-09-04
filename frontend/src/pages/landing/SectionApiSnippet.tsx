@@ -43,7 +43,7 @@ export function SectionApiSnippet() {
     <Section id="api-snippet" tone="raised">
       <SectionHeader
         eyebrow="Get started"
-        title="One call. Signed. Tamper-evident."
+        title="One call. Signed. Done."
         lead="Record an action from any language and get back a receipt ID you can verify later."
       />
 
@@ -99,7 +99,7 @@ export function SectionApiSnippet() {
         </div>
 
         <p className="mt-6 text-center type-body">
-          No SDK required. gRPC and OpenAPI are documented right in the console.
+          No SDK. No hand-waving. Just an HTTP call and a signature.
         </p>
       </div>
     </Section>

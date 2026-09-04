@@ -26,7 +26,7 @@ export function Footer() {
               </span>
             </div>
             <p className="text-xs leading-relaxed max-w-xs" style={{ color: "var(--muted)" }}>
-              A signed receipt for what your agents do. Independently auditable.
+              Proof that your agents behaved. Signed, sealed, and auditable.
             </p>
           </div>
           <div className="space-y-3">

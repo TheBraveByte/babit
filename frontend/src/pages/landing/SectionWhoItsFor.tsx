@@ -3,33 +3,33 @@ import { CardGrid, FlushCard, Section, SectionHeader } from "./Section";
 const SECTORS = [
   {
     sector: "Financial services",
-    agentDoes: "Moves money, approves payouts.",
-    benefit: "Proof of who authorized it.",
+    agentDoes: "AI just moved money.",
+    benefit: "A receipt that names the person who said yes.",
   },
   {
     sector: "Insurance",
-    agentDoes: "Triages and settles claims.",
-    benefit: "Replay any decision exactly.",
+    agentDoes: "Settles claims while you sleep.",
+    benefit: "Replay the exact moment it decided.",
   },
   {
     sector: "Healthcare",
-    agentDoes: "Handles records and prior auth.",
-    benefit: "Tied to a named clinician.",
+    agentDoes: "Touches patient records.",
+    benefit: "Tied to a real clinician, not a black box.",
   },
   {
     sector: "Software teams",
-    agentDoes: "Ships code, runs migrations.",
-    benefit: "Every deploy has a trail.",
+    agentDoes: "Deploys code and touches prod.",
+    benefit: "Every deploy has a paper trail.",
   },
   {
     sector: "Legal and audit",
-    agentDoes: "Reviews contracts, exports records.",
-    benefit: "Verifies offline, years later.",
+    agentDoes: "Reviews contracts at 3am.",
+    benefit: "Still verifiable in 2035.",
   },
   {
     sector: "Public sector",
-    agentDoes: "Processes benefits and licences.",
-    benefit: "Explicit, revocable, auditable.",
+    agentDoes: "Decides who gets benefits.",
+    benefit: "Explicit, revocable, court-ready.",
   },
 ];
 
@@ -38,7 +38,7 @@ export function SectionWhoItsFor() {
     <Section id="who">
       <SectionHeader
         eyebrow="Who it's for"
-        title="Where an agent's word isn't good enough."
+        title="Industries that can't take 'the agent did it' as an answer."
         lead="For teams that answer to regulators, auditors, customers, or courts."
       />
 

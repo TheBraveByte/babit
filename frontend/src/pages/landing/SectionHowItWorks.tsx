@@ -5,26 +5,26 @@ const STEPS = [
   {
     label: "Authority",
     Icon: IconUser,
-    title: "A person gives permission.",
-    body: "One specific thing, nothing more.",
+    title: "A human says yes.",
+    body: "One specific permission. Nothing more.",
   },
   {
     label: "Action",
     Icon: IconActivity,
-    title: "The agent acts.",
+    title: "The agent does its thing.",
     body: "Clicks, code, or money movement.",
   },
   {
     label: "Evidence",
     Icon: IconLock,
-    title: "babit signs it.",
-    body: "Notarized and tamper-evident.",
+    title: "babit notarizes it.",
+    body: "Signed, hash-linked, and tamper-evident.",
   },
   {
     label: "Verification",
     Icon: IconShieldCheck,
-    title: "Anyone can check it.",
-    body: "Independently auditable.",
+    title: "Anyone can verify it.",
+    body: "Independently auditable, even offline.",
   },
 ];
 
@@ -33,8 +33,8 @@ export function SectionHowItWorks() {
     <Section id="how">
       <SectionHeader
         eyebrow="How it works"
-        title="From permission to proof."
-        lead="Tie what an agent did to who allowed it. Turn it into evidence anyone can check."
+        title="From yes to receipt."
+        lead="See who gave permission, what the agent did, and the proof that ties them together."
       />
 
       <div className="mt-14">
@@ -47,7 +47,7 @@ export function SectionHowItWorks() {
               One thread, from yes to proof.
             </h3>
             <p className="type-body">
-              Who allowed it follows every step. The result is evidence, not just a log.
+              Who allowed it follows every step. The result is a receipt, not just a log.
             </p>
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {STEPS.map((s, i) => (

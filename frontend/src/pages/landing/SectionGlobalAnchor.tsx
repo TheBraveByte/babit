@@ -16,8 +16,8 @@ export function SectionGlobalAnchor() {
         <div>
           <SectionHeader
             eyebrow="Public anchoring"
-            title="Witnessed across the globe."
-            lead="Anchored to public transparency logs worldwide. If one goes dark, the evidence still holds."
+            title="Anchored where we can't touch it."
+            lead="Anchored to public transparency logs. Even if Babit disappears, the proof survives."
           />
           <div className="mt-8 space-y-4">
             {[

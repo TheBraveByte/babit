@@ -10,8 +10,8 @@ export function SectionLogsVsEvidence() {
     <Section id="product">
       <SectionHeader
         eyebrow="Logs vs evidence"
-        title="A log can be quietly changed. Evidence cannot."
-        lead="The same event in an ordinary system and in babit."
+        title="Logs are editable. Evidence is signed."
+        lead="Same event. Two very different stories."
       />
 
       <div className="mt-14">
@@ -21,7 +21,7 @@ export function SectionLogsVsEvidence() {
               className="flex items-center justify-between pb-3"
               style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
-              <span className="type-eyebrow">An ordinary log entry</span>
+              <span className="type-eyebrow">The old way: a plain log</span>
               <button
                 onClick={() => setLogTampered(!logTampered)}
                 className="text-[11px] px-2.5 py-1 rounded-babit-sm cursor-pointer transition-colors font-medium"
@@ -39,7 +39,7 @@ export function SectionLogsVsEvidence() {
                       }
                 }
               >
-                {logTampered ? "Restore" : "Tamper with it"}
+                {logTampered ? "Restore" : "Sneakily edit"}
               </button>
             </div>
 
@@ -75,7 +75,7 @@ export function SectionLogsVsEvidence() {
                 <span className="shrink-0 font-semibold" style={{ color: "var(--color-failed)" }}>
                   ✗
                 </span>
-                <span>It does not say who allowed the action, only that something ran.</span>
+                <span>It doesn't say who allowed the action, only that something ran.</span>
               </li>
             </ul>
           </LandingCard>
@@ -85,7 +85,7 @@ export function SectionLogsVsEvidence() {
               style={{ borderBottom: "1px solid var(--border-subtle)" }}
             >
               <span className="type-eyebrow" style={{ color: "var(--fg)" }}>
-                A babit activity stream
+                The Babit way: signed evidence
               </span>
               <span
                 className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full"
@@ -118,7 +118,7 @@ export function SectionLogsVsEvidence() {
                 <span className="shrink-0 font-semibold" style={{ color: "var(--color-verified)" }}>
                   ✓
                 </span>
-                <span>Click any event to inspect its session, content hash and signature.</span>
+                <span>Click any event to see the session, content hash, and signature.</span>
               </li>
             </ul>
           </LandingCard>

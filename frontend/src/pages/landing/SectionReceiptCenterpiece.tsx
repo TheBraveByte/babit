@@ -7,8 +7,8 @@ export function SectionReceiptCenterpiece() {
       <SectionHeader
         eyebrow="The receipt"
         align="center"
-        title="Every action leaves a receipt you can read."
-        lead="What happened, who did it, which grant allowed it, and when. The proof sits underneath."
+        title="A receipt you can take to court."
+        lead="What happened, who said yes, and the proof underneath. In plain English and in math."
       />
 
       <div className="mt-14">
@@ -47,8 +47,7 @@ export function SectionReceiptCenterpiece() {
           </LandingCard>
 
           <p className="text-center text-sm mt-6" style={{ color: "var(--muted)" }}>
-            Each row is a recorded event. Click Proof to fetch its cryptographic receipt, content
-            hash and notary signature.
+            Click any row to see the signature, content hash, and the grant behind it.
           </p>
         </div>
       </div>

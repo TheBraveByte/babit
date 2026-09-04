@@ -103,7 +103,7 @@ export function ProductPreview() {
         </div>
       </div>
       <p className="mt-6 text-center type-body">
-        The console reads everything from the ledger. No cached numbers, no approximations.
+        The console reads straight from the ledger. No cached numbers, no placeholders.
       </p>
     </Section>
   );

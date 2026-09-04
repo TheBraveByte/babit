@@ -7,8 +7,8 @@ export function SectionVerifyRecord() {
       <SectionHeader
         eyebrow="Verification"
         align="center"
-        title="Independently auditable."
-        lead="Every receipt carries its own proof. Verify it inside the dashboard, from a file, or anywhere with the public key."
+        title="Verify without calling us."
+        lead="Each receipt has the proof built in. Check it in the dashboard, from a file, or with the public key."
       />
 
       <div className="mt-14">
@@ -49,8 +49,8 @@ export function SectionVerifyRecord() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
             {[
               "Enter an event ID and the console pulls the proof from the ledger.",
-              "Upload a saved receipt JSON and verify it locally.",
-              "Fetch the notary public key to check signatures anywhere offline.",
+              "Upload a saved receipt and verify it locally.",
+              "Fetch the public key and check signatures anywhere, even offline.",
             ].map((text, i) => (
               <div key={i} className="flex gap-3 text-sm" style={{ color: "var(--muted)" }}>
                 <span className="shrink-0 font-semibold" style={{ color: "var(--color-verified)" }}>

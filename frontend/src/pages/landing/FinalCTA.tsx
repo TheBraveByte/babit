@@ -18,18 +18,17 @@ export function FinalCTA() {
       <div className="container-babit relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           <p className="type-eyebrow mb-6" style={{ color: "var(--brand-accent)" }}>
-            Start now
+            Start proving it
           </p>
           <h2 className="type-display" style={{ color: "var(--dark-section-fg)" }}>
-            Know what your agents did, and prove it.
+            Put your agents under oath.
           </h2>
 
           <p
             className="type-lead mt-6 max-w-xl mx-auto"
             style={{ color: "var(--dark-section-muted)" }}
           >
-            Bind agent actions to who authorized them. Cryptographically signed, independently
-            auditable.
+            Stop trusting agent logs. Start signing agent actions.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -60,7 +59,7 @@ export function FinalCTA() {
                 border: "1px solid var(--dark-section-border)",
               }}
             >
-              <span>Read the docs</span>
+              <span>Read docs</span>
               <span style={{ color: "var(--dark-section-muted)" }}>↗</span>
             </a>
           </div>

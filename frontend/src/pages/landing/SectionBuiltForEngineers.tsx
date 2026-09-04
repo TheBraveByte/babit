@@ -7,8 +7,8 @@ export function SectionBuiltForEngineers() {
     <Section id="developers">
       <SectionHeader
         eyebrow="Built for engineers"
-        title="One HTTP call to record. One to verify."
-        lead="REST and gRPC endpoints, OpenAPI documented, no SDK required. The console shows the same data the API returns."
+        title="One call to record. One call to verify."
+        lead="REST, gRPC, OpenAPI. No SDK required. The console is just a nice UI on the same API."
       />
 
       <div className="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -50,11 +50,10 @@ export function SectionBuiltForEngineers() {
               The API surface
             </span>
             <h3 className="type-h3" style={{ color: "var(--fg)" }}>
-              Every endpoint, documented.
+              Every endpoint documented.
             </h3>
             <p className="type-body">
-              Auth, grants, sessions, events, and verification, with request and response examples
-              you can run.
+              Auth, grants, sessions, events, verification. Copy-paste examples included.
             </p>
           </div>
           <div className="mt-auto">
@@ -63,7 +62,7 @@ export function SectionBuiltForEngineers() {
               className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-pill transition-all hover:opacity-90"
               style={{ backgroundColor: "var(--brand-accent)", color: "var(--surface)" }}
             >
-              <span>Open the API reference</span>
+              <span>Open API reference</span>
               <IconArrowUpRight className="w-4 h-4" />
             </Link>
           </div>

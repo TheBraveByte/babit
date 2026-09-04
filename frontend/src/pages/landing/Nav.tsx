@@ -87,7 +87,7 @@ export function Nav() {
                 className="hidden sm:inline-flex px-3.5 py-1.5 text-[13px] font-medium rounded-pill hover:opacity-90 transition-opacity cursor-pointer"
                 style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
               >
-                Get started
+                Start free
               </button>
             </>
           )}
@@ -172,7 +172,7 @@ export function Nav() {
                   className="w-full text-center py-2.5 text-[14px] rounded-babit font-medium"
                   style={{ backgroundColor: "var(--fg)", color: "var(--bg)" }}
                 >
-                  Get started
+                  Start free
                 </button>
               </>
             )}

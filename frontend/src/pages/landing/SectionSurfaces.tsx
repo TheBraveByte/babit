@@ -5,20 +5,20 @@ const SURFACES = [
   {
     Icon: IconMonitor,
     tag: "Browser",
-    title: "Agents in a browser.",
-    body: "Clicks, forms and navigation, signed live.",
+    title: "Cloud browsers with receipts.",
+    body: "Every click, form, and page. Signed while it happens.",
   },
   {
     Icon: IconTerminal,
     tag: "Sandbox",
-    title: "Agents running code.",
-    body: "Commands and writes, each notarized.",
+    title: "Signed code runs.",
+    body: "Every command and write gets a notarized fingerprint.",
   },
   {
     Icon: IconCpu,
     tag: "Desktop",
-    title: "Agents driving an app.",
-    body: "Desktop actions, with permission.",
+    title: "Desktop apps, witnessed.",
+    body: "Every tap and keystroke tied back to permission.",
   },
 ];
 
@@ -27,8 +27,8 @@ export function SectionSurfaces() {
     <Section id="surfaces" tone="raised">
       <SectionHeader
         eyebrow="Surfaces"
-        title="Wherever the agent acts, babit records it."
-        lead="Browser, sandbox, or desktop, you reach the same API and get the same signed receipt."
+        title="If the agent touches it, babit signs it."
+        lead="Cloud browser, sandbox, desktop — same API, same receipt. babit does not care where the agent runs."
       />
 
       <div className="mt-14">
@@ -59,10 +59,10 @@ export function SectionSurfaces() {
             </CardIcon>
             <div className="space-y-0.5">
               <h3 className="text-[15px] font-medium" style={{ color: "var(--fg)" }}>
-                Same surface, any language.
+                One API. Any language.
               </h3>
               <p className="type-body">
-                Post the action, the surface, and the grant. The API returns a signed event ID.
+                Send the action, the surface, and the grant. Get a signed event ID back.
               </p>
             </div>
           </div>
