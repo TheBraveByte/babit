@@ -10,9 +10,9 @@ const RouterContext = createContext<RouterContextType>({
   navigate: () => {},
 });
 
-export function RouterProvider({ children }: { children: ReactNode }) {
-  const getPath = () => window.location.pathname + window.location.search || "/";
+const getPath = () => window.location.pathname + window.location.search || "/";
 
+export function RouterProvider({ children }: { children: ReactNode }) {
   const [path, setPath] = useState(getPath);
 
   useEffect(() => {

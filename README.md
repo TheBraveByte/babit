@@ -50,6 +50,7 @@ Set via environment or a local `.env`:
 |---|---|
 | `DATABASE_URL` | Postgres DSN. For Neon, include `?sslmode=require`. |
 | `NAL_NOTARY_SEED` | 32-byte hex Ed25519 seed. Use the same value to keep receipts stable across restarts. |
+| `NAL_JWT_SECRET` | Secret for signing session tokens. Generate with `openssl rand -base64 32` in production. |
 | `SOLARI_API_KEY` | Optional; enables recordings and replay. |
 | `NAL_API_KEY` | Optional gateway auth via `x-api-key`. |
 | `CORS_ALLOWED_ORIGINS` | Optional comma-separated list of allowed frontend origins. Defaults to `https://babit-inky.vercel.app,http://localhost:5173,http://localhost:3000` when unset. |

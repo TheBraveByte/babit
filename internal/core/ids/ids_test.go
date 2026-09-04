@@ -5,14 +5,14 @@ import (
 	"testing"
 )
 
-var ticket = regexp.MustCompile(`^BAL-\d{6}$`)
+var ticket = regexp.MustCompile(`^BAL-[0-9a-f]{16}$`)
 
 func TestNewFormat(t *testing.T) {
 	g := New()
 	for i := 0; i < 100; i++ {
 		id := g.New()
 		if !ticket.MatchString(id) {
-			t.Fatalf("id %q does not match BAL-######", id)
+			t.Fatalf("id %q does not match BAL-<hex>", id)
 		}
 	}
 }

@@ -20,6 +20,12 @@ services:
       # Optional gateway auth; when set, gRPC calls need x-api-key.
       - key: NAL_API_KEY
         sync: false
+      # JWT secret for session tokens. Generate a strong random value for PROD.
+      - key: NAL_JWT_SECRET
+        sync: false
+      # Optional comma-separated CORS allowlist.
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
       # Solari credentials (https://console.getsolari.com).
       - key: SOLARI_API_KEY
         sync: false

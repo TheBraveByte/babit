@@ -12,7 +12,6 @@ import (
 	"github.com/babit/nal/config"
 	"github.com/babit/nal/db"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
-	"github.com/babit/nal/internal/adapters/anchor"
 	"github.com/babit/nal/internal/adapters/brandfetch"
 	"github.com/babit/nal/internal/adapters/solari"
 	"github.com/babit/nal/internal/adapters/store"
@@ -46,7 +45,7 @@ func NewGRPCServer(ctx context.Context, cfg *config.Config) (*grpc.Server, error
 	verifier := graph.New(signer)
 	idgen := ids.New()
 	clk := clock.System()
-	anc := anchor.NewInMemory(clk)
+	anc := st.Anchor()
 	sol := solariClient(cfg.Solari)
 	brands := brandResolver(cfg.Brandfetch)
 	notaryCore := service.NewNotaryCore(st.Events(), sealer, tree, anc)

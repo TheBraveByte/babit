@@ -8,6 +8,14 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Anchor struct {
+	SessionID     string
+	Kind          string
+	Root          []byte
+	AnchorReceipt []byte
+	AnchoredAt    pgtype.Timestamptz
+}
+
 type ApiKey struct {
 	ID        pgtype.UUID
 	ProjectID pgtype.UUID

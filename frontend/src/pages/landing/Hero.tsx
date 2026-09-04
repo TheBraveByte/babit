@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { EvidencePipeline } from "@/components/viz/EvidencePipeline";
 import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
-import { IconCheck, IconRefresh, IconShieldCheck, IconGitBranch } from "@/lib/icons";
+import { IconCheck, IconGitBranch, IconRefresh, IconShieldCheck } from "@/lib/icons";
 import { docsUrl } from "@/lib/links";
 import { useRouter } from "@/lib/router";
 
@@ -35,7 +35,7 @@ export function Hero() {
   const [computing, setComputing] = useState(false);
   const [sealed, setSealed] = useState(false);
 
-  const generateReceipt = async () => {
+  const generateReceipt = useCallback(async () => {
     setComputing(true);
     setSealed(false);
     const result = await computeLiveReceipt({
@@ -49,11 +49,11 @@ export function Hero() {
     setLiveEvent(result);
     setComputing(false);
     setTimeout(() => setSealed(true), 400);
-  };
+  }, []);
 
   useEffect(() => {
     generateReceipt();
-  }, []);
+  }, [generateReceipt]);
 
   return (
     <section className="relative overflow-hidden" style={{ backgroundColor: "var(--bg)" }}>
