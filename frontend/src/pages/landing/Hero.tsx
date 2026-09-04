@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { EvidencePipeline } from "@/components/viz/EvidencePipeline";
 import { computeLiveReceipt, type LiveSimulatedEvent } from "@/lib/crypto";
-import { IconCheck, IconRefresh } from "@/lib/icons";
+import { IconCheck, IconRefresh, IconShieldCheck, IconGitBranch } from "@/lib/icons";
 import { docsUrl } from "@/lib/links";
 import { useRouter } from "@/lib/router";
 
@@ -15,8 +15,8 @@ const SCENARIO = {
 };
 
 const STATS = [
-  { value: "Signed", label: "receipts" },
-  { value: "Merkle", label: "inclusion roots" },
+  { value: "Signed", label: "receipts", icon: IconShieldCheck },
+  { value: "Merkle", label: "inclusion roots", icon: IconGitBranch },
 ];
 
 export function Hero() {
@@ -126,22 +126,30 @@ export function Hero() {
             </a>
           </div>
           <div className="mt-16 flex items-center gap-10">
-            {STATS.map((s) => (
-              <div key={s.label}>
-                <div
-                  className="text-[28px] font-medium tracking-tight tnum"
-                  style={{ color: "var(--fg)" }}
-                >
-                  {s.value}
+            {STATS.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.label}>
+                  <div className="flex items-center gap-2">
+                    <span style={{ color: "var(--brand-accent)", display: "inline-flex" }}>
+                      <Icon className="w-5 h-5" />
+                    </span>
+                    <div
+                      className="text-[28px] font-medium tracking-tight tnum"
+                      style={{ color: "var(--fg)" }}
+                    >
+                      {s.value}
+                    </div>
+                  </div>
+                  <div
+                    className="text-[11px] font-mono uppercase tracking-wider mt-0.5"
+                    style={{ color: "var(--muted)" }}
+                  >
+                    {s.label}
+                  </div>
                 </div>
-                <div
-                  className="text-[11px] font-mono uppercase tracking-wider mt-0.5"
-                  style={{ color: "var(--muted)" }}
-                >
-                  {s.label}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
         <div className="hidden lg:block absolute right-[5%] bottom-[12%] w-[380px]">
