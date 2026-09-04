@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
-  test:
+  backend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:16
@@ -30,6 +34,14 @@ jobs:
         with:
           go-version: "1.26"
           cache: true
+      - name: Install dependencies
+        run: go mod download
+      - name: gofmt
+        run: |
+          if [ -n "$(gofmt -l .)" ]; then
+            gofmt -d . | head -100
+            exit 1
+          fi
       - name: Build
         run: go build ./...
       - name: Vet
@@ -39,6 +51,7 @@ jobs:
 
   contract:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -47,13 +60,14 @@ jobs:
           cache: true
       - name: Install codegen tools
         run: |
-          go install github.com/bufbuild/buf/cmd/buf@latest
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest
-          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
-          go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+          go install github.com/bufbuild/buf/cmd/buf@v1.72.0
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.6.2
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@v2.30.0
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.30.0
+          go install github.com/sqlc-dev/sqlc/cmd/sqlc@v1.31.1
           go install github.com/vektra/mockery/v3@v3.7.2
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
       - name: Lint proto
         run: buf lint
       - name: Regenerate and check for drift
@@ -62,9 +76,12 @@ jobs:
           (cd db && sqlc generate)
           mockery
           git diff --exit-code
+      - name: Build with generated code
+        run: go build ./...
 
   frontend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
