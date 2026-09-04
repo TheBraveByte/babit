@@ -6,7 +6,6 @@ export function FinalCTA() {
 
   return (
     <section className="dark-section relative overflow-hidden section-y-lg">
-      {/* Layered background */}
       <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"

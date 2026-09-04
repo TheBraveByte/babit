@@ -26,7 +26,6 @@ export function AuthLayout({
         className="relative flex flex-col min-h-screen lg:min-h-0 px-6 py-8 sm:px-10 lg:px-16"
         style={{ backgroundColor: "var(--bg)" }}
       >
-        {/* Brand */}
         <Link
           to="/"
           className="inline-flex items-center gap-2.5 self-start transition-opacity hover:opacity-70"
@@ -35,8 +34,6 @@ export function AuthLayout({
           <BabitLogo className="w-[22px] h-[22px]" />
           <span className="font-medium text-[16px] tracking-tight">babit</span>
         </Link>
-
-        {/* Centered form */}
         <div className="flex-1 flex flex-col justify-center py-12">
           <div className="w-full max-w-[380px] mx-auto">
             <h1
@@ -65,8 +62,6 @@ export function AuthLayout({
           Receipts stay verifiable without an account.
         </p>
       </main>
-
-      {/* ── Visual panel: globe ─────────────────────────────────────── */}
       {visual ?? <AuthVisual />}
     </div>
   );
@@ -88,7 +83,6 @@ function AuthVisual() {
       className="relative overflow-hidden hidden lg:flex flex-col justify-between min-h-screen px-12 py-16"
       style={{ backgroundColor: "var(--secondary)", borderLeft: "1px solid var(--border)" }}
     >
-      {/* Globe canvas — centered, sized to the panel */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-[520px] h-[520px] opacity-100">
           <Suspense fallback={null}>
@@ -96,8 +90,6 @@ function AuthVisual() {
           </Suspense>
         </div>
       </div>
-
-      {/* Content overlay */}
       <div className="relative z-10 max-w-md">
         <h2
           className="text-[28px] font-medium tracking-[-0.025em] leading-tight"
@@ -130,8 +122,6 @@ function AuthVisual() {
             </p>
           </div>
         ))}
-
-        {/* Verified badge */}
         <div
           className="mt-8 inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5"
           style={{

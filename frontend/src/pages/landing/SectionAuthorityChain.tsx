@@ -30,7 +30,6 @@ export function SectionAuthorityChain() {
       />
       <div className="container-babit relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left: heading + how to read it */}
           <div className="space-y-8">
             <div>
               <p className="type-eyebrow mb-4" style={{ color: "var(--brand-accent)" }}>
@@ -78,8 +77,6 @@ export function SectionAuthorityChain() {
               </ul>
             </div>
           </div>
-
-          {/* Right: real delegations screenshot */}
           <div
             className="rounded-babit-md overflow-hidden"
             style={{

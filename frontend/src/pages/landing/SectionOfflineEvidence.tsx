@@ -3,7 +3,6 @@ import { LandingCard, Section, SectionHeader } from "./Section";
 export function SectionOfflineEvidence() {
   return (
     <>
-      {/* Public anchoring */}
       <section id="offline-globe" className="dark-section relative overflow-hidden section-y-lg">
         <div className="absolute inset-0 bg-dot-subtle pointer-events-none" />
         <div
@@ -67,8 +66,6 @@ export function SectionOfflineEvidence() {
           </div>
         </div>
       </section>
-
-      {/* Offline verification */}
       <Section id="offline">
         <SectionHeader
           eyebrow="Offline verification"

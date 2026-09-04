@@ -39,7 +39,6 @@ export function SectionHowItWorks() {
 
       <div className="mt-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-5">
-          {/* Dominant lead tile: the whole flow */}
           <LandingCard emphasis="raised" className="sm:col-span-2 lg:col-span-2 space-y-5">
             <span className="type-eyebrow block" style={{ color: "var(--brand-accent)" }}>
               The flow
@@ -64,8 +63,6 @@ export function SectionHowItWorks() {
               ))}
             </div>
           </LandingCard>
-
-          {/* Supporting tiles: the four points */}
           {STEPS.map((step) => (
             <LandingCard key={step.label} className="space-y-4">
               <CardIcon>

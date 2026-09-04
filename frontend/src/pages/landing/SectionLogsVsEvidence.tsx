@@ -16,7 +16,6 @@ export function SectionLogsVsEvidence() {
 
       <div className="mt-14">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
-          {/* Left: an ordinary log entry, silently editable */}
           <LandingCard className="space-y-4">
             <div
               className="flex items-center justify-between pb-3"
@@ -80,8 +79,6 @@ export function SectionLogsVsEvidence() {
               </li>
             </ul>
           </LandingCard>
-
-          {/* Right: the real babit Activity dashboard */}
           <LandingCard emphasis="raised" className="space-y-4">
             <div
               className="flex items-center justify-between pb-3"

@@ -41,15 +41,12 @@ export function Nav() {
       }}
     >
       <div className="container-babit h-full flex items-center justify-between">
-        {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5">
           <BabitLogo className="w-[20px] h-[20px] text-[color:var(--fg)]" />
           <span className="font-semibold text-[15px] tracking-tight text-[color:var(--fg)]">
             babit
           </span>
         </Link>
-
-        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-7">
           {navLinks.map((item) => (
             <a
@@ -67,8 +64,6 @@ export function Nav() {
             API
           </Link>
         </nav>
-
-        {/* Auth CTA */}
         <div className="flex items-center gap-2.5">
           <ThemeToggle className="hover:bg-[var(--secondary)]" />
           {isAuthenticated ? (
@@ -96,8 +91,6 @@ export function Nav() {
               </button>
             </>
           )}
-
-          {/* Mobile hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-1.5 text-[color:var(--fg)]"
@@ -125,8 +118,6 @@ export function Nav() {
           </button>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div
           id="landing-mobile-menu"

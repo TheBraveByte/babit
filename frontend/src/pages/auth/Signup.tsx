@@ -103,8 +103,6 @@ export function Signup() {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <Error message={error} />}
-
-        {/* Account Type Selector */}
         <div className="space-y-1.5">
           <label className="text-xs font-medium" style={{ color: "var(--fg)" }}>
             Account structure

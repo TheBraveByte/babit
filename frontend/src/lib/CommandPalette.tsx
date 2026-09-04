@@ -207,7 +207,6 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDownList}
       >
-        {/* Search Header */}
         <div className="flex items-center px-4 py-3.5 border-b border-[color:var(--border)] gap-3">
           <IconSearch className="w-4 h-4 text-[color:var(--muted)]" />
           <input
@@ -228,8 +227,6 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
             ESC
           </kbd>
         </div>
-
-        {/* Results list */}
         <div
           id="command-palette-results"
           role="listbox"
@@ -281,8 +278,6 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
             })
           )}
         </div>
-
-        {/* Footer */}
         <div className="px-4 py-2 border-t border-[color:var(--border)] bg-[var(--secondary)] flex items-center justify-between text-[11px] text-[color:var(--muted)] font-mono">
           <div className="flex items-center gap-2">
             <span>↑↓ to navigate</span>

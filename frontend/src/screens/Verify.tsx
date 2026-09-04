@@ -101,8 +101,6 @@ export function Verify() {
         title="Verify a receipt"
         description="Verify it yourself. Recompute a receipt's cryptographic proofs against the notary's public key and its external anchor, right here in your browser."
       />
-
-      {/* Primary: verify by event ID */}
       <Card className="animate-float-up">
         <div className="space-y-5">
           <div className="h-px accent-hairline -mx-5 -mt-5" />
@@ -143,8 +141,6 @@ export function Verify() {
           </div>
         </div>
       </Card>
-
-      {/* Secondary: upload a receipt file */}
       <Card>
         <div className="space-y-4">
           <div className="space-y-1">
@@ -203,8 +199,6 @@ export function Verify() {
           </label>
         </div>
       </Card>
-
-      {/* Advanced: paste receipt JSON */}
       <Card>
         <button
           type="button"
@@ -255,8 +249,6 @@ export function Verify() {
       </Card>
 
       {error && <Error message={error} />}
-
-      {/* Verification Report */}
       {result && <VerificationReport result={result} />}
     </div>
   );
@@ -271,7 +263,6 @@ function VerificationReport({ result }: { result: VResp }) {
       subtitle="Recomputed independently, so no trust in Babit is required."
     >
       <div className="space-y-5">
-        {/* Verdict banner */}
         <div
           className="rounded-babit p-4 flex items-center gap-3"
           style={{
@@ -296,8 +287,6 @@ function VerificationReport({ result }: { result: VResp }) {
             </div>
           </div>
         </div>
-
-        {/* Checklist */}
         <div className="space-y-2.5">
           {checks.map((c) => {
             const ok = result[c.key] === true;

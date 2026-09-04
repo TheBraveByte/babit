@@ -10,7 +10,6 @@ import { Section } from "./Section";
 export function ProductPreview() {
   return (
     <Section id="product-preview" size="default">
-      {/* Primary: dashboard overview */}
       <div
         className="rounded-babit-md overflow-hidden mx-auto max-w-[1080px]"
         style={{
@@ -20,7 +19,6 @@ export function ProductPreview() {
             "0 2px 8px -2px color-mix(in srgb, var(--fg) 6%, transparent), 0 40px 80px -32px color-mix(in srgb, var(--fg) 18%, transparent)",
         }}
       >
-        {/* Browser top bar */}
         <div
           className="flex items-center gap-2 px-4 py-3"
           style={{ borderBottom: "1px solid var(--border)", backgroundColor: "var(--secondary)" }}
@@ -35,8 +33,6 @@ export function ProductPreview() {
             babit / console
           </div>
         </div>
-
-        {/* Screenshot */}
         <div style={{ backgroundColor: "var(--bg)" }}>
           <img
             src="/console-dashboard.png"
@@ -46,10 +42,7 @@ export function ProductPreview() {
           />
         </div>
       </div>
-
-      {/* Secondary: analytics + delegations side by side */}
       <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[1080px] mx-auto">
-        {/* Analytics */}
         <div
           className="rounded-babit-md overflow-hidden"
           style={{
@@ -79,8 +72,6 @@ export function ProductPreview() {
             />
           </div>
         </div>
-
-        {/* Delegations — authority chain */}
         <div
           className="rounded-babit-md overflow-hidden"
           style={{
@@ -111,8 +102,6 @@ export function ProductPreview() {
           </div>
         </div>
       </div>
-
-      {/* Caption */}
       <p className="mt-6 text-center type-body">
         The console reads everything from the ledger. No cached numbers, no approximations.
       </p>
