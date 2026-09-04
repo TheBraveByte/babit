@@ -160,12 +160,12 @@ func (c *client) recordAction(sessionID, grantID, url, label, recordingRef strin
 	rand.Read(pre)
 	rand.Read(post)
 	body := map[string]any{
-		"grant_id":       grantID,
-		"action_type":    "browser.navigate",
-		"resource":       url,
-		"recording_ref":  recordingRef,
-		"action_payload": base64.StdEncoding.EncodeToString(payload),
-		"pre_state_hash": base64.StdEncoding.EncodeToString([]byte("pre-" + fmt.Sprintf("%x", pre))),
+		"grant_id":        grantID,
+		"action_type":     "browser.navigate",
+		"resource":        url,
+		"recording_ref":   recordingRef,
+		"action_payload":  base64.StdEncoding.EncodeToString(payload),
+		"pre_state_hash":  base64.StdEncoding.EncodeToString([]byte("pre-" + fmt.Sprintf("%x", pre))),
 		"post_state_hash": base64.StdEncoding.EncodeToString([]byte("post-" + fmt.Sprintf("%x", post))),
 	}
 	var out struct {
