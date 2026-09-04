@@ -61,9 +61,9 @@ func NewGRPCServer(ctx context.Context, cfg *config.Config) (*grpc.Server, error
 	ledgerv1.RegisterProjectServiceServer(srv, service.NewProjectService(st.Projects()))
 	ledgerv1.RegisterApiKeyServiceServer(srv, service.NewAPIKeyService(st.ApiKeys(), st.Projects()))
 	ledgerv1.RegisterAnalyticsServiceServer(srv, service.NewAnalyticsService(st.Analytics()))
-	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), signer, verifier, idgen, clk))
-	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer))
-	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), verifier, notaryCore, notaryCore, idgen, clk))
+	ledgerv1.RegisterDelegationServiceServer(srv, service.NewDelegation(st.Grants(), st.Projects(), signer, verifier, idgen, clk))
+	ledgerv1.RegisterNotaryServiceServer(srv, service.NewNotary(notaryCore, anc, signer, st.Sessions(), st.Projects()))
+	ledgerv1.RegisterCaptureServiceServer(srv, service.NewCapture(st.Sessions(), st.Grants(), st.Projects(), verifier, notaryCore, notaryCore, idgen, clk))
 	ledgerv1.RegisterLedgerServiceServer(srv, service.NewLedger(st.Events(), st.Grants(), tree, anc))
 	ledgerv1.RegisterReplayServiceServer(srv, service.NewReplay(st.Events(), sol))
 	ledgerv1.RegisterVerifyServiceServer(srv, service.NewVerify(signer, tree, verifier, clk))
@@ -146,6 +146,10 @@ func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
 		if want == "" {
 			return handler(ctx, req)
 		}
+		// Public auth and verification endpoints must not require the global API key.
+		if isPublicRPC(info.FullMethod) {
+			return handler(ctx, req)
+		}
 		// A per-project key (bak_*) that dbAPIKeyInterceptor already resolved to a user
 		// passes the coarse gate; an unresolved/garbage bak_ key does not.
 		if coreauth.UserID(ctx) != "" {
@@ -163,6 +167,21 @@ func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
 	}
 }
 
+func isPublicRPC(fullMethod string) bool {
+	public := []string{
+		"/solari.ledger.v1.AuthService/Login",
+		"/solari.ledger.v1.AuthService/Signup",
+		"/solari.ledger.v1.VerifyService/VerifyProof",
+		"/solari.ledger.v1.NotaryService/GetPublicKey",
+	}
+	for _, m := range public {
+		if m == fullMethod {
+			return true
+		}
+	}
+	return false
+}
+
 func dbAPIKeyInterceptor(keys ports.APIKeyStore) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 		if md, ok := metadata.FromIncomingContext(ctx); ok {
@@ -172,6 +191,7 @@ func dbAPIKeyInterceptor(keys ports.APIKeyStore) grpc.UnaryServerInterceptor {
 					sum := sha256.Sum256([]byte(k))
 					if rec, err := keys.GetByHash(ctx, hex.EncodeToString(sum[:])); err == nil && rec != nil {
 						ctx = coreauth.WithUserID(ctx, rec.UserID)
+						ctx = coreauth.WithProjectID(ctx, rec.ProjectID)
 					}
 				}
 			}
