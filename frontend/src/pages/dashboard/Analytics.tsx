@@ -25,11 +25,6 @@ import {
   IconShieldCheck,
 } from "@/lib/icons";
 import { Card, EmptyState, MetricCard, PageHeader } from "@/lib/ui";
-
-/* Analytics is driven entirely by real ledger aggregates from GET /v1/analytics/overview.
-   Counts arrive as int64 strings, coerced via num(). A series with no data renders an
-   honest empty state instead of an invented chart. */
-
 type Overview = components["schemas"]["v1GetOverviewResponse"];
 
 const num = (v: unknown): number => {
@@ -52,9 +47,6 @@ const shortDate = (iso: string) => {
     ? iso
     : d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 };
-
-/* ─── Shared chart chrome ────────────────────────────────────────────────────── */
-
 function ChartTooltip({
   active,
   payload,
@@ -97,7 +89,7 @@ function EmptyChart({ height = 220 }: { height?: number }) {
       style={{ height, backgroundColor: "var(--secondary)", border: "1px dashed var(--border)" }}
     >
       <span className="text-[12px] font-mono" style={{ color: "var(--muted)" }}>
-        —
+        -
       </span>
     </div>
   );
@@ -148,9 +140,6 @@ function LegendRow({ color, label, value }: { color: string; label: string; valu
     </div>
   );
 }
-
-/* ─── Page ───────────────────────────────────────────────────────────────────── */
-
 export function Analytics() {
   useRequireAuth();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
@@ -254,22 +243,22 @@ export function Analytics() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <MetricCard
               label="Total events"
-              value={loading ? "—" : fmt(totalEvents)}
+              value={loading ? "..." : fmt(totalEvents)}
               icon={<IconActivity className="w-4 h-4" />}
             />
             <MetricCard
               label="Sessions"
-              value={loading ? "—" : fmt(totalSessions)}
+              value={loading ? "..." : fmt(totalSessions)}
               icon={<IconLayers className="w-4 h-4" />}
             />
             <MetricCard
               label="Active grants"
-              value={loading ? "—" : fmt(activeGrants)}
+              value={loading ? "..." : fmt(activeGrants)}
               icon={<IconGitBranch className="w-4 h-4" />}
             />
             <MetricCard
               label="Revoked grants"
-              value={loading ? "—" : fmt(revokedGrants)}
+              value={loading ? "..." : fmt(revokedGrants)}
               icon={<IconShieldCheck className="w-4 h-4" />}
             />
           </div>

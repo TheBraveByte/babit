@@ -96,24 +96,24 @@ export function Activity() {
           }
         >
           <Row label="Session">
-            <Copyable value={selected.session_id || "—"} />
+            <Copyable value={selected.session_id || "-"} />
           </Row>
           <Row label="Sequence">
-            <span className="tnum">{selected.sequence ?? "—"}</span>
+            <span className="tnum">{selected.sequence ?? "-"}</span>
           </Row>
-          <Row label="Surface">{selected.surface || "—"}</Row>
+          <Row label="Surface">{selected.surface || "-"}</Row>
           <Row label="Grant">
-            <Copyable value={selected.grant_id || "—"} />
+            <Copyable value={selected.grant_id || "-"} />
           </Row>
-          <Row label="Recording">{selected.recording_ref || "—"}</Row>
+          <Row label="Recording">{selected.recording_ref || "-"}</Row>
           <Row label="Occurred At">
-            <span className="tnum">{selected.occurred_at || "—"}</span>
+            <span className="tnum">{selected.occurred_at || "-"}</span>
           </Row>
           <Row label="Content Hash">
-            {selected.content_hash ? <MonospaceHash hash={selected.content_hash} /> : "—"}
+            {selected.content_hash ? <MonospaceHash hash={selected.content_hash} /> : "-"}
           </Row>
           <Row label="Prev Hash">
-            {selected.prev_hash ? <MonospaceHash hash={selected.prev_hash} /> : "—"}
+            {selected.prev_hash ? <MonospaceHash hash={selected.prev_hash} /> : "-"}
           </Row>
           <Row label="Notary Signature">
             {selected.notary_signature ? (
@@ -121,7 +121,7 @@ export function Activity() {
                 {selected.notary_signature}
               </span>
             ) : (
-              "—"
+              "-"
             )}
           </Row>
         </Card>
@@ -215,7 +215,7 @@ export function Activity() {
                           className="px-3 py-2.5 text-xs hidden sm:table-cell"
                           style={{ color: "var(--muted)" }}
                         >
-                          {ev.occurred_at?.slice(0, 19).replace("T", " ") || "—"}
+                          {ev.occurred_at?.slice(0, 19).replace("T", " ") || "-"}
                         </td>
                         <td className="px-3 py-2.5 text-right">
                           <button

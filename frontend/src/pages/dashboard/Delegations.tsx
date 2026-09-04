@@ -36,7 +36,7 @@ function grantsToGraph(chain: Grant[]) {
         scopeParts.push(`≤ $${(Number(g.scope.max_value_cents) / 100).toLocaleString()}`);
       return {
         role,
-        subject: (i === 0 ? g.principal_id : g.subject_id) || g.subject_id || g.principal_id || "—",
+        subject: (i === 0 ? g.principal_id : g.subject_id) || g.subject_id || g.principal_id || "-",
         capabilities: g.capabilities ?? undefined,
         scope: scopeParts.join(" · ") || undefined,
       };
@@ -124,8 +124,6 @@ export function Delegations() {
         >
           <div className="space-y-5">
             <div className="h-px accent-hairline -mx-5 -mt-5" />
-
-            {/* Grant details */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <span
@@ -135,7 +133,7 @@ export function Delegations() {
                   Principal
                 </span>
                 <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
-                  {selected.principal_id || "—"}
+                  {selected.principal_id || "-"}
                 </span>
               </div>
               <div>
@@ -146,7 +144,7 @@ export function Delegations() {
                   Subject
                 </span>
                 <span className="text-sm font-medium" style={{ color: "var(--fg)" }}>
-                  {selected.subject_id || "—"}
+                  {selected.subject_id || "-"}
                 </span>
               </div>
               <div>
@@ -168,12 +166,10 @@ export function Delegations() {
                   Capabilities
                 </span>
                 <span className="font-mono text-xs" style={{ color: "var(--fg)" }}>
-                  {(selected.capabilities ?? []).join(", ") || "—"}
+                  {(selected.capabilities ?? []).join(", ") || "-"}
                 </span>
               </div>
             </div>
-
-            {/* Chain verification */}
             <div className="pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
               <div className="flex items-center justify-between pb-2">
                 <span
@@ -257,8 +253,6 @@ export function Delegations() {
                 </>
               )}
             </div>
-
-            {/* Revoke action */}
             <div className="pt-4" style={{ borderTop: "1px solid var(--border-subtle)" }}>
               {revoked ? (
                 <div
