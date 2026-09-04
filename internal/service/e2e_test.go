@@ -10,17 +10,21 @@ import (
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
 	"github.com/babit/nal/internal/adapters/anchor"
 	"github.com/babit/nal/internal/adapters/store"
+	coreauth "github.com/babit/nal/internal/core/auth"
 	"github.com/babit/nal/internal/core/clock"
 	"github.com/babit/nal/internal/core/graph"
 	"github.com/babit/nal/internal/core/ids"
 	"github.com/babit/nal/internal/core/merkle"
 	"github.com/babit/nal/internal/core/seal"
 	"github.com/babit/nal/internal/core/sign"
+	"github.com/babit/nal/internal/ports"
 	"github.com/babit/nal/internal/service"
 	"google.golang.org/protobuf/proto"
 )
 
 type rig struct {
+	ctx        context.Context
+	projectID  string
 	delegation *service.Delegation
 	capture    *service.Capture
 	ledger     *service.Ledger
@@ -46,34 +50,47 @@ func newRig(t *testing.T) rig {
 	tree := merkle.New()
 	anc := anchor.NewInMemory(clk)
 	core := service.NewNotaryCore(st.Events(), seal.New(signer), tree, anc)
+
+	// Seed a real user and project so the auth checks pass.
+	user, err := st.Users().Create(context.Background(), &ports.User{Email: fmt.Sprintf("e2e_%s@example.com", ids.New().New()), PasswordHash: "hash"})
+	if err != nil {
+		t.Fatalf("create user: %v", err)
+	}
+	project, err := st.Projects().Create(context.Background(), user.ID, "e2e")
+	if err != nil {
+		t.Fatalf("create project: %v", err)
+	}
+	ctx := coreauth.WithUserID(context.Background(), user.ID)
+
 	return rig{
-		delegation: service.NewDelegation(st.Grants(), signer, verifier, ids.New(), clk),
-		capture:    service.NewCapture(st.Sessions(), st.Grants(), verifier, core, core, ids.New(), clk),
+		ctx:        ctx,
+		projectID:  project.ID,
+		delegation: service.NewDelegation(st.Grants(), st.Projects(), signer, verifier, ids.New(), clk),
+		capture:    service.NewCapture(st.Sessions(), st.Grants(), st.Projects(), verifier, core, core, ids.New(), clk),
 		ledger:     service.NewLedger(st.Events(), st.Grants(), tree, anc),
 		verify:     service.NewVerify(signer, tree, verifier, clk),
 	}
 }
 
 func TestEndToEndNotarizeVerifyAndTamper(t *testing.T) {
-	ctx := context.Background()
 	r := newRig(t)
 
-	root, err := r.delegation.IssueRootGrant(ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_alice", Scope: &ledgerv1.Scope{MaxDepth: 3}})
+	root, err := r.delegation.IssueRootGrant(r.ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_alice", ProjectId: r.projectID, Scope: &ledgerv1.Scope{MaxDepth: 3}})
 	if err != nil {
 		t.Fatalf("issue root: %v", err)
 	}
-	child, err := r.delegation.Delegate(ctx, &ledgerv1.DelegateRequest{ParentGrantId: root.GetGrant().GetGrantId(), SubjectId: "agt_shopper", Capabilities: []string{"browser.click"}, Scope: &ledgerv1.Scope{}})
+	child, err := r.delegation.Delegate(r.ctx, &ledgerv1.DelegateRequest{ParentGrantId: root.GetGrant().GetGrantId(), SubjectId: "agt_shopper", Capabilities: []string{"browser.click"}, Scope: &ledgerv1.Scope{}})
 	if err != nil {
 		t.Fatalf("delegate: %v", err)
 	}
-	sess, err := r.capture.BeginSession(ctx, &ledgerv1.BeginSessionRequest{RootGrantId: root.GetGrant().GetGrantId(), Surface: ledgerv1.Surface_SURFACE_BROWSER})
+	sess, err := r.capture.BeginSession(r.ctx, &ledgerv1.BeginSessionRequest{RootGrantId: root.GetGrant().GetGrantId(), Surface: ledgerv1.Surface_SURFACE_BROWSER})
 	if err != nil {
 		t.Fatalf("begin session: %v", err)
 	}
 
 	var lastEvent string
 	for i := 0; i < 3; i++ {
-		rec, rerr := r.capture.RecordAction(ctx, &ledgerv1.RecordActionRequest{
+		rec, rerr := r.capture.RecordAction(r.ctx, &ledgerv1.RecordActionRequest{
 			SessionId:    sess.GetSession().GetSessionId(),
 			GrantId:      child.GetGrant().GetGrantId(),
 			ActionType:   "browser.click",
@@ -85,15 +102,15 @@ func TestEndToEndNotarizeVerifyAndTamper(t *testing.T) {
 		lastEvent = rec.GetEvent().GetEventId()
 	}
 
-	if _, err := r.capture.EndSession(ctx, &ledgerv1.EndSessionRequest{SessionId: sess.GetSession().GetSessionId()}); err != nil {
+	if _, err := r.capture.EndSession(r.ctx, &ledgerv1.EndSessionRequest{SessionId: sess.GetSession().GetSessionId()}); err != nil {
 		t.Fatalf("end session: %v", err)
 	}
 
-	pr, err := r.ledger.GetInclusionProof(ctx, &ledgerv1.GetInclusionProofRequest{EventId: lastEvent})
+	pr, err := r.ledger.GetInclusionProof(r.ctx, &ledgerv1.GetInclusionProofRequest{EventId: lastEvent})
 	if err != nil {
 		t.Fatalf("inclusion proof: %v", err)
 	}
-	good, err := r.verify.VerifyProof(ctx, &ledgerv1.VerifyProofRequest{Proof: pr.GetProof()})
+	good, err := r.verify.VerifyProof(r.ctx, &ledgerv1.VerifyProofRequest{Proof: pr.GetProof()})
 	if err != nil {
 		t.Fatalf("verify: %v", err)
 	}
@@ -106,7 +123,7 @@ func TestEndToEndNotarizeVerifyAndTamper(t *testing.T) {
 
 	tampered := proto.Clone(pr.GetProof()).(*ledgerv1.Proof)
 	tampered.Event.ActionType = "browser.evil"
-	bad, err := r.verify.VerifyProof(ctx, &ledgerv1.VerifyProofRequest{Proof: tampered})
+	bad, err := r.verify.VerifyProof(r.ctx, &ledgerv1.VerifyProofRequest{Proof: tampered})
 	if err != nil {
 		t.Fatalf("verify tampered: %v", err)
 	}
@@ -116,27 +133,25 @@ func TestEndToEndNotarizeVerifyAndTamper(t *testing.T) {
 }
 
 func TestRecordActionDeniesRevokedGrant(t *testing.T) {
-	ctx := context.Background()
 	r := newRig(t)
-	root, _ := r.delegation.IssueRootGrant(ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_rev", Scope: &ledgerv1.Scope{MaxDepth: 3}})
-	child, _ := r.delegation.Delegate(ctx, &ledgerv1.DelegateRequest{ParentGrantId: root.GetGrant().GetGrantId(), SubjectId: "agt_rev", Capabilities: []string{"browser.click"}, Scope: &ledgerv1.Scope{}})
-	sess, _ := r.capture.BeginSession(ctx, &ledgerv1.BeginSessionRequest{RootGrantId: root.GetGrant().GetGrantId(), Surface: ledgerv1.Surface_SURFACE_BROWSER})
-	if _, err := r.delegation.Revoke(ctx, &ledgerv1.RevokeRequest{GrantId: child.GetGrant().GetGrantId(), Reason: "test"}); err != nil {
+	root, _ := r.delegation.IssueRootGrant(r.ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_rev", ProjectId: r.projectID, Scope: &ledgerv1.Scope{MaxDepth: 3}})
+	child, _ := r.delegation.Delegate(r.ctx, &ledgerv1.DelegateRequest{ParentGrantId: root.GetGrant().GetGrantId(), SubjectId: "agt_rev", Capabilities: []string{"browser.click"}, Scope: &ledgerv1.Scope{}})
+	sess, _ := r.capture.BeginSession(r.ctx, &ledgerv1.BeginSessionRequest{RootGrantId: root.GetGrant().GetGrantId(), Surface: ledgerv1.Surface_SURFACE_BROWSER})
+	if _, err := r.delegation.Revoke(r.ctx, &ledgerv1.RevokeRequest{GrantId: child.GetGrant().GetGrantId(), Reason: "test"}); err != nil {
 		t.Fatalf("revoke: %v", err)
 	}
-	_, err := r.capture.RecordAction(ctx, &ledgerv1.RecordActionRequest{SessionId: sess.GetSession().GetSessionId(), GrantId: child.GetGrant().GetGrantId(), ActionType: "browser.click"})
+	_, err := r.capture.RecordAction(r.ctx, &ledgerv1.RecordActionRequest{SessionId: sess.GetSession().GetSessionId(), GrantId: child.GetGrant().GetGrantId(), ActionType: "browser.click"})
 	if err == nil {
 		t.Fatal("expected permission denied for revoked grant")
 	}
 }
 
 func TestRecordActionDeniesUngrantedCapability(t *testing.T) {
-	ctx := context.Background()
 	r := newRig(t)
-	root, _ := r.delegation.IssueRootGrant(ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_bob", Scope: &ledgerv1.Scope{MaxDepth: 3}})
-	child, _ := r.delegation.Delegate(ctx, &ledgerv1.DelegateRequest{ParentGrantId: root.GetGrant().GetGrantId(), SubjectId: "agt_x", Capabilities: []string{"browser.click"}, Scope: &ledgerv1.Scope{}})
-	sess, _ := r.capture.BeginSession(ctx, &ledgerv1.BeginSessionRequest{RootGrantId: root.GetGrant().GetGrantId(), Surface: ledgerv1.Surface_SURFACE_BROWSER})
-	_, err := r.capture.RecordAction(ctx, &ledgerv1.RecordActionRequest{SessionId: sess.GetSession().GetSessionId(), GrantId: child.GetGrant().GetGrantId(), ActionType: "sandbox.exec"})
+	root, _ := r.delegation.IssueRootGrant(r.ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_bob", ProjectId: r.projectID, Scope: &ledgerv1.Scope{MaxDepth: 3}})
+	child, _ := r.delegation.Delegate(r.ctx, &ledgerv1.DelegateRequest{ParentGrantId: root.GetGrant().GetGrantId(), SubjectId: "agt_x", Capabilities: []string{"browser.click"}, Scope: &ledgerv1.Scope{}})
+	sess, _ := r.capture.BeginSession(r.ctx, &ledgerv1.BeginSessionRequest{RootGrantId: root.GetGrant().GetGrantId(), Surface: ledgerv1.Surface_SURFACE_BROWSER})
+	_, err := r.capture.RecordAction(r.ctx, &ledgerv1.RecordActionRequest{SessionId: sess.GetSession().GetSessionId(), GrantId: child.GetGrant().GetGrantId(), ActionType: "sandbox.exec"})
 	if err == nil {
 		t.Fatal("expected permission denied for ungranted capability")
 	}
