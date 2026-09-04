@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BabitLogo, IconXCircle } from "@/lib/icons";
+import { BabitLogo, IconGitHub, IconXCircle, IconXLogo } from "@/lib/icons";
 import { docsUrl } from "@/lib/links";
 import { Link } from "@/lib/router";
 import { Card } from "@/lib/ui";
@@ -15,7 +15,6 @@ export function Footer() {
       <div className="h-px" style={{ backgroundColor: "var(--border)" }} />
       <div className="container-babit py-16 space-y-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-          {/* Logo & Tagline */}
           <div className="col-span-2 space-y-4">
             <div className="flex items-center gap-2">
               <BabitLogo className="w-5 h-5" brandColor="var(--fg)" />
@@ -30,8 +29,6 @@ export function Footer() {
               A signed receipt for what your agents do. Independently auditable.
             </p>
           </div>
-
-          {/* Product */}
           <div className="space-y-3">
             <span
               className="text-xs font-semibold uppercase tracking-wider block font-mono"
@@ -67,8 +64,6 @@ export function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* Developers */}
           <div className="space-y-3">
             <span
               className="text-xs font-semibold uppercase tracking-wider block font-mono"
@@ -104,8 +99,6 @@ export function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* Security */}
           <div className="space-y-3">
             <span
               className="text-xs font-semibold uppercase tracking-wider block font-mono"
@@ -127,8 +120,6 @@ export function Footer() {
             </ul>
           </div>
         </div>
-
-        {/* Bottom bar */}
         <div
           className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono"
           style={{
@@ -136,21 +127,47 @@ export function Footer() {
             color: "var(--muted)",
           }}
         >
-          <div>© {new Date().getFullYear()} babit. Proof for autonomous actions.</div>
-          <div className="flex items-center gap-2">
-            <span>Inspired by</span>
+          <div className="flex items-center gap-1.5">
+            <span>© {new Date().getFullYear()} babit.</span>
+            <span>Built by</span>
+            <a
+              href="https://github.com/TheBraveByte"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[var(--fg)] transition-colors"
+              style={{ color: "var(--brand-accent)" }}
+            >
+              TheBraveByte
+            </a>
+          </div>
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setCreditOpen(true)}
               className="hover:text-[var(--fg)] transition-colors cursor-pointer"
-              style={{ color: "var(--brand-accent)" }}
             >
-              Solari and Pinetree Research
+              Inspired by Solari and Pinetree Research
             </button>
+            <a
+              href="https://x.com/thebravebyte"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="X"
+              className="hover:text-[var(--fg)] transition-colors"
+            >
+              <IconXLogo className="w-4 h-4" />
+            </a>
+            <a
+              href="https://github.com/TheBraveByte"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub"
+              className="hover:text-[var(--fg)] transition-colors"
+            >
+              <IconGitHub className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </div>
-
-      {/* Credit modal */}
       {creditOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-6"
