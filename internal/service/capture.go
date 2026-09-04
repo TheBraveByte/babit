@@ -132,11 +132,10 @@ func (c *Capture) ListSessions(ctx context.Context, req *ledgerv1.ListSessionsRe
 	if err := requireAuth(ctx); err != nil {
 		return nil, err
 	}
-	if req.GetProjectId() == "" {
-		return nil, errs.New(errs.Invalid, "project_id is required")
-	}
-	if err := ensureProjectAccess(ctx, req.GetProjectId(), c.projects); err != nil {
-		return nil, err
+	if req.GetProjectId() != "" {
+		if err := ensureProjectAccess(ctx, req.GetProjectId(), c.projects); err != nil {
+			return nil, err
+		}
 	}
 	sessions, next, err := c.sessions.List(ctx, req.GetProjectId(), req.GetPageSize(), req.GetPageToken())
 	if err != nil {
