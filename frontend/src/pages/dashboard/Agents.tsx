@@ -1,5 +1,5 @@
-import { IconCpu, IconGitBranch, IconShieldCheck } from "@/lib/icons";
 import { useRequireAuth } from "@/lib/auth";
+import { IconCpu, IconGitBranch, IconShieldCheck } from "@/lib/icons";
 import { Button, EmptyState, PageHeader } from "@/lib/ui";
 import type { DashboardTab } from "./DashboardLayout";
 

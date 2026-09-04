@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
-import { IconLayers } from "@/lib/icons";
+import { useRequireAuth } from "@/lib/auth";
+import { IconLayers, IconPlay } from "@/lib/icons";
+import { useProject } from "@/lib/project";
 import {
   Button,
   Card,
@@ -14,9 +16,8 @@ import {
   StatusPill,
   TableSkeleton,
 } from "@/lib/ui";
-import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
-import { useRequireAuth } from "@/lib/auth";
+import { ReplayModal } from "./ReplayModal";
 
 type Anchor = components["schemas"]["v1Anchor"];
 type Session = components["schemas"]["v1Session"];
@@ -57,6 +58,7 @@ function Meta({
 export function Sessions() {
   useRequireAuth();
   const [selected, setSelected] = useState<Session | null>(null);
+  const [replaySession, setReplaySession] = useState<Session | null>(null);
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const [anchorLoading, setAnchorLoading] = useState(false);
   const [anchorError, setAnchorError] = useState<string | null>(null);
@@ -124,9 +126,14 @@ export function Sessions() {
           title={selected.session_id}
           subtitle={`Surface: ${selected.surface || "-"}`}
           action={
-            <Button variant="secondary" size="sm" onClick={() => setSelected(null)}>
-              Back
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="brand" size="sm" onClick={() => setReplaySession(selected)}>
+                <IconPlay className="w-3 h-3" /> Replay
+              </Button>
+              <Button variant="secondary" size="sm" onClick={() => setSelected(null)}>
+                Back
+              </Button>
+            </div>
           }
         >
           <div className="space-y-5">
@@ -312,6 +319,9 @@ export function Sessions() {
             </>
           )}
         </Card>
+      )}
+      {replaySession && (
+        <ReplayModal sessionId={replaySession.session_id!} onClose={() => setReplaySession(null)} />
       )}
     </div>
   );

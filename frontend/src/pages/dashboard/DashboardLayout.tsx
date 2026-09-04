@@ -18,8 +18,8 @@ import {
   IconShieldCheck,
   IconUser,
 } from "@/lib/icons";
-import { useProject } from "@/lib/project";
 import { docsUrl } from "@/lib/links";
+import { useProject } from "@/lib/project";
 import { Link, useRouter } from "@/lib/router";
 import { ThemeToggle } from "@/lib/ThemeToggle";
 

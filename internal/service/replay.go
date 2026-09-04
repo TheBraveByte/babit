@@ -21,6 +21,9 @@ func NewReplay(events ports.EventStore, sessions ports.SessionStore, projects po
 
 func (r *Replay) GetReplay(req *ledgerv1.GetReplayRequest, stream grpc.ServerStreamingServer[ledgerv1.GetReplayResponse]) error {
 	ctx := stream.Context()
+	if err := requireAuth(ctx); err != nil {
+		return errs.GRPCStatus(err)
+	}
 	session, err := r.sessions.Get(ctx, req.GetSessionId())
 	if err != nil {
 		return errs.GRPCStatus(errs.Wrap(errs.NotFound, err, "session"))

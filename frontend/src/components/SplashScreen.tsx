@@ -1,5 +1,5 @@
-import { BabitLogo } from "@/lib/icons";
 import { EvidencePipeline } from "@/components/viz/EvidencePipeline";
+import { BabitLogo } from "@/lib/icons";
 
 /**
  * SplashScreen — a full-bleed animated intro for the first app load.

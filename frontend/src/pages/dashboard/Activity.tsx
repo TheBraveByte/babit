@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
+import { useRequireAuth } from "@/lib/auth";
 import { IconActivity, IconSearch } from "@/lib/icons";
+import { useProject } from "@/lib/project";
 import {
   Button,
   Card,
@@ -14,9 +16,7 @@ import {
   StatusPill,
   TableSkeleton,
 } from "@/lib/ui";
-import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
-import { useRequireAuth } from "@/lib/auth";
 
 type ActionEvent = components["schemas"]["v1ActionEvent"];
 
