@@ -167,13 +167,13 @@ export function Sessions() {
                   </span>
                 ) : hasAnchor ? (
                   <StatusPill ok label="ANCHORED" />
-                ) : anchorError ? (
+                ) : (
                   <StatusPill status="PENDING" label="NO ANCHOR" />
-                ) : null}
+                )}
               </div>
-              {anchorError && !hasAnchor && (
+              {!hasAnchor && !anchorLoading && (
                 <p className="text-xs" style={{ color: "var(--muted)" }}>
-                  {anchorError}
+                  {anchorError || "No anchor for this session yet."}
                 </p>
               )}
               {hasAnchor && (
