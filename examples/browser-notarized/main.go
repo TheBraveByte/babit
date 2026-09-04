@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/babit/nal/config"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
@@ -10,7 +12,34 @@ import (
 	solarisdk "github.com/solari-sdk/solari-browser-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 )
+
+func authContext(ctx context.Context, cfg *config.Config, conn *grpc.ClientConn) (context.Context, string, error) {
+	if cfg.APIKey != "" {
+		ctx = metadata.AppendToOutgoingContext(ctx, "x-api-key", cfg.APIKey)
+	}
+
+	authClient := ledgerv1.NewAuthServiceClient(conn)
+	email := fmt.Sprintf("demo-%d@example.com", time.Now().UnixNano())
+	password := "demo-password"
+	signup, err := authClient.Signup(ctx, &ledgerv1.SignupRequest{
+		Email:       email,
+		Password:    password,
+		AccountType: ledgerv1.AccountType_ACCOUNT_TYPE_PERSONAL,
+	})
+	if err != nil {
+		return nil, "", fmt.Errorf("signup: %w", err)
+	}
+	ctx = metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+signup.GetToken())
+
+	projectClient := ledgerv1.NewProjectServiceClient(conn)
+	project, err := projectClient.CreateProject(ctx, &ledgerv1.CreateProjectRequest{Name: "demo"})
+	if err != nil {
+		return nil, "", fmt.Errorf("create project: %w", err)
+	}
+	return ctx, project.GetProject().GetId(), nil
+}
 
 func main() {
 	ctx := context.Background()
@@ -32,10 +61,15 @@ func main() {
 	}
 	defer conn.Close()
 
+	ctx, projectID, err := authContext(ctx, cfg, conn)
+	if err != nil {
+		log.Fatalf("auth: %v", err)
+	}
+
 	delegation := ledgerv1.NewDelegationServiceClient(conn)
 	capture := ledgerv1.NewCaptureServiceClient(conn)
 
-	root, err := delegation.IssueRootGrant(ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_demo", Scope: &ledgerv1.Scope{MaxDepth: 3}})
+	root, err := delegation.IssueRootGrant(ctx, &ledgerv1.IssueRootGrantRequest{PrincipalId: "usr_demo", ProjectId: projectID, Scope: &ledgerv1.Scope{MaxDepth: 3}})
 	if err != nil {
 		log.Fatalf("issue root: %v", err)
 	}
