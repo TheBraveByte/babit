@@ -34,7 +34,13 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 			return runtime.DefaultHeaderMatcher(key)
 		}),
 	)
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(64<<20),
+			grpc.MaxCallSendMsgSize(64<<20),
+		),
+	}
 	registrars := []gwRegistrar{
 		ledgerv1.RegisterAuthServiceHandlerFromEndpoint,
 		ledgerv1.RegisterProjectServiceHandlerFromEndpoint,

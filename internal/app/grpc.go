@@ -52,6 +52,8 @@ func NewGRPCServer(ctx context.Context, cfg *config.Config) (*grpc.Server, error
 	notaryCore := service.NewNotaryCore(st.Events(), sealer, tree, anc)
 
 	srv := grpc.NewServer(
+		grpc.MaxRecvMsgSize(64<<20),
+		grpc.MaxSendMsgSize(64<<20),
 		grpc.ChainUnaryInterceptor(
 			authInterceptor(st.ApiKeys(), cfg.JWTSecret),
 			apiKeyInterceptor(cfg.APIKey),
