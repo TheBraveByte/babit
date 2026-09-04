@@ -83,23 +83,6 @@ graph LR
     classDef default font-family:monospace,font-size:13px
 ```
 
-## Repository layout
-
-```
-proto/solari/ledger/v1/   API contract (generates Go, gRPC, REST gateway, OpenAPI)
-gen/                      generated code (committed)
-db/                       migrations, sqlc queries, event store
-internal/core/            domain logic: signing, Merkle trees, canon, ids, clock
-internal/ports/           shared interfaces
-internal/service/         gRPC service implementations
-internal/adapters/        Solari client, Postgres store, anchor clients
-internal/interceptor/     browser/sandbox notarization of Solari actions
-internal/receipt/         portable receipt and offline verification
-internal/errs/            typed domain errors mapped to gRPC status
-internal/app/             gRPC server and gateway assembly
-cmd/                      nald, gateway, server, babit CLI
-```
-
 ## License
 
 Proprietary and source-available; see `LICENSE`. No use, copy, or distribution without written
