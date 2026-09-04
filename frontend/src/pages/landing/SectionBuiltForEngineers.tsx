@@ -37,7 +37,7 @@ export function SectionBuiltForEngineers() {
             </div>
 
             <img
-              src="/dashboard-shots/analytics.png"
+              src="/console-analytics.png"
               alt="Babit Analytics dashboard showing events over time, by surface and delegation health"
               className="w-full"
             />
