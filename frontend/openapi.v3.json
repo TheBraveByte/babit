@@ -5,6 +5,48 @@
         "description": "Babit Notarized Action Ledger. A tamper-evident, delegation-anchored, replayable record of AI-agent actions on Solari.",
         "version": "1.0.0"
     },
+    "tags": [
+        {
+            "name": "Analytics",
+            "description": "Activity summaries and trend data for the ledger."
+        },
+        {
+            "name": "API keys",
+            "description": "Project-scoped API credentials."
+        },
+        {
+            "name": "Authentication",
+            "description": "Sign in, sign up, and session management."
+        },
+        {
+            "name": "Capture",
+            "description": "Record and persist agent actions."
+        },
+        {
+            "name": "Delegation",
+            "description": "Grants, authority chains, and revocation."
+        },
+        {
+            "name": "Ledger",
+            "description": "Ledger roots, receipts, and anchor operations."
+        },
+        {
+            "name": "Notary",
+            "description": "Signing and notary public key material."
+        },
+        {
+            "name": "Projects",
+            "description": "Project workspaces and scoped configuration."
+        },
+        {
+            "name": "Replay",
+            "description": "Reconstruct and replay recorded sessions."
+        },
+        {
+            "name": "Verify",
+            "description": "Cryptographic verification of events and proofs."
+        }
+    ],
     "paths": {
         "/v1/analytics/overview": {
             "get": {
@@ -42,6 +84,9 @@
                             "format": "int32"
                         }
                     }
+                ],
+                "tags": [
+                    "Analytics"
                 ]
             }
         },
@@ -80,7 +125,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Authentication"
+                ]
             }
         },
         "/v1/auth/me": {
@@ -108,7 +156,10 @@
                             }
                         }
                     }
-                }
+                },
+                "tags": [
+                    "Authentication"
+                ]
             },
             "patch": {
                 "summary": "Update your profile details",
@@ -144,7 +195,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Authentication"
+                ]
             }
         },
         "/v1/auth/signup": {
@@ -182,7 +236,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Authentication"
+                ]
             }
         },
         "/v1/events": {
@@ -237,6 +294,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Ledger"
                 ]
             }
         },
@@ -275,6 +335,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Ledger"
                 ]
             }
         },
@@ -313,6 +376,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Ledger"
                 ]
             }
         },
@@ -368,6 +434,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Delegation"
                 ]
             },
             "post": {
@@ -404,7 +473,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Delegation"
+                ]
             }
         },
         "/v1/grants/{grant_id}/revoke": {
@@ -452,7 +524,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Delegation"
+                ]
             }
         },
         "/v1/grants/{grant_id}:verify": {
@@ -490,6 +565,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Delegation"
                 ]
             }
         },
@@ -528,7 +606,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Delegation"
+                ]
             }
         },
         "/v1/keys/{key_id}/revoke": {
@@ -576,7 +657,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "API keys"
+                ]
             }
         },
         "/v1/notary/public-key": {
@@ -604,7 +688,10 @@
                             }
                         }
                     }
-                }
+                },
+                "tags": [
+                    "Notary"
+                ]
             }
         },
         "/v1/projects": {
@@ -651,6 +738,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Projects"
                 ]
             },
             "post": {
@@ -687,7 +777,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Projects"
+                ]
             }
         },
         "/v1/projects/{project_id}/keys": {
@@ -742,6 +835,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "API keys"
                 ]
             },
             "post": {
@@ -788,7 +884,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "API keys"
+                ]
             }
         },
         "/v1/proofs:verify": {
@@ -826,7 +925,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Verify"
+                ]
             }
         },
         "/v1/sessions": {
@@ -881,6 +983,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Capture"
                 ]
             },
             "post": {
@@ -917,7 +1022,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Capture"
+                ]
             }
         },
         "/v1/sessions/{session_id}/actions": {
@@ -965,7 +1073,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Capture"
+                ]
             }
         },
         "/v1/sessions/{session_id}/anchor": {
@@ -1003,6 +1114,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Notary"
                 ]
             }
         },
@@ -1051,7 +1165,10 @@
                         }
                     },
                     "required": true
-                }
+                },
+                "tags": [
+                    "Capture"
+                ]
             }
         },
         "/v1/sessions/{session_id}:replay": {
@@ -1098,6 +1215,9 @@
                             "type": "string"
                         }
                     }
+                ],
+                "tags": [
+                    "Replay"
                 ]
             }
         }
