@@ -20,7 +20,7 @@ function Row({ label, value, mono = true }: { label: string; value?: ReactNode; 
         className={`sm:col-span-2 text-xs break-all ${mono ? "font-mono tnum" : ""}`}
         style={{ color: empty ? "var(--muted)" : "var(--fg)" }}
       >
-        {empty ? "—" : value}
+        {empty ? "-" : value}
       </span>
     </div>
   );
@@ -72,7 +72,6 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
 
   return (
     <div className="space-y-6 font-sans">
-      {/* Flagship hero */}
       <div className="relative rounded-babit-lg overflow-hidden glass animate-float-up">
         <div className="h-px accent-hairline" />
         <div className="p-6 space-y-5">
@@ -107,8 +106,6 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
           </div>
         </div>
       </div>
-
-      {/* Action */}
       <Card title="Action" subtitle="What the agent did, captured at effect.">
         <div className="-mt-1">
           <Row label="Action type" value={event.action_type} mono={false} />
@@ -120,8 +117,6 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
           <Row label="Recording reference" value={event.recording_ref} />
         </div>
       </Card>
-
-      {/* Authority & delegation */}
       <Card
         title="Authority & delegation"
         subtitle="The chain of grants that authorized this action."
@@ -150,7 +145,7 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
                     <span>{link.subject_id || "?"}</span>
                   </div>
                   <span className="text-[11px] font-mono" style={{ color: "var(--muted)" }}>
-                    Grant {link.grant_id || "—"}
+                    Grant {link.grant_id || "-"}
                   </span>
                 </div>
                 <span
@@ -168,16 +163,12 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
           </div>
         )}
       </Card>
-
-      {/* Execution state */}
       <Card title="Execution" subtitle="State transition recorded around the action.">
         <div className="-mt-1">
           <HashRow label="Pre-state hash" value={event.pre_state_hash} />
           <HashRow label="Post-state hash" value={event.post_state_hash} />
         </div>
       </Card>
-
-      {/* Evidence & verification */}
       <Card
         title="Evidence & verification"
         subtitle="Cryptographic seal binding this event into the ledger."
@@ -205,8 +196,6 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
           />
         </div>
       </Card>
-
-      {/* External anchor — only when present */}
       {proof.anchor && (
         <Card title="External anchor" subtitle="Independent timestamp anchoring the ledger root.">
           <div className="-mt-1">
@@ -217,8 +206,6 @@ export function ReceiptDetail({ proof, onBack }: { proof: Proof; onBack: () => v
           </div>
         </Card>
       )}
-
-      {/* Technical */}
       <Card title="Technical" subtitle="Complete proof payload as returned by the API.">
         <Json data={proof} />
       </Card>

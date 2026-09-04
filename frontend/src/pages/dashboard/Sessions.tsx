@@ -122,7 +122,7 @@ export function Sessions() {
       {selected ? (
         <Card
           title={selected.session_id}
-          subtitle={`Surface: ${selected.surface || "—"}`}
+          subtitle={`Surface: ${selected.surface || "-"}`}
           action={
             <Button variant="secondary" size="sm" onClick={() => setSelected(null)}>
               Back
@@ -133,16 +133,16 @@ export function Sessions() {
             <div className="h-px accent-hairline -mx-5 -mt-5" />
             <div className="grid sm:grid-cols-2 gap-4">
               <Meta label="Session ID">
-                <Copyable value={selected.session_id || "—"} />
+                <Copyable value={selected.session_id || "-"} />
               </Meta>
               <Meta label="Root Grant">
-                <Copyable value={selected.root_grant_id || "—"} />
+                <Copyable value={selected.root_grant_id || "-"} />
               </Meta>
-              <Meta label="Started At">{selected.started_at || "—"}</Meta>
+              <Meta label="Started At">{selected.started_at || "-"}</Meta>
               <Meta label="Ended At">{selected.ended_at || "open"}</Meta>
               <Meta label="Event Count">{selected.event_count ?? 0}</Meta>
               <Meta label="Surface" mono={false}>
-                {selected.surface || "—"}
+                {selected.surface || "-"}
               </Meta>
             </div>
 
@@ -173,7 +173,7 @@ export function Sessions() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Meta label="Kind" mono={false}>
                     <span className="font-medium">
-                      {ANCHOR_KIND_LABEL[anchor!.kind ?? ""] ?? anchor!.kind ?? "—"}
+                      {ANCHOR_KIND_LABEL[anchor!.kind ?? ""] ?? anchor!.kind ?? "-"}
                     </span>
                   </Meta>
                   {anchor!.anchored_at && <Meta label="Anchored At">{anchor!.anchored_at}</Meta>}

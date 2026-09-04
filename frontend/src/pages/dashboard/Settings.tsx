@@ -185,7 +185,7 @@ export function Settings() {
                 description="Update the organization details on your profile. Email and account type are fixed."
               />
 
-              <ReadonlyRow label="Email" value={user?.email || "—"} mono />
+              <ReadonlyRow label="Email" value={user?.email || "-"} mono />
               <ReadonlyRow label="Account type" value={accountType} />
 
               <form
@@ -271,8 +271,8 @@ export function Settings() {
                 title="Workspace & Branding"
                 description="Branding is resolved from your organization domain and applied to this console at runtime."
               />
-              <ReadonlyRow label="Organization" value={user?.org_name || "—"} />
-              <ReadonlyRow label="Domain" value={user?.org_domain || "—"} mono />
+              <ReadonlyRow label="Organization" value={user?.org_name || "-"} />
+              <ReadonlyRow label="Domain" value={user?.org_domain || "-"} mono />
               {branding ? (
                 <div
                   className="mt-2 p-4 rounded-babit flex items-center justify-between"
