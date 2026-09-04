@@ -100,41 +100,6 @@ internal/app/             gRPC server and gateway assembly
 cmd/                      nald, gateway, server, babit CLI
 ```
 
-## Quick start
-
-Requires Go 1.26 and Docker.
-
-```sh
-make db-up    # Postgres
-make run      # nald on :9090 (migrations run on boot)
-make gateway  # REST gateway on :8080, OpenAPI at /openapi.json
-make test     # tests against Postgres
-make generate # regenerate proto, sqlc, and mocks
-```
-
-## Configuration
-
-Set via environment or a local `.env`:
-
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | Postgres DSN. For Neon, include `?sslmode=require`. |
-| `NAL_NOTARY_SEED` | 32-byte hex Ed25519 seed. Use the same value to keep receipts stable across restarts. |
-| `NAL_JWT_SECRET` | Secret for signing session tokens. Generate with `openssl rand -base64 32` in production. |
-| `SOLARI_API_KEY` | Optional; enables recordings and replay. |
-| `NAL_API_KEY` | Optional gateway auth via `x-api-key`. |
-| `CORS_ALLOWED_ORIGINS` | Optional comma-separated list of allowed frontend origins. Defaults to `https://babit-inky.vercel.app,http://localhost:5173,http://localhost:3000` when unset. |
-
-## CLI
-
-```sh
-babit fetch --event <id> --grpc localhost:9090 --out receipt.json
-babit verify receipt.json
-```
-
-`verify` runs offline (no server or database) and checks the signature, hash chain, Merkle proof,
-anchor, and delegation authority.
-
 ## License
 
 Proprietary and source-available; see `LICENSE`. No use, copy, or distribution without written
