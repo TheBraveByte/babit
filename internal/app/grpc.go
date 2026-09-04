@@ -231,6 +231,8 @@ func isPublicRPC(fullMethod string) bool {
 		"/solari.ledger.v1.AuthService/Signup",
 		"/solari.ledger.v1.VerifyService/VerifyProof",
 		"/solari.ledger.v1.NotaryService/GetPublicKey",
+		"/solari.ledger.v1.LedgerService/GetEvent",
+		"/solari.ledger.v1.LedgerService/GetInclusionProof",
 	}
 	for _, m := range public {
 		if m == fullMethod {
