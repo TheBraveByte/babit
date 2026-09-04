@@ -1,19 +1,19 @@
 import { lazy, type ReactNode, Suspense, useEffect, useState } from "react";
 import { SplashScreen } from "@/components/SplashScreen";
 import { useAuth } from "@/lib/auth";
+import { ProjectProvider } from "@/lib/project";
 import { useRouter } from "@/lib/router";
 import { ForgotPassword } from "@/pages/auth/ForgotPassword";
 import { Login } from "@/pages/auth/Login";
 import { Signup } from "@/pages/auth/Signup";
 import { ContactPage } from "@/pages/ContactPage";
-import { ProfilePage } from "@/pages/ProfilePage";
-import { ProjectProvider } from "@/lib/project";
-import { DashboardLayout } from "@/pages/dashboard/DashboardLayout";
 import type { DashboardTab } from "@/pages/dashboard/DashboardLayout";
+import { DashboardLayout } from "@/pages/dashboard/DashboardLayout";
 // Eager: landing + auth are the entry surfaces, kept in the initial bundle.
 import { Landing } from "@/pages/Landing";
 import { NotFound } from "@/pages/NotFound";
 import { PricingPage } from "@/pages/PricingPage";
+import { ProfilePage } from "@/pages/ProfilePage";
 import { SecurityPage } from "@/pages/SecurityPage";
 
 // Lazy: heavy or route-gated screens are code-split out of the initial load

@@ -4,8 +4,9 @@ import type { components } from "@/api/schema";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
 import { AuthorityGraph, chainToGraph, type GrantRole } from "@/components/viz/AuthorityGraph";
 import { GrantTree } from "@/components/viz/GrantTree";
-
+import { useRequireAuth } from "@/lib/auth";
 import { IconCheck, IconGitBranch, IconShieldCheck } from "@/lib/icons";
+import { useProject } from "@/lib/project";
 import {
   Button,
   Card,
@@ -16,9 +17,7 @@ import {
   StatusPill,
   TableSkeleton,
 } from "@/lib/ui";
-import { useProject } from "@/lib/project";
 import { usePagination } from "@/lib/usePagination";
-import { useRequireAuth } from "@/lib/auth";
 
 type VerifyChain = components["schemas"]["v1VerifyChainResponse"];
 type Grant = components["schemas"]["v1Grant"];

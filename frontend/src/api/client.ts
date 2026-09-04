@@ -2,6 +2,8 @@ import createClient from "openapi-fetch";
 import type { paths } from "./schema";
 
 const apiKey = import.meta.env.VITE_API_KEY as string | undefined;
+export const apiBaseUrl =
+  (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:8080";
 
 let authToken: string | null = null;
 
@@ -17,8 +19,6 @@ export function getAuthToken(): string | null {
 export function clearSessionCookie() {
   fetch(`${apiBaseUrl}/v1/auth/logout`, { method: "POST", credentials: "include" }).catch(() => {});
 }
-
-const apiBaseUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:8080";
 
 export const api = createClient<paths>({
   baseUrl: apiBaseUrl,

@@ -1,5 +1,5 @@
-import { IconCheck } from "@/lib/icons";
 import type { components } from "@/api/schema";
+import { IconCheck } from "@/lib/icons";
 
 type Grant = components["schemas"]["v1Grant"];
 

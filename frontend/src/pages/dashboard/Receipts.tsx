@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import { api, errText } from "@/api/client";
 import type { components } from "@/api/schema";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
-import { IconFileText, IconShieldCheck } from "@/lib/icons";
-import { Card, EmptyState, Error as ErrorBox, PageHeader, TableSkeleton } from "@/lib/ui";
-import { useProject } from "@/lib/project";
-import { usePagination } from "@/lib/usePagination";
 import { useRequireAuth } from "@/lib/auth";
+import { IconFileText, IconShieldCheck } from "@/lib/icons";
+import { useProject } from "@/lib/project";
+import { Card, EmptyState, Error as ErrorBox, PageHeader, TableSkeleton } from "@/lib/ui";
+import { usePagination } from "@/lib/usePagination";
 import { ReceiptDetail } from "./ReceiptDetail";
 
 type Proof = components["schemas"]["v1Proof"];

@@ -1,5 +1,5 @@
-import { IconFolder, IconKey } from "@/lib/icons";
 import { useRequireAuth } from "@/lib/auth";
+import { IconFolder, IconKey } from "@/lib/icons";
 import { useRouter } from "@/lib/router";
 import { Button, Card, EmptyState, PageHeader } from "@/lib/ui";
 
