@@ -181,13 +181,13 @@ func parseCookieValue(raw, name string) string {
 
 func apiKeyInterceptor(want string) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
-		return checkGlobalAPIKey(ctx, info.FullMethod, want, handler)
+		return checkGlobalAPIKey(ctx, req, info.FullMethod, want, handler)
 	}
 }
 
 func streamAPIKeyInterceptor(want string) grpc.StreamServerInterceptor {
 	return func(srv any, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-		_, err := checkGlobalAPIKey(ss.Context(), info.FullMethod, want, func(ctx context.Context, _ any) (any, error) {
+		_, err := checkGlobalAPIKey(ss.Context(), nil, info.FullMethod, want, func(ctx context.Context, _ any) (any, error) {
 			return nil, handler(srv, &contextServerStream{ServerStream: ss, ctx: ctx})
 		})
 		return err
@@ -203,18 +203,18 @@ func (s *contextServerStream) Context() context.Context {
 	return s.ctx
 }
 
-func checkGlobalAPIKey(ctx context.Context, fullMethod string, want string, handler func(context.Context, any) (any, error)) (any, error) {
+func checkGlobalAPIKey(ctx context.Context, req any, fullMethod string, want string, handler func(context.Context, any) (any, error)) (any, error) {
 	if want == "" {
-		return handler(ctx, nil)
+		return handler(ctx, req)
 	}
 	// Public auth and verification endpoints must not require the global API key.
 	if isPublicRPC(fullMethod) {
-		return handler(ctx, nil)
+		return handler(ctx, req)
 	}
 	// A per-project key (bak_*) that resolveAuth already resolved to a user
 	// passes the coarse gate; an unresolved/garbage bak_ key does not.
 	if coreauth.UserID(ctx) != "" {
-		return handler(ctx, nil)
+		return handler(ctx, req)
 	}
 	md, ok := metadata.FromIncomingContext(ctx)
 	got := ""
@@ -224,7 +224,7 @@ func checkGlobalAPIKey(ctx context.Context, fullMethod string, want string, hand
 	if got != want {
 		return nil, status.Error(codes.Unauthenticated, "missing or invalid x-api-key")
 	}
-	return handler(ctx, nil)
+	return handler(ctx, req)
 }
 
 func isPublicRPC(fullMethod string) bool {
