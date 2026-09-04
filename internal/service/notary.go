@@ -76,6 +76,9 @@ func (s *Notary) Notarize(ctx context.Context, req *ledgerv1.NotarizeRequest) (*
 }
 
 func (s *Notary) GetAnchor(ctx context.Context, req *ledgerv1.GetAnchorRequest) (*ledgerv1.GetAnchorResponse, error) {
+	if err := requireAuth(ctx); err != nil {
+		return nil, err
+	}
 	session, err := s.sessions.Get(ctx, req.GetSessionId())
 	if err != nil {
 		return nil, err
@@ -85,6 +88,9 @@ func (s *Notary) GetAnchor(ctx context.Context, req *ledgerv1.GetAnchorRequest) 
 	}
 	a, err := s.anchor.Get(ctx, req.GetSessionId())
 	if err != nil {
+		if errs.KindOf(err) == errs.NotFound {
+			return &ledgerv1.GetAnchorResponse{}, nil
+		}
 		return nil, err
 	}
 	return &ledgerv1.GetAnchorResponse{Anchor: a}, nil
