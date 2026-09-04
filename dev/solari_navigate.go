@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -14,6 +15,9 @@ import (
 )
 
 func main() {
+	url := flag.String("url", "https://github.com/TheBraveByte/babit", "URL to navigate")
+	flag.Parse()
+
 	apiKey := os.Getenv("SOLARI_API_KEY")
 	baseURL := os.Getenv("SOLARI_BASE_URL")
 	if apiKey == "" {
@@ -49,12 +53,11 @@ func main() {
 		}
 	}()
 
-	url := "https://github.com/TheBraveByte/babit"
 	if err := chromedp.Run(browserCtx,
-		chromedp.Navigate(url),
+		chromedp.Navigate(*url),
 		chromedp.Sleep(2*time.Second),
 	); err != nil {
 		log.Fatalf("navigate: %v", err)
 	}
-	fmt.Printf("navigated %s\n", url)
+	fmt.Printf("navigated %s\n", *url)
 }
