@@ -1,4 +1,6 @@
 import { lazy, type ReactNode, Suspense } from "react";
+import { SplashScreen } from "@/components/SplashScreen";
+import { useAuth } from "@/lib/auth";
 import { useRouter } from "@/lib/router";
 import { ForgotPassword } from "@/pages/auth/ForgotPassword";
 import { Login } from "@/pages/auth/Login";
@@ -65,7 +67,12 @@ function Boundary({ children }: { children: ReactNode }) {
 
 export function App() {
   const { path, navigate } = useRouter();
+  const { isLoading } = useAuth();
   const route = path.split("?")[0]; // strip query string for matching
+
+  if (isLoading && route.startsWith("/dashboard")) {
+    return <SplashScreen />;
+  }
 
   if (route === "/" || route === "") return <Landing />;
   if (route === "/login") return <Login />;

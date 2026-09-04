@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [branding]);
 
   const refreshMe = async () => {
-    // Try with the in-memory token first, then rely on the httpOnly cookie
+    setIsLoading(true);
     try {
       const res = await api.GET("/v1/auth/me", {});
       if (res.data) {
@@ -88,14 +88,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const b = res.data.branding as Branding;
         setUser(u);
         setBranding(b);
-        return;
+      } else {
+        setAuthToken(null);
+        setTokenState(null);
+        setUser(null);
+        setBranding(null);
       }
-    } catch {}
-    setAuthToken(null);
-    setTokenState(null);
-    setUser(null);
-    setBranding(null);
-    setIsLoading(false);
+    } catch {
+      setAuthToken(null);
+      setTokenState(null);
+      setUser(null);
+      setBranding(null);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
