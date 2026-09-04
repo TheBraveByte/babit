@@ -133,7 +133,18 @@ export function Footer() {
           }}
         >
           <div>© {new Date().getFullYear()} babit. Proof for autonomous actions.</div>
-          <div>Verifiable by design.</div>
+          <div className="flex items-center gap-2">
+            <span>Inspired by</span>
+            <a
+              href="https://github.com/solari-sdk/solari-cookbook/"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[var(--fg)] transition-colors"
+              style={{ color: "var(--brand-accent)" }}
+            >
+              Solari and Pinetree Research
+            </a>
+          </div>
         </div>
       </div>
     </footer>
