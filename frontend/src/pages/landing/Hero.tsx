@@ -47,12 +47,9 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden" style={{ backgroundColor: "var(--bg)" }}>
-      {/* ── Full-bleed cinematic evidence pipeline ──────────────────── */}
       <div className="absolute inset-0">
         <EvidencePipeline className="w-full h-full" />
       </div>
-
-      {/* Subtle gradient overlay for text legibility (theme-aware) */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -60,11 +57,25 @@ export function Hero() {
             "linear-gradient(to right, color-mix(in srgb, var(--bg) 92%, transparent) 0%, color-mix(in srgb, var(--bg) 55%, transparent) 35%, transparent 65%)",
         }}
       />
-
-      {/* ── Content ─────────────────────────────────────────────────── */}
-      <div className="relative z-10 container-babit min-h-[100vh] flex flex-col justify-center pt-28 pb-20 lg:pt-28 lg:pb-24">
+      <div className="relative z-10 container-babit min-h-[100vh] flex flex-col justify-center pt-36 pb-20 lg:pt-36 lg:pb-24">
         <div className="max-w-2xl">
-          {/* Bold headline — confident, not abstract */}
+          <a
+            href="https://github.com/solari-sdk/solari-cookbook/"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 mb-8 px-3 py-1.5 rounded-full text-[11px] font-medium font-mono transition-colors hover:opacity-90"
+            style={{
+              backgroundColor: "var(--secondary)",
+              border: "1px solid var(--border)",
+              color: "var(--muted)",
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: "var(--brand-accent)" }}
+            />
+            Built with Solari
+          </a>
           <h1
             className="font-medium tracking-[-0.035em] leading-[1.05]"
             style={{
@@ -76,8 +87,6 @@ export function Hero() {
             <br />
             <span style={{ color: "var(--brand-accent)" }}>signed as evidence.</span>
           </h1>
-
-          {/* Subhead */}
           <p
             className="mt-7 max-w-lg leading-relaxed"
             style={{
@@ -88,8 +97,6 @@ export function Hero() {
             Babit binds every autonomous action to the person who authorized it, signs it, and
             appends it to a tamper-evident ledger anyone can audit.
           </p>
-
-          {/* CTAs */}
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <button
               onClick={() => navigate("/signup")}
@@ -118,8 +125,6 @@ export function Hero() {
               <span style={{ color: "var(--muted)" }}>↗</span>
             </a>
           </div>
-
-          {/* Stats strip */}
           <div className="mt-16 flex items-center gap-10">
             {STATS.map((s) => (
               <div key={s.label}>
@@ -139,8 +144,6 @@ export function Hero() {
             ))}
           </div>
         </div>
-
-        {/* ── Live receipt card (bottom-right, floating) ─────────────── */}
         <div className="hidden lg:block absolute right-[5%] bottom-[12%] w-[380px]">
           <div
             className="rounded-babit-md overflow-hidden transition-all duration-500"
@@ -153,7 +156,6 @@ export function Hero() {
               boxShadow: "0 24px 48px -12px color-mix(in srgb, var(--fg) 30%, transparent)",
             }}
           >
-            {/* Header */}
             <div
               className="px-5 py-3 flex items-center justify-between gap-3"
               style={{ borderBottom: "1px solid var(--border)" }}
@@ -165,8 +167,6 @@ export function Hero() {
                 {SCENARIO.grantId}
               </span>
             </div>
-
-            {/* Body */}
             <div className="p-5 space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1 min-w-0">
@@ -202,8 +202,6 @@ export function Hero() {
                   )}
                 </div>
               </div>
-
-              {/* Seal line animation */}
               <div
                 className="relative h-px overflow-hidden"
                 style={{ backgroundColor: "var(--border)" }}
@@ -216,8 +214,6 @@ export function Hero() {
                   }}
                 />
               </div>
-
-              {/* Hash rows */}
               {liveEvent && (
                 <div
                   className="rounded-babit-sm divide-y animate-fade-in"
@@ -244,8 +240,6 @@ export function Hero() {
                   ))}
                 </div>
               )}
-
-              {/* Footer */}
               <div className="flex items-center justify-between pt-1">
                 <span className="text-[10px] font-mono" style={{ color: "var(--muted)" }}>
                   computed in your browser

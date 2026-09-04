@@ -6,6 +6,7 @@ import { ForgotPassword } from "@/pages/auth/ForgotPassword";
 import { Login } from "@/pages/auth/Login";
 import { Signup } from "@/pages/auth/Signup";
 import { ContactPage } from "@/pages/ContactPage";
+import { ProfilePage } from "@/pages/ProfilePage";
 import { ProjectProvider } from "@/lib/project";
 import { DashboardLayout } from "@/pages/dashboard/DashboardLayout";
 import type { DashboardTab } from "@/pages/dashboard/DashboardLayout";
@@ -74,7 +75,7 @@ export function App() {
   const isLanding = route === "/" || route === "";
 
   useEffect(() => {
-    const t = setTimeout(() => setSplashDone(true), 1200);
+    const t = setTimeout(() => setSplashDone(true), 2000);
     return () => clearTimeout(t);
   }, []);
 
@@ -87,6 +88,7 @@ export function App() {
   }
 
   if (route === "/" || route === "") return <Landing />;
+  if (route === "/profile") return <ProfilePage />;
   if (route === "/login") return <Login />;
   if (route === "/signup") return <Signup />;
   if (route === "/forgot-password") return <ForgotPassword />;
