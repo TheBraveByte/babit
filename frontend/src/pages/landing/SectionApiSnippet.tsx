@@ -56,7 +56,6 @@ export function SectionApiSnippet() {
             boxShadow: "0 30px 70px -24px color-mix(in srgb, var(--fg) 10%, transparent)",
           }}
         >
-          {/* Window chrome */}
           <div
             className="flex items-center justify-between px-4 py-3"
             style={{ backgroundColor: "var(--secondary)", borderBottom: "1px solid var(--border)" }}
@@ -83,15 +82,11 @@ export function SectionApiSnippet() {
               ))}
             </div>
           </div>
-
-          {/* Code */}
           <div className="p-5 overflow-x-auto">
             <pre className="font-mono text-[13px] leading-relaxed" style={{ color: "var(--fg)" }}>
               <code>{LANGUAGES[active].code}</code>
             </pre>
           </div>
-
-          {/* Footer */}
           <div
             className="px-5 py-3 text-[12px]"
             style={{ borderTop: "1px solid var(--border)", color: "var(--muted)" }}

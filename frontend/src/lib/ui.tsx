@@ -1,7 +1,5 @@
 import React, { type ReactNode, useEffect, useRef, useState } from "react";
 import { IconAlertCircle, IconCheck, IconCopy, IconShieldCheck } from "./icons";
-
-/* ─── PageHeader (dashboard) ────────────────────────────────────────────────── */
 export function PageHeader({
   title,
   description,
@@ -37,8 +35,6 @@ export function PageHeader({
     </div>
   );
 }
-
-/* ─── Card ─────────────────────────────────────────────────────────────────── */
 export function Card({
   title,
   subtitle,
@@ -85,8 +81,6 @@ export function Card({
     </section>
   );
 }
-
-/* ─── Field ─────────────────────────────────────────────────────────────────── */
 export function Field({
   label,
   children,
@@ -123,7 +117,6 @@ export function Field({
           {error}
         </span>
       ) : null}
-      {/* Clone the child input to inject aria props */}
       {(() => {
         const child = children as React.ReactElement<React.InputHTMLAttributes<HTMLInputElement>>;
         return React.cloneElement(child, {
@@ -141,8 +134,6 @@ export function Field({
     </label>
   );
 }
-
-/* ─── Input base ────────────────────────────────────────────────────────────── */
 const inputCls =
   "w-full rounded-babit border px-3 py-2 text-sm outline-none transition-colors font-mono disabled:opacity-50";
 
@@ -183,8 +174,6 @@ export function Select({ children, ...props }: React.SelectHTMLAttributes<HTMLSe
     </select>
   );
 }
-
-/* ─── Button ────────────────────────────────────────────────────────────────── */
 export function Button({
   children,
   variant = "primary",
@@ -249,8 +238,6 @@ export function Button({
     </button>
   );
 }
-
-/* ─── Copyable ──────────────────────────────────────────────────────────────── */
 export function Copyable({ value, truncate = false }: { value: string; truncate?: boolean }) {
   const [copied, setCopied] = useState(false);
   const displayValue =
@@ -285,13 +272,9 @@ export function Copyable({ value, truncate = false }: { value: string; truncate?
     </button>
   );
 }
-
-/* ─── MonospaceHash ─────────────────────────────────────────────────────────── */
 export function MonospaceHash({ hash }: { hash: string }) {
   return <Copyable value={hash} truncate />;
 }
-
-/* ─── StatusPill ────────────────────────────────────────────────────────────── */
 export function StatusPill({
   status,
   label,
@@ -339,8 +322,6 @@ export function StatusPill({
     </span>
   );
 }
-
-/* ─── MetricCard ────────────────────────────────────────────────────────────── */
 export function MetricCard({
   label,
   value,
@@ -395,8 +376,6 @@ export function MetricCard({
     </div>
   );
 }
-
-/* ─── Json ──────────────────────────────────────────────────────────────────── */
 export function Json({ data }: { data: unknown }) {
   return (
     <pre
@@ -411,8 +390,6 @@ export function Json({ data }: { data: unknown }) {
     </pre>
   );
 }
-
-/* ─── Error ─────────────────────────────────────────────────────────────────── */
 export function Error({ message }: { message: string }) {
   return (
     <div
@@ -428,8 +405,6 @@ export function Error({ message }: { message: string }) {
     </div>
   );
 }
-
-/* ─── EmptyState ────────────────────────────────────────────────────────────── */
 export function EmptyState({
   title,
   description,
@@ -466,8 +441,6 @@ export function EmptyState({
     </div>
   );
 }
-
-/* ─── Skeleton ──────────────────────────────────────────────────────────────── */
 export function Skeleton({
   className = "",
   style,
@@ -477,8 +450,6 @@ export function Skeleton({
 }) {
   return <div className={`skeleton ${className}`} style={style} />;
 }
-
-/* ─── TableSkeleton ────────────────────────────────────────────────────────── */
 export function TableSkeleton({ rows = 6, cols = 4 }: { rows?: number; cols?: number }) {
   return (
     <div
@@ -520,8 +491,6 @@ export function TableSkeleton({ rows = 6, cols = 4 }: { rows?: number; cols?: nu
     </div>
   );
 }
-
-/* ─── ConfirmDialog ─────────────────────────────────────────────────────────── */
 export function ConfirmDialog({
   open,
   title,

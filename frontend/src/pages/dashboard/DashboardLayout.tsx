@@ -140,16 +140,12 @@ export function DashboardLayout({
       className={`min-h-screen grid grid-cols-1 ${collapsed ? "md:grid-cols-[4rem_1fr]" : "md:grid-cols-[15rem_1fr]"} relative font-sans transition-[grid-template-columns] duration-200 ease-in-out`}
       style={{ backgroundColor: "var(--bg)", color: "var(--fg)" }}
     >
-      {/* Command Palette */}
       <CommandPalette open={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
-
-      {/* Desktop Sidebar */}
       <aside
         className="hidden md:flex flex-col justify-between min-h-screen sticky top-0 h-screen overflow-y-auto overflow-x-hidden"
         style={{ backgroundColor: "var(--surface)", borderRight: "1px solid var(--border)" }}
       >
         <div>
-          {/* Brand Header + collapse toggle */}
           {collapsed ? (
             <div className="p-3 border-b border-[color:var(--border)] flex flex-col items-center gap-2">
               <Link to="/" title={orgName} className="flex items-center justify-center">
@@ -205,8 +201,6 @@ export function DashboardLayout({
               </button>
             </div>
           )}
-
-          {/* Quick Search bar */}
           <div className={collapsed ? "px-2 pt-3 flex justify-center" : "px-3 pt-3"}>
             {collapsed ? (
               <button
@@ -232,8 +226,6 @@ export function DashboardLayout({
               </button>
             )}
           </div>
-
-          {/* Navigation — grouped by spacing + hairline, no shouty labels */}
           <div className={collapsed ? "p-2 space-y-3" : "px-3 py-3 space-y-3"}>
             {[mainNav, devNav, secondaryNav].map((group, gi) => (
               <nav
@@ -279,8 +271,6 @@ export function DashboardLayout({
             ))}
           </div>
         </div>
-
-        {/* User Account Footer */}
         {collapsed ? (
           <div className="p-2 border-t border-[color:var(--border)] bg-[var(--secondary)] flex flex-col items-center gap-2">
             <div title={user?.email || "admin@babit.dev"}>{avatar("w-7 h-7")}</div>
@@ -341,10 +331,7 @@ export function DashboardLayout({
           </div>
         )}
       </aside>
-
-      {/* Main Content Area */}
       <div className="flex flex-col min-w-0">
-        {/* Header Bar */}
         <header
           className="h-14 px-6 border-b border-[color:var(--border)] sticky top-0 z-30 flex items-center justify-between gap-4"
           style={{
@@ -369,8 +356,6 @@ export function DashboardLayout({
                 />
               </svg>
             </button>
-
-            {/* Breadcrumb: workspace then current page */}
             <nav
               aria-label="Breadcrumb"
               className="flex items-center gap-1.5 font-mono text-xs min-w-0"
@@ -411,8 +396,6 @@ export function DashboardLayout({
             </Link>
           </div>
         </header>
-
-        {/* Mobile Navigation Drawer */}
         {mobileDrawerOpen && (
           <div
             id="mobile-nav-drawer"
@@ -440,8 +423,6 @@ export function DashboardLayout({
             </div>
           </div>
         )}
-
-        {/* Inner Content Page */}
         <main className="p-6 sm:p-8 max-w-6xl w-full mx-auto space-y-6">{children}</main>
       </div>
     </div>

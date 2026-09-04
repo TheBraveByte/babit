@@ -107,8 +107,6 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
         title={`Welcome to ${workspace}`}
         description="Proof for autonomous actions. Everything here is retrieved directly from the Babit ledger."
       />
-
-      {/* Account summary, full details live in Settings */}
       <p className="text-xs" style={{ color: "var(--muted)" }}>
         Signed in as <span style={{ color: "var(--fg)" }}>{user?.email || "your account"}</span>
         {" · "}
@@ -121,8 +119,6 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
           Manage in Settings
         </button>
       </p>
-
-      {/* At a glance — real per-account activity */}
       {isAuthenticated && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
@@ -160,8 +156,6 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
           </button>
         </div>
       )}
-
-      {/* Notary key — real data, flagship card */}
       <Card
         className="animate-float-up"
         title="Notary public key"
@@ -205,8 +199,6 @@ export function Overview({ onNavigate }: { onNavigate: (tab: DashboardTab) => vo
           </p>
         )}
       </Card>
-
-      {/* Quick actions */}
       <div className="space-y-3">
         <h2 className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
           Get started
