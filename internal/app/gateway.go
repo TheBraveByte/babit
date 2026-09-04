@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/babit/nal/config"
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
@@ -54,6 +55,7 @@ func NewGatewayHandler(ctx context.Context, cfg *config.Config) (http.Handler, e
 
 	root := http.NewServeMux()
 	root.Handle("/", withAuthCookies(mux))
+	root.HandleFunc("/v1/auth/logout", logoutHandler())
 	root.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("ok"))
@@ -84,20 +86,15 @@ func withAuthCookies(h http.Handler) http.Handler {
 		var body map[string]any
 		if err := json.Unmarshal([]byte(rw.buf.String()), &body); err == nil {
 			if token, ok := body["token"].(string); ok && token != "" {
+				secure, sameSite := cookieFlags(r)
 				cookie := &http.Cookie{
 					Name:     "babit_session",
 					Value:    token,
 					Path:     "/",
 					HttpOnly: true,
-					MaxAge:   86400 * 7, // 7 days
-				}
-				// Cross-origin production needs SameSite=None+Secure; localhost can use Lax+non-secure.
-				if r.URL.Scheme == "https" || !strings.HasPrefix(r.Host, "localhost") {
-					cookie.Secure = true
-					cookie.SameSite = http.SameSiteNoneMode
-				} else {
-					cookie.Secure = false
-					cookie.SameSite = http.SameSiteLaxMode
+					Secure:   secure,
+					SameSite: sameSite,
+					MaxAge:   int(24 * time.Hour.Seconds()), // align with JWT TTL
 				}
 				http.SetCookie(w, cookie)
 			}
@@ -134,6 +131,45 @@ func (b *bufferedWriter) Write(p []byte) (int, error) {
 		b.status = http.StatusOK
 	}
 	return b.buf.Write(p)
+}
+
+func logoutHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		secure, sameSite := cookieFlags(r)
+		http.SetCookie(w, &http.Cookie{
+			Name:     "babit_session",
+			Value:    "",
+			Path:     "/",
+			MaxAge:   -1,
+			Expires:  time.Unix(0, 0),
+			HttpOnly: true,
+			Secure:   secure,
+			SameSite: sameSite,
+		})
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("{}"))
+	}
+}
+
+func cookieFlags(r *http.Request) (secure bool, sameSite http.SameSite) {
+	if isHTTPS(r) {
+		return true, http.SameSiteNoneMode
+	}
+	return false, http.SameSiteLaxMode
+}
+
+func isHTTPS(r *http.Request) bool {
+	if r.TLS != nil {
+		return true
+	}
+	if p := r.Header.Get("X-Forwarded-Proto"); p == "https" {
+		return true
+	}
+	if s := r.Header.Get("X-Forwarded-Scheme"); s == "https" {
+		return true
+	}
+	return false
 }
 
 func withCORS(h http.Handler) http.Handler {
