@@ -9,16 +9,26 @@ import (
 
 type Replay struct {
 	ledgerv1.UnimplementedReplayServiceServer
-	events ports.EventStore
-	solari ports.Solari
+	events   ports.EventStore
+	sessions ports.SessionStore
+	projects ports.ProjectStore
+	solari   ports.Solari
 }
 
-func NewReplay(events ports.EventStore, solari ports.Solari) *Replay {
-	return &Replay{events: events, solari: solari}
+func NewReplay(events ports.EventStore, sessions ports.SessionStore, projects ports.ProjectStore, solari ports.Solari) *Replay {
+	return &Replay{events: events, sessions: sessions, projects: projects, solari: solari}
 }
 
 func (r *Replay) GetReplay(req *ledgerv1.GetReplayRequest, stream grpc.ServerStreamingServer[ledgerv1.GetReplayResponse]) error {
 	ctx := stream.Context()
+	session, err := r.sessions.Get(ctx, req.GetSessionId())
+	if err != nil {
+		return errs.GRPCStatus(errs.Wrap(errs.NotFound, err, "session"))
+	}
+	if err := ensureProjectAccess(ctx, session.GetProjectId(), r.projects); err != nil {
+		return errs.GRPCStatus(err)
+	}
+
 	events, err := r.events.BySession(ctx, req.GetSessionId())
 	if err != nil {
 		return errs.GRPCStatus(errs.Wrap(errs.NotFound, err, "session events"))
