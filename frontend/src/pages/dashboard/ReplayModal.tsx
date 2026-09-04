@@ -153,6 +153,7 @@ function ReplayEventView({ index, data }: { index: number; data: ReplayResponse 
           {event.recording_ref}
         </p>
       )}
+      {event?.action_payload && <PayloadSummary b64={event.action_payload} />}
       {frame.kind === "image" && (
         <img
           src={frame.data}
@@ -175,6 +176,66 @@ function ReplayEventView({ index, data }: { index: number; data: ReplayResponse 
         </p>
       )}
     </div>
+  );
+}
+
+function PayloadSummary({ b64 }: { b64: string }) {
+  let parsed: Record<string, unknown> | null = null;
+  try {
+    const raw = atob(b64);
+    parsed = JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+
+  if (parsed.url) {
+    const url = String(parsed.url);
+    const label = parsed.label ? `${String(parsed.label)}: ` : "";
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        className="text-xs font-mono break-all"
+        style={{ color: "var(--brand-accent)" }}
+      >
+        {label}
+        {url}
+      </a>
+    );
+  }
+
+  if (parsed.cmd) {
+    const args = Array.isArray(parsed.args) ? parsed.args.map(String).join(" ") : "";
+    return (
+      <pre
+        className="text-[10px] font-mono p-2 rounded overflow-auto"
+        style={{ backgroundColor: "var(--surface)", color: "var(--fg)" }}
+      >
+        $ {String(parsed.cmd)} {args}
+      </pre>
+    );
+  }
+
+  if (parsed.selector) {
+    return (
+      <pre
+        className="text-[10px] font-mono p-2 rounded overflow-auto"
+        style={{ backgroundColor: "var(--surface)", color: "var(--fg)" }}
+      >
+        selector: {String(parsed.selector)}
+        {parsed.text !== undefined ? `\ntext: ${String(parsed.text)}` : ""}
+      </pre>
+    );
+  }
+
+  return (
+    <pre
+      className="text-[10px] font-mono p-2 rounded overflow-auto max-h-40"
+      style={{ backgroundColor: "var(--surface)", color: "var(--fg)" }}
+    >
+      {JSON.stringify(parsed, null, 2)}
+    </pre>
   );
 }
 
