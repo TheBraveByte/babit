@@ -84,7 +84,7 @@ export function Hero() {
               className="w-1.5 h-1.5 rounded-full"
               style={{ backgroundColor: "var(--brand-accent)" }}
             />
-            Built with Solari
+            Built on Solari cloud browsers
           </a>
           <h1
             className="font-medium tracking-[-0.035em] leading-[1.05]"
@@ -93,9 +93,9 @@ export function Hero() {
               fontSize: "clamp(2.5rem, 5.5vw, 4rem)",
             }}
           >
-            Every agent action,
+            Your agents can do anything.
             <br />
-            <span style={{ color: "var(--brand-accent)" }}>signed as evidence.</span>
+            <span style={{ color: "var(--brand-accent)" }}>Now they have receipts.</span>
           </h1>
           <p
             className="mt-7 max-w-lg leading-relaxed"
@@ -104,8 +104,8 @@ export function Hero() {
               fontSize: "clamp(1.0625rem, 1.4vw, 1.25rem)",
             }}
           >
-            Babit binds every autonomous action to the person who authorized it, signs it, and
-            appends it to a tamper-evident ledger anyone can audit.
+            When an AI agent clicks, runs code, or moves money, babit notarizes who gave permission
+            and what happened. No trust needed. Just proof.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <button
@@ -117,7 +117,7 @@ export function Hero() {
                 boxShadow: "0 0 24px color-mix(in srgb, var(--brand-accent) 30%, transparent)",
               }}
             >
-              Try babit free
+              Start free
             </button>
             <a
               href={docsUrl}

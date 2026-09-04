@@ -17,21 +17,21 @@ export function SectionOfflineEvidence() {
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             <div>
               <p className="type-eyebrow" style={{ color: "var(--brand-accent)" }}>
-                Public anchoring
+                Trust no one
               </p>
               <h2 className="type-h2 mt-4" style={{ color: "var(--dark-section-fg)" }}>
-                Witnessed where babit cannot reach.
+                Witnessed outside babit.
               </h2>
               <p className="type-lead mt-5" style={{ color: "var(--dark-section-muted)" }}>
-                The notary public key is published in the console. Every receipt is signed against
-                it, so anyone can verify a record without trusting babit.
+                We publish the notary public key in the console. Verify receipts without trusting
+                us.
               </p>
               <div
                 className="mt-8 flex items-center gap-2 text-[12px] font-mono"
                 style={{ color: "var(--dark-section-muted)" }}
               >
                 <span style={{ color: "var(--brand-accent)" }}>→</span>
-                <span>No special access required · anyone can audit</span>
+                <span>No special access · anyone can audit</span>
               </div>
             </div>
 
@@ -69,8 +69,8 @@ export function SectionOfflineEvidence() {
       <Section id="offline">
         <SectionHeader
           eyebrow="Offline verification"
-          title="Evidence that stands on its own."
-          lead="A receipt carries everything needed to check it. No account required."
+          title="Proof without the server."
+          lead="A receipt has everything. Verify it offline, years later, without us."
         />
 
         <div className="mt-14 grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -80,11 +80,11 @@ export function SectionOfflineEvidence() {
                 Check it yourself
               </span>
               <h3 className="type-h3" style={{ color: "var(--fg)" }}>
-                Verify from a file, a JSON paste or an event ID.
+                Verify from a file, a JSON paste, or an event ID.
               </h3>
               <p className="type-body">
-                The console lets you verify receipts directly. For full offline use, download the
-                receipt and the notary public key, then run the open verification logic yourself.
+                Use the console, or download the receipt and the public key and run the open
+                verification logic yourself.
               </p>
             </div>
 
@@ -99,16 +99,16 @@ export function SectionOfflineEvidence() {
           <div className="grid grid-cols-1 gap-5">
             {[
               {
-                title: "Save the receipt",
-                body: "Download a receipt as plain JSON. It contains the event, content hashes and the notary signature.",
+                title: "Keep the receipt",
+                body: "Download it as plain JSON. Event, hashes, signature — everything included.",
               },
               {
-                title: "Get the public key",
-                body: "Fetch the notary public key from the console once and keep it anywhere you audit.",
+                title: "Grab the public key",
+                body: "Fetch it once from the console and store it wherever you audit.",
               },
               {
-                title: "Check it anywhere",
-                body: "Verify signatures and chain integrity without calling babit. The math is public.",
+                title: "Verify anywhere",
+                body: "Check signatures and chain integrity without calling babit. The math is public.",
               },
             ].map((p) => (
               <LandingCard key={p.title} className="space-y-2">
