@@ -5,7 +5,6 @@ import (
 	"time"
 
 	ledgerv1 "github.com/babit/nal/gen/solari/ledger/v1"
-	"github.com/babit/nal/internal/core/auth"
 	"github.com/babit/nal/internal/errs"
 	"github.com/babit/nal/internal/ports"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -15,6 +14,7 @@ type Capture struct {
 	ledgerv1.UnimplementedCaptureServiceServer
 	sessions   ports.SessionStore
 	grants     ports.GrantStore
+	projects   ports.ProjectStore
 	verifier   ports.DelegationVerifier
 	notary     ports.Notarizer
 	checkpoint ports.Checkpointer
@@ -22,13 +22,16 @@ type Capture struct {
 	clock      ports.Clock
 }
 
-func NewCapture(sessions ports.SessionStore, grants ports.GrantStore, verifier ports.DelegationVerifier, notary ports.Notarizer, checkpoint ports.Checkpointer, ids ports.IDGen, clock ports.Clock) *Capture {
-	return &Capture{sessions: sessions, grants: grants, verifier: verifier, notary: notary, checkpoint: checkpoint, ids: ids, clock: clock}
+func NewCapture(sessions ports.SessionStore, grants ports.GrantStore, projects ports.ProjectStore, verifier ports.DelegationVerifier, notary ports.Notarizer, checkpoint ports.Checkpointer, ids ports.IDGen, clock ports.Clock) *Capture {
+	return &Capture{sessions: sessions, grants: grants, projects: projects, verifier: verifier, notary: notary, checkpoint: checkpoint, ids: ids, clock: clock}
 }
 
 func (c *Capture) BeginSession(ctx context.Context, req *ledgerv1.BeginSessionRequest) (*ledgerv1.BeginSessionResponse, error) {
 	grant, err := c.grants.Get(ctx, req.GetRootGrantId())
 	if err != nil {
+		return nil, err
+	}
+	if err := ensureProjectAccess(ctx, grant.GetProjectId(), c.projects); err != nil {
 		return nil, err
 	}
 	s := &ledgerv1.Session{
@@ -52,6 +55,12 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 	chain, err := c.grants.Chain(ctx, req.GetGrantId())
 	if err != nil {
 		return nil, err
+	}
+	if err := ensureProjectAccess(ctx, session.GetProjectId(), c.projects); err != nil {
+		return nil, err
+	}
+	if session.GetProjectId() != chain[len(chain)-1].GetProjectId() {
+		return nil, errs.New(errs.PermissionDenied, "grant does not belong to session project")
 	}
 	if err := c.verifier.VerifyChain(chain, c.clock.Now()); err != nil {
 		return nil, errs.Wrap(errs.PermissionDenied, err, "verify chain")
@@ -89,7 +98,14 @@ func (c *Capture) RecordAction(ctx context.Context, req *ledgerv1.RecordActionRe
 }
 
 func (c *Capture) EndSession(ctx context.Context, req *ledgerv1.EndSessionRequest) (*ledgerv1.EndSessionResponse, error) {
-	s, err := c.sessions.End(ctx, req.GetSessionId(), c.clock.Now())
+	s, err := c.sessions.Get(ctx, req.GetSessionId())
+	if err != nil {
+		return nil, err
+	}
+	if err := ensureProjectAccess(ctx, s.GetProjectId(), c.projects); err != nil {
+		return nil, err
+	}
+	s, err = c.sessions.End(ctx, req.GetSessionId(), c.clock.Now())
 	if err != nil {
 		return nil, err
 	}
@@ -113,8 +129,14 @@ func (c *Capture) ensureNotRevoked(ctx context.Context, chain []*ledgerv1.Grant)
 }
 
 func (c *Capture) ListSessions(ctx context.Context, req *ledgerv1.ListSessionsRequest) (*ledgerv1.ListSessionsResponse, error) {
-	if auth.UserID(ctx) == "" {
-		return nil, errs.New(errs.Unauthenticated, "not authenticated")
+	if err := requireAuth(ctx); err != nil {
+		return nil, err
+	}
+	if req.GetProjectId() == "" {
+		return nil, errs.New(errs.Invalid, "project_id is required")
+	}
+	if err := ensureProjectAccess(ctx, req.GetProjectId(), c.projects); err != nil {
+		return nil, err
 	}
 	sessions, next, err := c.sessions.List(ctx, req.GetProjectId(), req.GetPageSize(), req.GetPageToken())
 	if err != nil {

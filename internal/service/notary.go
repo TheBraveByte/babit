@@ -53,16 +53,21 @@ func (n *NotaryCore) Checkpoint(ctx context.Context, sessionID string) (*ledgerv
 
 type Notary struct {
 	ledgerv1.UnimplementedNotaryServiceServer
-	core   ports.Notarizer
-	anchor ports.Anchor
-	signer ports.Signer
+	core     ports.Notarizer
+	anchor   ports.Anchor
+	signer   ports.Signer
+	sessions ports.SessionStore
+	projects ports.ProjectStore
 }
 
-func NewNotary(core ports.Notarizer, anchor ports.Anchor, signer ports.Signer) *Notary {
-	return &Notary{core: core, anchor: anchor, signer: signer}
+func NewNotary(core ports.Notarizer, anchor ports.Anchor, signer ports.Signer, sessions ports.SessionStore, projects ports.ProjectStore) *Notary {
+	return &Notary{core: core, anchor: anchor, signer: signer, sessions: sessions, projects: projects}
 }
 
 func (s *Notary) Notarize(ctx context.Context, req *ledgerv1.NotarizeRequest) (*ledgerv1.NotarizeResponse, error) {
+	if err := ensureProjectAccess(ctx, req.GetEvent().GetProjectId(), s.projects); err != nil {
+		return nil, err
+	}
 	sealed, err := s.core.Notarize(ctx, req.GetEvent())
 	if err != nil {
 		return nil, err
@@ -71,6 +76,13 @@ func (s *Notary) Notarize(ctx context.Context, req *ledgerv1.NotarizeRequest) (*
 }
 
 func (s *Notary) GetAnchor(ctx context.Context, req *ledgerv1.GetAnchorRequest) (*ledgerv1.GetAnchorResponse, error) {
+	session, err := s.sessions.Get(ctx, req.GetSessionId())
+	if err != nil {
+		return nil, err
+	}
+	if err := ensureProjectAccess(ctx, session.GetProjectId(), s.projects); err != nil {
+		return nil, err
+	}
 	a, err := s.anchor.Get(ctx, req.GetSessionId())
 	if err != nil {
 		return nil, err
@@ -79,6 +91,8 @@ func (s *Notary) GetAnchor(ctx context.Context, req *ledgerv1.GetAnchorRequest) 
 }
 
 func (s *Notary) GetPublicKey(ctx context.Context, req *ledgerv1.GetPublicKeyRequest) (*ledgerv1.GetPublicKeyResponse, error) {
+	_ = ctx
+	_ = req
 	pub, ok := s.signer.PublicKey(sign.DefaultKeyID)
 	if !ok {
 		return nil, errs.New(errs.Internal, "notary public key unavailable")
