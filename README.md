@@ -2,88 +2,60 @@
 
 Proof of authority for autonomous agent actions.
 
-babit records what an agent did, binds the action to the signed delegation that authorized it,
-and produces a portable receipt that can be verified without the server.
+When an AI agent drives a browser, runs code in a sandbox or acts on a desktop,
+there is usually no way to prove afterwards what it did, or that anyone allowed it
+to. babit records each action, binds it to the signed delegation that authorized
+it, and issues a receipt that anyone can verify without trusting or contacting the
+babit server.
 
-## Flow
+**[Live demo](https://babit-inky.vercel.app)** · source-available, see `LICENSE` · [Architecture](docs/architecture.md)
+
+## How it works
 
 ```mermaid
-graph LR
-    %% Flow definition
-    You["[You]"]
-    Dashboard["[Laptop Dashboard]"]
-    Grant{{"Grant: browser.navigate, sandbox.run, desktop.exec"}}
-
-    subgraph Agents ["Agent Surfaces"]
-        direction TB
-        Browser["[Browser agent (Solari)]\n(URL bar)"]
-        Sandbox["[Sandbox agent]\n(Container)"]
-        Desktop["[Desktop agent]\n(Monitor)"]
-    end
-
-    Replay["[rrweb replay]\n(Film strip)"]
-    CaptureBucket[("(Capture bucket)\n[events]")]
-    Notary["[Notary]\n(Signature)"]
-
-    subgraph Ledger ["Ledger"]
-        direction TB
-        LedgerBlocks["[Block n]\n[Block n-1]\n[Block n-2]"]
-    end
-
-    Anchor["[External timestamp / anchor]\n(Cloud)"]
-    Receipt["[Receipt]\n- content hash\n- signature\n- merkle path"]
-
-    Verify["[Verify]\n(Check Mark)"]
-    Anyone["[Anyone]"]
-
-    BabitUI["[Babit Dashboard / API]\n(Monitor)"]
-
-    %% Connections
-    You --> Dashboard
-    Dashboard --> Grant
-    Grant --> Browser
-    Grant --> Sandbox
-    Grant --> Desktop
-
-    Browser -.-> Replay
-    Replay -.-> Browser
-
-    Browser --> CaptureBucket
-    Sandbox --> CaptureBucket
-    Desktop --> CaptureBucket
-
-    CaptureBucket --> Notary
-    Notary --> LedgerBlocks
-
-    LedgerBlocks --> Anchor
-    LedgerBlocks --> Receipt
-
-    Receipt --> Verify
-    Anyone --> Verify
-
-    BabitUI -.-> LedgerBlocks
-    BabitUI -.-> Verify
-
-    %% Styling
-    style You fill:#e0f2f1,stroke:#008080,stroke-width:2px
-    style Grant fill:#e0f2f1,stroke:#008080,stroke-width:2px
-    style Notary fill:#e0f2f1,stroke:#008080,stroke-width:2px
-    style Receipt fill:#e0f2f1,stroke:#008080,stroke-width:2px
-    style Verify fill:#e0f2f1,stroke:#008080,stroke-width:2px
-    style Anyone fill:#e0f2f1,stroke:#008080,stroke-width:2px
-
-    style Browser fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
-    style Sandbox fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
-    style Desktop fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
-    style CaptureBucket fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
-    style LedgerBlocks fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
-    style Dashboard fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
-    style BabitUI fill:#f5f5f5,stroke:#9e9e9e,stroke-width:2px
-
-    classDef default font-family:monospace,font-size:13px
+flowchart LR
+    H([Person]) -->|signs a scoped grant| D[Delegation]
+    D --> A[Agent: browser, sandbox, desktop]
+    A -->|actions + rrweb recording| C[Capture]
+    C --> N[Notary]
+    N -->|signed, hash-linked| L[(Append-only ledger)]
+    L -->|session Merkle root| X[[Anchor record]]
+    L --> R[Receipt]
+    R --> V{Verify offline}
+    X --> V
 ```
+
+- **Delegation.** Authority is explicit. A person grants an agent a named set of
+  capabilities, such as `browser.navigate` or `sandbox.run`, as a signed grant.
+- **Capture.** Agent surfaces send each action to the capture service. Browser
+  actions keep a reference to the session's rrweb recording on Solari, so a run
+  can be replayed, not just read as a log.
+- **Notarization.** The notary signs each action into an append-only, hash-linked
+  ledger, and records each session's Merkle root as an anchor.
+- **Receipt.** A receipt carries the content hash, signature and Merkle path.
+  Verifying it needs only the notary's public key and the session's Merkle root.
+
+## Design decisions
+
+- **Receipts verify without the server.** An audit log you have to request from
+  the party being audited is not evidence, so verification runs offline with the
+  `babit verify` command.
+- **Ports and adapters.** The core and receipt logic sit behind interfaces in
+  `internal/ports`, so the verifier and storage can be swapped and the core is
+  tested without infrastructure.
+- **Unguessable identifiers.** Receipts are meant to be shared as evidence, so
+  guessable IDs would let anyone holding one probe for others.
+- **Tenancy enforced in every service.** Project access is checked in capture,
+  delegation and notary, and through the gRPC and replay interceptors, not only at
+  the edge.
+
+## Stack
+
+Go (gRPC with a grpc-gateway REST edge), PostgreSQL with sqlc, Protobuf via buf,
+React and TypeScript for the console. Build, test and run targets are in the
+`Makefile`; [`examples/`](examples/) has notarized browser and sandbox clients.
 
 ## License
 
-Proprietary and source-available; see `LICENSE`. No use, copy, or distribution without written
-permission.
+Proprietary and source-available; see `LICENSE`. No use, copy, or distribution
+without written permission.
